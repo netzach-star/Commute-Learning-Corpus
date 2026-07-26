@@ -7,6 +7,7 @@
 ```text
 SKILL.md                  全局规则（先读这个）
 README.md                 本文件，含语料目录表 = 编号的权威来源
+GPT项目说明.md            粘贴到 ChatGPT 项目指令框的启动协议
 tools/build_index.py      重新生成下面的目录表
 语料/
 ├── 数学/SKILL.md         + NN_*.html
@@ -26,6 +27,22 @@ tools/build_index.py      重新生成下面的目录表
 5. 已交付的文章默认只读。用户反馈追加到文末 `#reader-feedback`，这不算修改；只有用户明确说这篇写失败了或要求改动时才动正文，且必须原地改、保留原编号。
 
 领域边界：移除 AI 后结论仍成立 → 计算机；主题核心是模型/Agent/Skill/人机协作 → AI；马克思主义**理论部分**及其思想史 → 马列；其余一切（经济、历史、心理学、语言学、自然科学、新闻背景……）→ 其他。
+
+### 无法直接读取文件时（ChatGPT 等）
+
+GitHub 的 `/tree/` 和 `/commits/` 页面拒绝自动访问，只有 `raw.githubusercontent.com` 可抓。按上面第 1、2 条的顺序，对应地址如下（中文路径已百分号编码，**照原样使用，不要自己拼**）：
+
+| 顺序 | 文件 | 地址 |
+| --- | --- | --- |
+| ① 先读 | 主 SKILL | `https://raw.githubusercontent.com/netzach-star/Commute-Learning-Corpus/main/SKILL.md` |
+| ② 再读 | 本文件（取编号） | `https://raw.githubusercontent.com/netzach-star/Commute-Learning-Corpus/main/README.md` |
+| ③ 确定领域后读 | 数学 | `https://raw.githubusercontent.com/netzach-star/Commute-Learning-Corpus/main/%E8%AF%AD%E6%96%99/%E6%95%B0%E5%AD%A6/SKILL.md` |
+| | 计算机 | `https://raw.githubusercontent.com/netzach-star/Commute-Learning-Corpus/main/%E8%AF%AD%E6%96%99/%E8%AE%A1%E7%AE%97%E6%9C%BA/SKILL.md` |
+| | AI | `https://raw.githubusercontent.com/netzach-star/Commute-Learning-Corpus/main/%E8%AF%AD%E6%96%99/AI/SKILL.md` |
+| | 马列 | `https://raw.githubusercontent.com/netzach-star/Commute-Learning-Corpus/main/%E8%AF%AD%E6%96%99/%E9%A9%AC%E5%88%97/SKILL.md` |
+| | 其他 | `https://raw.githubusercontent.com/netzach-star/Commute-Learning-Corpus/main/%E8%AF%AD%E6%96%99/%E5%85%B6%E4%BB%96/SKILL.md` |
+
+这张表是给已经进到仓库的模型看的。**GPT 需要在读到本文件之前就有 ①② 两个地址**，所以启动那一份必须放在仓库外——见 [GPT项目说明.md](GPT%E9%A1%B9%E7%9B%AE%E8%AF%B4%E6%98%8E.md)，里面是可直接粘进 ChatGPT 项目指令框的完整文本。
 
 <!-- INDEX:START -->
 
