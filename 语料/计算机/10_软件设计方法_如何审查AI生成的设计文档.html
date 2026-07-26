@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>从需求到设计（四）：怎样审查 AI 生成的设计文档——从“看起来专业”到“可以稳定实现”</title>
+  <meta name="corpus-id" content="computer-010">
+  <meta name="corpus-category" content="计算机">
+  <meta name="corpus-series" content="软件工程与系统设计">
+  <meta name="corpus-status" content="unread">
+  <meta name="estimated-reading-time" content="45—55 分钟">
+  <meta name="generated-date" content="2026-07-24">
+  <meta name="source-basis" content="用户与 AI 协作设计的实际困难；D-01～D-06 案例；补充通用架构审查与决策记录方法">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #5d6878;
+      --line: #d9e0ea;
+      --soft: #f5f8fc;
+      --blue: #175cd3;
+      --blue-soft: #eaf2ff;
+      --green: #157f5b;
+      --green-soft: #eaf8f2;
+      --amber: #925400;
+      --amber-soft: #fff6e3;
+      --red: #b42318;
+      --red-soft: #fff0ee;
+      --violet: #6941c6;
+      --violet-soft: #f3efff;
+      --shadow: 0 10px 30px rgba(28,45,76,.07);
+    }
+    * { box-sizing: border-box; }
+    html { font-size: 17px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      max-width: 960px; margin: 0 auto; padding: 38px 42px 86px;
+      color: var(--ink); background: #fff;
+      font-family: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", STSong, serif;
+      line-height: 1.86; overflow-wrap: break-word;
+    }
+    h1,h2,h3,h4,nav,.sans,table { font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    h1 { margin:0; font-size:2.08rem; line-height:1.34; letter-spacing:-.025em; }
+    h2 { margin:3.35rem 0 1.15rem; padding-bottom:.42rem; border-bottom:1px solid var(--line); font-size:1.5rem; line-height:1.42; }
+    h3 { margin:2.2rem 0 .75rem; font-size:1.22rem; line-height:1.45; }
+    h4 { margin:1.55rem 0 .5rem; font-size:1.05rem; }
+    p { margin:.86rem 0; } li { margin:.38rem 0; }
+    a { color:var(--blue); text-decoration-thickness:1px; text-underline-offset:.16em; }
+    code,kbd { font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace; font-size:.9em; }
+    code { padding:.1em .32em; border-radius:4px; background:var(--soft); }
+    pre { margin:1.15rem 0; padding:1rem 1.1rem; overflow-x:auto; border:1px solid #cbd5e1; border-radius:10px; background:#101828; color:#eef4ff; line-height:1.62; }
+    pre code { padding:0; background:transparent; color:inherit; }
+    header.hero { margin-bottom:2.3rem; padding:1.8rem 0 1.35rem; }
+    .eyebrow { margin-bottom:.65rem; color:var(--blue); font-size:.88rem; font-weight:700; letter-spacing:.08em; }
+    .subtitle { margin:1rem 0 0; color:var(--muted); font-size:1.08rem; }
+    .meta { display:flex; gap:.55rem; flex-wrap:wrap; margin-top:1.15rem; }
+    .tag { padding:.28rem .62rem; border:1px solid var(--line); border-radius:999px; color:#40506a; background:var(--soft); font-family:"Noto Sans CJK SC","PingFang SC",sans-serif; font-size:.82rem; }
+    nav#toc { margin:1.8rem 0 3rem; padding:1.15rem 1.35rem; border:1px solid var(--line); border-radius:12px; background:var(--soft); }
+    nav#toc strong { display:block; margin-bottom:.5rem; }
+    nav#toc ol { columns:2; column-gap:2.6rem; margin:0; padding-left:1.25rem; }
+    nav#toc li { break-inside:avoid; margin:.25rem 0; }
+    .lead,.thesis,.definition,.warning,.example,.source-note,.comparison-note,.exercise {
+      margin:1.3rem 0; padding:1rem 1.15rem; border-radius:10px;
+    }
+    .lead { border-left:4px solid var(--blue); background:var(--blue-soft); }
+    .thesis { border:1px solid #b9cff4; background:linear-gradient(135deg,#f7faff,#eef5ff); box-shadow:var(--shadow); font-size:1.04rem; }
+    .definition { border:1px solid #b9cff4; background:var(--blue-soft); }
+    .warning { border:1px solid #f1c8c3; background:var(--red-soft); }
+    .example,.exercise { border:1px solid #f0d5a3; background:var(--amber-soft); }
+    .source-note { border:1px solid #d4c8f5; background:var(--violet-soft); }
+    .comparison-note { border:1px solid #a9dccb; background:var(--green-soft); }
+    .concept-map { margin:1.6rem 0 2.3rem; padding:1.2rem; border:1px solid var(--line); border-radius:14px; background:#fbfdff; box-shadow:var(--shadow); }
+    .grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:1.2rem 0; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.9rem; margin:1.2rem 0; }
+    .card { padding:1rem; border:1px solid var(--line); border-radius:10px; background:#fff; }
+    .card h3,.card h4 { margin-top:0; }
+    .pipeline { display:flex; flex-wrap:wrap; align-items:stretch; gap:.55rem; margin:1.25rem 0; }
+    .pipeline .node { flex:1 1 125px; min-width:115px; padding:.78rem .7rem; border:1px solid #c9d6e8; border-radius:9px; background:#fff; text-align:center; font-family:"Noto Sans CJK SC",sans-serif; font-size:.9rem; }
+    .pipeline .node strong { display:block; color:#173f78; }
+    .pipeline .sep { display:flex; align-items:center; color:#6b778b; }
+    .state-row { display:grid; grid-template-columns:150px 1fr; gap:.9rem; margin:.55rem 0; padding:.72rem .85rem; border:1px solid var(--line); border-radius:9px; background:#fff; }
+    .state-row strong { color:#173f78; font-family:"Noto Sans CJK SC",sans-serif; }
+    table { display:block; width:100%; margin:1.35rem 0; overflow-x:auto; border-collapse:collapse; font-size:.92rem; line-height:1.62; }
+    th,td { min-width:145px; padding:.72rem .76rem; border:1px solid var(--line); vertical-align:top; }
+    th { color:#27364f; background:var(--soft); text-align:left; }
+    .small { color:var(--muted); font-size:.9rem; }
+    .checklist { padding-left:0; list-style:none; }
+    .checklist li { position:relative; padding-left:1.7rem; }
+    .checklist li::before { position:absolute; left:.1rem; color:var(--green); content:"✓"; font-family:sans-serif; font-weight:700; }
+    .question { margin:1rem 0; padding:.8rem 1rem; border-left:4px solid #97a7bd; background:#f8fafc; }
+    details { margin:.8rem 0; padding:.75rem .95rem; border:1px solid var(--line); border-radius:9px; background:#fff; }
+    summary { cursor:pointer; color:#253858; font-family:"Noto Sans CJK SC",sans-serif; font-weight:700; }
+    .source-list li { margin:.65rem 0; }
+    #reader-feedback { margin-top:4rem; padding:1.2rem; border:1px dashed #aab7ca; border-radius:12px; background:#fafcff; }
+    #reader-feedback h2 { margin-top:0; }
+    @media (max-width:760px) {
+      body { padding:24px 20px 64px; line-height:1.8; }
+      h1 { font-size:1.72rem; } h2 { margin-top:2.75rem; font-size:1.34rem; }
+      nav#toc ol { columns:1; } .grid-2,.grid-3 { grid-template-columns:1fr; }
+      .pipeline { display:grid; grid-template-columns:1fr; }
+      .pipeline .sep { justify-content:center; transform:rotate(90deg); }
+      .state-row { grid-template-columns:1fr; gap:.22rem; }
+    }
+    @media print {
+      body { max-width:none; padding:0; color:#000; }
+      nav#toc { break-after:page; } h2,h3 { break-after:avoid; }
+      table,.card,.definition,.warning,.example,.source-note { break-inside:avoid; }
+      a { color:#000; text-decoration:none; }
+    }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="eyebrow">软件工程与系统设计 · 第四篇</div>
+  <h1>从需求到设计（四）：怎样审查 AI 生成的设计文档——从“看起来专业”到“可以稳定实现”</h1>
+  <p class="subtitle">用需求追踪、术语与数据所有权、不变量、故障矩阵、证据等级、ADR、迁移和阶段闸门，建立一套可复用的设计审查方法。</p>
+  <div class="meta">
+    <span class="tag">语料编号 computer-010</span>
+    <span class="tag">预计阅读 45—55 分钟</span>
+    <span class="tag">先修：读过本系列第一篇或具有小型项目经验</span>
+    <span class="tag">状态：待读</span>
+  </div>
+</header>
+<nav id="toc" aria-label="文章目录"><strong>目录</strong><ol>
+<li><a href="#problem">AI 设计文档为什么特别容易“看起来完整”</a></li>
+<li><a href="#layers">四层审查框架</a></li>
+<li><a href="#traceability">需求追踪：每个设计保护什么</a></li>
+<li><a href="#terms">术语、边界与数据所有权</a></li>
+<li><a href="#invariants">状态机、不变量与并发</a></li>
+<li><a href="#failure">故障、恢复与可观测性</a></li>
+<li><a href="#evidence">外部能力、Spike 与证据</a></li>
+<li><a href="#stages">实施阶段、迁移与回滚</a></li>
+<li><a href="#case-review">用框架审查 D-01～D-06</a></li>
+<li><a href="#package">让 AI 交付可审查设计包</a></li>
+<li><a href="#questions">自检题与参考答案</a></li>
+</ol></nav>
+
+<section class="lead" id="problem">
+  <strong>本篇目标：</strong>建立一套你不需要先成为架构专家也能使用的设计审查方法。你不必立刻判断 PostgreSQL 锁模式或某个 SDK 调用是否正确，但应能判断文档是否把关键问题说清、是否有证据、是否允许实现者稳定落地。
+</section>
+
+<h2>一、AI 设计文档为什么特别容易“看起来完整”</h2>
+
+<p>大模型很擅长生成形式完整的技术文本：标题齐全、术语专业、组件命名一致、接口字段很多。这带来一种危险错觉：</p>
+<div class="warning"><strong>文字密度不等于设计闭环，术语正确不等于项目假设成立，章节齐全也不等于实现者知道发生故障时该怎么办。</strong></div>
+
+<p>AI 生成设计常见的四类问题：</p>
+
+<div class="grid-2">
+  <div class="card"><h3>1. 补全成“行业常见答案”</h3><p>项目材料没有说明时，模型按常见架构自动补出消息队列、缓存、微服务或版本策略，却没有标出它是推断。</p></div>
+  <div class="card"><h3>2. 局部合理、整体不一致</h3><p>某节说对象不可变，另一节又让接口原地更新；某节说异步发布，验收却要求瞬时一致。</p></div>
+  <div class="card"><h3>3. 把技术名词当作机制</h3><p>写“采用 outbox 保证一致性”“使用 ETag 解决并发”，却不说明事务边界、幂等键或冲突后的用户流程。</p></div>
+  <div class="card"><h3>4. 把开放问题写成既定事实</h3><p>外部系统是否支持同 documentId 更新尚未验证，文档却直接基于 upsert 设计全部链路。</p></div>
+</div>
+
+<p>所以审查的重点不是找错别字，也不是要求更多技术细节，而是追踪：</p>
+<pre><code>事实来自哪里
+→ 设计决定解决什么
+→ 必须始终满足什么
+→ 失败时留下什么状态
+→ 怎样证明决定成立
+→ 实现按什么依赖顺序推进</code></pre>
+
+<section id="layers">
+<h2>二、四层审查框架：从“做对事”到“能安全演进”</h2>
+
+<table>
+<thead><tr><th>层次</th><th>核心问题</th><th>典型缺陷</th></tr></thead>
+<tbody>
+<tr><td>需求与范围层</td><td>这是在解决已确认的问题吗？哪些明确不做？</td><td>过度设计、遗漏关键场景、把猜测当需求</td></tr>
+<tr><td>结构与语义层</td><td>边界、术语、数据源、流程和状态是否一致？</td><td>组件职责重叠、多个 source of truth、内部代号无定义</td></tr>
+<tr><td>正确性与运行层</td><td>并发、失败、重试、权限和容量下仍成立吗？</td><td>双写丢任务、重复副作用、越权、无恢复路径</td></tr>
+<tr><td>证据与演进层</td><td>哪些结论已证明？怎样迁移、发布、回滚和记录决策？</td><td>外部能力靠想象、Spike 无结论、上线后不可回退</td></tr>
+</tbody>
+</table>
+
+<p>审查顺序应从上往下。若需求和边界未定，先争论数据库字段通常没有意义；若核心不变量不存在，接口再详细也不能证明系统正确。</p>
+</section>
+
+<section id="traceability">
+<h2>三、需求追踪：要求每个重要设计回答“它在保护什么”</h2>
+
+<h3>1. 建立需求—风险—设计—证据矩阵</h3>
+<p>最实用的审查工具不是更复杂的架构图，而是一张追踪表：</p>
+<table>
+<thead><tr><th>需求/约束</th><th>主要风险</th><th>设计决定</th><th>验证证据</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td>两个 Agent 不共享职责外内容</td><td>历史串线、工具越权</td><td>独立 session 与可见性边界</td><td>D-01 恢复与越权测试</td><td>待验证</td></tr>
+<tr><td>无向关联不重复且两端可见</td><td>重复边、半边、死锁</td><td>canonical link、双端 revision、统一锁序</td><td>D-02 并发实验</td><td>待验证</td></tr>
+<tr><td>发布后投影任务不丢</td><td>数据库与任务双写裂缝</td><td>事务 + outbox + 幂等 job</td><td>D-03 故障注入</td><td>待验证</td></tr>
+</tbody>
+</table>
+
+<p>这张表能发现两种问题：</p>
+<ul>
+  <li><strong>孤儿设计：</strong>一个复杂组件找不到关联需求或风险，可能是过度设计；</li>
+  <li><strong>裸需求：</strong>一条关键承诺没有设计与证据，可能只停留在愿望。</li>
+</ul>
+
+<h3>2. 要求区分四种陈述</h3>
+<table>
+<thead><tr><th>标签</th><th>含义</th><th>例子</th></tr></thead>
+<tbody>
+<tr><td>已确认事实</td><td>已有代码、实验、官方契约或用户决定支持</td><td>Stage 0 已有 Session Adapter</td></tr>
+<tr><td>设计决定</td><td>团队在多个方案中选择的一条路线</td><td>无向边只保存一条 canonical link</td></tr>
+<tr><td>待验证假设</td><td>实现依赖但证据不足</td><td>L2 可能支持同 documentId upsert</td></tr>
+<tr><td>开放问题</td><td>尚未决定，不能让实现偷偷决定</td><td>冲突后是拒绝、合并还是人工审阅</td></tr>
+</tbody>
+</table>
+
+<p>AI 最容易把后三类混写。你可以要求每个章节在段落旁标注这些标签，尤其是外部能力与性能结论。</p>
+</section>
+
+<section id="terms">
+<h2>四、术语、边界与数据所有权：先确保所有人说的是同一个系统</h2>
+
+<h3>1. 内部术语必须可追溯</h3>
+<p><code>L2</code>、<code>P0</code>、<code>S-09</code>、<code>Bundle</code> 一类词若没有定义，不能要求读者自己猜。术语表至少写：</p>
+<ul>
+  <li>一句话定义；</li>
+  <li>对象类型：服务、数据对象、环境、阶段还是实验编号；</li>
+  <li>谁创建、谁拥有、谁读取；</li>
+  <li>生命周期和唯一标识；</li>
+  <li>首次定义或权威章节链接。</li>
+</ul>
+
+<div class="example"><strong>不合格：</strong>“L2 更新后重建 Bundle。”<br><strong>合格方向：</strong>“L2（此处给出项目定义）保存可检索来源；Bundle 是由某个 DocumentVersion 生成的派生包。发布服务在 current 变化后触发 Bundle projection。”</div>
+
+<h3>2. 画系统上下文，不先画内部类图</h3>
+<p>上下文图首先回答：</p>
+<ul>
+  <li>用户、Agent、ReviewWorkspace、主系统、数据库、L2 等参与者各是谁；</li>
+  <li>哪些在本系统控制内，哪些是外部依赖；</li>
+  <li>跨边界传递什么数据；</li>
+  <li>哪个边界涉及信任、权限或失败。</li>
+</ul>
+<p>若连系统边界都不清楚，讨论“某个 service interface”容易把外部能力误当内部函数。</p>
+
+<h3>3. 每种数据只能有明确的权威来源</h3>
+<p>审查时对每个核心事实问：</p>
+<ul>
+  <li>canonical link 的真相存在哪里？</li>
+  <li>Markdown 是源内容还是派生物？</li>
+  <li>哪个 revision 表示文档内容，哪个表示关联变化？</li>
+  <li>current、active、serving 是否是同一个概念？</li>
+  <li>候选目录由谁生成，是否可以人工修改？</li>
+</ul>
+
+<p>若两个组件都能独立修改同一事实，却没有冲突规则，就存在双主问题；若派生物可以反向修改源对象，生命周期会变得模糊。</p>
+</section>
+
+<section id="invariants">
+<h2>五、状态机、不变量与并发：静态组件图看不到的正确性</h2>
+
+<h3>1. 要求作者写出最重要的不变量</h3>
+<p>不变量是系统在所有合法状态下都必须成立的命题。根据 D-01～D-06，可以提炼：</p>
+<ul class="checklist">
+  <li>两个 AgentSession 的历史与可见数据不串线；</li>
+  <li>同一无向关系最多一条 canonical link；</li>
+  <li>关系变化后两个受影响文档都有对应修订与重建意图；</li>
+  <li>提交前失败不改变 current；</li>
+  <li>已提交的派生工作不会因 worker 丢失而永久消失；</li>
+  <li>同一逻辑 projection job 不重复；</li>
+  <li>同一 documentId 最多一个 active source；</li>
+  <li>用户基于旧 ETag 提交时不会静默覆盖新状态。</li>
+</ul>
+
+<p>如果设计文档没有不变量，测试只能验证作者想到的例子，无法判断遗漏了哪些组合状态。</p>
+
+<h3>2. 把对象写成状态机</h3>
+<p>以 projection job 为例：</p>
+<pre><code>pending → processing → ready → serving
+              ↓          ↓
+            retry      failed
+              ↑          ↓
+           lease_expired  manual_repair</code></pre>
+<p>审查问题包括：</p>
+<ul>
+  <li>谁有权触发每条转移？</li>
+  <li>转移是否原子？</li>
+  <li>进程在转移中崩溃，持久状态是什么？</li>
+  <li>能否从 failed 回到 pending？</li>
+  <li>ready 与 serving 为什么分开？</li>
+  <li>重复请求某条转移是否安全？</li>
+</ul>
+
+<h3>3. 给并发操作做“交叉表”</h3>
+<table>
+<thead><tr><th>操作 A</th><th>操作 B</th><th>可能同时发生吗</th><th>预期语义</th></tr></thead>
+<tbody>
+<tr><td>发布文档 v6</td><td>发布同一文档 v7</td><td>是</td><td>检测 revision/ETag 冲突，或定义串行顺序</td></tr>
+<tr><td>添加 A—B</td><td>添加 B—A</td><td>是</td><td>只形成一条 canonical link</td></tr>
+<tr><td>删除 A—B</td><td>重建 A 的投影</td><td>是</td><td>投影绑定明确目标 revision，不读漂移 current</td></tr>
+<tr><td>用户审阅 v5</td><td>另一用户发布 v6</td><td>是</td><td>旧 ETag 提交被拒绝并进入冲突流程</td></tr>
+</tbody>
+</table>
+
+<p>这张表常比泛泛写“支持并发”更有价值。</p>
+</section>
+
+<section id="failure">
+<h2>六、故障、恢复与可观测性：每个外部调用都要问“中间死了怎么办”</h2>
+
+<h3>1. 设计评审中的故障六问</h3>
+<ol>
+  <li>调用前失败，是否留下状态？</li>
+  <li>调用成功但确认丢失，调用者怎样判断？</li>
+  <li>重试会不会重复副作用？</li>
+  <li>长期失败时是否阻塞主流程？</li>
+  <li>旧结果是否仍可服务？</li>
+  <li>运维人员怎样知道系统卡在哪里？</li>
+</ol>
+
+<p>对每个关键流程，要求给出失败矩阵，而不是只列“异常处理”。例如 outbox worker 失败、L2 更新超时、ReviewApi 返回 ETag 冲突，都不是同一种错误。</p>
+
+<h3>2. 恢复路径必须来自持久状态</h3>
+<p>若“重启后继续”依赖某个进程内布尔变量或聊天上下文，恢复并不可靠。设计应说明：</p>
+<ul>
+  <li>检查点存在哪里；</li>
+  <li>恢复扫描的查询条件；</li>
+  <li>lease 怎样过期；</li>
+  <li>重复恢复如何幂等；</li>
+  <li>哪些状态需要人工判定。</li>
+</ul>
+
+<h3>3. 可观测性不是“多打印日志”</h3>
+<p>至少要能回答：</p>
+<ul>
+  <li>一次 publish 命令产生了哪个 version、outbox event 和 projection job；</li>
+  <li>某文档为何仍在 serving 旧版本；</li>
+  <li>两个 AgentSession 当前分别处于哪一步；</li>
+  <li>候选召回耗时、候选数量、token 和接受率是多少；</li>
+  <li>ETag 冲突是正常并发还是异常激增；</li>
+  <li>是否出现同 documentId 多 active source。</li>
+</ul>
+<p>OpenTelemetry 将 traces、metrics、logs 作为主要信号。具体工具可以变化，但设计必须先定义事件关联字段和关键指标。</p>
+</section>
+
+<section id="evidence">
+<h2>七、外部能力、Spike 与证据：不允许“应该可以”成为架构地基</h2>
+
+<h3>1. 列出所有外部能力假设</h3>
+<p>例如：</p>
+<ul>
+  <li>Session Adapter 能在同一 task 下恢复两个独立 session；</li>
+  <li>L2 支持同 documentId 更新或可通过 manifest pointer 控制 active；</li>
+  <li>ReviewApi 可以用 ETag 进行条件更新；</li>
+  <li>真实知识库规模下召回延迟与 token 可接受。</li>
+</ul>
+<p>对每一项标注证据等级：</p>
+<table>
+<thead><tr><th>等级</th><th>证据</th><th>能否作为 P0 地基</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>模型推测、口头印象</td><td>不能</td></tr>
+<tr><td>1</td><td>文档声称支持，但未验证项目配置</td><td>高风险</td></tr>
+<tr><td>2</td><td>最小本地实验通过</td><td>可用于继续设计</td></tr>
+<tr><td>3</td><td>真实环境与并发/故障条件通过</td><td>可用于关键发布决策</td></tr>
+<tr><td>4</td><td>生产监控持续证明</td><td>可形成稳定能力基线</td></tr>
+</tbody>
+</table>
+
+<h3>2. Spike 必须绑定决策</h3>
+<p>审查每个 Spike 时问：</p>
+<ul>
+  <li>失败后会选择什么备选方案？</li>
+  <li>若所有结果都不会改变设计，为什么做？</li>
+  <li>通过标准能否自动或客观观察？</li>
+  <li>实验是否使用了足够真实的规模和环境？</li>
+  <li>结论、限制和原始数据存在哪里？</li>
+</ul>
+
+<h3>3. 记录 Architecture Decision Record</h3>
+<p>重要决定不应只留在某次 AI 对话里。ADR 可以用很短的格式记录：</p>
+<pre><code>标题：无向关联采用单条 canonical link
+状态：accepted / superseded
+背景：为什么需要决定
+候选方案：双向两行、单边 canonical、图数据库边……
+决定：选择哪一个
+理由：哪些不变量、实验与约束支持
+后果：得到什么，付出什么
+关联：需求、D-02 证据、迁移与测试</code></pre>
+<p>ADR 的价值不仅是以后回忆；写下上下文、选择和后果会迫使团队暴露分歧。决定变化时新增 superseding 记录，而不是把历史原因抹掉。</p>
+</section>
+
+<section id="stages">
+<h2>八、实施阶段、迁移与回滚：架构图不是到达架构的路线</h2>
+
+<h3>1. 阶段按风险依赖，而不是按文件夹</h3>
+<p>不应因为代码仓库先有 backend、frontend、worker 三个目录，就按目录平行推进。更合理的是：</p>
+<ol>
+  <li>验证 Session 与 L2 外部能力；</li>
+  <li>固定核心数据模型和不变量；</li>
+  <li>完成事务、outbox、幂等与投影状态机；</li>
+  <li>在 fake API 上独立完成审阅流程；</li>
+  <li>接入真实召回和模型，测质量预算；</li>
+  <li>做迁移、灰度、监控和回滚演练。</li>
+</ol>
+<p>这种排序让高风险失败发生在投入大量 UI、提示和集成工作之前。</p>
+
+<h3>2. 每阶段必须有退出证据</h3>
+<table>
+<thead><tr><th>阶段</th><th>不合格的“完成”</th><th>合格退出证据</th></tr></thead>
+<tbody>
+<tr><td>会话隔离</td><td>代码中创建了两个对象</td><td>越权测试、重启恢复、主会话体积记录</td></tr>
+<tr><td>关系数据</td><td>UI 能添加关联</td><td>反向并发无重复、无死锁、双端投影正确</td></tr>
+<tr><td>异步发布</td><td>正常路径能生成 Markdown</td><td>故障注入、重复消费、旧 serving 持续可读</td></tr>
+<tr><td>召回</td><td>几个手工示例看起来不错</td><td>真实规模数据集、precision/recall、p95 延迟和 token</td></tr>
+<tr><td>L2 更新</td><td>API 返回成功</td><td>查询证明同 documentId 只有一个 active source</td></tr>
+</tbody>
+</table>
+
+<h3>3. 迁移与回滚要在设计期出现</h3>
+<p>审查问题：</p>
+<ul>
+  <li>旧 link 数据如何 canonicalize，发现重复怎么办？</li>
+  <li>旧文档没有 revision/ETag 时怎样初始化？</li>
+  <li>outbox 上线时，已有 current 是否需要补建 projection？</li>
+  <li>新旧 worker 是否会同时消费？</li>
+  <li>L2 指针切换失败能否回到旧 active source？</li>
+  <li>回滚应用版本时，新数据库结构是否仍兼容？</li>
+</ul>
+<p>没有迁移和回滚的设计，只描述了一个理想的全新世界，不是现实中的实施设计。</p>
+</section>
+
+<section id="case-review">
+<h2>九、用这套框架审查 D-01～D-06：原片段还应该补什么</h2>
+
+<table>
+<thead><tr><th>实验</th><th>已有优点</th><th>建议补充</th></tr></thead>
+<tbody>
+<tr><td>D-01</td><td>可见性、主会话体积、模型固定、恢复都有标准</td><td>隔离威胁模型；工具权限；session/task 标识规则；恢复证据和敏感数据审计</td></tr>
+<tr><td>D-02</td><td>明确 canonical、双端版本、双端重建、并发结果</td><td>link 唯一键；删除与重复命令语义；锁顺序；revision 定义；失败注入点</td></tr>
+<tr><td>D-03</td><td>覆盖提交前后、worker 丢失、重复消费、旧 serving</td><td>outbox 状态机；幂等键；重试/死信；投影 ready/serving 切换；监控指标</td></tr>
+<tr><td>D-04</td><td>要求真实规模并同时看质量、延迟和 token</td><td>测试集、precision/recall 定义、k 值、p95 预算、新节点基准率和误差分析</td></tr>
+<tr><td>D-05</td><td>把独立运行、冲突和发布纳入端到端流程</td><td>ReviewApi 契约版本；fake 与真实 API 契约测试；错误模型；认证是否在实验边界内</td></tr>
+<tr><td>D-06</td><td>明确三条决策路线，并要求真实环境证明单 active</td><td>L2/P0/S-09 定义；active 查询口径；缓存与索引收敛窗口；回滚与历史版本策略</td></tr>
+</tbody>
+</table>
+
+<p>这里的结论不是原片段“写得差”。它本来可能只是设计文档中的紧凑实验索引，完整定义散落在其他章节。真正的审查动作是确认交叉引用存在；若不存在，再要求补写，而不是单独把这一节无限扩张。</p>
+</section>
+
+<section id="package">
+<h2>十、让 AI 交付一个“可审查设计包”，而不是一篇不可追踪的长文</h2>
+
+<h3>推荐交付物</h3>
+<ol>
+  <li><strong>两页阅读地图：</strong>目标、边界、主流程、数据源、不变量、最大风险。</li>
+  <li><strong>设计正文：</strong>系统上下文、数据、状态、接口、失败、性能、安全与运维。</li>
+  <li><strong>需求追踪矩阵：</strong>需求—风险—设计—测试。</li>
+  <li><strong>术语表：</strong>所有内部代号和核心对象。</li>
+  <li><strong>Spike 清单：</strong>假设、通过标准、决策规则、阻塞项。</li>
+  <li><strong>ADR 目录：</strong>重要选择及被替代历史。</li>
+  <li><strong>实施与迁移计划：</strong>阶段依赖、退出证据、灰度和回滚。</li>
+  <li><strong>开放问题：</strong>责任人、截止决策点和默认阻塞行为。</li>
+</ol>
+
+<h3>一条可直接用于 AI 的审查指令</h3>
+<pre><code>不要继续扩写实现细节。先对当前设计做可审查性审计：
+1. 列出所有已确认事实、设计决定、待验证假设和开放问题；
+2. 建立需求—风险—设计—验证矩阵；
+3. 列出核心数据对象、唯一 source of truth、状态机和不变量；
+4. 对每条跨组件流程给出并发与故障矩阵；
+5. 标出所有项目内部术语及权威定义位置；
+6. 标出依赖外部系统能力的结论和现有证据等级；
+7. 给出 Spike、迁移、灰度、回滚和可观测性缺口；
+8. 不得把未验证能力改写成既定事实。
+最后只列 P0 阻断项、建议修改章节和需要新增的证据。</code></pre>
+
+<h3>什么时候可以批准进入实现</h3>
+<ul class="checklist">
+  <li>核心需求与非目标已经确认；</li>
+  <li>系统边界、术语和 source of truth 无重大歧义；</li>
+  <li>关键不变量、状态机和冲突语义明确；</li>
+  <li>高影响外部能力已经验证，或明确阻断；</li>
+  <li>关键故障有恢复路径与可观测信号；</li>
+  <li>阶段有退出证据，迁移与回滚不是空白；</li>
+  <li>实现者可以从设计定位每个决定的理由和测试。</li>
+</ul>
+
+<div class="thesis"><strong>审查不是证明文档里每个技术选择都完美，而是确认：重要决定可追踪、重要风险被看见、未知项没有伪装成事实、实现失败时有明确反馈路径。</strong></div>
+</section>
+
+<section id="questions">
+<h2>十一、自检题与参考答案</h2>
+<div class="question"><strong>问题 1：</strong>为什么 AI 文档“章节齐全”仍可能不完整？</div>
+<details><summary>参考答案</summary><p>完整性取决于需求追踪、数据与状态语义、失败恢复、证据和演进闭环，而不是标题数量。AI 可以轻易生成模板章节，却在各节中混入未验证假设或互相冲突的语义。</p></details>
+<div class="question"><strong>问题 2：</strong>看到一个复杂组件时，首先应问什么？</div>
+<details><summary>参考答案</summary><p>它保护哪条需求、消除哪种风险。如果找不到关联，可能是过度设计，也可能是需求文档漏掉了系统约束。</p></details>
+<div class="question"><strong>问题 3：</strong>为什么内部术语缺定义属于设计缺陷，而不只是读者基础不足？</div>
+<details><summary>参考答案</summary><p>内部代号无法从行业知识可靠推断。没有唯一权威定义，不同实现者会赋予不同含义，造成接口、数据和测试不一致。</p></details>
+<div class="question"><strong>问题 4：</strong>不变量和验收用例有什么区别？</div>
+<details><summary>参考答案</summary><p>验收用例验证若干具体场景；不变量声明所有合法状态都必须满足的命题，可用于系统化生成更多并发、失败和恢复测试。</p></details>
+<div class="question"><strong>问题 5：</strong>为什么外部 API 文档写“支持更新”仍不一定足够？</div>
+<details><summary>参考答案</summary><p>项目所需语义可能更强，例如同 documentId 更新后单一 active、缓存收敛、并发原子性和回滚。必须在真实配置和数据路径验证。</p></details>
+<div class="question"><strong>问题 6：</strong>设计审查是否应要求所有开放问题在写代码前解决？</div>
+<details><summary>参考答案</summary><p>不必。关键是识别哪些问题会改变地基、必须阻塞；哪些可以局部实现中决定；以及每个开放问题最晚何时决策、由谁负责、默认行为是什么。</p></details>
+
+<h3>系列结论</h3>
+<p>从需求到设计的真正跃迁，是从“用户想要什么”进入“系统在时间、并发、失败和演进中必须持续保证什么”。分阶段、Spike、事务、outbox、ETag、召回预算与能力阻断不是脱离需求的技术装饰；它们是把需求变成可靠系统所需的证据和约束。</p>
+
+<h3>参考资料</h3>
+<ul class="source-list small">
+  <li>用户提供的 D-01～D-06 技术实验片段：本系列案例。</li>
+  <li>RFC 9110, HTTP Semantics：ETag、If-Match 和条件请求。<a href="https://www.rfc-editor.org/rfc/rfc9110">RFC 9110 官方文本</a></li>
+  <li>PostgreSQL Documentation：事务、并发控制、唯一约束与锁。<a href="https://www.postgresql.org/docs/current/">PostgreSQL 当前官方文档</a></li>
+  <li>AWS Prescriptive Guidance, Transactional Outbox Pattern：<a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html">AWS Transactional Outbox 指南</a></li>
+  <li>OpenTelemetry Documentation：traces、metrics、logs。<a href="https://opentelemetry.io/docs/">OpenTelemetry 官方文档</a></li>
+  <li>Martin Fowler, Architecture Decision Record：记录决定、背景与后果。<a href="https://martinfowler.com/bliki/ArchitectureDecisionRecord.html">Architecture Decision Record 说明</a></li>
+</ul>
+</section>
+
+<section id="reader-feedback" data-feedback-status="pending">
+  <h2>读后反馈与修订记录</h2>
+  <article class="feedback-entry">
+    <h3>2026-07-24 · 第 0 轮</h3>
+    <p><strong>原始反馈：</strong>待读，尚未收到正文反馈。</p>
+    <p><strong>问题分类：</strong>待定</p>
+    <p><strong>处理：</strong>作为“从需求到设计”系列的第四篇生成，保持项目内部术语的材料边界，并补充可迁移的软件工程解释。</p>
+    <p><strong>状态：</strong>待处理</p>
+  </article>
+</section>
+</body>
+</html>

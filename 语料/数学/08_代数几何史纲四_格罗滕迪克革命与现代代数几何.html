@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>代数几何史纲（四）：格罗滕迪克革命与现代代数几何</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <style>
+    :root { color-scheme:light; --ink:#172033; --muted:#5e687b; --line:#d8dfeb; --soft:#f5f7fb; --accent:#6b3da5; --accent2:#0f7280; --accent-soft:#f1ebf8; --blue-soft:#eaf6f8; --warm:#fff8e9; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0 auto; padding:2.2rem 1.35rem 5rem; max-width:950px; color:var(--ink); background:#fff; font:17px/1.83 system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; }
+    h1 { font-size:2rem; line-height:1.3; margin:0 0 1.2rem; }
+    h2 { margin-top:3.1rem; padding-top:.5rem; border-top:1px solid var(--line); font-size:1.54rem; }
+    h3 { margin-top:2rem; font-size:1.17rem; }
+    p, li { text-align:justify; }
+    a { color:#5b2d92; text-underline-offset:3px; overflow-wrap:anywhere; }
+    blockquote { margin:1.2rem 0; padding:.9rem 1.05rem; border-left:4px solid var(--accent); background:var(--accent-soft); color:#49296f; }
+    nav#TOC { margin:1.4rem 0 2.6rem; padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; }
+    nav#TOC::before { content:"目录"; display:block; font-weight:750; margin-bottom:.45rem; }
+    nav#TOC ul { margin:.22rem 0; padding-left:1.35rem; }
+    .history-lanes, .structure-stack, .proof-chain { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.72rem; margin:1.35rem 0; }
+    .history-lanes section, .structure-stack section, .proof-chain section { min-height:94px; padding:.82rem .9rem; border:1px solid #d5c6e6; border-radius:11px; background:linear-gradient(145deg,#fff,#f6f0fb); }
+    .history-lanes strong, .history-lanes span, .structure-stack strong, .structure-stack span, .proof-chain strong, .proof-chain span { display:block; }
+    .history-lanes span, .structure-stack span, .proof-chain span { margin-top:.35rem; color:var(--muted); font-size:.92rem; line-height:1.6; }
+    .proof-chain { grid-template-columns:repeat(5,minmax(0,1fr)); }
+    .proof-chain section { position:relative; min-height:130px; }
+    .proof-chain section:not(:last-child)::after { content:"→"; position:absolute; right:-.62rem; top:42%; z-index:2; color:var(--accent); font-weight:800; }
+    .concept-tree { padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; overflow-x:auto; }
+    .concept-tree ul { margin:.3rem 0; }
+    table { width:100%; border-collapse:collapse; display:block; overflow-x:auto; margin:1.2rem 0; }
+    th, td { min-width:145px; border:1px solid var(--line); padding:.65rem .75rem; vertical-align:top; }
+    th { background:var(--soft); }
+    math[display="block"] { display:block; max-width:100%; overflow-x:auto; overflow-y:hidden; padding:.45rem 0; }
+    details { margin:1rem 0 1.5rem; padding:.78rem 1rem; border:1px solid var(--line); border-radius:10px; background:var(--blue-soft); }
+    summary { cursor:pointer; font-weight:750; color:#155e68; }
+    #reader-feedback { margin-top:3.5rem; padding:1rem 1.2rem; background:var(--warm); border:1px solid #ead6a7; border-radius:12px; }
+    .feedback-entry { padding:.45rem 0 .9rem; }
+    code { overflow-wrap:anywhere; }
+    @media (max-width:860px) {
+      .proof-chain { grid-template-columns:1fr; }
+      .proof-chain section { min-height:auto; }
+      .proof-chain section:not(:last-child)::after { content:"↓"; right:auto; left:50%; top:auto; bottom:-1.05rem; }
+    }
+    @media (max-width:650px) {
+      body { padding:1.2rem .92rem 4rem; font-size:16px; line-height:1.79; }
+      h1 { font-size:1.64rem; }
+      h2 { font-size:1.32rem; margin-top:2.55rem; }
+      h3 { font-size:1.09rem; }
+      p, li { text-align:left; }
+      blockquote, .concept-tree, #reader-feedback { margin-left:0; margin-right:0; padding:.76rem .86rem; }
+      .history-lanes, .structure-stack { grid-template-columns:1fr; }
+      th, td { min-width:132px; }
+    }
+  </style>
+  <meta name="corpus-id" content="08">
+  <meta name="domain" content="mathematics">
+  <meta name="series" content="history-of-algebraic-geometry">
+  <meta name="series-part" content="4-of-4">
+  <meta name="production-status" content="draft-ready">
+  <meta name="reading-status" content="unread">
+  <meta name="expected-reading-time" content="55-65-minutes">
+  <meta name="generated-date" content="2026-07-18">
+  <meta name="revision-round" content="0">
+  <meta name="experimental-series" content="true">
+  <meta name="feedback-scope" content="series-only">
+  <meta name="skill-adjustment" content="disabled">
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">代数几何史纲（四）：格罗滕迪克革命与现代代数几何</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#先去掉一个神话格罗滕迪克不是因为喜欢抽象才重建一切"
+id="toc-先去掉一个神话格罗滕迪克不是因为喜欢抽象才重建一切">0.
+先去掉一个神话：格罗滕迪克不是因为喜欢抽象才重建一切</a></li>
+<li><a href="#历史前夜为什么代数簇的点集不够"
+id="toc-历史前夜为什么代数簇的点集不够">1.
+历史前夜：为什么“代数簇的点集”不够？</a></li>
+<li><a href="#从交换环反向制造空间operatornamespeca"
+id="toc-从交换环反向制造空间operatornamespeca">2.
+从交换环反向制造空间：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">\operatorname{Spec}A</annotation></semantics></math></a></li>
+<li><a href="#相对观点对象不再是-x而是态射-xto-s"
+id="toc-相对观点对象不再是-x而是态射-xto-s">3. 相对观点：对象不再是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>，而是态射
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>→</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">X\to S</annotation></semantics></math></a></li>
+<li><a href="#层与上同调局部能做的事为什么全局做不到"
+id="toc-层与上同调局部能做的事为什么全局做不到">4.
+层与上同调：局部能做的事为什么全局做不到？</a></li>
+<li><a href="#与已学拓扑的接口zariski-拓扑为什么没有你熟悉的环路"
+id="toc-与已学拓扑的接口zariski-拓扑为什么没有你熟悉的环路">5.
+与已学拓扑的接口：Zariski 拓扑为什么没有你熟悉的环路？</a></li>
+<li><a href="#weil-猜想为什么需要重造一套上同调"
+id="toc-weil-猜想为什么需要重造一套上同调">6. Weil
+猜想：为什么需要重造一套上同调？</a></li>
+<li><a href="#grothendieck-的人生与数学阶段只保留解释工作方向所需的部分"
+id="toc-grothendieck-的人生与数学阶段只保留解释工作方向所需的部分">7.
+Grothendieck 的人生与数学阶段：只保留解释工作方向所需的部分</a></li>
+<li><a href="#格罗滕迪克革命之后现代代数几何的树长成什么样"
+id="toc-格罗滕迪克革命之后现代代数几何的树长成什么样">8.
+格罗滕迪克革命之后，现代代数几何的树长成什么样？</a></li>
+<li><a href="#最小记忆清单" id="toc-最小记忆清单">9.
+最小记忆清单</a></li>
+<li><a href="#史料与延伸阅读" id="toc-史料与延伸阅读">10.
+史料与延伸阅读</a></li>
+<li><a href="#reader-feedback"
+id="toc-reader-feedback">阅读反馈记录</a></li>
+</ul>
+</nav>
+<blockquote>
+<p><strong>系列性质</strong>：实验性语料；共四篇。本系列的阅读反馈只用于修订本系列，不写入通用
+Skill。<br />
+<strong>预计阅读时间</strong>：55—65 分钟<br />
+<strong>阅读状态</strong>：未读<br />
+<strong>本篇任务</strong>：理解 Grothendieck
+为什么要把代数簇升级为概形，把点上的函数升级为层，把单个对象升级为相对底空间的族；认识概形、结构层、态射、纤维积、函子点、étale
+基本群和上同调的基本定义；理解 Grothendieck
+纲领怎样重组代数几何与数论。<br />
+<strong>阅读策略</strong>：这不是概形论课程。定义要求准确，但不要求证明；每个抽象构造都必须回答“旧语言漏掉了什么”。</p>
+</blockquote>
+<hr />
+<h2 id="先去掉一个神话格罗滕迪克不是因为喜欢抽象才重建一切">0.
+先去掉一个神话：格罗滕迪克不是因为喜欢抽象才重建一切</h2>
+<p>关于 Grothendieck
+的传记常突出其惊人的抽象能力、流亡童年、政治行动与晚年隐居。这些确实构成一个极不寻常的人生，却容易把数学讲成“天才忽然发明一套别人看不懂的语言”。</p>
+<p>更接近事实的主线是：二十世纪中叶的代数几何和数论已经提出一批旧语言很难同时处理的具体问题。</p>
+<ul>
+<li>怎样把复数上的几何与有限域上的点数放进同一理论？</li>
+<li>怎样研究整数系数方程随素数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+约化后的全部纤维？</li>
+<li>怎样保存交点重数和无穷小形变，而不是只保存点集？</li>
+<li>怎样把单个簇换成参数族，并保证换底后定理仍成立？</li>
+<li>怎样为代数簇构造像奇异上同调那样的拓扑不变量，从而攻击 Weil
+猜想？</li>
+</ul>
+<p>Grothendieck
+的方法是寻找一个语言，使这些问题不再分别打补丁，而成为同一套函子性和相对几何中的不同实例。</p>
+<p>本篇沿四条主线展开。</p>
+<div class="history-lanes" aria-label="本篇四条历史主线">
+<section>
+<strong>A　对象扩张</strong><span>簇 → 仿射概形 → 一般概形</span>
+</section>
+<section>
+<strong>B　局部到整体</strong><span>函数芽 → 层 → 上同调</span>
+</section>
+<section>
+<strong>C　相对观点</strong><span>单个空间 → 态射 →
+族、纤维积与换底</span>
+</section>
+<section>
+<strong>D　拓扑重造</strong><span>有限覆盖 → étale 拓扑 →
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>ℓ</mo><annotation encoding="application/x-tex">\ell</annotation></semantics></math>-进上同调与
+Weil 猜想</span>
+</section>
+</div>
+<hr />
+<h2 id="历史前夜为什么代数簇的点集不够">1.
+历史前夜：为什么“代数簇的点集”不够？</h2>
+<h3 id="van-der-waerdenzariski-与-weil-已经走了很远">1.1 van der
+Waerden、Zariski 与 Weil 已经走了很远</h3>
+<p>十九世纪意大利学派通过几何直觉和坐标计算发展了曲线、曲面与双有理几何，但对奇点、重数和一般位置的论证有时缺少严格代数基础。二十世纪上半叶，Noether
+的抽象代数、van der Waerden 的理想论、Zariski 的交换代数方法和 Weil
+的抽象簇基础逐步完成严格化。</p>
+<p>特别是 Weil
+希望在有限域上做几何。那里没有复数拓扑，不能把簇看成光滑复流形，却仍要谈维数、交点和对应。1940
+年代的抽象簇已经摆脱了单一仿射空间，但粘合方式、基域变化和非约化结构仍不够统一。</p>
+<h3 id="四个最小反例">1.2 四个最小反例</h3>
+<p><strong>反例一：同一点集，不同重数。</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>x</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="2.0em"></mspace><mtext mathvariant="normal">与</mtext><mspace width="2.0em"></mspace><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>x</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>x</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+k[x]/(x)
+\qquad\text{与}\qquad
+k[x]/(x^2)
+</annotation></semantics></math></p>
+<p>都有一个普通几何点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x=0</annotation></semantics></math>。第二个环中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x\ne0</annotation></semantics></math>
+却有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x^2=0</annotation></semantics></math>，包含一阶无穷小方向。只看零点集会把二者认成同一个对象。</p>
+<p><strong>反例二：整数不是一个域。</strong></p>
+<p>一个整数系数方程既能在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>
+上看，也能模每个素数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+看。若每次都单独换域，难以把“通用方程”及其所有约化组织成一个空间。</p>
+<p><strong>反例三：参数退化。</strong></p>
+<p>考虑曲线族</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>y</mi><mn>2</mn></msup><mo>=</mo><msup><mi>x</mi><mn>3</mn></msup><mo>+</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">
+y^2=x^3+t
+</annotation></semantics></math></p>
+<p>随参数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+变化。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t\ne0</annotation></semantics></math>
+时通常光滑，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>
+时出现尖点。我们需要一个总空间到参数直线的映射，而不只是互不相关的一堆曲线。</p>
+<p><strong>反例四：没有足够的经典开集。</strong></p>
+<p>有限域上的簇由有限点组成，普通点集拓扑几乎无法承载需要的全局不变量；Zariski
+拓扑又太粗，经典的小邻域和覆盖空间理论不能直接照搬。</p>
+<p>这四个缺口分别推动了非约化概形、算术底空间、相对态射与新型拓扑。</p>
+<hr />
+<h2 id="从交换环反向制造空间operatornamespeca">2.
+从交换环反向制造空间：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">\operatorname{Spec}A</annotation></semantics></math></h2>
+<h3 id="为什么点要定义成素理想">2.1 为什么点要定义成素理想？</h3>
+<p>给交换环
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>。它的素谱定义为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>A</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>𝔭</mi><mo>⊆</mo><mi>A</mi><mo>:</mo><mi>𝔭</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 是素理想</mtext></mrow><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Spec}A
+=\{\mathfrak p\subseteq A:\mathfrak p\text{ 是素理想}\}.
+</annotation></semantics></math></p>
+<p>素理想
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝔭</mi><annotation encoding="application/x-tex">\mathfrak p</annotation></semantics></math>
+的定义是：它是真理想，且</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>b</mi><mo>∈</mo><mi>𝔭</mi><mo>⇒</mo><mi>a</mi><mo>∈</mo><mi>𝔭</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 或 </mtext><mspace width="0.333em"></mspace></mrow><mi>b</mi><mo>∈</mo><mi>𝔭</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+ab\in\mathfrak p\Longrightarrow a\in\mathfrak p\text{ 或 }b\in\mathfrak p.
+</annotation></semantics></math></p>
+<p>为什么不是只取极大理想？在代数闭域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+上，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">k[x_1,\ldots,x_n]</annotation></semantics></math>
+的极大理想对应普通点；但素理想还对应不可约闭子集的“一般点”。保留一般点，使不可约子簇本身也能作为一个点参与闭包、纤维和专门化。</p>
+<p>对理想
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo>⊆</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">I\subseteq A</annotation></semantics></math>，规定</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>𝔭</mi><mo>∈</mo><mo>Spec</mo><mi>A</mi><mo>:</mo><mi>I</mi><mo>⊆</mo><mi>𝔭</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">
+V(I)=\{\mathfrak p\in\operatorname{Spec}A:I\subseteq\mathfrak p\}
+</annotation></semantics></math></p>
+<p>为闭集，得到 Zariski 拓扑。基本开集写成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>𝔭</mi><mo>:</mo><mi>f</mi><mo>∉</mo><mi>𝔭</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+D(f)=\{\mathfrak p:f\notin\mathfrak p\}.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">D(f)</annotation></semantics></math>
+表示“函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+可逆、不为零的区域”。</p>
+<h3 id="三个例子比定义更重要">2.2 三个例子比定义更重要</h3>
+<p><strong>例一：仿射直线。</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝔸</mi><mi>k</mi><mn>1</mn></msubsup><mo>=</mo><mo>Spec</mo><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>t</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb A^1_k=\operatorname{Spec}k[t].
+</annotation></semantics></math></p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+代数闭，闭点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(t-a)</annotation></semantics></math>
+对应普通数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>∈</mo><mi>k</mi></mrow><annotation encoding="application/x-tex">a\in k</annotation></semantics></math>，另有素理想
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0)</annotation></semantics></math>
+作为整条直线的泛点。它的闭包是整个空间。</p>
+<p><strong>例二：整数谱。</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>ℤ</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Spec}\mathbb Z
+</annotation></semantics></math></p>
+<p>的闭点是各素理想
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(p)</annotation></semantics></math>，另有泛点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0)</annotation></semantics></math>。把它想成一条“算术曲线”：闭点不是空间位置，而是各个素数。一个概形</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>→</mo><mo>Spec</mo><mi>ℤ</mi></mrow><annotation encoding="application/x-tex">
+X\longrightarrow\operatorname{Spec}\mathbb Z
+</annotation></semantics></math></p>
+<p>的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(p)</annotation></semantics></math>-纤维是模
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+的几何对象，泛纤维是特征
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+的对象。第三篇中椭圆曲线的“对每个素数约化”由此成为一个统一态射的各条纤维。</p>
+<p><strong>例三：双数。</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>ε</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>ε</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+\operatorname{Spec}k[\varepsilon]/(\varepsilon^2)
+</annotation></semantics></math></p>
+<p>只有一个底层点，但函数环含非零幂零元
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ε</mi><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math>。它可看成一个点连同一阶无穷小厚度。映射从这个对象进入
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>，会探测
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+的切向量；因此切空间不再需要作为外加线性近似，而能由概形之间的映射内在表达。</p>
+<h3 id="结构层空间不是点集而是点集连同局部函数">2.3
+结构层：空间不是点集，而是点集连同局部函数</h3>
+<p>只给
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">\operatorname{Spec}A</annotation></semantics></math>
+的拓扑还不够，因为我们必须知道每个开集上有哪些函数。</p>
+<p>一个<strong>层</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℱ</mi><annotation encoding="application/x-tex">\mathcal F</annotation></semantics></math>
+给每个开集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>U</mi><annotation encoding="application/x-tex">U</annotation></semantics></math>
+指派一个对象
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℱ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>U</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal F(U)</annotation></semantics></math>，并提供限制映射，同时满足：</p>
+<ol type="1">
+<li>若局部截面在开覆盖的重叠处一致，它们能粘成全局截面；</li>
+<li>这样的粘合是唯一的。</li>
+</ol>
+<p>对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">\operatorname{Spec}A</annotation></semantics></math>，结构层
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒪</mi><annotation encoding="application/x-tex">\mathcal O</annotation></semantics></math>
+在基本开集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">D(f)</annotation></semantics></math>
+上定义为局部化</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒪</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>A</mi><mi>f</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathcal O(D(f))=A_f.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mi>f</mi></msub><annotation encoding="application/x-tex">A_f</annotation></semantics></math>
+允许把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+当作可逆元，因此其元素像分式
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>/</mi><msup><mi>f</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">a/f^n</annotation></semantics></math>。这正符合“在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f\ne0</annotation></semantics></math>
+区域上允许以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+为分母”的函数直觉。</p>
+<p>一个仿射概形是带结构层的局部环空间</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mo>Spec</mo><mi>A</mi><mo>,</mo><msub><mi>𝒪</mi><mrow><mo>Spec</mo><mi>A</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(\operatorname{Spec}A,\mathcal O_{\operatorname{Spec}A}).
+</annotation></semantics></math></p>
+<p>一个概形则是局部同构于仿射概形的局部环空间。请注意：概形不是“素理想集合”而已，结构层与点集同等重要。</p>
+<h3 id="环同态为何方向反转">2.4 环同态为何方向反转？</h3>
+<p>环同态</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mo>:</mo><mi>A</mi><mo>→</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">
+\varphi:A\to B
+</annotation></semantics></math></p>
+<p>诱导概形态射</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>B</mi><mo>→</mo><mo>Spec</mo><mi>A</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>𝔮</mi><mo>↦</mo><msup><mi>φ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝔮</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Spec}B\to\operatorname{Spec}A,
+\qquad
+\mathfrak q\mapsto\varphi^{-1}(\mathfrak q).
+</annotation></semantics></math></p>
+<p>方向反转是第一篇“函数拉回”的彻底版本：空间映射使目标上的函数拉回源空间。于是仿射概形范畴与交换环范畴反等价。</p>
+<p>这不是符号怪癖。它表示我们通过可观测函数来认识空间；若一个空间映入另一个空间，后者的每个函数都可以限制或拉回到前者。</p>
+<h3 id="分段自检一">分段自检一</h3>
+<ol type="1">
+<li>为什么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">\operatorname{Spec}A</annotation></semantics></math>
+取全部素理想，而不只取普通闭点对应的极大理想？</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>ℤ</mi></mrow><annotation encoding="application/x-tex">\operatorname{Spec}\mathbb Z</annotation></semantics></math>
+怎样把特征
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+与各特征
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+放进同一底空间？</li>
+<li>结构层比点集多保存了什么？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>素理想还给不可约闭子集提供泛点，使闭包、专门化和纤维行为统一。</li>
+<li>泛点给出有理数方向，闭点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(p)</annotation></semantics></math>
+给出模
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+纤维；一个到该底空间的态射同时组织全部约化。</li>
+<li>每个开集上的局部函数、可逆性、幂零元与粘合规则；这能区分同一点集上的不同无穷小结构。</li>
+</ol>
+</details>
+<hr />
+<h2 id="相对观点对象不再是-x而是态射-xto-s">3. 相对观点：对象不再是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>，而是态射
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>→</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">X\to S</annotation></semantics></math></h2>
+<h3 id="为什么底空间必须写出来">3.1 为什么底空间必须写出来？</h3>
+<p>古典语言常说“定义在域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+上的簇
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>”。概形语言把它写成结构态射</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>→</mo><mo>Spec</mo><mi>k</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X\longrightarrow\operatorname{Spec}k.
+</annotation></semantics></math></p>
+<p>一旦把底写出来，就可以把域替换为任意概形
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>。态射</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><mi>X</mi><mo>→</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">
+f:X\to S
+</annotation></semantics></math></p>
+<p>被理解为一族以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>∈</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">s\in S</annotation></semantics></math>
+为参数的几何对象；纤维是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>s</mi></msub><mo>=</mo><mi>X</mi><msub><mo>×</mo><mi>S</mi></msub><mo>Spec</mo><mi>κ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+X_s=X\times_S\operatorname{Spec}\kappa(s),
+</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>κ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\kappa(s)</annotation></semantics></math>
+是点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+的剩余域。</p>
+<p>“相对维数”“光滑态射”“平坦态射”“固有态射”等性质，都是对族的行为作统一控制。例如平坦性粗略地保证参数变化时不会突然丢失代数关系，是研究良好退化的核心条件；光滑性则把每条纤维光滑且随参数规则变化统一成态射性质。</p>
+<h3 id="纤维积是几何中的联立条件">3.2 纤维积是几何中的联立条件</h3>
+<p>给定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>→</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">X\to S</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mo>→</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">Y\to S</annotation></semantics></math>，纤维积
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><msub><mo>×</mo><mi>S</mi></msub><mi>Y</mi></mrow><annotation encoding="application/x-tex">X\times_SY</annotation></semantics></math>
+表示两者在同一底参数上的配对。它由泛性质刻画：任意
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+同时映到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X,Y</annotation></semantics></math>，且两条到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+的复合相等，就唯一经由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><msub><mo>×</mo><mi>S</mi></msub><mi>Y</mi></mrow><annotation encoding="application/x-tex">X\times_SY</annotation></semantics></math>
+分解。</p>
+<p>在仿射情形，若</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mo>Spec</mo><mi>B</mi><mo>,</mo><mspace width="1.0em"></mspace><mi>Y</mi><mo>=</mo><mo>Spec</mo><mi>C</mi><mo>,</mo><mspace width="1.0em"></mspace><mi>S</mi><mo>=</mo><mo>Spec</mo><mi>A</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+X=\operatorname{Spec}B,
+\quad Y=\operatorname{Spec}C,
+\quad S=\operatorname{Spec}A,
+</annotation></semantics></math></p>
+<p>则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><msub><mo>×</mo><mi>S</mi></msub><mi>Y</mi><mo>=</mo><mo>Spec</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>B</mi><msub><mo>⊗</mo><mi>A</mi></msub><mi>C</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X\times_SY=\operatorname{Spec}(B\otimes_A C).
+</annotation></semantics></math></p>
+<p>张量积在代数侧合并两个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>-代数，纤维积在几何侧强制它们共享同一个底点。大量“换域”“取纤维”“拉回一个族”的操作因此成为同一个构造。</p>
+<h3 id="函子点点不只允许取值于域">3.3 函子点：点不只允许取值于域</h3>
+<p>对概形
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+和任意环
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>，定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>R</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>Hom</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>Spec</mo><mi>R</mi><mo>,</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X(R)=\operatorname{Hom}(\operatorname{Spec}R,X).
+</annotation></semantics></math></p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+由方程定义，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>R</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X(R)</annotation></semantics></math>
+就是方程在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+中的解。但允许
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+含幂零元时，这些“广义点”还能探测无穷小方向；允许
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+是数环或函数环时，它们还能记录整族解。</p>
+<p>Yoneda 原理表明：如果知道所有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+上的点集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>R</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X(R)</annotation></semantics></math>
+以及它们随环同态的自然变化，就完全知道
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>。所以现代代数几何中的“点”不是静态元素，而是一个测试对象函子。</p>
+<h3 id="模空间为什么自然出现">3.4 模空间为什么自然出现？</h3>
+<p>若我们想参数化所有椭圆曲线、曲线、向量丛或某类簇，就希望构造一个空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>，使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mrow><mtext mathvariant="normal">定义在 </mtext><mspace width="0.333em"></mspace></mrow><mi>S</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 上的该类对象族</mtext></mrow><mo stretchy="false" form="postfix">}</mo><mi>/</mi><mo>≅</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+M(S)=\{\text{定义在 }S\text{ 上的该类对象族}\}/\cong.
+</annotation></semantics></math></p>
+<p>这就是模问题。第三篇的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>-不变量只能粗略分类单条复椭圆曲线；若要记录带标记、随参数变化、具有自同构的族，普通概形有时仍不足，需要代数空间或叠。</p>
+<p>Grothendieck
+的相对观点把“分类对象”转变为“表示一个函子”。这也解释了为何现代代数几何总在研究态射：单个几何对象只是到一点的族，真正稳定的定理应在换底下保持。</p>
+<hr />
+<h2 id="层与上同调局部能做的事为什么全局做不到">4.
+层与上同调：局部能做的事为什么全局做不到？</h2>
+<h3 id="层不是术语堆叠而是粘合机器">4.1
+层不是术语堆叠，而是粘合机器</h3>
+<p>第一篇的 Riemann
+曲面已经暗示层的必要性：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">\log z</annotation></semantics></math>
+在小开集上可以选分支，却无法在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℂ</mi><mo>×</mo></msup><annotation encoding="application/x-tex">\mathbb C^\times</annotation></semantics></math>
+上选一个全局单值分支。局部解存在，但重叠处的差异可能无法同时消除。</p>
+<p>层把所有局部截面及其限制规则放在一起。上同调则测量粘合失败的层级：</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>H</mi><mn>0</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>ℱ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">H^0(X,\mathcal F)</annotation></semantics></math>
+是全局截面；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>H</mi><mn>1</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>ℱ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">H^1(X,\mathcal F)</annotation></semantics></math>
+常测量局部截面不能粘成全局截面的第一重障碍；</li>
+<li>更高
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>H</mi><mi>i</mi></msup><annotation encoding="application/x-tex">H^i</annotation></semantics></math>
+记录更高阶相容性障碍。</li>
+</ul>
+<p>这比列举软件式名词更重要：<strong>层回答“局部数据是什么”，上同调回答“为什么局部数据不能成为全局数据”。</strong></p>
+<h3 id="serre-的-fac-与-gaga-为什么是直接前史">4.2 Serre 的 FAC 与 GAGA
+为什么是直接前史？</h3>
+<p>1955 年，Serre 在 <em>Faisceaux algébriques cohérents</em>
+中系统把层上同调引入代数几何。凝聚层可粗略理解为局部由有限多个生成元和有限关系描述的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒪</mi><mi>X</mi></msub><annotation encoding="application/x-tex">\mathcal O_X</annotation></semantics></math>-模层，是向量丛、理想层和除子线丛的共同语言。</p>
+<p>随后 GAGA
+比较复射影簇的代数几何与复解析几何。其代表性结论是：在复射影情形，凝聚代数层与凝聚解析层之间有强等价，相应上同调一致。它说明代数语言与复分析语言不是互不相干的翻译，而能在紧致射影条件下给出同样的全局信息。</p>
+<p>Grothendieck
+接过层论和同调代数，把上同调解释为截面函子的导出函子，并把 Riemann–Roch
+推广到高维与相对情形。</p>
+<h3 id="grothendieckriemannroch-在说什么">4.3 Grothendieck–Riemann–Roch
+在说什么？</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><mi>X</mi><mo>→</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">f:X\to Y</annotation></semantics></math>
+是适当的光滑射影态射，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+上向量丛。把高阶直像按正负号组合成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>!</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mi>E</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msup><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>i</mi></msup><mrow><mo stretchy="true" form="prefix">[</mo><msup><mi>R</mi><mi>i</mi></msup><msub><mi>f</mi><mo>*</mo></msub><mi>E</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f_![E]=\sum_i(-1)^i[R^if_*E].
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>ch</mo><annotation encoding="application/x-tex">\operatorname{ch}</annotation></semantics></math>
+是 Chern
+特征，把向量丛的加法信息转入上同调；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>Td</mo><annotation encoding="application/x-tex">\operatorname{Td}</annotation></semantics></math>
+是 Todd
+类，修正切丛曲率；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mo>*</mo></msub><annotation encoding="application/x-tex">f_*</annotation></semantics></math>
+是上同调中的推前。Grothendieck–Riemann–Roch 的典型写法为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mo>ch</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>f</mi><mi>!</mi></msub><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>Td</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>f</mi><mo>*</mo></msub><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mo>ch</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>Td</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\operatorname{ch}(f_!E)\operatorname{Td}(Y)
+=f_*\bigl(\operatorname{ch}(E)\operatorname{Td}(X)\bigr).
+}
+</annotation></semantics></math></p>
+<p>左边先把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+沿纤维做上同调，再取特征类；右边先在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+上取特征类，再沿
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+积分推前。定理说这两种顺序在 Todd 类修正后相容。</p>
+<p>曲线上的 Riemann–Roch
+只计算一个除子线丛的截面维数；这里的公式同时处理高维空间、向量丛与态射。核心历史延续是：把分析型“解空间维数”化为可由拓扑—代数特征类计算的指标。</p>
+<hr />
+<h2 id="与已学拓扑的接口zariski-拓扑为什么没有你熟悉的环路">5.
+与已学拓扑的接口：Zariski 拓扑为什么没有你熟悉的环路？</h2>
+<h3 id="同一个复代数簇有两套拓扑">5.1 同一个复代数簇有两套拓扑</h3>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+是复代数簇，可以给
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℂ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X(\mathbb C)</annotation></semantics></math>
+两种拓扑：</p>
+<ol type="1">
+<li>经典/解析拓扑：继承自
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℂ</mi><mi>n</mi></msup><annotation encoding="application/x-tex">\mathbb C^n</annotation></semantics></math>
+的 Euclidean 拓扑；</li>
+<li>Zariski 拓扑：多项式零点集为闭集。</li>
+</ol>
+<p>第一篇中的复曲线基本群、闭曲面分类和 van Kampen
+都使用经典拓扑。Zariski 拓扑粗得多。例如</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝔸</mi><mn>1</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℂ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℂ</mi></mrow><annotation encoding="application/x-tex">
+\mathbb A^1(\mathbb C)=\mathbb C
+</annotation></semantics></math></p>
+<p>的非空 Zariski
+开集都是有限点集的补集，任意两个都相交。它没有足够小的开圆盘来逐段追踪通常的环路，因此直接对
+Zariski 空间取经典基本群，通常不能恢复你熟悉的覆盖空间信息。</p>
+<p>但在有限域上又没有可用的经典复拓扑。若想用“覆盖空间—基本群—上同调”处理算术问题，就必须在纯代数范畴中重造局部同胚。</p>
+<h3 id="étale-映射代数几何中的局部同胚">5.2 étale
+映射：代数几何中的局部同胚</h3>
+<p>一个 étale 态射可粗略理解为“相对维数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>、光滑且无分歧”的态射；局部模型像多项式方程
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(t)=0</annotation></semantics></math>，并且导数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f&#39;(t)</annotation></semantics></math>
+可逆。它在代数上扮演局部微分同胚的角色。</p>
+<p>例如在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝔾</mi><mi>m</mi></msub><mo>=</mo><mo>Spec</mo><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>t</mi><mo>,</mo><msup><mi>t</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb G_m=\operatorname{Spec}k[t,t^{-1}]</annotation></semantics></math>
+上，若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+中可逆，映射</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝔾</mi><mi>m</mi></msub><mo>→</mo><msub><mi>𝔾</mi><mi>m</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><mi>t</mi><mo>↦</mo><msup><mi>t</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">
+\mathbb G_m\to\mathbb G_m,
+\qquad t\mapsto t^n
+</annotation></semantics></math></p>
+<p>是有限 étale 覆盖。对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mi>ℂ</mi></mrow><annotation encoding="application/x-tex">k=\mathbb C</annotation></semantics></math>，它在经典拓扑中正是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ℂ</mi><mo>×</mo></msup><mo>→</mo><msup><mi>ℂ</mi><mo>×</mo></msup><mo>,</mo><mspace width="2.0em"></mspace><mi>z</mi><mo>↦</mo><msup><mi>z</mi><mi>n</mi></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\mathbb C^\times\to\mathbb C^\times,
+\qquad z\mapsto z^n,
+</annotation></semantics></math></p>
+<p>对应圆周的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+重覆盖。</p>
+<h3 id="étale-基本群怎样接到-pi_1">5.3 étale 基本群怎样接到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\pi_1</annotation></semantics></math>？</h3>
+<p>选几何基点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>x</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar x</annotation></semantics></math>，étale
+基本群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>π</mi><mn>1</mn><mrow><mover><mi mathvariant="normal">e</mi><mo accent="true">́</mo></mover><mi mathvariant="normal">t</mi></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mover><mi>x</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi_1^{\mathrm{\acute et}}(X,\bar x)</annotation></semantics></math>
+是分类有限 étale 覆盖的 profinite 群。对连通复代数簇，有 Riemann
+存在定理给出的比较：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><msubsup><mi>π</mi><mn>1</mn><mrow><mover><mi mathvariant="normal">e</mi><mo accent="true">́</mo></mover><mi mathvariant="normal">t</mi></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≅</mo><mover><mrow><msub><mi>π</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℂ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mo accent="true">̂</mo></mover><mo>,</mo></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\pi_1^{\mathrm{\acute et}}(X)
+\cong
+\widehat{\pi_1(X(\mathbb C))},
+}
+</annotation></semantics></math></p>
+<p>右边是经典基本群的 profinite 完备，只保留其全部有限商。</p>
+<p>以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><msup><mi>ℂ</mi><mo>×</mo></msup></mrow><annotation encoding="application/x-tex">X=\mathbb C^\times</annotation></semantics></math>
+为例，经典基本群为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>ℂ</mi><mo>×</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℤ</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\pi_1(\mathbb C^\times)=\mathbb Z,
+</annotation></semantics></math></p>
+<p>所有有限循环覆盖组合成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>π</mi><mn>1</mn><mrow><mover><mi mathvariant="normal">e</mi><mo accent="true">́</mo></mover><mi mathvariant="normal">t</mi></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝔾</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mover><mi>ℤ</mi><mo accent="true">̂</mo></mover><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\pi_1^{\mathrm{\acute et}}(\mathbb G_m)=\widehat{\mathbb Z}.
+</annotation></semantics></math></p>
+<p>因此 étale
+基本群不是与已学基本群毫无关系的新名词；在复数上，它是经典覆盖理论的有限部分，在有限域和数域上则继续有意义。</p>
+<p>你熟悉的 van Kampen 定理通过开覆盖和交集计算基本群。étale 世界也存在
+van Kampen 型定理，但“开覆盖”要换成合适的 étale 覆盖，结论自然落在
+profinite
+群中。概念骨架仍是：局部覆盖数据加上重叠相容性决定整体覆盖。</p>
+<h3 id="更出人意料的例子一点也可以有非平凡基本群">5.4
+更出人意料的例子：一点也可以有非平凡基本群</h3>
+<p>拓扑空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><msub><mi>𝔽</mi><mi>q</mi></msub></mrow><annotation encoding="application/x-tex">\operatorname{Spec}\mathbb F_q</annotation></semantics></math>
+只有一个点，经典直觉会认为基本群平凡。但它的有限 étale
+覆盖对应有限域扩张
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝔽</mi><msup><mi>q</mi><mi>n</mi></msup></msub><mi>/</mi><msub><mi>𝔽</mi><mi>q</mi></msub></mrow><annotation encoding="application/x-tex">\mathbb F_{q^n}/\mathbb F_q</annotation></semantics></math>，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>π</mi><mn>1</mn><mrow><mover><mi mathvariant="normal">e</mi><mo accent="true">́</mo></mover><mi mathvariant="normal">t</mi></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mo>Spec</mo><msub><mi>𝔽</mi><mi>q</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≅</mo><mo>Gal</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>𝔽</mi><mo accent="true">¯</mo></mover><mi>q</mi></msub><mi>/</mi><msub><mi>𝔽</mi><mi>q</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≅</mo><mover><mi>ℤ</mi><mo accent="true">̂</mo></mover><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\pi_1^{\mathrm{\acute et}}(\operatorname{Spec}\mathbb F_q)
+\cong\operatorname{Gal}(\overline{\mathbb F}_q/\mathbb F_q)
+\cong\widehat{\mathbb Z},
+</annotation></semantics></math></p>
+<p>由 Frobenius 自同构
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>↦</mo><msup><mi>x</mi><mi>q</mi></msup></mrow><annotation encoding="application/x-tex">x\mapsto x^q</annotation></semantics></math>
+拓扑生成。</p>
+<p>这说明概形的算术覆盖信息不在底层点集里，而在结构层和允许的态射里。现代代数几何的“空间”从一开始就比点集更厚。</p>
+<h3 id="分段自检二">分段自检二</h3>
+<ol type="1">
+<li>为什么复代数曲线的闭曲面基本群使用经典拓扑，而不是 Zariski
+拓扑？</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>↦</mo><msup><mi>z</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">z\mapsto z^n</annotation></semantics></math>
+怎样同时是经典覆盖和 étale 覆盖？</li>
+<li>为什么单点概形
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><msub><mi>𝔽</mi><mi>q</mi></msub></mrow><annotation encoding="application/x-tex">\operatorname{Spec}\mathbb F_q</annotation></semantics></math>
+仍有非平凡 étale 基本群？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>经典拓扑有小圆盘和通常的路径同伦；Zariski
+拓扑过粗，不能直接保存这些环路信息。</li>
+<li>在复拓扑中它局部是同胚且为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+重覆盖；代数上导数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><msup><mi>z</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">nz^{n-1}</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝔾</mi><mi>m</mi></msub><annotation encoding="application/x-tex">\mathbb G_m</annotation></semantics></math>
+上可逆，因此无分歧且 étale。</li>
+<li>étale 基本群分类有限 étale 覆盖，而这些覆盖对应有限域扩张；Frobenius
+组织全部扩张。</li>
+</ol>
+</details>
+<hr />
+<h2 id="weil-猜想为什么需要重造一套上同调">6. Weil
+猜想：为什么需要重造一套上同调？</h2>
+<h3 id="从有限域点数构造-zeta-函数">6.1 从有限域点数构造 zeta 函数</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+定义在有限域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝔽</mi><mi>q</mi></msub><annotation encoding="application/x-tex">\mathbb F_q</annotation></semantics></math>
+上。记</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>r</mi></msub><mo>=</mo><mi>#</mi><mi>X</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝔽</mi><msup><mi>q</mi><mi>r</mi></msup></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+N_r=\#X(\mathbb F_{q^r}).
+</annotation></semantics></math></p>
+<p>Weil 定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><munderover><mo>∑</mo><mrow><mi>r</mi><mo>=</mo><mn>1</mn></mrow><mo accent="false">∞</mo></munderover><msub><mi>N</mi><mi>r</mi></msub><mfrac><msup><mi>t</mi><mi>r</mi></msup><mi>r</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+Z(X,t)=\exp\left(\sum_{r=1}^{\infty}N_r\frac{t^r}{r}\right).
+</annotation></semantics></math></p>
+<p>这个生成函数同时打包
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+在所有有限扩域上的点数。Weil 猜想断言：对光滑射影
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+维簇，它是有理函数，满足函数方程，并可分解为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mrow><mn>2</mn><mi>d</mi></mrow></munderover><msub><mi>P</mi><mi>i</mi></msub><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msup></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">
+Z(X,t)=
+\prod_{i=0}^{2d}P_i(t)^{(-1)^{i+1}},
+</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P_i(t)</annotation></semantics></math>
+的倒数根（即相应 Frobenius 特征值）具有绝对值
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>q</mi><mrow><mi>i</mi><mi>/</mi><mn>2</mn></mrow></msup><annotation encoding="application/x-tex">q^{i/2}</annotation></semantics></math>；最后一部分是有限域版本的
+Riemann 假设。</p>
+<h3 id="拓扑类比给出了目标却没有给出工具">6.2
+拓扑类比给出了目标，却没有给出工具</h3>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+是复流形，Lefschetz
+不动点公式会把映射的不动点数与其在上同调上的迹联系起来。有限域上，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝔽</mi><msup><mi>q</mi><mi>r</mi></msup></msub><annotation encoding="application/x-tex">\mathbb F_{q^r}</annotation></semantics></math>-点恰是
+Frobenius
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>F</mi><mi>r</mi></msup><annotation encoding="application/x-tex">F^r</annotation></semantics></math>
+的不动点。因此理想公式应是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>r</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mrow><mn>2</mn><mi>d</mi></mrow></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>i</mi></msup><mo>Tr</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>F</mi><mi>r</mi></msup><mo>∣</mo><msup><mi>H</mi><mi>i</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+N_r=\sum_{i=0}^{2d}(-1)^i
+\operatorname{Tr}\left(F^r\mid H^i(X)\right).
+</annotation></semantics></math></p>
+<p>但有限域簇没有可直接使用的经典奇异上同调。Grothendieck
+的纲领是构造一种代数上同调，使它具有有限维性、Poincaré 对偶、Künneth
+公式、循环类和 Lefschetz 迹公式等“好上同调理论”应有的性质。</p>
+<p>étale 拓扑上的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>ℓ</mo><annotation encoding="application/x-tex">\ell</annotation></semantics></math>-进上同调实现了这一目标，其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>ℓ</mo><annotation encoding="application/x-tex">\ell</annotation></semantics></math>
+是不同于域特征
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+的素数。Dwork 先用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>-进分析证明了有理性；Grothendieck
+及其学派随后建立统一的上同调与迹公式框架，给出概念性证明并组织函数方程等部分。Deligne
+在 1974 年证明 Frobenius 特征值的绝对值估计，完成 Riemann 假设部分。</p>
+<p>这段历史最能解释 Grothendieck
+的抽象为何必要：如果只想给概形换一个新名字，没有理由发明 Grothendieck
+拓扑、topos 和导出函子；如果目标是把拓扑的全部武器搬到有限域并控制
+Frobenius，那么这些结构就是工程需求。</p>
+<hr />
+<h2 id="grothendieck-的人生与数学阶段只保留解释工作方向所需的部分">7.
+Grothendieck 的人生与数学阶段：只保留解释工作方向所需的部分</h2>
+<h3 id="流亡经历与从分析转向几何">7.1
+1928—1958：流亡经历与从分析转向几何</h3>
+<p>Grothendieck 1928
+年生于柏林，父母均有激进政治背景。童年与战争时期在德国和法国辗转，作为难民和无国籍者生活；这些经历后来与他的反战、生态和反体制立场相连。</p>
+<p>战后他在 Montpellier 学习，随后到 Nancy 接触 Laurent Schwartz 与 Jean
+Dieudonné。早期工作集中在拓扑向量空间与泛函分析，博士论文解决了当时该方向的一批核心问题。但他很快转向同调代数和代数几何，并在
+1950 年代后期形成 K-理论、Riemann–Roch 与概形的宏大计划。</p>
+<h3 id="ihésega-与-sga">7.2 1958—1970：IHÉS、EGA 与 SGA</h3>
+<p>Grothendieck 于 1958—1970 年任 IHÉS 常任教授。与 Dieudonné 合作撰写的
+<em>Éléments de géométrie
+algébrique</em>（EGA）系统建立概形和态射语言；由他主持的 <em>Séminaire
+de géométrie algébrique</em>（SGA）则发展基本群、下降、étale
+上同调、群概形、交叉理论和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>-函数等主题。</p>
+<p>这不是一人独写的封闭体系。Serre、Dieudonné、Deligne、Artin、Verdier、Demazure、Raynaud
+等人以通信、研讨班、讲义和共同证明参与其中。Grothendieck
+的特殊作用，是不断要求把一次性的证明提升为可换底、可函子化、可在族中使用的一般结构。</p>
+<p>1966 年的 Fields 奖表彰其在代数几何中的工作。IHÉS
+的官方历史将他概括为重塑了代数几何的基础与方法。</p>
+<h3 id="以后离开中心与收获与播种">7.3 1970
+以后：离开中心与“收获与播种”</h3>
+<p>1970 年，Grothendieck 因 IHÉS
+接受法国国防部门资助等原因离开。他参与反战与生态运动，之后在 Montpellier
+任教，数学发表逐渐减少。1980 年代写成的 <em>Récoltes et Semailles</em>
+既是数学思想回忆，也是对学术共同体、署名与传承的激烈反思。1991
+年后他隐居，2014 年去世。</p>
+<p>评价其生平时应避免两种简化：既不能把政治与隐居当作数学成就的浪漫配饰，也不能因此忽略他在
+IHÉS
+时期高度协作的学派建设。现代代数几何既带有他的统一视角，也由一个庞大共同体长期完成。</p>
+<hr />
+<h2 id="格罗滕迪克革命之后现代代数几何的树长成什么样">8.
+格罗滕迪克革命之后，现代代数几何的树长成什么样？</h2>
+<div class="concept-tree" aria-label="现代代数几何知识树">
+<ul>
+<li>
+<strong>概形与态射：共同语法</strong>
+<ul>
+<li>
+<strong>算术几何</strong>：有理点、椭圆曲线、Galois
+表示、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>-函数
+</li>
+<li>
+<strong>双有理几何</strong>：奇点解析、极小模型、分类高维簇
+</li>
+<li>
+<strong>模空间</strong>：曲线、向量丛、稳定映射、叠
+</li>
+<li>
+<strong>上同调与导出方法</strong>：étale、de Rham、Hodge、导出范畴
+</li>
+<li>
+<strong>枚举几何</strong>：交点数、Gromov–Witten 不变量、镜像对称
+</li>
+<li>
+<strong>复与微分几何接口</strong>：Kähler–Einstein、Calabi–Yau、稳定性
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p>把前三篇重新接回这棵树：</p>
+<ul>
+<li>Riemann 曲面告诉我们复曲线同时有代数、分析和拓扑面貌；</li>
+<li>丘成桐定理把代数特征类与典范 Kähler 度量连接；</li>
+<li>Wiles 证明通过椭圆曲线、模曲线和 Galois
+表示把丢番图方程接入自守形式；</li>
+<li>Grothendieck
+的概形、层与相对观点提供了这些连接可以共同书写的语法。</li>
+</ul>
+<p>所以“格罗滕迪克改变代数几何”最准确的含义，不是所有重要定理都由他证明，而是<strong>此后人们选择问题、组织对象和判断一个定理是否自然的方式被改变了</strong>。</p>
+<hr />
+<h2 id="最小记忆清单">9. 最小记忆清单</h2>
+<ol type="1">
+<li>概形语言要补回普通零点集丢掉的幂零、算术、参数族和换底信息。</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">\operatorname{Spec}A</annotation></semantics></math>
+的点是素理想；结构层在开集上保存局部函数。</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Spec</mo><mi>ℤ</mi></mrow><annotation encoding="application/x-tex">\operatorname{Spec}\mathbb Z</annotation></semantics></math>
+把有理数泛纤维与全部模
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+纤维组织成算术底空间。</li>
+<li>态射
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>→</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">X\to S</annotation></semantics></math>
+表示一族对象；纤维积统一表达换底和联立条件。</li>
+<li>函子点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>R</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X(R)</annotation></semantics></math>
+允许用任意环测试空间；模空间是表示分类函子的对象。</li>
+<li>层组织局部数据，上同调测量局部到整体的障碍。</li>
+<li>Zariski 拓扑不保存经典环路；étale 基本群分类有限 étale
+覆盖，在复数上是经典基本群的 profinite 完备。</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>ℓ</mo><annotation encoding="application/x-tex">\ell</annotation></semantics></math>-进上同调使有限域簇也拥有可让
+Frobenius 作用的“拓扑”，从而支撑 Weil 猜想证明。</li>
+<li>Grothendieck
+的革命是由具体统一需求推动的共同体工程，不应缩成孤独天才的抽象传奇。</li>
+</ol>
+<hr />
+<h2 id="史料与延伸阅读">10. 史料与延伸阅读</h2>
+<ul>
+<li>A. Grothendieck and J. Dieudonné, <a
+href="https://www.numdam.org/item/PMIHES_1960__4__5_0/"><em>Éléments de
+géométrie algébrique I: Le langage des schémas</em></a>
+(1960)：概形语言的原始系统文本。</li>
+<li>J.-P. Serre, <a
+href="https://www.college-de-france.fr/sites/default/files/media/document/2023-11/Jean-Pierre%20Serre_Faisceaux%20alg%C3%A9briques%20coh%C3%A9rents.pdf"><em>Faisceaux
+algébriques cohérents</em></a>
+(1955)：凝聚层上同调进入代数几何的关键论文。</li>
+<li><a
+href="https://www.ihes.fr/en/professeur/alexander-grothendieck-1/">IHÉS：Alexander
+Grothendieck, Permanent Professor from 1958 to 1970</a>：其 IHÉS
+时期的官方概述。</li>
+<li><a
+href="https://www.ihes.fr/en/institute/history/science-history/">IHÉS
+科学史时间线</a>：EGA/SGA 工作环境与学术影响。</li>
+<li><a
+href="https://www.mathunion.org/imu-awards/fields-medal/fields-medals-1966">IMU：Fields
+Medals 1966</a>：同期奖项记录。</li>
+<li><a href="https://stacks.math.columbia.edu/">The Stacks
+Project</a>：概形、态射、层和上同调的现代开放参考书。</li>
+<li>P. Deligne, <em>La conjecture de Weil I</em>, Publ. Math. IHÉS 43
+(1974)：Weil 猜想最后部分的原始论文。</li>
+<li>A. Grothendieck, <a
+href="https://www.ihes.fr/en/publication-recoltes-et-semailles-grothendieck/"><em>Récoltes
+et Semailles</em> 出版说明（IHÉS）</a>：回忆文本及其历史背景。</li>
+</ul>
+<hr />
+<h2 id="reader-feedback">阅读反馈记录</h2>
+<div class="feedback-entry">
+<p>
+<strong>当前状态：</strong>等待首次阅读反馈。
+</p>
+<p>
+<strong>实验约束：</strong>本系列反馈只用于修订代数几何史纲四篇，不触发通用
+Skill 的规则变更。
+</p>
+</div>
+</body>
+</html>

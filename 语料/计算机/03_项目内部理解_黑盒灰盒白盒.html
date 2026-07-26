@@ -1,0 +1,1146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-id" content="computer-003">
+  <meta name="corpus-category" content="计算机">
+  <meta name="corpus-status" content="awaiting_review">
+  <meta name="estimated-reading-time" content="30-35 minutes">
+  <meta name="corpus-integrated-date" content="2026-07-21">
+  <title>从黑盒使用到白盒维护：陌生项目的内部结构重建与安全变更</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #dadce0;
+      --soft: #f6f8fa;
+      --accent: #174ea6;
+      --warn-bg: #fff7e6;
+      --warn-line: #d97706;
+      --good-bg: #eef7ee;
+      --good-line: #2e7d32;
+      --bad-bg: #fff1f0;
+      --bad-line: #c62828;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      font-size: 17px;
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 38px 44px 84px;
+      color: var(--ink);
+      background: #fff;
+      font-family: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
+      line-height: 1.86;
+      overflow-wrap: break-word;
+    }
+
+    h1, h2, h3, h4 {
+      color: #111;
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.38;
+    }
+
+    h1 {
+      margin: 0 0 1.2rem;
+      font-size: 2.05rem;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      margin-top: 3.1rem;
+      padding-bottom: 0.38rem;
+      border-bottom: 1px solid var(--line);
+      font-size: 1.5rem;
+    }
+
+    h3 { margin-top: 2.2rem; font-size: 1.23rem; }
+    h4 { margin-top: 1.75rem; font-size: 1.08rem; }
+    p { margin: 0.86rem 0; }
+    li { margin: 0.38rem 0; }
+    strong { color: #111; }
+
+    a {
+      color: var(--accent);
+      text-underline-offset: 0.14em;
+    }
+
+    blockquote {
+      margin: 1.25rem 0;
+      padding: 0.75rem 1.05rem;
+      color: #3c4043;
+      background: var(--soft);
+      border-left: 4px solid #8ab4f8;
+    }
+
+    blockquote > :first-child { margin-top: 0; }
+    blockquote > :last-child { margin-bottom: 0; }
+
+    nav#TOC {
+      margin: 1.9rem 0 2.8rem;
+      padding: 1rem 1.25rem;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    nav#TOC::before {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      content: "目录";
+    }
+
+    nav#TOC ul { margin: 0.28rem 0; padding-left: 1.35rem; }
+    nav#TOC a { text-decoration: none; }
+    nav#TOC a:hover { text-decoration: underline; }
+
+    table {
+      display: block;
+      width: 100%;
+      margin: 1.35rem 0;
+      overflow-x: auto;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+
+    th, td {
+      padding: 0.65rem 0.76rem;
+      border: 1px solid var(--line);
+      vertical-align: top;
+      min-width: 7rem;
+    }
+
+    th {
+      background: var(--soft);
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      text-align: left;
+    }
+
+    code {
+      padding: 0.12em 0.32em;
+      background: var(--soft);
+      border-radius: 4px;
+      font-family: Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.9em;
+    }
+
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      line-height: 1.65;
+    }
+
+    pre code { padding: 0; background: transparent; }
+
+    .meta, .callout, .warning, .good, .bad, .template {
+      margin: 1.25rem 0;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--line);
+      border-left-width: 4px;
+      border-radius: 7px;
+    }
+
+    .meta, .callout, .template { background: var(--soft); border-left-color: #8ab4f8; }
+    .warning { background: var(--warn-bg); border-left-color: var(--warn-line); }
+    .good { background: var(--good-bg); border-left-color: var(--good-line); }
+    .bad { background: var(--bad-bg); border-left-color: var(--bad-line); }
+
+    .label {
+      display: inline-block;
+      margin-right: 0.4rem;
+      padding: 0.05rem 0.42rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 0.84rem;
+    }
+
+    .decision-gate {
+      margin: 1.45rem 0;
+      padding: 1rem 1.1rem;
+      border: 2px solid #9aa0a6;
+      border-radius: 9px;
+      background: #fbfbfb;
+    }
+
+    .decision-gate h4 { margin-top: 0; }
+
+    .flow {
+      margin: 1.3rem 0;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fcfcfc;
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    .small { color: var(--muted); font-size: 0.92rem; }
+
+    hr {
+      margin: 2.7rem 0;
+      border: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    #reader-feedback {
+      margin-top: 4rem;
+      padding-top: 1rem;
+      border-top: 2px solid #111;
+    }
+
+    @media (max-width: 640px) {
+      html { font-size: 16px; }
+      body { padding: 22px 18px 58px; line-height: 1.78; }
+      h1 { font-size: 1.69rem; }
+      h2 { margin-top: 2.55rem; font-size: 1.36rem; }
+      h3 { font-size: 1.17rem; }
+      nav#TOC { padding: 0.86rem 0.92rem; }
+      th, td { min-width: 8.5rem; }
+      .flow { text-align: left; }
+    }
+
+    @media print {
+      body { max-width: none; padding: 0; color: #000; }
+      nav#TOC { break-after: page; }
+      h2, h3 { break-after: avoid; }
+      table, blockquote, .callout, .warning, .good, .bad, .template, .decision-gate { break-inside: avoid; }
+      a { color: #000; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>从黑盒使用到白盒维护：陌生项目的内部结构重建与安全变更</h1>
+    <div class="meta">
+      <p><strong>所属领域：</strong>计算机 · 软件项目工程化方法论</p>
+      <p><strong>预计阅读时间：</strong>30—35 分钟</p>
+      <p><strong>本文任务：</strong>建立一套面对陌生或文档不充分项目时，从具体行为出发恢复内部结构、判断影响范围并安全修改功能的方法。</p>
+      <p><strong>先修说明：</strong>默认你已经能够阅读代码、使用 Git、运行项目和进行基本调试；本文不要求掌握某一种特定语言或框架。</p>
+    </div>
+  </header>
+
+  <nav id="TOC" aria-label="文章目录">
+    <ul>
+      <li><a href="#s0">0. 先给出本文的中心结论</a></li>
+      <li><a href="#s1">1. 为什么项目文档看起来总在描述黑盒</a></li>
+      <li><a href="#s2">2. 黑盒、灰盒与白盒：三种不同的理解层次</a></li>
+      <li><a href="#s3">3. 不要寻找一本不存在的“完整项目说明书”</a></li>
+      <li><a href="#s4">4. 第一步：把“理解项目”改写成具体变更问题</a></li>
+      <li><a href="#s5">5. 第二步：找到入口，并追踪一条纵向切片</a></li>
+      <li><a href="#s6">6. 第三步：同时记录控制流、数据流、状态流与副作用</a></li>
+      <li><a href="#s7">7. 第四步：建立五张局部地图</a></li>
+      <li><a href="#s8">8. 第五步：寻找隐藏的不变量</a></li>
+      <li><a href="#s9">9. 第六步：用运行证据验证你的代码阅读</a></li>
+      <li><a href="#s10">10. 第七步：修改前写一份小型变更设计</a></li>
+      <li><a href="#s11">11. 第八步：用特征测试保护现有行为</a></li>
+      <li><a href="#s12">12. 哪些内部文档值得长期维护</a></li>
+      <li><a href="#s13">13. InnoSpark 案例：怎样重建“生成 HTML”闭环</a></li>
+      <li><a href="#s14">14. 一套可直接执行的项目考古流程</a></li>
+      <li><a href="#s15">15. 常见错误与停止条件</a></li>
+      <li><a href="#s16">16. 自检题与参考答案</a></li>
+      <li><a href="#s17">17. 本文结论与下一篇建议</a></li>
+      <li><a href="#refs">参考资料</a></li>
+    </ul>
+  </nav>
+
+  <section id="s0">
+    <h2>0. 先给出本文的中心结论</h2>
+
+    <p>当一个项目缺少内部结构文档，而你又需要修改功能时，正确做法不是先把所有代码从头到尾读一遍，也不是等待别人补出一份完美架构说明。你应当从一个<strong>具体、可重现的系统行为</strong>进入，沿着它的实际执行路径，恢复一个足以支持当前变更的局部模型。</p>
+
+    <div class="flow">
+      明确要改变的行为<br>
+      → 重现当前行为<br>
+      → 找到入口<br>
+      → 追踪调用链与数据变化<br>
+      → 识别状态、副作用和不变量<br>
+      → 用日志、断点与测试验证<br>
+      → 设计最小修改<br>
+      → 验证异常与回退路径<br>
+      → 把新认识沉淀成文档
+    </div>
+
+    <p>这里最重要的变化，是从“我要理解整个项目”转为：</p>
+
+    <blockquote>
+      <p>为了安全地改变某个行为，我现在必须理解哪些部分？哪些部分暂时可以视为黑盒？</p>
+    </blockquote>
+
+    <p>这套方法属于软件工程中的<strong>程序理解</strong>、<strong>代码库探索</strong>和<strong>变更影响分析</strong>。工程师有时也会把它形象地称为“软件考古”：现有代码是遗址，测试、日志、版本历史和残留文档是证据，你的任务是根据这些证据重建系统真正的结构，而不是只相信某一份可能已经过期的说明。</p>
+  </section>
+
+  <section id="s1">
+    <h2>1. 为什么项目文档看起来总在描述黑盒</h2>
+
+    <p>你观察到，很多项目文档主要回答：</p>
+
+    <ul>
+      <li>项目提供什么功能；</li>
+      <li>如何安装和启动；</li>
+      <li>有哪些命令、接口和配置；</li>
+      <li>输入输出格式是什么；</li>
+      <li>数据怎样保存或导出。</li>
+    </ul>
+
+    <p>这些内容的共同特点是：它们把项目当成一个对外提供能力的整体。只要输入符合契约，使用者通常不需要知道内部由哪些函数、队列、状态机和存储组件协作完成。</p>
+
+    <p>这种文档并不是低质量文档。相反，对外部使用者而言，它是最应该稳定维护的部分，因为外部接口一旦改变，会影响所有调用者。内部实现则可以在不改变外部行为的前提下不断重构，因此更容易变化，也更难靠一份静态文档永久描述。</p>
+
+    <div class="warning">
+      <strong>需要修正的一点：</strong>数据库不一定是“黑盒输出”。对普通用户而言，它通常是系统内部的持久化状态；只有当其他服务直接依赖某张表、某个文件格式或某组字段时，它才同时成为跨模块接口。是否属于输出，取决于谁被允许依赖它。
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>对象</th><th>通常属于什么</th><th>修改风险来自哪里</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>HTML 文件</td><td>显式输出物</td><td>用户、其他工具可能直接消费</td></tr>
+        <tr><td>HTTP API 返回值</td><td>对外契约</td><td>调用方依赖字段和语义</td></tr>
+        <tr><td>数据库表</td><td>内部持久化模型</td><td>迁移、数据一致性、隐含共享依赖</td></tr>
+        <tr><td>共享数据库表</td><td>事实上的跨系统接口</td><td>多个服务可能绕过正式 API 直接读取</td></tr>
+        <tr><td>日志</td><td>可观察副产品</td><td>运维和监控可能依赖格式</td></tr>
+        <tr><td>消息队列事件</td><td>服务之间的接口</td><td>异步消费者依赖事件结构与时序</td></tr>
+        <tr><td>缓存</td><td>内部临时状态</td><td>过期策略和一致性假设</td></tr>
+      </tbody>
+    </table>
+
+    <p>因此，问题不是“为什么没人写白盒文档”，而是：内部结构变化太快、层次太多，单一文档很难同时做到完整、准确和易维护。成熟团队通常把内部知识分散到架构说明、流程文档、数据模型、决策记录和自动化测试中。</p>
+  </section>
+
+  <section id="s2">
+    <h2>2. 黑盒、灰盒与白盒：三种不同的理解层次</h2>
+
+    <h3>2.1 黑盒视角：系统向外界承诺什么</h3>
+
+    <p>黑盒视角只关心外部可观察行为。例如：</p>
+
+    <div class="callout">
+      <p><strong>输入：</strong>一段对话、生成参数和模板选择。</p>
+      <p><strong>输出：</strong>一个可打开的 HTML 文件，以及成功或失败状态。</p>
+    </div>
+
+    <p>这里不关心系统用了几轮模型、怎样存储任务、如何生成页面结构。黑盒模型适合用户、调用方、验收测试和产品需求。</p>
+
+    <h3>2.2 灰盒视角：系统内部有哪些主要阶段</h3>
+
+    <p>灰盒视角会打开系统，但只看到主要处理阶段：</p>
+
+    <div class="flow">
+      用户发起生成<br>
+      → 收集并规范化对话<br>
+      → 规划内容结构<br>
+      → 用户确认大纲<br>
+      → 生成 HTML<br>
+      → 保存文件与状态<br>
+      → 展示结果
+    </div>
+
+    <p>灰盒模型回答各阶段的职责、输入输出、依赖关系和失败位置，但不要求立即知道每一个函数。对维护者而言，它通常是最有价值的中间层：没有它，阅读代码容易迷失；有了它，又能继续定位具体实现。</p>
+
+    <h3>2.3 白盒视角：具体由哪些代码实现</h3>
+
+    <pre><code>GenerateButton.onClick()
+  → generationService.startTask()
+  → conversationRepository.loadMessages()
+  → outlinePlanner.createOutline()
+  → htmlGenerator.generate()
+  → artifactRepository.save()
+  → taskStore.markCompleted()</code></pre>
+
+    <p>白盒视角直接对应文件、函数、类型和数据库操作，是实际修改代码所需的层次。但白盒模型越细，越容易过期。因此你不应一次性建立全项目的函数级地图，而应围绕当前变更按需深入。</p>
+
+    <div class="good">
+      <strong>合理目标：</strong>知道“生成 HTML”流程经过哪些模块，并能定位每个关键阶段的实现。<br>
+      <strong>不合理目标：</strong>在修改一个删除功能前，先记住整个仓库中每个文件和函数的用途。
+    </div>
+  </section>
+
+  <section id="s3">
+    <h2>3. 不要寻找一本不存在的“完整项目说明书”</h2>
+
+    <p>你可能会自然地期待一份文档，它同时描述系统目标、所有模块、完整调用关系、数据结构、异常处理、历史设计理由和每个函数的作用。但这种文档几乎不可能长期保持准确。</p>
+
+    <p>原因至少有四个：</p>
+
+    <ol>
+      <li><strong>不同读者需要不同抽象层次。</strong> 新开发者需要模块地图，维护者需要某条流程，架构师关心边界，测试人员关心行为与不变量。</li>
+      <li><strong>代码变化速度高于文档更新速度。</strong> 函数调用和文件组织可能每周变化，而产品边界和核心领域模型相对稳定。</li>
+      <li><strong>很多知识并不写在代码结构中。</strong> “为什么不用另一种方案”“哪个怪异分支是为了兼容旧数据”等理由只能从版本历史、讨论和决策记录中恢复。</li>
+      <li><strong>系统实际行为由运行环境共同决定。</strong> 配置、数据库内容、动态注册、并发时序和外部服务都会影响执行，静态图无法完全覆盖。</li>
+    </ol>
+
+    <p>因此，更现实的知识来源是四类证据：</p>
+
+    <table>
+      <thead>
+        <tr><th>证据</th><th>主要告诉你什么</th><th>局限</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>代码</td><td>系统可能怎样运行、有哪些分支与依赖</td><td>可能包含废弃代码和未启用路径</td></tr>
+        <tr><td>测试</td><td>哪些行为被团队要求保持</td><td>测试可能缺失或只覆盖理想路径</td></tr>
+        <tr><td>运行轨迹</td><td>当前环境下实际上怎样运行</td><td>一次轨迹无法覆盖所有分支</td></tr>
+        <tr><td>历史与 ADR</td><td>为什么形成当前设计</td><td>记录可能不完整，背景可能改变</td></tr>
+      </tbody>
+    </table>
+
+    <p>你的目标不是从某一份材料中获得绝对真相，而是让多种证据相互校验，形成一个暂时可信的工作模型。</p>
+  </section>
+
+  <section id="s4">
+    <h2>4. 第一步：把“理解项目”改写成具体变更问题</h2>
+
+    <p>“我要理解这个项目”不是一个可完成的任务。项目越大，这个目标越会让你在目录、框架和工具名之间漫游，却无法判断何时算理解完成。</p>
+
+    <p>更好的表达包含三部分：</p>
+
+    <div class="template">
+      <p><strong>当前行为：</strong>系统现在怎样工作？</p>
+      <p><strong>目标行为：</strong>希望改变成什么？</p>
+      <p><strong>需要理解的范围：</strong>为完成这个改变，哪些入口、状态、数据和副作用必须查清？</p>
+    </div>
+
+    <p>例如：</p>
+
+    <pre><code>当前行为：
+删除生成结果时，只删除 HTML 文件，不删除资源目录。
+
+目标行为：
+删除 HTML 时，同时删除它独占的资源目录；
+如果资源被其他结果共享，则不能误删。
+
+需要理解：
+删除入口、文件记录、资源归属关系、数据库状态、
+失败补偿、界面刷新和重复删除行为。</code></pre>
+
+    <p>这个改写会立即缩小搜索空间。你不需要理解模型调用、内容规划和模板设计；你主要需要理解“制品生命周期”这一条路径。</p>
+
+    <div class="decision-gate">
+      <h4>阶段完成标准</h4>
+      <p>在继续读代码前，你应当能用一两句话说明：哪个可观察行为要改变；成功后用户能看到什么差异；若修改失败，最严重的后果是什么。</p>
+    </div>
+  </section>
+
+  <section id="s5">
+    <h2>5. 第二步：找到入口，并追踪一条纵向切片</h2>
+
+    <h3>5.1 什么是入口</h3>
+
+    <p>入口是一次系统行为被触发的位置。常见入口包括：</p>
+
+    <ul>
+      <li>用户点击按钮；</li>
+      <li>HTTP 请求到达路由；</li>
+      <li>命令行命令；</li>
+      <li>定时任务；</li>
+      <li>消息队列事件；</li>
+      <li>插件回调；</li>
+      <li>应用启动或文件变化。</li>
+    </ul>
+
+    <p>寻找入口时，不要只看目录名猜测。应使用可观察线索：</p>
+
+    <ul>
+      <li>搜索界面上的文字，如“生成 HTML”“删除结果”；</li>
+      <li>查看浏览器网络请求，定位 API 路径；</li>
+      <li>运行功能并观察日志模块名；</li>
+      <li>搜索测试用例中调用的公共函数；</li>
+      <li>搜索事件名、数据库状态值或错误提示。</li>
+    </ul>
+
+    <h3>5.2 为什么要纵向切片，而不是横向扫目录</h3>
+
+    <p>横向阅读通常是“把某个目录中所有文件读完”。纵向切片则是“从一个用户行为开始，一直跟到最终副作用”。</p>
+
+    <p>例如，一个“生成 HTML”行为可能跨越：</p>
+
+    <div class="flow">
+      前端按钮<br>
+      → API 路由<br>
+      → 任务编排服务<br>
+      → 模型适配器<br>
+      → HTML 生成器<br>
+      → 文件仓库<br>
+      → 数据库状态<br>
+      → 前端结果展示
+    </div>
+
+    <p>如果你先把前端目录读完，只会了解许多与当前功能无关的组件；如果顺着调用链向下，你会很快看到这条功能真正涉及的边界。</p>
+
+    <h3>5.3 每经过一个节点都问六个问题</h3>
+
+    <ol>
+      <li>它接收什么输入？</li>
+      <li>它产生什么输出？</li>
+      <li>它调用谁，谁又调用它？</li>
+      <li>它修改了哪些持久化或共享状态？</li>
+      <li>它可能怎样失败？</li>
+      <li>失败后由谁处理、重试或回滚？</li>
+    </ol>
+
+    <p>把答案写成追踪表，而不是只在脑中记忆：</p>
+
+    <table>
+      <thead>
+        <tr><th>步骤</th><th>组件</th><th>输入</th><th>输出</th><th>副作用</th><th>失败方式</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>生成按钮</td><td>用户选项</td><td>请求参数</td><td>设置加载状态</td><td>参数缺失</td></tr>
+        <tr><td>2</td><td>API 控制器</td><td>HTTP 请求</td><td>任务编号</td><td>创建任务记录</td><td>权限或校验失败</td></tr>
+        <tr><td>3</td><td>任务编排器</td><td>任务配置</td><td>阶段结果</td><td>调用模型</td><td>超时、取消</td></tr>
+        <tr><td>4</td><td>HTML 生成器</td><td>语料与结构</td><td>HTML 字符串</td><td>通常无</td><td>格式无效</td></tr>
+        <tr><td>5</td><td>文件仓库</td><td>HTML 与资源</td><td>输出路径</td><td>写磁盘</td><td>权限、磁盘不足</td></tr>
+        <tr><td>6</td><td>状态仓库</td><td>任务编号</td><td>完成状态</td><td>更新数据库</td><td>事务失败</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="s6">
+    <h2>6. 第三步：同时记录控制流、数据流、状态流与副作用</h2>
+
+    <p>很多初学者追踪项目时，只记“函数 A 调用函数 B”。这只能恢复控制流，却无法回答数据如何变化、对象处于什么状态、什么时候已经产生不可逆影响。</p>
+
+    <h3>6.1 控制流：谁决定下一步执行什么</h3>
+
+    <pre><code>用户
+→ 前端事件处理器
+→ API 控制器
+→ 应用服务
+→ 领域服务
+→ 仓库或外部适配器</code></pre>
+
+    <p>控制流主要回答调用顺序、同步与异步边界、错误返回方向。</p>
+
+    <h3>6.2 数据流：一个对象经过了哪些表示转换</h3>
+
+    <pre><code>ConversationMessage[]
+→ CorpusDocument
+→ Outline
+→ PageModel[]
+→ HTML string
+→ ArtifactRecord</code></pre>
+
+    <p>每一步都应写清楚数据类型和语义，而不是只写“处理数据”。尤其要注意：</p>
+
+    <ul>
+      <li>哪些字段来自用户；</li>
+      <li>哪些字段由模型或程序推断；</li>
+      <li>哪些对象会被序列化；</li>
+      <li>哪些转换会丢失信息；</li>
+      <li>哪些格式已经成为其他模块依赖的契约。</li>
+    </ul>
+
+    <h3>6.3 状态流：核心对象经历哪些生命周期</h3>
+
+    <pre><code>created
+→ validating
+→ planning
+→ awaiting_confirmation
+→ generating
+→ saving
+→ completed</code></pre>
+
+    <p>同时记录失败分支：</p>
+
+    <pre><code>validating → rejected
+planning → failed
+awaiting_confirmation → cancelled
+generating → retrying → failed
+saving → inconsistent</code></pre>
+
+    <p>状态流能揭示许多函数调用图看不出的关键问题：哪一步允许用户取消、哪一步能够重试、哪一步以后已经写入文件、哪一步失败会留下半成品。</p>
+
+    <h3>6.4 副作用：系统对外部世界做了什么</h3>
+
+    <p>典型副作用包括：</p>
+
+    <ul>
+      <li>写数据库；</li>
+      <li>写文件或删除文件；</li>
+      <li>调用模型 API；</li>
+      <li>发送事件或通知；</li>
+      <li>修改缓存；</li>
+      <li>产生费用；</li>
+      <li>改变用户可见状态。</li>
+    </ul>
+
+    <div class="warning">
+      <strong>一个典型一致性陷阱：</strong>如果系统先把数据库状态更新为 <code>completed</code>，再写 HTML 文件，那么文件写入失败时，界面会显示任务完成，但输出文件不存在。只有同时记录状态和副作用，才能发现这种问题。
+    </div>
+  </section>
+
+  <section id="s7">
+    <h2>7. 第四步：建立五张局部地图</h2>
+
+    <p>“画架构图”不应理解为制作一张漂亮的大图。更实用的是围绕当前流程建立五张小地图，每张回答不同问题。</p>
+
+    <h3>7.1 模块职责图：谁负责什么</h3>
+
+    <pre><code>界面层
+  └─ 接收用户操作、展示状态
+应用编排层
+  └─ 控制步骤、权限、事务与任务生命周期
+内容处理层
+  └─ 把原始对话转换为结构化语料
+HTML 生成层
+  └─ 把页面模型转换为最终文件
+存储层
+  └─ 保存任务、制品、配置和索引
+外部服务适配层
+  └─ 隔离模型 API、文件系统等外部依赖</code></pre>
+
+    <p>职责图最重要的不是层数，而是判断一个规则“应该属于哪里”。例如“未确认大纲不得进入最终生成”是应用流程规则，不应只隐藏在前端按钮是否可点击之中。</p>
+
+    <h3>7.2 控制流图：一次请求按什么顺序推进</h3>
+
+    <p>它回答谁发起、谁编排、谁返回、异步任务在哪里开始。对于复杂系统，可以分别画正常路径与异常路径，不要把所有分支塞进一张图。</p>
+
+    <h3>7.3 数据流图：各阶段传递什么</h3>
+
+    <p>它回答模块之间传递的是原始消息、领域对象、DTO、文件路径还是事件。数据流图能帮助你识别不必要耦合：如果 HTML 生成器直接读取数据库和界面状态，它就同时依赖了多个层次，很难独立测试。</p>
+
+    <h3>7.4 状态与生命周期图：对象何时合法</h3>
+
+    <p>对任务、文件、用户会话等核心对象分别记录状态，而不是只画“整个系统状态”。不同对象可能不同步：任务已经失败，但临时文件仍存在；数据库记录已删除，但资源目录仍在。</p>
+
+    <h3>7.5 边界与接口图：哪些连接点允许被依赖</h3>
+
+    <p>边界包括：</p>
+
+    <ul>
+      <li>模块公开函数或类接口；</li>
+      <li>HTTP API；</li>
+      <li>仓库接口；</li>
+      <li>事件结构；</li>
+      <li>文件格式；</li>
+      <li>插件协议；</li>
+      <li>配置结构。</li>
+    </ul>
+
+    <p>修改边界内部的实现，通常比修改边界本身风险低。若一次变更需要同时改 API、数据库表、事件格式和前端状态，说明它跨越多个契约，应当被视为高风险变更。</p>
+  </section>
+
+  <section id="s8">
+    <h2>8. 第五步：寻找隐藏的不变量</h2>
+
+    <p>理解流程并不等于能够安全修改。你还需要知道系统中哪些条件在任何时候都必须成立，这些条件称为<strong>不变量</strong>。</p>
+
+    <p>例如：</p>
+
+    <ul>
+      <li>每个已完成任务必须对应一个可读取的输出文件；</li>
+      <li>一个资源目录只能由明确的制品拥有，或者必须记录共享引用；</li>
+      <li>用户未确认大纲前，不能生成最终 HTML；</li>
+      <li>同一个任务不能同时存在两个互相冲突的“当前版本”；</li>
+      <li>删除制品不能影响其他任务仍在使用的资源；</li>
+      <li>数据库记录与文件系统状态必须最终一致。</li>
+    </ul>
+
+    <p>项目很少有一份“不变量清单”。你通常要从以下位置推断：</p>
+
+    <table>
+      <thead>
+        <tr><th>位置</th><th>能暴露什么不变量</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>参数校验</td><td>哪些输入组合被认为非法</td></tr>
+        <tr><td>数据库约束</td><td>唯一性、非空、引用关系</td></tr>
+        <tr><td>测试断言</td><td>团队认为必须保持的行为</td></tr>
+        <tr><td>异常处理</td><td>哪些失败被预期，如何恢复</td></tr>
+        <tr><td>重试和幂等逻辑</td><td>重复执行时什么必须保持一致</td></tr>
+        <tr><td>文件命名规则</td><td>对象身份、归属和查找关系</td></tr>
+        <tr><td>Git 历史</td><td>曾被破坏过、因此特别保护的条件</td></tr>
+      </tbody>
+    </table>
+
+    <p>很多严重缺陷不是“某个函数算错”，而是新功能打破了一个未被发现的不变量。例如删除逻辑在正常情况下工作，但它错误地假设资源目录从不共享，于是删除一个 HTML 时破坏了另一个 HTML。</p>
+
+    <div class="decision-gate">
+      <h4>阶段完成标准</h4>
+      <p>在改代码前，至少列出三类不变量：数据完整性不变量、状态顺序不变量、权限或归属不变量。若一条都说不出来，说明你对变更风险还没有形成模型。</p>
+    </div>
+  </section>
+
+  <section id="s9">
+    <h2>9. 第六步：用运行证据验证你的代码阅读</h2>
+
+    <p>静态阅读只能告诉你代码“可能”怎样运行。真实系统可能存在未启用旧实现、条件配置、动态注册、缓存、并发任务和外部服务差异，因此必须进行动态验证。</p>
+
+    <h3>9.1 静态手段</h3>
+
+    <ul>
+      <li>查找引用和调用层次；</li>
+      <li>阅读类型定义与接口实现；</li>
+      <li>查看数据库迁移；</li>
+      <li>阅读测试和测试夹具；</li>
+      <li>查看 Git blame、提交历史和相关 issue；</li>
+      <li>搜索状态枚举、错误码和事件名。</li>
+    </ul>
+
+    <h3>9.2 动态手段</h3>
+
+    <ul>
+      <li>在关键节点加入临时结构化日志；</li>
+      <li>设置断点，查看实际调用栈；</li>
+      <li>观察网络请求与响应；</li>
+      <li>在操作前后比较数据库记录；</li>
+      <li>在操作前后比较文件系统；</li>
+      <li>人为制造超时、无权限、磁盘失败等异常；</li>
+      <li>记录状态变化时间和线程或任务编号。</li>
+    </ul>
+
+    <h3>9.3 建立“假设—证据”表</h3>
+
+    <p>不要把阅读推断直接当作事实。可以记录：</p>
+
+    <table>
+      <thead>
+        <tr><th>假设</th><th>证据</th><th>结果</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>任务完成后才写数据库</td><td>运行日志与 SQL 时间</td><td>错误：数据库先更新</td></tr>
+        <tr><td>每个 HTML 都有独立资源目录</td><td>样例数据、创建逻辑</td><td>尚未确认旧版本数据</td></tr>
+        <tr><td>删除 API 只被前端调用</td><td>全局搜索、接口日志</td><td>还有批量清理任务调用</td></tr>
+        <tr><td>重复删除是安全的</td><td>连续调用两次</td><td>第二次返回 500，需设计幂等行为</td></tr>
+      </tbody>
+    </table>
+
+    <p>这张表能够防止“我看代码好像是这样”逐渐变成未经验证的架构事实。</p>
+  </section>
+
+  <section id="s10">
+    <h2>10. 第七步：修改前写一份小型变更设计</h2>
+
+    <p>小型变更不需要几十页文档，但需要把你的理解转化为可审查的设计。推荐至少包含以下部分。</p>
+
+    <h3>10.1 当前行为与目标行为</h3>
+
+    <pre><code>当前：删除 HTML 后，资源目录和数据库记录可能残留。
+目标：删除操作最终使数据库、HTML 和独占资源一致消失；
+共享资源不得被误删。</code></pre>
+
+    <h3>10.2 主要修改点与可能受影响模块</h3>
+
+    <pre><code>主要修改：artifactDeletionService
+可能涉及：
+- artifactRepository
+- resourceReferenceChecker
+- delete API
+- 批量清理任务
+- 前端列表刷新
+- 审计日志</code></pre>
+
+    <h3>10.3 需要保持的不变量</h3>
+
+    <ul>
+      <li>不能删除其他制品仍在引用的资源；</li>
+      <li>重复删除应具有明确、稳定的结果；</li>
+      <li>中途失败不能静默留下“数据库已删、文件仍在”的未知状态；</li>
+      <li>用户只能删除有权限访问的制品。</li>
+    </ul>
+
+    <h3>10.4 失败与恢复策略</h3>
+
+    <p>必须明确讨论部分成功：</p>
+
+    <ul>
+      <li>数据库删除成功，文件删除失败怎么办？</li>
+      <li>HTML 删除成功，资源目录删除失败怎么办？</li>
+      <li>进程在两个步骤之间崩溃怎么办？</li>
+      <li>是否需要事务、补偿任务、软删除或待清理状态？</li>
+    </ul>
+
+    <h3>10.5 验证矩阵</h3>
+
+    <table>
+      <thead>
+        <tr><th>场景</th><th>预期结果</th><th>验证方式</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>正常删除独占资源</td><td>记录、HTML、资源均消失</td><td>集成测试</td></tr>
+        <tr><td>资源目录不存在</td><td>仍能达到一致终态</td><td>幂等测试</td></tr>
+        <tr><td>资源被共享</td><td>只删当前制品</td><td>引用关系测试</td></tr>
+        <tr><td>无文件权限</td><td>进入明确失败或待清理状态</td><td>故障注入</td></tr>
+        <tr><td>重复删除</td><td>返回稳定结果，不破坏其他数据</td><td>连续调用</td></tr>
+        <tr><td>中途崩溃</td><td>重启后可恢复或重新清理</td><td>恢复测试</td></tr>
+      </tbody>
+    </table>
+
+    <p>这份文档真正指导的是“在哪里改、为什么这样改、什么不能破坏、怎样证明完成”，而不是泛泛描述项目有什么功能。</p>
+  </section>
+
+  <section id="s11">
+    <h2>11. 第八步：用特征测试保护现有行为</h2>
+
+    <p>面对测试不充分的项目，直接重构最危险。此时应先补<strong>特征测试</strong>：它不判断当前行为是否合理，而是忠实记录系统现在实际上怎样运行。</p>
+
+    <p>例如，现有缺陷可能是：</p>
+
+    <pre><code>给定：一个 HTML 文件和对应资源目录
+执行：当前删除操作
+实际：HTML 被删除，资源目录仍然存在</code></pre>
+
+    <p>先把这个行为固定下来，有两个价值：</p>
+
+    <ol>
+      <li>你确认自己找到了真正执行删除的路径，而不是修改了未被调用的旧代码；</li>
+      <li>修改后能够明确区分“有意改变的行为”和“意外受影响的行为”。</li>
+    </ol>
+
+    <p>接下来再把目标测试写成：</p>
+
+    <pre><code>给定：一个 HTML 文件和它独占的资源目录
+执行：新的删除操作
+期望：HTML 与资源目录均被删除，数据库达到一致终态</code></pre>
+
+    <p>但不能只写正常路径。对有副作用的功能，至少覆盖：</p>
+
+    <ul>
+      <li>边界输入；</li>
+      <li>重复调用；</li>
+      <li>部分资源缺失；</li>
+      <li>外部依赖失败；</li>
+      <li>权限不足；</li>
+      <li>并发执行；</li>
+      <li>旧版本数据。</li>
+    </ul>
+
+    <div class="good">
+      <strong>测试的角色：</strong>测试不只是验收工具，也是可执行的内部文档。它描述系统承诺保持哪些行为，并在代码改变时主动提醒你模型是否被破坏。
+    </div>
+  </section>
+
+  <section id="s12">
+    <h2>12. 哪些内部文档值得长期维护</h2>
+
+    <p>不要试图记录每个函数。应优先维护变化较慢、对未来变更有高价值的信息。</p>
+
+    <h3>12.1 <code>ARCHITECTURE.md</code>：稳定的整体结构</h3>
+
+    <p>建议包含：</p>
+
+    <ul>
+      <li>系统目标与边界；</li>
+      <li>核心模块和职责；</li>
+      <li>主要运行时组件；</li>
+      <li>关键接口与依赖方向；</li>
+      <li>最重要的技术取舍。</li>
+    </ul>
+
+    <p>它回答“整个项目大致怎样组织”，不回答每条业务流程的所有细节。</p>
+
+    <h3>12.2 <code>DEVELOPMENT.md</code>：开发与调试基线</h3>
+
+    <p>包括安装、启动、测试、环境变量、测试账号、调试方法、常见故障和本地数据构造。它能让后来者先获得一个可重复运行的项目，而不是在环境问题中误判代码行为。</p>
+
+    <h3>12.3 <code>docs/flows/</code>：重要场景的流程文档</h3>
+
+    <pre><code>docs/flows/generate-html.md
+docs/flows/delete-artifact.md
+docs/flows/revise-block.md
+docs/flows/recover-failed-task.md</code></pre>
+
+    <p>每篇建议记录：</p>
+
+    <ul>
+      <li>入口与触发条件；</li>
+      <li>控制流与数据流；</li>
+      <li>状态变化；</li>
+      <li>外部副作用；</li>
+      <li>关键不变量；</li>
+      <li>失败处理；</li>
+      <li>关键代码位置。</li>
+    </ul>
+
+    <h3>12.4 <code>docs/data-model.md</code>：数据对象及其关系</h3>
+
+    <p>它应解释领域对象、字段语义、对象生命周期、数据库表与文件系统之间的对应关系。不要只复制数据库建表语句，因为字段结构不能解释业务含义和合法状态。</p>
+
+    <h3>12.5 <code>docs/adr/</code>：架构决策记录</h3>
+
+    <p>ADR，即 Architecture Decision Record，记录一项重要设计为什么被选择。例如：</p>
+
+    <pre><code>ADR-004：每个 HTML 使用独立资源目录
+
+背景：资源需要离线访问并随制品一起删除。
+备选：统一资源池、内容寻址存储、独立目录。
+决定：第一阶段使用独立目录。
+理由：实现简单，归属清晰，删除成本低。
+后果：可能重复存储相同资源；未来若共享需增加引用管理。</code></pre>
+
+    <p>代码能够告诉你“现在采用独立目录”，却很难告诉你为什么没有选择共享资源池。ADR 保存的正是这种最容易丢失的设计理由。</p>
+
+    <h3>12.6 测试：可执行契约</h3>
+
+    <p>高价值测试描述正常流程、边界条件、错误恢复和不变量。流程文档与测试应相互对应：文档解释结构，测试确保关键行为仍然成立。</p>
+  </section>
+
+  <section id="s13">
+    <h2>13. InnoSpark 案例：怎样重建“生成 HTML”闭环</h2>
+
+    <p>下面不假设 InnoSpark 当前代码一定如此，而是示范怎样建立一份待验证的工作模型。</p>
+
+    <h3>13.1 先定义理解目标</h3>
+
+    <div class="template">
+      <p><strong>当前行为：</strong>用户提供对话内容，系统经过若干处理后生成 HTML。</p>
+      <p><strong>计划变更：</strong>在最终生成前增加可确认的大纲，并允许失败后从某个阶段恢复。</p>
+      <p><strong>必须理解：</strong>生成入口、轮次编排、阶段数据、任务状态、文件写入、重试边界和用户确认状态。</p>
+    </div>
+
+    <h3>13.2 建立灰盒闭环</h3>
+
+    <div class="flow">
+      用户选择对话和生成要求<br>
+      → 创建生成任务<br>
+      → 检查内容规模与输入合法性<br>
+      → 整理完整语料<br>
+      → 生成大纲<br>
+      → 等待用户确认<br>
+      → 生成页面模型与 HTML<br>
+      → 保存 HTML、资源与元数据<br>
+      → 更新任务状态并展示结果<br>
+      → 用户反馈或局部修改
+    </div>
+
+    <h3>13.3 数据流草图</h3>
+
+    <pre><code>ConversationMessage[]
+→ SourceCorpus
+→ ContentPlan
+→ ConfirmedOutline
+→ BlockModel[]
+→ HtmlArtifact
+→ ArtifactRecord</code></pre>
+
+    <p>这里要进一步查清：</p>
+
+    <ul>
+      <li><code>SourceCorpus</code> 是否保存原始消息来源，还是只保留改写文本；</li>
+      <li>大纲确认后，确认的是全文结构还是只确认标题列表；</li>
+      <li><code>BlockModel</code> 是否是稳定中间表示，能否支持局部修改；</li>
+      <li>HTML 和资源目录如何关联；</li>
+      <li>数据库记录保存的是最终文件路径，还是还保存中间阶段数据。</li>
+    </ul>
+
+    <h3>13.4 状态流草图</h3>
+
+    <pre><code>created
+→ validating
+→ corpus_ready
+→ outline_ready
+→ awaiting_confirmation
+→ generating_html
+→ saving
+→ completed</code></pre>
+
+    <p>异常与恢复状态可能包括：</p>
+
+    <pre><code>validating → rejected
+corpus_ready → planning_failed
+awaiting_confirmation → cancelled
+generating_html → retryable_failed / terminal_failed
+saving → cleanup_required</code></pre>
+
+    <h3>13.5 初步不变量</h3>
+
+    <ul>
+      <li>未确认的大纲不能被当成最终生成依据；</li>
+      <li>任务进入 <code>completed</code> 时，HTML 必须存在且能够打开；</li>
+      <li>中间阶段数据应能与同一任务唯一关联；</li>
+      <li>重试不能重复创建互相冲突的最终制品；</li>
+      <li>局部修改不能在没有记录的情况下破坏原始语料与块结构的对应关系；</li>
+      <li>删除最终制品时，资源归属和数据库记录必须得到一致处理。</li>
+    </ul>
+
+    <h3>13.6 用证据逐项验证</h3>
+
+    <table>
+      <thead>
+        <tr><th>要确认的问题</th><th>优先证据</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>真正创建任务的入口在哪里</td><td>前端网络请求、API 路由、集成测试</td></tr>
+        <tr><td>多轮 AI 由谁编排</td><td>应用服务调用链、模型调用日志</td></tr>
+        <tr><td>确认大纲状态保存在哪里</td><td>数据库迁移、状态枚举、请求负载</td></tr>
+        <tr><td>文件何时写入</td><td>文件时间、日志、断点</td></tr>
+        <tr><td>失败后从头重跑还是阶段恢复</td><td>重试代码、任务状态、故障注入</td></tr>
+        <tr><td>资源目录是否可能共享</td><td>创建逻辑、历史数据、删除测试</td></tr>
+      </tbody>
+    </table>
+
+    <p>当这些问题有证据支持后，你才适合设计“大纲确认”和“阶段恢复”。否则很可能把新逻辑只加在界面上，却没有建立真实的后端状态；或者为了恢复任务重复生成文件，造成多个版本冲突。</p>
+  </section>
+
+  <section id="s14">
+    <h2>14. 一套可直接执行的项目考古流程</h2>
+
+    <p>以后面对任何陌生项目，可以按以下顺序执行。</p>
+
+    <ol>
+      <li><strong>建立运行基线。</strong> 从干净环境启动项目，重现目标功能，知道日志、测试和数据在哪里。</li>
+      <li><strong>定义具体变更。</strong> 写清当前行为、目标行为、失败后果和理解范围。</li>
+      <li><strong>定位入口。</strong> 从界面、API、命令、事件或测试找到真正触发行为的位置。</li>
+      <li><strong>追踪纵向切片。</strong> 沿调用链直到最终数据库、文件、事件或外部服务副作用。</li>
+      <li><strong>记录四条流。</strong> 控制流、数据流、状态流和副作用分别记录。</li>
+      <li><strong>建立五张地图。</strong> 职责、控制、数据、生命周期和接口边界。</li>
+      <li><strong>提炼不变量。</strong> 找出数据完整性、状态顺序、归属权限、幂等与恢复条件。</li>
+      <li><strong>动态验证。</strong> 用日志、断点、数据库比较、文件比较和故障注入验证推断。</li>
+      <li><strong>补特征测试。</strong> 固定当前实际行为，确认自己改的是有效路径。</li>
+      <li><strong>写变更设计。</strong> 说明修改点、影响范围、失败策略、测试矩阵和回退方式。</li>
+      <li><strong>实施最小修改。</strong> 优先在现有边界内改动，避免同时重构无关模块。</li>
+      <li><strong>验证正常与异常路径。</strong> 不只确认“点一下能成功”，还要测试失败、重复、并发和旧数据。</li>
+      <li><strong>沉淀知识。</strong> 更新流程文档、数据模型、ADR 和测试，而不是把所有发现留在临时笔记里。</li>
+    </ol>
+
+    <div class="decision-gate">
+      <h4>什么时候算“理解得足够”</h4>
+      <p>你不需要能够解释整个项目。只要你能画出目标行为的完整闭环，指出主要数据与状态，列出关键副作用和不变量，说明修改点及其影响，并用测试验证这些判断，就已经足以进入当前变更。</p>
+    </div>
+  </section>
+
+  <section id="s15">
+    <h2>15. 常见错误与停止条件</h2>
+
+    <h3>15.1 从目录第一行开始顺序读完整仓库</h3>
+    <p>问题在于没有选择标准。你会花大量时间阅读与目标无关的工具代码、页面组件和旧实现。应改为场景驱动的纵向阅读。</p>
+
+    <h3>15.2 只画函数调用图</h3>
+    <p>函数调用不能说明数据含义、状态顺序和外部副作用。必须至少同时追踪数据、状态和不变量。</p>
+
+    <h3>15.3 把文档当作绝对真相</h3>
+    <p>文档应被视为一项证据，并与代码、测试和运行轨迹交叉验证。文档可能过期，代码也可能未被实际启用。</p>
+
+    <h3>15.4 发现坏结构后立刻大规模重构</h3>
+    <p>陌生项目中，你尚不知道哪些奇怪代码承担兼容、恢复或性能职责。先补测试和运行证据，再做局部改动；结构性重构应当作为独立变更。</p>
+
+    <h3>15.5 只测试成功路径</h3>
+    <p>真正的工程风险常发生在中途失败、重复执行、并发操作、旧数据和外部服务异常。涉及数据库与文件的流程尤其需要故障测试。</p>
+
+    <h3>15.6 把所有发现都写进一份巨型文档</h3>
+    <p>巨型文档难以更新。应按照整体架构、具体流程、数据模型、决策理由和测试契约分层维护。</p>
+
+    <h3>15.7 什么时候应停止继续深入</h3>
+
+    <p>当出现以下情况时，可以停止扩展理解范围，进入修改：</p>
+
+    <ul>
+      <li>目标行为的入口和最终副作用已经闭合；</li>
+      <li>关键数据对象、状态和不变量已经明确；</li>
+      <li>主要假设已经通过运行或测试验证；</li>
+      <li>未知部分被隔离在稳定接口之后；</li>
+      <li>你能写出具体测试矩阵和失败恢复策略。</li>
+    </ul>
+
+    <p>相反，如果你还无法回答“文件写入失败后数据库是什么状态”“这个资源是否可能被共享”“同一个接口还有谁调用”，就不应急着修改。</p>
+  </section>
+
+  <section id="s16">
+    <h2>16. 自检题与参考答案</h2>
+
+    <h3>16.1 自检题</h3>
+    <ol>
+      <li>为什么 README 和 API 文档通常更偏向黑盒视角？</li>
+      <li>灰盒模型与白盒模型分别解决什么问题？</li>
+      <li>为什么“先读完整个项目”通常不是高效策略？</li>
+      <li>什么是纵向切片？</li>
+      <li>控制流、数据流与状态流有什么区别？</li>
+      <li>为什么副作用必须被单独记录？</li>
+      <li>什么是不变量？它通常隐藏在哪里？</li>
+      <li>代码阅读为什么必须配合动态验证？</li>
+      <li>特征测试与普通目标测试有什么区别？</li>
+      <li>一份小型变更设计至少应包含哪些内容？</li>
+      <li>ADR 主要保存什么信息？</li>
+      <li>对 InnoSpark 的 HTML 生成流程，至少应建立哪些状态和不变量？</li>
+    </ol>
+
+    <h3>16.2 参考答案</h3>
+    <ol>
+      <li>因为外部使用者最关心稳定功能、输入输出和使用方式，而内部实现允许在不改变契约的情况下变化。</li>
+      <li>灰盒模型描述主要阶段、职责和连接方式，帮助建立整体方向；白盒模型定位具体文件、函数、类型和存储操作，用于实际修改。</li>
+      <li>项目文件顺序不等于执行顺序，大量代码与当前变更无关；没有具体问题就无法判断哪些内容重要、何时理解足够。</li>
+      <li>从一个真实用户行为或系统事件进入，沿实际调用链一直追踪到最终数据、状态和外部副作用的一条端到端路径。</li>
+      <li>控制流描述谁调用谁；数据流描述对象怎样转换和传递；状态流描述核心对象在生命周期中处于什么阶段以及哪些转换合法。</li>
+      <li>数据库、文件、外部 API 和事件等副作用可能部分成功、失败或重复发生，决定了事务、补偿、幂等和恢复设计。</li>
+      <li>不变量是系统任何合法状态下都必须成立的条件。它常隐藏在校验、数据库约束、测试、异常处理、重试逻辑、命名规则和历史修复中。</li>
+      <li>静态代码可能包含未启用路径、条件配置和旧实现；运行轨迹能确认当前环境下真正的调用顺序、数据和副作用。</li>
+      <li>特征测试先忠实固定当前实际行为，即使该行为有缺陷；目标测试则描述修改后应达到的新行为。</li>
+      <li>当前与目标行为、修改点、影响范围、不变量、失败与恢复策略、验证矩阵以及回退方式。</li>
+      <li>ADR 保存某项重要架构决定的背景、备选方案、选择理由和后果，解释“为什么设计成这样”。</li>
+      <li>至少包括创建、校验、语料准备、大纲生成、等待确认、HTML 生成、保存、完成和失败状态；不变量包括未确认不得最终生成、完成必须有有效文件、重试不得生成冲突制品、资源与数据库保持一致。</li>
+    </ol>
+  </section>
+
+  <section id="s17">
+    <h2>17. 本文结论与下一篇建议</h2>
+
+    <p>面对一个内部文档不足的项目，你不需要在黑盒使用和“完全读懂源码”之间二选一。真正可行的方法是在两者之间建立一个逐步深入的理解层次：</p>
+
+    <div class="flow">
+      外部行为<br>
+      → 主要处理阶段<br>
+      → 局部纵向流程<br>
+      → 数据与状态模型<br>
+      → 关键不变量<br>
+      → 具体实现与测试
+    </div>
+
+    <p>这套方法的核心是证据驱动和范围控制：</p>
+
+    <ul>
+      <li>用具体变更限定理解范围；</li>
+      <li>用真实场景而不是目录结构组织阅读；</li>
+      <li>把调用、数据、状态和副作用分开记录；</li>
+      <li>用不变量理解系统为何不能随意修改；</li>
+      <li>用运行和测试纠正静态阅读中的猜测；</li>
+      <li>把每次修改得到的稳定知识沉淀成分层文档。</li>
+    </ul>
+
+    <p>因此，项目内部结构并不是由某一份架构文档“交给”你的。它是你根据代码、测试、运行轨迹和历史决策逐步重建出来的。成熟维护者的能力，不是一次性记住整个仓库，而是能够在有限时间内建立一个<strong>足够准确、能够指导当前变更、可以被证据验证的局部系统模型</strong>。</p>
+
+    <h3>下一篇建议</h3>
+    <p>下一篇可以继续进入“软件项目工程化方法论”的实践部分：讲解如何为 InnoSpark 建立第一套内部工程文档，包括 <code>ARCHITECTURE.md</code>、生成流程文档、数据模型、任务状态机、ADR 与测试矩阵，并明确这些文档怎样随着代码修改保持同步。</p>
+  </section>
+
+  <section id="refs">
+    <h2>参考资料</h2>
+    <ul>
+      <li>Michael C. Feathers, <em>Working Effectively with Legacy Code</em>：在缺少测试与理解不足的代码中建立安全修改边界，特征测试是其中的重要方法。</li>
+      <li>Diomidis Spinellis, <em>Code Reading: The Open Source Perspective</em>：系统化讨论代码阅读、追踪和理解大型程序的方法。</li>
+      <li>George Fairbanks, <em>Just Enough Software Architecture</em>：强调架构描述应服务于具体风险与决策，而不是追求无限细节。</li>
+      <li>Simon Brown, <em>Software Architecture for Developers</em>：使用分层视图描述软件系统、容器、组件与代码之间的关系。</li>
+      <li>Michael Nygard, “Documenting Architecture Decisions”：提出使用轻量架构决策记录保存背景、决定和后果。</li>
+      <li>Martin Fowler, 关于重构、持续集成和演进式架构的系列著作：强调小步修改、反馈和可验证行为。</li>
+    </ul>
+    <p class="small">本文以项目维护者的实际任务为主线，将程序理解、变更影响分析、特征测试、架构视图和决策记录重组为一条可执行的“项目考古—局部建模—安全变更”流程。</p>
+  </section>
+
+  <section id="reader-feedback" data-feedback-status="pending">
+    <h2>读后反馈与修订记录</h2>
+    <article class="feedback-entry">
+      <h3>2026-07-21 · 第 0 轮</h3>
+      <p><strong>原始反馈：</strong>尚未收到。</p>
+      <p><strong>问题分类：</strong>待阅读。</p>
+      <p><strong>处理：</strong>本文已生成，等待读者对概念层次、InnoSpark 案例贴合度、操作流程可执行性和篇幅给出反馈。</p>
+      <p><strong>状态：</strong>待处理。</p>
+    </article>
+  </section>
+</body>
+</html>

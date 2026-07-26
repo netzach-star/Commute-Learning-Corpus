@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Docker 入门：从“把环境装进盒子”到真正理解容器如何运行</title>
+  <meta name="corpus-id" content="computer-011">
+  <meta name="corpus-category" content="计算机">
+  <meta name="corpus-series" content="开发环境与交付">
+  <meta name="corpus-status" content="unread">
+  <meta name="estimated-reading-time" content="40—50 分钟，另加 2—3 小时实践">
+  <meta name="generated-date" content="2026-07-25">
+  <meta name="source-basis" content="Docker 官方文档、OCI Runtime Specification 与两个可运行微型项目">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink:#172033; --muted:#5e6a7c; --line:#d8e0eb; --soft:#f5f8fc;
+      --blue:#1769d2; --blue-soft:#eaf3ff; --green:#147a55; --green-soft:#eaf8f2;
+      --amber:#8c5200; --amber-soft:#fff5df; --red:#b42318; --red-soft:#fff0ee;
+      --violet:#6741c7; --violet-soft:#f3efff; --shadow:0 10px 30px rgba(28,45,76,.07);
+    }
+    *{box-sizing:border-box} html{font-size:17px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+    body{max-width:960px;margin:0 auto;padding:38px 42px 86px;color:var(--ink);background:#fff;
+      font-family:"Noto Serif CJK SC","Source Han Serif SC","Songti SC",STSong,serif;line-height:1.86;overflow-wrap:break-word}
+    h1,h2,h3,h4,nav,.sans,table{font-family:"Noto Sans CJK SC","Source Han Sans SC","PingFang SC","Microsoft YaHei",sans-serif}
+    h1{margin:0;font-size:2.08rem;line-height:1.34;letter-spacing:-.025em}
+    h2{margin:3.35rem 0 1.15rem;padding-bottom:.42rem;border-bottom:1px solid var(--line);font-size:1.5rem;line-height:1.42}
+    h3{margin:2.2rem 0 .75rem;font-size:1.22rem;line-height:1.45} h4{margin:1.55rem 0 .5rem;font-size:1.05rem}
+    p{margin:.86rem 0} li{margin:.38rem 0} a{color:var(--blue);text-decoration-thickness:1px;text-underline-offset:.16em}
+    code,kbd{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.9em}
+    code{padding:.1em .32em;border-radius:4px;background:var(--soft)}
+    pre{margin:1.15rem 0;padding:1rem 1.1rem;overflow-x:auto;border:1px solid #cbd5e1;border-radius:10px;background:#101828;color:#eef4ff;line-height:1.62}
+    pre code{padding:0;background:transparent;color:inherit}
+    header.hero{margin-bottom:2.3rem;padding:1.8rem 0 1.35rem}.eyebrow{margin-bottom:.65rem;color:var(--blue);font-size:.88rem;font-weight:700;letter-spacing:.08em}
+    .subtitle{margin:1rem 0 0;color:var(--muted);font-size:1.08rem}.meta{display:flex;gap:.55rem;flex-wrap:wrap;margin-top:1.15rem}
+    .tag{padding:.28rem .62rem;border:1px solid var(--line);border-radius:999px;color:#40506a;background:var(--soft);font-family:"Noto Sans CJK SC","PingFang SC",sans-serif;font-size:.82rem}
+    nav#toc{margin:1.8rem 0 3rem;padding:1.15rem 1.35rem;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+    nav#toc strong{display:block;margin-bottom:.5rem} nav#toc ol{columns:2;column-gap:2.6rem;margin:0;padding-left:1.25rem} nav#toc li{break-inside:avoid;margin:.25rem 0}
+    .lead,.thesis,.definition,.warning,.example,.source-note,.comparison-note,.exercise{margin:1.3rem 0;padding:1rem 1.15rem;border-radius:10px}
+    .lead{border-left:4px solid var(--blue);background:var(--blue-soft)}.thesis{border:1px solid #b9cff4;background:linear-gradient(135deg,#f7faff,#eef5ff);box-shadow:var(--shadow);font-size:1.04rem}
+    .definition{border:1px solid #b9cff4;background:var(--blue-soft)}.warning{border:1px solid #f1c8c3;background:var(--red-soft)}
+    .example,.exercise{border:1px solid #f0d5a3;background:var(--amber-soft)}.source-note{border:1px solid #d4c8f5;background:var(--violet-soft)}
+    .comparison-note{border:1px solid #a9dccb;background:var(--green-soft)}
+    .concept-map{margin:1.6rem 0 2.3rem;padding:1.2rem;border:1px solid var(--line);border-radius:14px;background:#fbfdff;box-shadow:var(--shadow)}
+    .pipeline{display:flex;flex-wrap:wrap;align-items:stretch;gap:.55rem;margin:1.25rem 0}.pipeline .node{flex:1 1 125px;min-width:115px;padding:.78rem .7rem;border:1px solid #c9d6e8;border-radius:9px;background:#fff;text-align:center;font-family:"Noto Sans CJK SC",sans-serif;font-size:.9rem}.pipeline .node strong{display:block;color:#173f78}.pipeline .sep{display:flex;align-items:center;color:#6b778b}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1.2rem 0}.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem;margin:1.2rem 0}
+    .card{padding:1rem;border:1px solid var(--line);border-radius:10px;background:#fff}.card h3,.card h4{margin-top:0}
+    table{display:block;width:100%;margin:1.35rem 0;overflow-x:auto;border-collapse:collapse;font-size:.92rem;line-height:1.62} th,td{min-width:145px;padding:.72rem .76rem;border:1px solid var(--line);vertical-align:top} th{color:#27364f;background:var(--soft);text-align:left}
+    .small{color:var(--muted);font-size:.9rem}.checklist{padding-left:0;list-style:none}.checklist li{position:relative;padding-left:1.7rem}.checklist li::before{position:absolute;left:.1rem;color:var(--green);content:"✓";font-family:sans-serif;font-weight:700}
+    .command-anatomy{display:grid;grid-template-columns:140px 1fr;gap:.75rem;margin:.55rem 0;padding:.7rem .85rem;border:1px solid var(--line);border-radius:9px;background:#fff}.command-anatomy strong{font-family:"Noto Sans CJK SC",sans-serif;color:#173f78}
+    details{margin:.8rem 0;padding:.75rem .95rem;border:1px solid var(--line);border-radius:9px;background:#fff} summary{cursor:pointer;color:#253858;font-family:"Noto Sans CJK SC",sans-serif;font-weight:700}
+    .source-list li{margin:.65rem 0} #reader-feedback{margin-top:4rem;padding:1.2rem;border:1px dashed #aab7ca;border-radius:12px;background:#fafcff} #reader-feedback h2{margin-top:0}
+    @media(max-width:760px){body{padding:24px 20px 64px;line-height:1.8}h1{font-size:1.72rem}h2{margin-top:2.75rem;font-size:1.34rem}nav#toc ol{columns:1}.grid-2,.grid-3{grid-template-columns:1fr}.pipeline{display:grid;grid-template-columns:1fr}.pipeline .sep{justify-content:center;transform:rotate(90deg)}.command-anatomy{grid-template-columns:1fr;gap:.15rem}}
+    @media print{body{max-width:none;padding:0;color:#000}nav#toc{break-after:page}h2,h3{break-after:avoid}table,.card,.definition,.warning,.example,.source-note{break-inside:avoid}a{color:#000;text-decoration:none}}
+  </style>
+</head>
+<body>
+<header class="hero">
+  <div class="eyebrow">开发环境与交付 · Docker 入门</div>
+  <h1>Docker 入门：从“把环境装进盒子”到真正理解容器如何运行</h1>
+  <p class="subtitle">不是背命令，而是沿一次 <code>docker run</code> 的完整链路，理解镜像、容器、分层文件系统、进程隔离、网络、存储与 Compose；最后用两个微型项目完成第一次上手。</p>
+  <div class="meta">
+    <span class="tag">语料编号 computer-011</span>
+    <span class="tag">预计阅读 40—50 分钟</span>
+    <span class="tag">实践 2—3 小时</span>
+    <span class="tag">先修：操作系统、网络基础与基本 Shell</span>
+    <span class="tag">状态：待读</span>
+  </div>
+</header>
+
+<nav id="toc" aria-label="文章目录"><strong>目录</strong><ol>
+<li><a href="#problem">Docker 到底解决什么问题</a></li>
+<li><a href="#map">先看完整系统地图</a></li>
+<li><a href="#objects">镜像、容器和仓库</a></li>
+<li><a href="#run">一次 docker run 内部发生什么</a></li>
+<li><a href="#isolation">容器隔离的操作系统原理</a></li>
+<li><a href="#filesystem">分层文件系统与写时复制</a></li>
+<li><a href="#network">容器网络与端口映射</a></li>
+<li><a href="#storage">容器数据为什么会消失</a></li>
+<li><a href="#build">Dockerfile 与构建缓存</a></li>
+<li><a href="#compose">为什么需要 Docker Compose</a></li>
+<li><a href="#boundary">Docker 的边界与常见误解</a></li>
+<li><a href="#project1">微型项目一：静态网站镜像</a></li>
+<li><a href="#project2">微型项目二：Flask + Redis</a></li>
+<li><a href="#next">实践后的知识地图</a></li>
+<li><a href="#questions">自检题与参考答案</a></li>
+</ol></nav>
+
+<section class="lead" id="problem">
+  <strong>你现在的起点：</strong>已经知道 Docker 大概用于“把程序和运行环境一起打包”，但尚未建立内部机制，也没有实际运行过容器。本篇因此不从命令手册开始，而从一个现实失败开始：为什么同一份代码在你的电脑上能运行，交给别人却常常失败？
+</section>
+
+<h2>一、Docker 到底解决什么问题：代码不是一个可以独立运行的东西</h2>
+<p>开发者常说“把代码发给你了”，但一段代码真正运行时，依赖的不只是源文件。它还隐含依赖：</p>
+<ul>
+  <li>操作系统及其内核能力；</li>
+  <li>语言运行时，例如 Python、Node.js 或 Java 的具体版本；</li>
+  <li>系统动态库、编译工具与证书；</li>
+  <li>第三方依赖包；</li>
+  <li>环境变量、配置文件和启动命令；</li>
+  <li>数据库、缓存、消息系统等外部服务；</li>
+  <li>目录权限、网络端口和文件位置。</li>
+</ul>
+<p>所以“在我的电脑上能跑”只能证明：<strong>代码与我电脑当前环境的组合能跑</strong>。它没有证明同一份代码在同事电脑、测试服务器和生产机器上也能跑。</p>
+
+<section class="thesis"><strong>Docker 的核心价值不是“虚拟出一台小电脑”，而是把应用运行所需的文件系统、启动方式和隔离配置描述成可重复构建、可分发、可启动的对象。</strong></section>
+
+<p>从工程角度看，Docker 主要提供五种能力：</p>
+<div class="grid-3">
+  <div class="card"><h3>可重复构建</h3><p>用 Dockerfile 描述环境，不靠“我记得安装过什么”。</p></div>
+  <div class="card"><h3>可分发</h3><p>把镜像推送到 Registry，其他机器按相同内容拉取。</p></div>
+  <div class="card"><h3>进程隔离</h3><p>让不同应用看到相对独立的进程、网络和文件系统视图。</p></div>
+  <div class="card"><h3>生命周期管理</h3><p>统一创建、启动、停止、删除、查看日志和限制资源。</p></div>
+  <div class="card"><h3>多服务编排</h3><p>用 Compose 一次声明应用、数据库、网络与持久化卷。</p></div>
+  <div class="card"><h3>环境一致性</h3><p>开发、测试和 CI 尽量使用同一份镜像与启动契约。</p></div>
+</div>
+
+<p>注意“尽量”二字。容器仍然依赖宿主机 CPU 架构、内核、存储和网络；它不是把所有现实差异彻底抹平，而是把大量原本散落在机器里的环境差异收束为明确配置。</p>
+
+<section id="map">
+<h2>二、先看完整系统地图：Docker 不是一个单独程序</h2>
+<div class="concept-map">
+  <div class="pipeline">
+    <div class="node"><strong>docker CLI</strong>接收你的命令</div><div class="sep">→</div>
+    <div class="node"><strong>Docker API</strong>传递请求</div><div class="sep">→</div>
+    <div class="node"><strong>dockerd</strong>管理对象</div><div class="sep">→</div>
+    <div class="node"><strong>containerd / runc</strong>管理并启动容器进程</div><div class="sep">→</div>
+    <div class="node"><strong>Linux 内核</strong>提供 namespace、cgroup、网络与文件系统</div>
+  </div>
+  <p class="small">横向箭头表示控制请求；镜像层、挂载和网络配置会在创建容器时一并交给运行时。Docker 官方文档把 Engine 描述为客户端—服务器结构：CLI 通过 API 控制长期运行的 daemon，daemon 管理镜像、容器、网络和卷。</p>
+</div>
+
+<p>当你输入：</p>
+<pre><code>docker run --name demo -p 8080:80 nginx:alpine</code></pre>
+<p>终端里执行的 <code>docker</code> 只是客户端。真正长期管理容器的是 Docker daemon，即 <code>dockerd</code>。现代 Docker Engine 还使用 <code>containerd</code> 管理容器生命周期，默认再由符合 OCI 规范的 <code>runc</code> 创建底层容器进程。</p>
+
+<table>
+<thead><tr><th>部件</th><th>主要职责</th><th>不应误解为</th></tr></thead>
+<tbody>
+<tr><td>Docker CLI</td><td>把命令转换成 API 请求，展示结果</td><td>容器本身</td></tr>
+<tr><td>Docker daemon</td><td>管理镜像、容器、网络、卷和构建任务</td><td>你的应用进程</td></tr>
+<tr><td>Registry</td><td>保存和分发镜像，例如 Docker Hub 或私有仓库</td><td>正在运行的服务器</td></tr>
+<tr><td>containerd / runc</td><td>管理生命周期并调用内核机制创建进程</td><td>普通初学操作必须直接使用的命令</td></tr>
+<tr><td>Linux 内核</td><td>真正提供进程、namespace、cgroup、挂载和网络能力</td><td>Docker 自己重新实现的操作系统</td></tr>
+</tbody>
+</table>
+
+<div class="source-note"><strong>macOS 和 Windows 上的特殊点：</strong>Linux 容器需要 Linux 内核。Docker Desktop 会在轻量 Linux 虚拟机中运行 Docker Engine，再把端口、文件和 API 请求转接到宿主机。因而在 Mac 上输入 Docker 命令时，CLI 看起来在本机，真正的 Linux 容器进程却位于 Docker 管理的 VM 中。</div>
+</section>
+
+<section id="objects">
+<h2>三、镜像、容器和仓库：最容易混淆的三个对象</h2>
+
+<h3>1. 镜像不是“压缩后的容器”</h3>
+<div class="definition"><strong>镜像（image）</strong>是一个只读、可分层、可分发的应用模板。它包含文件系统内容以及默认启动命令、环境变量、工作目录等元数据。</div>
+<p>镜像更接近“程序运行环境的不可变版本”，而不是一个已经在运行的系统。你可以从同一个镜像创建许多彼此独立的容器。</p>
+
+<h3>2. 容器是一个受隔离的运行实例</h3>
+<div class="definition"><strong>容器（container）</strong>可以理解为：镜像的只读层 + 一个容器自己的可写层 + 网络、挂载、资源限制等运行配置 + 至少一个正在运行或曾经运行的进程。</div>
+<p>Docker 官方入门文档直接强调：容器本质上是在宿主机上运行的进程，只是它拥有独立的文件系统、网络和进程树视图。容器停止后，进程结束，但容器对象及其可写层可以暂时保留；容器被删除后，未放进卷或绑定挂载的数据通常也随之删除。</p>
+
+<h3>3. Registry 是镜像仓库服务</h3>
+<p><code>docker pull nginx:alpine</code> 中：</p>
+<div class="command-anatomy"><strong>nginx</strong><span>镜像仓库名；省略 Registry 时通常从默认仓库解析。</span></div>
+<div class="command-anatomy"><strong>alpine</strong><span>tag，表示一个人为命名的镜像版本标签。tag 不是不可变化的数学身份。</span></div>
+<p>镜像真正的内容身份通常由 digest 表示。生产系统若要求严格可重复性，会更关注不可变 digest，而不是可能被重新指向的 tag。</p>
+
+<table>
+<thead><tr><th>类比</th><th>Docker 对象</th><th>类比的边界</th></tr></thead>
+<tbody>
+<tr><td>类的定义</td><td>镜像</td><td>镜像还携带完整文件系统层，不只是代码结构</td></tr>
+<tr><td>类的实例</td><td>容器</td><td>容器是进程与隔离配置，不是普通内存对象</td></tr>
+<tr><td>包仓库</td><td>Registry</td><td>Registry 分发的是镜像层和元数据</td></tr>
+<tr><td>版本别名</td><td>tag</td><td>tag 可以变化，不应天然视为不可变版本</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="run">
+<h2>四、一次 <code>docker run</code> 内部发生什么</h2>
+<p>现在沿着下面的命令走一遍：</p>
+<pre><code>docker run -d --name hello-web -p 127.0.0.1:8080:80 hello-docker:v1</code></pre>
+
+<h3>步骤 1：CLI 解析参数并调用 Docker API</h3>
+<p><code>docker</code> 客户端不会自己创建 namespace。它把“基于什么镜像、叫什么名字、怎样映射端口、是否后台运行”等参数发送给 daemon。</p>
+
+<h3>步骤 2：daemon 检查镜像是否存在</h3>
+<p>若本地没有 <code>hello-docker:v1</code>，daemon 会尝试从 Registry 拉取；若镜像由你刚刚构建，则直接使用本地镜像层。</p>
+
+<h3>步骤 3：准备容器文件系统</h3>
+<p>Docker 将镜像的只读层叠在一起，并在最上方创建该容器独有的可写层。容器进程看到的是合并后的完整目录树，而不是一堆分散层。</p>
+
+<h3>步骤 4：准备隔离与资源控制</h3>
+<p>运行时为进程配置多个 Linux namespace，使其看到独立的进程编号、网络设备、挂载点、主机名等；同时可配置 cgroup，限制或统计 CPU、内存等资源。</p>
+
+<h3>步骤 5：准备网络和端口转发</h3>
+<p>容器接入 Docker 网络，获得内部地址。参数 <code>-p 127.0.0.1:8080:80</code> 表示：只在宿主机回环地址的 8080 端口监听，把连接转发到容器的 80 端口。</p>
+
+<h3>步骤 6：应用挂载和环境配置</h3>
+<p>若命令带有 <code>--mount</code>、<code>-v</code> 或环境变量参数，Docker 在启动进程前完成对应挂载与配置。</p>
+
+<h3>步骤 7：启动镜像规定的主进程</h3>
+<p>镜像的 <code>ENTRYPOINT</code> 与 <code>CMD</code> 共同决定默认进程。这个进程在容器中通常成为 PID 1。它结束时，容器通常就进入停止状态。</p>
+
+<h3>步骤 8：收集状态、标准输出和退出码</h3>
+<p>Docker 记录容器状态，并通过日志驱动处理进程的标准输出和标准错误。<code>docker logs</code> 不是进入容器翻日志文件，而是在读取 Docker 所收集的日志流。</p>
+
+<div class="concept-map">
+  <div class="pipeline">
+    <div class="node"><strong>CLI 参数</strong>镜像、端口、挂载</div><div class="sep">→</div>
+    <div class="node"><strong>API 请求</strong>发送给 daemon</div><div class="sep">→</div>
+    <div class="node"><strong>容器配置</strong>文件系统、网络、资源</div><div class="sep">→</div>
+    <div class="node"><strong>内核运行</strong>创建隔离进程</div><div class="sep">→</div>
+    <div class="node"><strong>可观察结果</strong>端口、日志、退出码</div>
+  </div>
+</div>
+</section>
+
+<section id="isolation">
+<h2>五、容器隔离的操作系统原理：不是模拟硬件，而是限制进程的视野</h2>
+
+<h3>1. Namespace：让进程看到“自己的世界”</h3>
+<p>Linux namespace 把原本全局的内核资源包装成不同视图。一个 namespace 中的进程看起来拥有自己的资源实例，而另一组进程看见另一套视图。容器常用的隔离包括：</p>
+<table>
+<thead><tr><th>namespace</th><th>隔离内容</th><th>容器内的直观效果</th></tr></thead>
+<tbody>
+<tr><td>PID</td><td>进程编号和进程树</td><td>容器只看到自己的进程，主进程可能显示为 PID 1</td></tr>
+<tr><td>mount</td><td>挂载点和文件系统视图</td><td>容器看到自己的根目录</td></tr>
+<tr><td>network</td><td>网卡、IP、路由、端口空间</td><td>每个容器可以拥有自己的 <code>eth0</code> 和内部 IP</td></tr>
+<tr><td>UTS</td><td>主机名与域名</td><td>容器可以有独立 hostname</td></tr>
+<tr><td>IPC</td><td>共享内存、信号量等进程间通信</td><td>默认不与其他容器共享 IPC 对象</td></tr>
+<tr><td>user</td><td>用户和组编号映射</td><td>容器内 root 可映射为宿主机非特权用户</td></tr>
+</tbody>
+</table>
+
+<p>关键不是“容器里真的存在另一套内核”，而是<strong>同一个 Linux 内核根据进程所属 namespace 返回不同视图</strong>。</p>
+
+<h3>2. cgroup：隔离视野之外，还要控制资源</h3>
+<p>仅靠 namespace，一个容器仍可能耗尽整台机器的内存或 CPU。控制组（cgroup）用于统计、限制和分配进程组资源。例如：</p>
+<pre><code>docker run --memory 256m --cpus 0.5 some-image</code></pre>
+<p>这类参数最终需要内核 cgroup 执行。Docker 提供易用接口，但资源控制不是 Docker 凭空创造的。</p>
+
+<h3>3. 为什么容器通常比虚拟机轻</h3>
+<table>
+<thead><tr><th>维度</th><th>容器</th><th>传统虚拟机</th></tr></thead>
+<tbody>
+<tr><td>隔离层次</td><td>操作系统进程与内核资源视图</td><td>虚拟硬件与完整 guest OS</td></tr>
+<tr><td>内核</td><td>多个容器通常共享宿主 Linux 内核</td><td>每台 VM 有自己的 guest 内核</td></tr>
+<tr><td>启动</td><td>主要是创建进程与隔离配置</td><td>需要启动完整操作系统</td></tr>
+<tr><td>镜像体积</td><td>主要包含用户态文件</td><td>通常包含完整系统磁盘</td></tr>
+<tr><td>隔离强度</td><td>通常弱于独立 VM，需谨慎配置</td><td>虚拟化边界通常更强</td></tr>
+</tbody>
+</table>
+
+<div class="warning"><strong>“容器轻量”不等于“容器天然安全”。</strong>容器共享内核，错误的特权模式、危险挂载、暴露 Docker socket 或有漏洞的内核都可能破坏隔离。不要把 Docker 当作绝对安全沙箱。</div>
+</section>
+
+<section id="filesystem">
+<h2>六、分层文件系统与写时复制：为什么镜像可以复用</h2>
+
+<p>Docker 镜像由多层组成。Dockerfile 中会改变文件系统的指令通常产生新的层。假设：</p>
+<pre><code>FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY app.py .
+CMD ["python", "app.py"]</code></pre>
+<p>可以粗略理解为：</p>
+<div class="pipeline">
+  <div class="node"><strong>基础层</strong>Python 用户态环境</div><div class="sep">+</div>
+  <div class="node"><strong>依赖描述层</strong>requirements.txt</div><div class="sep">+</div>
+  <div class="node"><strong>依赖安装层</strong>site-packages</div><div class="sep">+</div>
+  <div class="node"><strong>应用代码层</strong>app.py</div>
+</div>
+
+<p>多个镜像若共享相同基础层，本地只需存一份内容。构建时，如果某一层的输入没有变化，构建器也可能复用缓存。</p>
+
+<h3>写时复制（copy-on-write）</h3>
+<p>镜像层保持只读。容器若要修改来自下层的文件，存储驱动会先把该文件复制到容器的可写层，再修改副本。Docker 官方对经典 <code>overlay2</code> 存储驱动的描述就是：查找下层文件、执行 <code>copy_up</code>、随后只修改上层副本。</p>
+
+<p>这解释了三个现象：</p>
+<ul>
+  <li>从同一镜像启动多个容器很快，因为它们共享只读层；</li>
+  <li>每个容器仍可拥有自己的修改，因为最上层可写层不同；</li>
+  <li>不应把数据库长期数据只放在容器可写层，因为删除容器会删除该层。</li>
+</ul>
+
+<div class="source-note">Docker 新版本还支持由 containerd snapshotter 管理镜像和容器数据。初学阶段不必记住存储后端产品清单，但要记住稳定抽象：<strong>镜像由不可变内容层构成，容器获得自己的可写视图；持久数据应脱离容器生命周期。</strong></div>
+</section>
+
+<section id="network">
+<h2>七、容器网络与端口映射：容器里的 80 端口不等于你电脑的 80 端口</h2>
+
+<h3>1. 容器拥有独立网络 namespace</h3>
+<p>容器内的应用可以监听 <code>0.0.0.0:80</code>，但这个 80 端口位于容器自己的网络空间。宿主机浏览器不会自动知道如何连接它。</p>
+
+<h3>2. <code>-p</code> 发布端口</h3>
+<pre><code>docker run -p 127.0.0.1:8080:80 nginx:alpine</code></pre>
+<div class="command-anatomy"><strong>127.0.0.1</strong><span>只允许宿主机本地连接；省略时常会绑定所有宿主机接口。</span></div>
+<div class="command-anatomy"><strong>8080</strong><span>宿主机端口，浏览器访问 <code>localhost:8080</code>。</span></div>
+<div class="command-anatomy"><strong>80</strong><span>容器端口，Nginx 在容器内部监听。</span></div>
+<p>因此 <code>8080:80</code> 不是“把容器端口改成 8080”，而是创建一条外部入口到内部端口的转发关系。</p>
+
+<h3>3. 用户自定义 bridge 网络与服务发现</h3>
+<p>同一宿主机上的多个容器通常接入 bridge 网络。Docker 官方文档指出，用户自定义 bridge 会为容器提供按名称解析。Compose 默认也会为一个应用创建网络，并让各服务通过服务名发现彼此。</p>
+<p>所以第二个项目中，Web 应用连接 Redis 时写：</p>
+<pre><code>REDIS_HOST=redis</code></pre>
+<p>这里的 <code>redis</code> 不是你电脑的 DNS 域名，而是 Compose 服务名。Docker 网络内部 DNS 会把它解析到 Redis 容器当前地址。不要把容器 IP 硬编码进代码，因为容器重建后 IP 可能变化。</p>
+
+<h3>4. <code>EXPOSE</code> 不等于发布</h3>
+<p>Dockerfile 中的 <code>EXPOSE 80</code> 主要表达镜像预期使用哪个端口，是一种元数据和文档。它本身不会自动让宿主机访问容器；真正发布端口仍需 <code>-p</code> 或 Compose 的 <code>ports</code>。</p>
+</section>
+
+<section id="storage">
+<h2>八、容器数据为什么会消失：可写层、volume 与 bind mount</h2>
+
+<table>
+<thead><tr><th>方式</th><th>数据由谁管理</th><th>典型用途</th><th>主要风险</th></tr></thead>
+<tbody>
+<tr><td>容器可写层</td><td>随容器对象管理</td><td>临时文件、缓存、可丢弃输出</td><td>删容器即丢，难以迁移和备份</td></tr>
+<tr><td>named volume</td><td>Docker 管理宿主机存储位置</td><td>数据库、Redis、应用持久数据</td><td>容易忘记清理；需单独备份策略</td></tr>
+<tr><td>bind mount</td><td>直接使用宿主机指定路径</td><td>开发源码、配置、需要人工编辑的文件</td><td>强依赖宿主目录结构和权限；可能把敏感目录暴露给容器</td></tr>
+</tbody>
+</table>
+
+<p>Docker 官方建议：由容器生成并使用的持久数据通常优先考虑 volume；开发时把本地源码即时映射进容器，bind mount 更直观。</p>
+
+<h3>volume 的生命周期独立于容器</h3>
+<pre><code>docker volume create demo-data
+docker run --mount type=volume,src=demo-data,dst=/data some-image</code></pre>
+<p>删除这个容器后，<code>demo-data</code> 仍可保留并挂给新容器。第二个项目会用这个机制保存访问计数。</p>
+
+<h3>bind mount 是宿主目录的直接入口</h3>
+<pre><code>docker run --rm \
+  --mount type=bind,src="$PWD",dst=/usr/share/nginx/html,readonly \
+  -p 127.0.0.1:8080:80 nginx:alpine</code></pre>
+<p>此时容器看到的网页目录直接来自当前宿主目录。你修改 <code>index.html</code>，容器立刻看见变化；但容器也因此依赖本地目录位置和权限。</p>
+
+<div class="warning"><strong>挂载会遮蔽容器目标目录原有内容。</strong>如果你把一个空目录挂到应用目录，镜像里原先复制进去的文件会暂时不可见。初学者常把这个现象误以为镜像文件被删除了。</div>
+</section>
+
+<section id="build">
+<h2>九、Dockerfile 与构建缓存：把手工安装过程变成可重复说明书</h2>
+
+<h3>1. Dockerfile 描述的是构建过程</h3>
+<p>Dockerfile 不是启动脚本，也不是容器清单。它的主要产物是镜像。常见指令：</p>
+<table>
+<thead><tr><th>指令</th><th>作用</th><th>初学注意</th></tr></thead>
+<tbody>
+<tr><td><code>FROM</code></td><td>选择基础镜像</td><td>基础镜像也是依赖，应考虑版本与来源</td></tr>
+<tr><td><code>WORKDIR</code></td><td>设置后续操作和默认运行目录</td><td>比反复 <code>cd</code> 清楚</td></tr>
+<tr><td><code>COPY</code></td><td>从 build context 复制文件</td><td>不是任意读取整台电脑</td></tr>
+<tr><td><code>RUN</code></td><td>构建期间执行命令并形成结果层</td><td>容器运行时不会再次自动执行</td></tr>
+<tr><td><code>ENV</code></td><td>设置镜像默认环境变量</td><td>不要把密钥写进镜像层</td></tr>
+<tr><td><code>EXPOSE</code></td><td>声明预期容器端口</td><td>不等于宿主端口发布</td></tr>
+<tr><td><code>CMD</code></td><td>提供默认启动命令或参数</td><td>运行时可覆盖</td></tr>
+<tr><td><code>ENTRYPOINT</code></td><td>定义镜像主要可执行入口</td><td>与 CMD 的组合需单独理解</td></tr>
+</tbody>
+</table>
+
+<h3>2. build context 为什么存在</h3>
+<pre><code>docker build -t hello-docker:v1 .</code></pre>
+<p>最后的点表示当前目录是构建上下文。构建器可以从这个上下文读取被 <code>COPY</code> 引用的文件。若把整个大型项目、虚拟环境、Git 历史和密钥都放入上下文，构建会变慢，也可能造成泄漏。因此使用 <code>.dockerignore</code> 排除无关内容。</p>
+
+<h3>3. 构建缓存为何要求把稳定部分放前面</h3>
+<p>下面这种顺序：</p>
+<pre><code>COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .</code></pre>
+<p>意味着仅修改 <code>app.py</code> 时，依赖描述未变，安装依赖的层更可能复用缓存。若一开始就 <code>COPY . .</code>，任何代码变化都可能使后续依赖安装层失效。</p>
+
+<h3>4. 镜像不是源代码版本控制替代品</h3>
+<p>Git 记录源代码历史；镜像记录某次构建产物。二者应通过 commit、CI 构建和镜像标签/digest 建立关联，而不是只保留一个“latest”镜像就认为版本管理完成。</p>
+</section>
+
+<section id="compose">
+<h2>十、为什么需要 Docker Compose：一个应用通常不止一个容器</h2>
+
+<p>真实应用可能需要：</p>
+<ul>
+  <li>Web 服务；</li>
+  <li>数据库；</li>
+  <li>缓存；</li>
+  <li>后台任务 worker；</li>
+  <li>共享网络、环境变量和持久数据。</li>
+</ul>
+<p>若全靠多条 <code>docker run</code>，你必须手工记住网络、名字、端口、挂载和启动顺序。Compose 让你在一个 YAML 文件中声明应用栈的服务、网络和卷，然后用统一命令管理生命周期。</p>
+
+<pre><code>services:
+  web:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      REDIS_HOST: redis
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - counter-data:/data
+
+volumes:
+  counter-data:</code></pre>
+
+<p>这里的抽象关系是：</p>
+<div class="pipeline">
+  <div class="node"><strong>service</strong>一种长期角色的运行定义</div><div class="sep">→</div>
+  <div class="node"><strong>container</strong>该 service 的具体实例</div><div class="sep">→</div>
+  <div class="node"><strong>network</strong>服务间通信范围</div><div class="sep">→</div>
+  <div class="node"><strong>volume</strong>脱离容器的持久数据</div>
+</div>
+
+<div class="warning"><strong><code>depends_on</code> 主要表达启动依赖，不自动证明下游服务已经可用。</strong>Redis 容器进程已启动，不代表它恰好已准备接受请求。因此第二个项目的 Web 程序包含短暂重试；更正式的系统还会使用 healthcheck 和更明确的恢复策略。</div>
+
+<h3>Compose 不是什么</h3>
+<p>Compose 很适合单机开发、测试和小规模部署，但它不是自动跨多台机器调度、故障迁移和扩缩容的完整集群编排器。那是 Kubernetes、Swarm 或云平台编排系统要解决的另一层问题。</p>
+</section>
+
+<section id="boundary">
+<h2>十一、Docker 的边界与常见误解</h2>
+
+<div class="grid-2">
+  <div class="card"><h3>误解 1：容器就是轻量虚拟机</h3><p>容器主要隔离进程并共享内核；在 Mac/Windows 上虽然背后有 Linux VM，但每个容器并非各自启动一台 VM。</p></div>
+  <div class="card"><h3>误解 2：镜像能保证处处完全一致</h3><p>CPU 架构、宿主内核、外部服务、时钟、网络和挂载仍会造成差异。</p></div>
+  <div class="card"><h3>误解 3：把程序放进容器就安全了</h3><p>镜像漏洞、root 权限、特权容器、敏感挂载和暴露 daemon socket 都可能带来严重风险。</p></div>
+  <div class="card"><h3>误解 4：每个进程都应该拆成容器</h3><p>拆分边界应跟随部署、扩展、故障和所有权需要，不是为了增加容器数量。</p></div>
+  <div class="card"><h3>误解 5：数据库放进 volume 就完成备份</h3><p>volume 只改变生命周期，不自动提供一致性备份、异地恢复或灾难演练。</p></div>
+  <div class="card"><h3>误解 6：Compose 文件就是生产架构</h3><p>它描述单机应用栈，但生产还涉及安全、秘密管理、监控、容量、升级和回滚。</p></div>
+</div>
+
+<h3>什么时候 Docker 反而可能增加成本</h3>
+<ul>
+  <li>只有一个极简单的本地脚本，且没有环境分发需求；</li>
+  <li>应用强依赖图形桌面、特殊硬件或复杂宿主集成；</li>
+  <li>团队没有维护镜像、安全更新和存储清理的能力；</li>
+  <li>把容器化当作架构重构替代品，试图用 Docker 掩盖应用本身的问题。</li>
+</section>
+
+<section id="project1">
+<h2>十二、微型项目一：把一个静态网站构建成自己的镜像</h2>
+
+<section class="example"><strong>目标：</strong>在 30—60 分钟内亲手经历“Dockerfile → image → container → port → logs → inspect → stop/remove”，建立最小闭环。</section>
+
+<h3>1. 项目文件</h3>
+<pre><code>01-static-site/
+├── Dockerfile
+├── .dockerignore
+└── index.html</code></pre>
+
+<p><code>Dockerfile</code>：</p>
+<pre><code>FROM nginx:alpine
+COPY index.html /usr/share/nginx/html/index.html
+EXPOSE 80</code></pre>
+
+<p><code>index.html</code> 可以是任意简单页面。配套压缩包中已经提供完整版本。</p>
+
+<h3>2. 构建镜像</h3>
+<pre><code>cd 01-static-site
+docker build -t hello-docker:v1 .</code></pre>
+<p>观察输出中哪些步骤执行，哪些步骤显示缓存命中。然后检查：</p>
+<pre><code>docker image ls
+docker image inspect hello-docker:v1</code></pre>
+
+<h3>3. 启动容器并访问</h3>
+<pre><code>docker run -d \
+  --name hello-web \
+  -p 127.0.0.1:8080:80 \
+  hello-docker:v1</code></pre>
+<p>浏览器打开 <code>http://localhost:8080</code>。</p>
+
+<h3>4. 不只看结果，要观察内部对象</h3>
+<pre><code>docker ps
+docker logs hello-web
+docker top hello-web
+docker exec hello-web nginx -T
+docker inspect hello-web</code></pre>
+<p>你要回答：</p>
+<ul>
+  <li>容器使用哪个镜像？</li>
+  <li>容器主进程是什么？</li>
+  <li>宿主端口与容器端口各是多少？</li>
+  <li>容器加入了哪个网络？</li>
+  <li>为什么在容器内看到 Nginx 配置，却不需要在宿主机安装 Nginx？</li>
+</ul>
+
+<h3>5. 修改页面，理解镜像不可变</h3>
+<p>编辑 <code>index.html</code> 后刷新浏览器，你会发现运行中的容器没有变化，因为文件已经在构建时复制进镜像。重新构建：</p>
+<pre><code>docker build -t hello-docker:v2 .
+docker run -d --name hello-web-v2 -p 127.0.0.1:8081:80 hello-docker:v2</code></pre>
+<p>同时访问 8080 和 8081，你会看到两个版本并存。这比“直接覆盖服务器目录”更接近不可变交付思路。</p>
+
+<h3>6. 清理</h3>
+<pre><code>docker stop hello-web hello-web-v2
+docker rm hello-web hello-web-v2
+docker image rm hello-docker:v1 hello-docker:v2</code></pre>
+
+<h3>7. 加餐：用 bind mount 体验开发模式</h3>
+<pre><code>docker run --rm \
+  --mount type=bind,src="$PWD",dst=/usr/share/nginx/html,readonly \
+  -p 127.0.0.1:8080:80 \
+  nginx:alpine</code></pre>
+<p>这次修改本地 HTML 会立即影响容器。比较两种模式：</p>
+<table>
+<thead><tr><th>模式</th><th>文件来源</th><th>适合</th></tr></thead>
+<tbody>
+<tr><td>构建进镜像</td><td>镜像不可变层</td><td>交付、测试、发布、版本并存</td></tr>
+<tr><td>bind mount</td><td>宿主当前目录</td><td>本地开发与即时编辑</td></tr>
+</tbody>
+</table>
+
+<section class="exercise"><strong>项目一验收标准：</strong>你不仅能打开网页，还能用自己的话解释 <code>build</code> 产生什么、<code>run</code> 产生什么、<code>8080:80</code> 的两端分别属于谁，以及为什么修改源文件不会自动修改已经构建的镜像。</section>
+</section>
+
+<section id="project2">
+<h2>十三、微型项目二：Flask + Redis 访问计数器</h2>
+
+<section class="example"><strong>目标：</strong>在 1—2 小时内体验两个容器如何通过 Compose 网络互相发现、为什么只有 Web 服务发布端口、数据如何通过 named volume 脱离容器生命周期。</section>
+
+<h3>1. 项目结构</h3>
+<pre><code>02-counter-compose/
+├── app.py
+├── requirements.txt
+├── Dockerfile
+├── compose.yaml
+└── .dockerignore</code></pre>
+
+<h3>2. 应用逻辑</h3>
+<p>Web 容器收到请求后，对 Redis 中的 <code>visits</code> 加一，再返回 JSON。关键连接代码是：</p>
+<pre><code>redis_client = Redis(
+    host=os.getenv("REDIS_HOST", "redis"),
+    port=6379,
+    decode_responses=True,
+)</code></pre>
+<p>默认主机名是 <code>redis</code>，与 Compose 的 Redis 服务名一致。</p>
+
+<h3>3. Compose 文件</h3>
+<pre><code>services:
+  web:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      REDIS_HOST: redis
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - counter-data:/data
+
+volumes:
+  counter-data:</code></pre>
+
+<p>逐项解释：</p>
+<div class="command-anatomy"><strong>web.build</strong><span>根据当前目录 Dockerfile 构建 Web 镜像。</span></div>
+<div class="command-anatomy"><strong>web.ports</strong><span>只有 Web 服务需要让宿主浏览器访问，因此发布 8000。</span></div>
+<div class="command-anatomy"><strong>REDIS_HOST=redis</strong><span>通过 Compose 内部 DNS 使用服务名连接。</span></div>
+<div class="command-anatomy"><strong>redis.image</strong><span>直接使用现成 Redis 镜像，不必自己重写其 Dockerfile。</span></div>
+<div class="command-anatomy"><strong>counter-data</strong><span>命名卷挂到 Redis 数据目录，使数据不随容器重建消失。</span></div>
+
+<h3>4. 启动整个应用</h3>
+<pre><code>cd 02-counter-compose
+docker compose up --build -d
+docker compose ps</code></pre>
+<p>多次访问：</p>
+<pre><code>curl http://localhost:8000/
+curl http://localhost:8000/
+curl http://localhost:8000/</code></pre>
+<p>返回中的 <code>visits</code> 应逐次增加。</p>
+
+<h3>5. 观察日志、网络和数据</h3>
+<pre><code>docker compose logs -f web
+docker compose exec redis redis-cli GET visits
+docker network ls
+docker volume ls</code></pre>
+<p>还可以查看 Compose 创建的具体网络：</p>
+<pre><code>docker network inspect 02-counter-compose_default</code></pre>
+<p class="small">实际网络名前缀通常来自项目目录，也可用 <code>docker compose ls</code> 和 <code>docker compose ps</code> 确认，不必死记示例名。</p>
+
+<h3>6. 验证“容器可替换，数据仍存在”</h3>
+<pre><code>docker compose down
+docker compose up -d
+curl http://localhost:8000/</code></pre>
+<p><code>down</code> 会删除 Compose 创建的容器和默认网络，但默认不删除命名卷。重新创建 Redis 容器后，访问计数应延续。</p>
+
+<h3>7. 再验证删除 volume 的后果</h3>
+<pre><code>docker compose down -v
+docker compose up -d
+curl http://localhost:8000/</code></pre>
+<p>这次计数应重新开始，因为 <code>-v</code> 删除了命名卷。这个实验比背诵“volume 用于持久化”更重要：你亲眼看到了容器生命周期和数据生命周期的分离。</p>
+
+<h3>8. 故障实验</h3>
+<p>停止 Redis：</p>
+<pre><code>docker compose stop redis
+curl http://localhost:8000/</code></pre>
+<p>Web 请求会失败。然后恢复：</p>
+<pre><code>docker compose start redis
+curl http://localhost:8000/</code></pre>
+<p>这说明 Compose 解决了“怎样声明和启动多个服务”，但不会让依赖故障自动消失。应用仍需超时、重试、健康检查、降级和错误处理。</p>
+
+<section class="exercise"><strong>项目二验收标准：</strong>你能解释为什么 Web 可以通过 <code>redis:6379</code> 连接数据库、为什么 Redis 无需发布宿主端口、为什么 <code>down</code> 后计数保留而 <code>down -v</code> 后重置，以及 Compose 解决了哪些问题、没有解决哪些问题。</section>
+</section>
+
+<section id="next">
+<h2>十四、做完两个项目后，你应该获得什么能力</h2>
+
+<table>
+<thead><tr><th>层次</th><th>完成项目后的可观察能力</th><th>还不代表已经掌握</th></tr></thead>
+<tbody>
+<tr><td>黑盒使用</td><td>会安装、拉镜像、构建、运行、停止、查看日志和清理</td><td>生产安全与性能调优</td></tr>
+<tr><td>灰盒理解</td><td>能解释 CLI、daemon、镜像、容器、网络、挂载和 Compose 的关系</td><td>存储驱动、OCI runtime 与内核实现细节</td></tr>
+<tr><td>白盒入口</td><td>能沿一次 <code>docker run</code> 描述 namespace、cgroup、文件层和端口转发</td><td>手工使用 namespace/cgroup 构造容器</td></tr>
+<tr><td>工程应用</td><td>能为小型项目写 Dockerfile 和 Compose，区分开发挂载与交付镜像</td><td>CI/CD、镜像签名、漏洞治理、集群编排和灾备</td></tr>
+</tbody>
+</table>
+
+<h3>下一步推荐顺序</h3>
+<ol>
+  <li>给你已有的一个小工具补 Dockerfile，而不是继续做纯示例；</li>
+  <li>加入非 root 用户、healthcheck、环境变量与秘密管理；</li>
+  <li>学习多阶段构建，缩小镜像；</li>
+  <li>把构建放进 GitHub Actions 或其他 CI；</li>
+  <li>理解镜像 digest、SBOM、漏洞扫描和供应链；</li>
+  <li>最后再进入 Kubernetes，不要把容器基本对象没弄清就直接学集群名词。</li>
+</ol>
+
+<section class="thesis"><strong>全文压缩：</strong>Docker 没有把应用变成一台小型虚拟机。它把应用文件和启动契约做成分层镜像，由 daemon 调用容器运行时，借助 Linux namespace、cgroup、挂载和网络创建一个受隔离的进程；volume 把数据生命周期从容器中分离，Compose 再把多个容器组织成一个可重复启动的应用栈。</section>
+</section>
+
+<section id="questions">
+<h2>十五、自检题与参考答案</h2>
+
+<details><summary>1. 镜像和容器最核心的区别是什么？</summary><p>镜像是只读、可分发的模板；容器是基于镜像创建的运行实例，额外拥有可写层、网络、挂载、资源配置和进程状态。</p></details>
+<details><summary>2. 为什么说容器不是完整虚拟机？</summary><p>Linux 容器通常共享宿主内核，主要通过 namespace 改变进程看到的资源视图，并用 cgroup 控制资源；传统 VM 则虚拟硬件并启动独立 guest OS 内核。</p></details>
+<details><summary>3. <code>-p 8080:80</code> 两个端口分别属于谁？</summary><p>8080 属于宿主机监听入口，80 属于容器网络 namespace 内应用监听端口。Docker 建立转发。</p></details>
+<details><summary>4. 为什么删除容器后数据库数据可能消失？</summary><p>若数据只写在容器可写层，该层随容器删除；使用 volume 或适当 bind mount 才能把数据生命周期与容器分开。</p></details>
+<details><summary>5. 为什么 Dockerfile 中先复制 requirements，再复制应用代码？</summary><p>依赖描述变化频率通常低于应用代码。这样代码修改时更可能复用依赖安装层缓存，减少重复下载和安装。</p></details>
+<details><summary>6. Compose 中 Web 为什么用主机名 <code>redis</code>？</summary><p>Compose 默认网络提供按服务名的内部 DNS。服务可以使用稳定名字通信，而不用依赖重建后可能变化的容器 IP。</p></details>
+<details><summary>7. <code>EXPOSE 80</code> 为什么不能代替 <code>-p</code>？</summary><p><code>EXPOSE</code> 主要声明镜像预期端口；<code>-p</code> 才在宿主机创建可访问的发布入口。</p></details>
+<details><summary>8. Docker 解决了哪些问题，却没有解决哪些问题？</summary><p>它擅长可重复构建、镜像分发、进程隔离、生命周期与单机多服务组织；不会自动解决应用架构、数据备份、安全漏洞、跨机器调度、容量、监控和灾难恢复。</p></details>
+</section>
+
+<section>
+<h2>参考资料</h2>
+<ol class="source-list">
+  <li>Docker Docs, <a href="https://docs.docker.com/get-started/docker-overview/">What is Docker?</a>：Docker 架构、daemon、client 与对象。</li>
+  <li>Docker Docs, <a href="https://docs.docker.com/engine/">Docker Engine</a>：Engine 的客户端—服务器结构。</li>
+  <li>Docker Docs, <a href="https://docs.docker.com/engine/containers/run/">Running containers</a>：容器作为隔离进程及 <code>docker run</code>。</li>
+  <li>Docker Docs, <a href="https://docs.docker.com/engine/security/">Docker Engine security</a>：namespace、cgroup 与隔离。</li>
+  <li>Docker Docs, <a href="https://docs.docker.com/engine/daemon/alternative-runtimes/">Alternative container runtimes</a>：containerd 与默认 runc。</li>
+  <li>Open Container Initiative, <a href="https://specs.opencontainers.org/runtime-spec/">Runtime Specification</a>：容器配置、执行环境和生命周期标准。</li>
+  <li>Docker Docs, <a href="https://docs.docker.com/build/concepts/dockerfile/">Dockerfile overview</a>：镜像层、Dockerfile 和构建流程。</li>
+  <li>Docker Docs, <a href="https://docs.docker.com/engine/storage/drivers/">Storage drivers</a> 与 <a href="https://docs.docker.com/engine/storage/drivers/overlayfs-driver/">OverlayFS storage driver</a>：分层文件系统与 copy-on-write。</li>
+  <li>Docker Docs, <a href="https://docs.docker.com/engine/network/">Networking overview</a> 与 <a href="https://docs.docker.com/engine/network/drivers/bridge/">Bridge network driver</a>：端口发布、bridge 与名称解析。</li>
+  <li>Docker Docs, <a href="https://docs.docker.com/engine/storage/volumes/">Volumes</a> 与 <a href="https://docs.docker.com/engine/storage/bind-mounts/">Bind mounts</a>：两种持久化与宿主文件共享方式。</li>
+  <li>Docker Docs, <a href="https://docs.docker.com/compose/">Docker Compose</a> 与 <a href="https://docs.docker.com/compose/how-tos/networking/">Networking in Compose</a>：多服务声明、默认网络和服务发现。</li>
+  <li>Docker Docs, <a href="https://docs.docker.com/desktop/features/networking/">Networking on Docker Desktop</a>：Mac 与 Windows 上的轻量 Linux VM、端口和文件转接。</li>
+</ol>
+</section>
+
+<section id="reader-feedback" data-feedback-status="pending">
+  <h2>读后反馈与修订记录</h2>
+  <article class="feedback-entry" data-date="2026-07-25" data-round="0">
+    <h3>2026-07-25 · 初始生成</h3>
+    <p><strong>原始需求：</strong>知道 Docker 大概做什么，但不了解工作原理，也没有实际上手；需要介绍 Docker 功能及原理，并推荐两个微型项目快速上手。</p>
+    <p><strong>问题分类：</strong>先修画像 / 系统结构 / 实践路线。</p>
+    <p><strong>处理：</strong>按“问题—系统地图—一次 run 的完整链路—内核机制—网络与存储—两个递进项目”组织；附带可运行项目文件。</p>
+    <p><strong>Skill 更新：</strong>计算机领域画像已把“熟悉 Docker”修正为“知道用途但未理解原理、无实际操作经验”。</p>
+    <p><strong>状态：</strong>待阅读反馈。</p>
+  </article>
+</section>
+</body>
+</html>

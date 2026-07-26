@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="corpus-id" content="math-001" />
+  <meta name="corpus-category" content="数学" />
+  <meta name="corpus-status" content="awaiting_review" />
+  <meta name="estimated-reading-time" content="30-35 minutes" />
+  <meta name="corpus-integrated-date" content="2026-07-16" />
+  <title>应用随机过程导论（一）：为什么一个随机变量不够？</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #dadce0;
+      --soft: #f6f8fa;
+      --accent: #174ea6;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      font-size: 17px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 36px 42px 80px;
+      color: var(--ink);
+      background: #fff;
+      font-family: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC",
+        "STSong", serif;
+      line-height: 1.85;
+      overflow-wrap: break-word;
+    }
+
+    h1, h2, h3, h4 {
+      color: #111;
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+      line-height: 1.38;
+    }
+
+    h1 {
+      margin: 0 0 1.4rem;
+      font-size: 2rem;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      margin-top: 3rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+      font-size: 1.48rem;
+    }
+
+    h3 { margin-top: 2.2rem; font-size: 1.22rem; }
+    h4 { margin-top: 1.8rem; font-size: 1.08rem; }
+
+    p { margin: 0.85rem 0; }
+    li { margin: 0.34rem 0; }
+
+    blockquote {
+      margin: 1.2rem 0;
+      padding: 0.65rem 1rem;
+      color: #3c4043;
+      background: var(--soft);
+      border-left: 4px solid #8ab4f8;
+    }
+
+    blockquote > :first-child { margin-top: 0; }
+    blockquote > :last-child { margin-bottom: 0; }
+
+    a { color: var(--accent); text-underline-offset: 0.14em; }
+
+    hr {
+      margin: 2.6rem 0;
+      border: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    nav#TOC {
+      margin: 1.8rem 0 2.8rem;
+      padding: 1rem 1.2rem;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+    }
+
+    nav#TOC::before {
+      display: block;
+      margin-bottom: 0.45rem;
+      font-weight: 700;
+      content: "目录";
+    }
+
+    nav#TOC ul { margin: 0.25rem 0; padding-left: 1.35rem; }
+
+    table {
+      display: block;
+      width: 100%;
+      margin: 1.35rem 0;
+      overflow-x: auto;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+
+    th, td {
+      padding: 0.62rem 0.75rem;
+      border: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--soft);
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+      text-align: left;
+    }
+
+    math {
+      font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", serif;
+      font-size: 1.02em;
+    }
+
+    math[display="block"] {
+      display: block;
+      max-width: 100%;
+      margin: 1.25rem auto;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0.18rem 0;
+    }
+
+    code {
+      padding: 0.12em 0.3em;
+      background: var(--soft);
+      border-radius: 4px;
+    }
+
+    @media (max-width: 640px) {
+      html { font-size: 16px; }
+      body { padding: 22px 18px 56px; line-height: 1.78; }
+      h1 { font-size: 1.68rem; }
+      h2 { margin-top: 2.5rem; font-size: 1.36rem; }
+      h3 { font-size: 1.17rem; }
+      nav#TOC { padding: 0.85rem 0.9rem; }
+    }
+
+    @media print {
+      body { max-width: none; padding: 0; color: #000; }
+      nav#TOC { break-after: page; }
+      h2, h3 { break-after: avoid; }
+      table, blockquote, math[display="block"] { break-inside: avoid; }
+      a { color: #000; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">应用随机过程导论（一）：为什么一个随机变量不够？</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#0-先给出本文的中心句" id="toc-0-先给出本文的中心句">0.
+先给出本文的中心句</a></li>
+<li><a href="#1-随机过程是为了解决什么问题而建立的"
+id="toc-1-随机过程是为了解决什么问题而建立的">1.
+随机过程是为了解决什么问题而建立的？</a></li>
+<li><a href="#2-概率空间为什么不把所有子集都称为事件"
+id="toc-2-概率空间为什么不把所有子集都称为事件">2.
+概率空间：为什么不把所有子集都称为事件？</a></li>
+<li><a href="#3-从随机变量到随机过程" id="toc-3-从随机变量到随机过程">3.
+从随机变量到随机过程</a></li>
+<li><a href="#4-函数空间观点一次试验产生一整条函数"
+id="toc-4-函数空间观点一次试验产生一整条函数">4.
+函数空间观点：一次试验产生一整条函数</a></li>
+<li><a href="#5-四个例子定义中的每个部件分别在做什么"
+id="toc-5-四个例子定义中的每个部件分别在做什么">5.
+四个例子：定义中的每个部件分别在做什么</a></li>
+<li><a href="#6-为什么每个时刻的分布不够"
+id="toc-6-为什么每个时刻的分布不够">6.
+为什么每个时刻的分布不够？</a></li>
+<li><a href="#7-kolmogorov-扩张定理有限信息能否产生无限对象"
+id="toc-7-kolmogorov-扩张定理有限信息能否产生无限对象">7. Kolmogorov
+扩张定理：有限信息能否产生无限对象？</a></li>
+<li><a
+href="#8-一个重要陷阱逐时刻几乎必然相等不等于整条路径几乎必然相等"
+id="toc-8-一个重要陷阱逐时刻几乎必然相等不等于整条路径几乎必然相等">8.
+一个重要陷阱：逐时刻几乎必然相等，不等于整条路径几乎必然相等</a></li>
+<li><a href="#9-一次完整推导随机游走的跨时刻协方差"
+id="toc-9-一次完整推导随机游走的跨时刻协方差">9.
+一次完整推导：随机游走的跨时刻协方差</a></li>
+<li><a href="#10-用两个轴建立课程地图"
+id="toc-10-用两个轴建立课程地图">10. 用两个轴建立课程地图</a></li>
+<li><a href="#11-三个容易混淆但必须分开的层次"
+id="toc-11-三个容易混淆但必须分开的层次">11.
+三个容易混淆但必须分开的层次</a></li>
+<li><a href="#12-自检题" id="toc-12-自检题">12. 自检题</a></li>
+<li><a href="#13-参考答案" id="toc-13-参考答案">13. 参考答案</a></li>
+<li><a href="#14-本文结论" id="toc-14-本文结论">14. 本文结论</a></li>
+<li><a href="#15-下一篇预告" id="toc-15-下一篇预告">15.
+下一篇预告</a></li>
+<li><a href="#参考资料" id="toc-参考资料">参考资料</a></li>
+</ul>
+</nav>
+<blockquote>
+<p><strong>教材主线</strong>：张波、商豪、邓军，《应用随机过程（第五版）》，第
+1 章必要基础与第 2.1—2.2 节<br />
+<strong>预计阅读时间</strong>：30—35 分钟<br />
+<strong>本文任务</strong>：建立随机过程的研究对象，而不是提前记忆
+Poisson 过程、Markov 链等名词<br />
+<strong>你的先修基础</strong>：实分析、点集拓扑、基础概率统计；本文把测度与收敛视为可以唤醒的旧知识，把条件期望、生成函数、随机过程和函数空间中的概率对象视为新知识</p>
+</blockquote>
+<hr />
+<h2 id="0-先给出本文的中心句">0. 先给出本文的中心句</h2>
+<p>一个随机变量描述的是“一次随机试验产生的一个数”；一个随机过程描述的是“一次随机试验产生的一整条随参数变化的路径”。</p>
+<p>这句话看似只是把一个随机变量换成一族随机变量，但它引入了一个全新的困难：我们不仅要知道每个时刻分别发生什么，还要知道不同时刻之间如何依赖，以及无限多个时刻能否共同组成一个合法的随机对象。</p>
+<p>本文要解释的，正是这个困难为什么出现，以及现代概率论如何处理它。</p>
+<p>读完后，你应当能够回答：</p>
+<ol type="1">
+<li>随机过程的严格定义是什么？</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X_t(\omega)</annotation></semantics></math>
+中的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+分别扮演什么角色？</li>
+<li>为什么只知道每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>t</mi></msub><annotation encoding="application/x-tex">X_t</annotation></semantics></math>
+的分布远远不够？</li>
+<li>什么是有限维分布？为什么它们必须满足相容性？</li>
+<li>Kolmogorov 扩张定理解决了什么“存在性”问题？</li>
+<li>为什么连续模型通常不把样本空间的所有子集都叫作事件？</li>
+</ol>
+<hr />
+<h2 id="1-随机过程是为了解决什么问题而建立的">1.
+随机过程是为了解决什么问题而建立的？</h2>
+<h3 id="11-确定性动力学一次初始状态决定一条轨道">1.1
+确定性动力学：一次初始状态决定一条轨道</h3>
+<p>在经典力学或常微分方程中，我们常写</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi mathvariant="normal">d</mi><mi>x</mi></mrow><mrow><mi mathvariant="normal">d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mi>b</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>x</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>x</mi><mn>0</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{\mathrm dx}{\mathrm dt}=b(x(t)),\qquad x(0)=x_0.
+</annotation></semantics></math></p>
+<p>先解释这个公式：</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+是时间；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">x(t)</annotation></semantics></math>
+是系统在时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+的状态；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>
+给出状态变化的规律；</li>
+<li>初始值
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math>
+与演化规律
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>
+一旦确定，适当条件下就得到一条确定轨道
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><mi>x</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t\mapsto x(t)</annotation></semantics></math>。</li>
+</ul>
+<p>这类理论擅长回答：“已知现在和运动规律，未来是什么？”</p>
+<p>但许多现象无法用一条确定轨道描述：电话何时到达交换台、放射性粒子何时衰变、机器何时损坏、股票价格如何波动、液体中的微粒下一刻向哪边移动。困难不一定来自世界“本质上随机”；也可能来自变量太多、微观信息不可观测，或者我们只关心宏观统计规律。无论哲学解释如何，数学任务相同：为“整段时间中的不确定演化”建立模型。</p>
+<h3 id="12-普通随机变量只能拍下一张随机快照">1.2
+普通随机变量：只能拍下一张随机快照</h3>
+<p>若只关心明天中午的排队人数，可以定义随机变量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>。它的分布告诉我们</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>=</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>k</mi><mo>=</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">
+\mathbb P(X=k),\qquad k=0,1,2,\ldots
+</annotation></semantics></math></p>
+<p>但如果要管理一个全天运行的服务系统，真正的问题会变成：</p>
+<ul>
+<li>上午 8 点到 9 点来了多少人？</li>
+<li>已经连续空闲半小时，会不会影响下一分钟有人到达的概率？</li>
+<li>队长第一次超过 20 是什么时候？</li>
+<li>长时间运行后，队长分布会不会稳定？</li>
+</ul>
+<p>一个时刻的随机变量回答不了这些问题。我们需要对每个时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+都设置一个随机变量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>t</mi></msub><annotation encoding="application/x-tex">X_t</annotation></semantics></math>，并且规定它们之间的联合关系。</p>
+<p>因此，从随机变量到随机过程的关键变化不是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mspace width="1.0em"></mspace><mo>→</mo><mspace width="1.0em"></mspace><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><msub><mi>X</mi><mn>2</mn></msub><mo>,</mo><msub><mi>X</mi><mn>3</mn></msub><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">
+X\quad\longrightarrow\quad X_1,X_2,X_3,\ldots
+</annotation></semantics></math></p>
+<p>这种数量上的增加，而是研究对象从“一个随机值”变成了“随机演化规律”。</p>
+<h3 id="13-历史上理论由具体难题推动">1.3 历史上，理论由具体难题推动</h3>
+<p>随机过程并不是先有抽象定义、再去寻找应用。相反，多个领域先产生了“随机量随时间演化”的问题，随后数学家才逐步抽象出共同结构。</p>
+<ul>
+<li>1900 年，Bachelier
+在博士论文《投机理论》中研究随时间变化的市场价格，把概率分布的演化用于金融问题。这里的对象已不再是一次赌博的单个收益，而是价格在整个时间轴上的变化。<a
+href="https://www.numdam.org/item/ASENS_1900_3_17__21_0/">Bachelier
+原文及书目信息</a></li>
+<li>1905 年，Einstein
+从分子运动理论出发研究悬浮微粒的不规则位移。他关心的是位移分布如何随时间改变，并说明这种可观察运动能够检验分子运动论；若预言失败，反而会构成反对该理论的重要证据。<a
+href="https://www.damtp.cam.ac.uk/user/gold/pdfs/teaching/old_literature/Einstein1905.pdf">Einstein
+1905 年论文英译本</a></li>
+<li>1923 年，Wiener 不再只计算某个时刻的位置分布，而是尝试在由函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><mi>x</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t\mapsto x(t)</annotation></semantics></math>
+组成的空间上定义概率。他明确指出，Brown
+运动中相互独立的不是不同时刻的位置，而是不相交时间段上的位移。这已经非常接近现代随机过程的路径空间观点。<a
+href="https://djalil.chafai.net/docs/M2/history-brownian-motion/Wiener%20-%201923.pdf">Wiener《Differential-Space》</a></li>
+<li>1933 年，Kolmogorov
+把概率论放进测度论框架，并系统处理无限多个随机变量如何由有限维分布建立的问题。概率论由此获得了一种可以统一离散、连续以及路径空间模型的公理语言。<a
+href="https://www.york.ac.uk/depts/maths/histstat/kolmogorov_foundations.pdf">Kolmogorov《概率论基础》英译本</a></li>
+</ul>
+<p>这段历史中有一条很重要的逻辑线：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">单次赌博的随机结果</mtext><mo>→</mo><mtext mathvariant="normal">随时间变化的随机现象</mtext><mo>→</mo><mtext mathvariant="normal">整条随机路径</mtext><mo>→</mo><mtext mathvariant="normal">函数空间上的概率测度</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{单次赌博的随机结果}
+\longrightarrow
+\text{随时间变化的随机现象}
+\longrightarrow
+\text{整条随机路径}
+\longrightarrow
+\text{函数空间上的概率测度}.
+</annotation></semantics></math></p>
+<p>旧概率论并非错误，而是研究对象不够大。随机过程理论要补足的是“时间结构”“跨时刻依赖”和“无限维联合分布”。</p>
+<hr />
+<h2 id="2-概率空间为什么不把所有子集都称为事件">2.
+概率空间：为什么不把所有子集都称为事件？</h2>
+<p>你已经学过实分析，因此这里不从集合运算本身讲起，而是说明每个结构在概率论中承担什么任务。</p>
+<h3 id="21-严格定义">2.1 严格定义</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
+是一个非空集合。它表示一次随机试验所有可能结果构成的样本空间。</p>
+<p><strong>定义
+2.1（<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数）</strong><br />
+集合族
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℱ</mi><mo>⊆</mo><mi>𝒫</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal F\subseteq \mathcal P(\Omega)</annotation></semantics></math>
+称为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
+上的一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数，如果：</p>
+<ol type="1">
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Ω</mi><mo>∈</mo><mi>ℱ</mi></mrow><annotation encoding="application/x-tex">\Omega\in\mathcal F</annotation></semantics></math>；</li>
+<li>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>∈</mo><mi>ℱ</mi></mrow><annotation encoding="application/x-tex">A\in\mathcal F</annotation></semantics></math>，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>A</mi><mi>c</mi></msup><mo>∈</mo><mi>ℱ</mi></mrow><annotation encoding="application/x-tex">A^c\in\mathcal F</annotation></semantics></math>；</li>
+<li>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mn>1</mn></msub><mo>,</mo><msub><mi>A</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi><mo>∈</mo><mi>ℱ</mi></mrow><annotation encoding="application/x-tex">A_1,A_2,\ldots\in\mathcal F</annotation></semantics></math>，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>⋃</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>∞</mi></msubsup><msub><mi>A</mi><mi>n</mi></msub><mo>∈</mo><mi>ℱ</mi></mrow><annotation encoding="application/x-tex">\bigcup_{n=1}^{\infty}A_n\in\mathcal F</annotation></semantics></math>。</li>
+</ol>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℱ</mi><annotation encoding="application/x-tex">\mathcal F</annotation></semantics></math>
+中的集合称为<strong>事件</strong>。</p>
+<p>这三个条件不是形式主义装饰。它们保证：若一个问题可以被赋予概率，那么它的否定、可数次“或”，以及由它们得到的可数次“且”也可以被赋予概率。之所以要求“可数”而非“任意”并，是因为概率与极限运算密切相关，而序列正是分析中的基本极限工具。</p>
+<p><strong>定义 2.2（概率测度）</strong><br />
+映射</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mo>:</mo><mi>ℱ</mi><mo>→</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">
+\mathbb P:\mathcal F\to[0,1]
+</annotation></semantics></math></p>
+<p>称为概率测度，如果：</p>
+<ol type="1">
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\mathbb P(\Omega)=1</annotation></semantics></math>；</li>
+<li>对任意两两不交的事件
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mn>1</mn></msub><mo>,</mo><msub><mi>A</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">A_1,A_2,\ldots</annotation></semantics></math>，有</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><munderover><mo>⋃</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mo accent="false">∞</mo></munderover><msub><mi>A</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mo accent="false">∞</mo></munderover><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>A</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb P\!\left(\bigcup_{n=1}^{\infty}A_n\right)
+=\sum_{n=1}^{\infty}\mathbb P(A_n).
+</annotation></semantics></math></p>
+<p>最后这个式子表达的是：若干可能性彼此排斥时，“其中至少一个发生”的概率等于各自概率之和；而且这一规则对可数多个事件仍成立。</p>
+<p>三元组</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo>,</mo><mi>ℱ</mi><mo>,</mo><mi>ℙ</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+(\Omega,\mathcal F,\mathbb P)
+</annotation></semantics></math></p>
+<p>称为概率空间。</p>
+<h3 id="22-不能给所有子集赋概率并不是无条件正确">2.2
+“不能给所有子集赋概率”并不是无条件正确</h3>
+<p>你的怀疑是对的。以下两种情形完全可以取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℱ</mi><mo>=</mo><mi>𝒫</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal F=\mathcal P(\Omega)</annotation></semantics></math>：</p>
+<ol type="1">
+<li><strong>有限或可数样本空间。</strong> 例如掷骰子时
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Ω</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\Omega=\{1,\ldots,6\}</annotation></semantics></math>，每个子集都可以作为事件。</li>
+<li><strong>退化概率。</strong> 对任意集合
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
+固定一点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ω</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\omega_0</annotation></semantics></math>，定义</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>A</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><msub><mi>ω</mi><mn>0</mn></msub><mo>∈</mo><mi>A</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><msub><mi>ω</mi><mn>0</mn></msub><mo>∉</mo><mi>A</mi><mi>.</mi></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+\mathbb P(A)=
+\begin{cases}
+1,&amp;\omega_0\in A,\\
+0,&amp;\omega_0\notin A.
+\end{cases}
+</annotation></semantics></math></p>
+<p>这个概率测度在整个幂集上都有定义。</p>
+<p>所以，准确说法不是“任何概率空间都不能给所有子集赋概率”，而是：</p>
+<blockquote>
+<p>对连续样本空间，如果要求概率具有我们期待的几何对称性，并保持可数可加性，通常不可能把概率定义在所有子集上。</p>
+</blockquote>
+<h3 id="23-vitali-型矛盾究竟破坏了什么">2.3 Vitali
+型矛盾究竟破坏了什么？</h3>
+<p>考虑圆周群</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝕋</mi><mo>=</mo><mi>ℝ</mi><mi>/</mi><mi>ℤ</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\mathbb T=\mathbb R/\mathbb Z,
+</annotation></semantics></math></p>
+<p>也就是把区间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[0,1)</annotation></semantics></math>
+的两端粘起来。我们想在它上面定义“均匀随机点”。自然要求如下：</p>
+<ol type="1">
+<li>总概率是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>；</li>
+<li>旋转一个集合不改变它的概率，即平移不变性；</li>
+<li>对两两不交的可数个集合满足可数可加性；</li>
+<li>每一个子集都有概率。</li>
+</ol>
+<p>下面说明这四项不能共存。</p>
+<p>在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝕋</mi><annotation encoding="application/x-tex">\mathbb T</annotation></semantics></math>
+上定义等价关系</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>∼</mo><mi>y</mi><mspace width="1.0em"></mspace><mo>⇔</mo><mspace width="1.0em"></mspace><mi>x</mi><mo>−</mo><mi>y</mi><mo>∈</mo><mi>ℚ</mi><mi>/</mi><mi>ℤ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+x\sim y
+\quad\Longleftrightarrow\quad
+x-y\in\mathbb Q/\mathbb Z.
+</annotation></semantics></math></p>
+<p>含义是：若两个点相差一个有理角度，就把它们放进同一个等价类。利用选择公理，从每个等价类中取一个代表，组成集合
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>。</p>
+<p>枚举
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mi>/</mi><mi>ℤ</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>q</mi><mn>1</mn></msub><mo>,</mo><msub><mi>q</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathbb Q/\mathbb Z=\{q_1,q_2,\ldots\}</annotation></semantics></math>。那么平移集合</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>+</mo><msub><mi>q</mi><mn>1</mn></msub><mo>,</mo><mi>V</mi><mo>+</mo><msub><mi>q</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">
+V+q_1,V+q_2,\ldots
+</annotation></semantics></math></p>
+<p>两两不交，并且它们的并是整个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝕋</mi><annotation encoding="application/x-tex">\mathbb T</annotation></semantics></math>。</p>
+<p>先解释原因：每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>∈</mo><mi>𝕋</mi></mrow><annotation encoding="application/x-tex">x\in\mathbb T</annotation></semantics></math>
+所属的等价类在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>
+中恰有一个代表
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>，于是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mi>v</mi><mo>+</mo><msub><mi>q</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">x=v+q_n</annotation></semantics></math>；而如果同一个点同时属于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>+</mo><msub><mi>q</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">V+q_m</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>+</mo><msub><mi>q</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">V+q_n</annotation></semantics></math>，两个代表就会属于同一等价类，与“每类只取一个”矛盾。</p>
+<p>现在假设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>
+也有概率，并记</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>V</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+a=\mathbb P(V).
+</annotation></semantics></math></p>
+<p>由平移不变性，每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>+</mo><msub><mi>q</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">V+q_n</annotation></semantics></math>
+的概率都等于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>。再由可数可加性，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>=</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝕋</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℙ</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><munderover><mo>⋃</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mo accent="false">∞</mo></munderover><mrow><mo stretchy="true" form="prefix">(</mo><mi>V</mi><mo>+</mo><msub><mi>q</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mo accent="false">∞</mo></munderover><mi>a</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+1=\mathbb P(\mathbb T)
+=\mathbb P\!\left(\bigcup_{n=1}^{\infty}(V+q_n)\right)
+=\sum_{n=1}^{\infty}a.
+</annotation></semantics></math></p>
+<p>但如果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">a=0</annotation></semantics></math>，右边等于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>；如果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">a&gt;0</annotation></semantics></math>，右边发散到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>+</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">+\infty</annotation></semantics></math>。无论哪种情况都不可能等于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>。</p>
+<p>矛盾表明：为了保留连续均匀分布的平移对称性与可数可加性，我们必须放弃“每个子集都是事件”。</p>
+<h3 id="24-现实中的概率空间不是很良好吗">2.4
+现实中的概率空间不是很良好吗？</h3>
+<p>“良好”恰恰不是指“所有子集都可测”，而是指我们选择的可测结构足够表达实际问题，同时具有适合分析的拓扑与测度性质。</p>
+<p>例如在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb R</annotation></semantics></math>
+上通常使用 Borel
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℬ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℝ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>σ</mi><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mo stretchy="false" form="prefix">{</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>:</mo><mi>a</mi><mo>&lt;</mo><mi>b</mi><mo stretchy="false" form="postfix">}</mo><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\mathcal B(\mathbb R)=\sigma\bigl(\{(a,b):a&lt;b\}\bigr),
+</annotation></semantics></math></p>
+<p>再根据所用测度进行完备化。开集、闭集、可数并交、极限事件以及实际计算中遇到的绝大多数集合都在其中。Vitali
+集之类的对象依赖选择公理，通常不能通过有限或可数的观测规则构造出来。</p>
+<p>因此，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数不是说“这些不可测集合偷偷发生了但我们不管”，而是在数学模型中规定：哪些关于结果的问题是模型允许提出并赋予概率的。</p>
+<p>这个观点到了随机过程里尤其重要。一次试验的结果可能是一整条函数；这时我们还必须规定“函数空间中的哪些路径集合是事件”。</p>
+<hr />
+<h2 id="3-从随机变量到随机过程">3. 从随机变量到随机过程</h2>
+<h3 id="31-随机变量的严格定义">3.1 随机变量的严格定义</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo>,</mo><mi>ℱ</mi><mo>,</mo><mi>ℙ</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\Omega,\mathcal F,\mathbb P)</annotation></semantics></math>
+为概率空间。</p>
+<p><strong>定义 3.1（实随机变量）</strong><br />
+映射</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>:</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo>,</mo><mi>ℱ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℝ</mi><mo>,</mo><mi>ℬ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℝ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+X:(\Omega,\mathcal F)\longrightarrow(\mathbb R,\mathcal B(\mathbb R))
+</annotation></semantics></math></p>
+<p>若为可测函数，就称为实随机变量。也就是说，对每个 Borel 集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>⊆</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">B\subseteq\mathbb R</annotation></semantics></math>，都有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>X</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>ω</mi><mo>∈</mo><mi>Ω</mi><mo>:</mo><mi>X</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><mi>B</mi><mo stretchy="false" form="postfix">}</mo><mo>∈</mo><mi>ℱ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X^{-1}(B)=\{\omega\in\Omega:X(\omega)\in B\}\in\mathcal F.
+</annotation></semantics></math></p>
+<p>这个条件的意义是：关于数值
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+的问题“<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>∈</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">X\in B</annotation></semantics></math>
+吗？”必须对应样本空间中的合法事件，从而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>∈</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P(X\in B)</annotation></semantics></math>
+有定义。</p>
+<p>随机变量的分布是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb P</annotation></semantics></math>
+在映射
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+下的推前：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>X</mi></msub><mo>=</mo><msub><mi>X</mi><mi>#</mi></msub><mi>ℙ</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>μ</mi><mi>X</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>X</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mu_X=X_{\#}\mathbb P,
+\qquad
+\mu_X(B)=\mathbb P(X^{-1}(B)).
+</annotation></semantics></math></p>
+<p>这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>#</mi></msub><mi>ℙ</mi></mrow><annotation encoding="application/x-tex">X_{\#}\mathbb P</annotation></semantics></math>
+的意思是：不再记录复杂的原始结果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>，只记录
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X(\omega)</annotation></semantics></math>
+的取值，并把原来的概率搬运到数轴上。</p>
+<h3 id="32-随机过程的严格定义">3.2 随机过程的严格定义</h3>
+<p>设：</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo>,</mo><mi>ℱ</mi><mo>,</mo><mi>ℙ</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\Omega,\mathcal F,\mathbb P)</annotation></semantics></math>
+是概率空间；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+是参数集，常见为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℕ</mi><mn>0</mn></msub><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathbb N_0=\{0,1,2,\ldots\}</annotation></semantics></math>
+或
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[0,\infty)</annotation></semantics></math>；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>𝒮</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(S,\mathcal S)</annotation></semantics></math>
+是状态空间，例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">S=\mathbb R</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mi>d</mi></msup><annotation encoding="application/x-tex">\mathbb R^d</annotation></semantics></math>
+或可数集合。</li>
+</ul>
+<p><strong>定义 3.2（随机过程）</strong><br />
+以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+为参数集、以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+为状态空间的随机过程，是一族定义在同一概率空间上的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>-值随机变量：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>t</mi><mo>∈</mo><mi>T</mi></mrow></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>X</mi><mi>t</mi></msub><mo>:</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>Ω</mi><mo>,</mo><mi>ℱ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>𝒮</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X=(X_t)_{t\in T},
+\qquad
+X_t:(\Omega,\mathcal F)\to(S,\mathcal S).
+</annotation></semantics></math></p>
+<p>“定义在同一概率空间上”非常关键。它使我们能够讨论</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>s</mi></msub><mo>∈</mo><mi>A</mi><mo>,</mo><mspace width="0.167em"></mspace><msub><mi>X</mi><mi>t</mi></msub><mo>∈</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\mathbb P(X_s\in A,\,X_t\in B),
+</annotation></semantics></math></p>
+<p>也就是两个时刻之间的联合行为。如果每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>t</mi></msub><annotation encoding="application/x-tex">X_t</annotation></semantics></math>
+各自生活在互不相关的概率空间里，这个联合事件就没有意义。</p>
+<h3 id="33-x_tomega-的两个方向">3.3
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X_t(\omega)</annotation></semantics></math>
+的两个方向</h3>
+<p>随机过程可以写成二元映射</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>:</mo><mi>T</mi><mo>×</mo><mi>Ω</mi><mo>→</mo><mi>S</mi><mo>,</mo><mspace width="2.0em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>,</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>↦</mo><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X:T\times\Omega\to S,
+\qquad
+(t,\omega)\mapsto X_t(\omega).
+</annotation></semantics></math></p>
+<p>这个式子必须沿两个不同方向阅读。</p>
+<h4 id="固定-t得到一个随机变量">固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>：得到一个随机变量</h4>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ω</mi><mo>↦</mo><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\omega\longmapsto X_t(\omega).
+</annotation></semantics></math></p>
+<p>它描述“在时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，不同可能世界给出什么状态”。例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mn>10</mn></msub><annotation encoding="application/x-tex">X_{10}</annotation></semantics></math>
+可以表示第 10 分钟的排队人数。</p>
+<h4 id="固定-omega得到一条样本路径">固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>：得到一条样本路径</h4>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+t\longmapsto X_t(\omega).
+</annotation></semantics></math></p>
+<p>这称为对应于结果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+的<strong>样本路径</strong>或<strong>轨道</strong>。它描述“一次完整运行中，系统如何随时间演化”。</p>
+<table>
+<thead>
+<tr class="header">
+<th>固定什么</th>
+<th>剩下的映射</th>
+<th>研究的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>固定时间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ω</mi><mo>↦</mo><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\omega\mapsto X_t(\omega)</annotation></semantics></math></td>
+<td>该时刻的概率分布</td>
+</tr>
+<tr class="even">
+<td>固定样本
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t\mapsto X_t(\omega)</annotation></semantics></math></td>
+<td>路径是否连续、跳跃、有界等</td>
+</tr>
+<tr class="odd">
+<td>两者都不固定</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>,</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>↦</mo><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">(t,\omega)\mapsto X_t(\omega)</annotation></semantics></math></td>
+<td>时间与随机性组成的整体结构</td>
+</tr>
+</tbody>
+</table>
+<p>随机过程初学中最常见的混乱，就是在推导中没有说明固定的是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+还是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>。以后每看到一个结论，都可以问：这是逐时刻成立、对几乎所有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+成立，还是存在同一个概率为一的集合使所有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+同时成立？三者并不等价。</p>
+<hr />
+<h2 id="4-函数空间观点一次试验产生一整条函数">4.
+函数空间观点：一次试验产生一整条函数</h2>
+<p>这是你对“函数空间与乘积空间”不确定的部分。我们从集合层面开始。</p>
+<h3 id="41-st-是什么">4.1
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>S</mi><mi>T</mi></msup><annotation encoding="application/x-tex">S^T</annotation></semantics></math>
+是什么？</h3>
+<p>定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>S</mi><mi>T</mi></msup><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>x</mi><mo>∣</mo><mi>x</mi><mo>:</mo><mi>T</mi><mo>→</mo><mi>S</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S^T=\{x\mid x:T\to S\}.
+</annotation></semantics></math></p>
+<p>它不是通常的数的幂，而是所有从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+的函数组成的集合。</p>
+<p>例如：</p>
+<ul>
+<li>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">T=\{1,2,3\}</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">S=\mathbb R</annotation></semantics></math>，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>S</mi><mi>T</mi></msup><mo>≅</mo><msup><mi>ℝ</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">S^T\cong\mathbb R^3</annotation></semantics></math>；</li>
+<li>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><msub><mi>ℕ</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">T=\mathbb N_0</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">S=\mathbb R</annotation></semantics></math>，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>S</mi><mi>T</mi></msup><annotation encoding="application/x-tex">S^T</annotation></semantics></math>
+是所有实数序列；</li>
+<li>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">T=[0,\infty)</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">S=\mathbb R</annotation></semantics></math>，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>S</mi><mi>T</mi></msup><annotation encoding="application/x-tex">S^T</annotation></semantics></math>
+是所有实值函数，不预先要求连续。</li>
+</ul>
+<p>每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>∈</mo><msup><mi>S</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">x\in S^T</annotation></semantics></math>
+都是一条候选路径。</p>
+<p>随机过程
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>t</mi><mo>∈</mo><mi>T</mi></mrow></msub></mrow><annotation encoding="application/x-tex">X=(X_t)_{t\in T}</annotation></semantics></math>
+因而可以整体写为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐗</mi><mo>:</mo><mi>Ω</mi><mo>→</mo><msup><mi>S</mi><mi>T</mi></msup><mo>,</mo><mspace width="2.0em"></mspace><mi>𝐗</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbf X:\Omega\to S^T,
+\qquad
+\mathbf X(\omega)(t)=X_t(\omega).
+</annotation></semantics></math></p>
+<p>先解释这个看起来有些绕的等式：</p>
+<ul>
+<li>输入
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+后，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐗</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf X(\omega)</annotation></semantics></math>
+是一条函数；</li>
+<li>这条函数再输入
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐗</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf X(\omega)(t)</annotation></semantics></math>；</li>
+<li>这个数就是原来记号中的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X_t(\omega)</annotation></semantics></math>。</li>
+</ul>
+<p>因此，随机过程可以理解为一个“取值于函数空间的随机变量”。</p>
+<h3 id="42-函数空间上用什么-sigma-代数">4.2 函数空间上用什么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数？</h3>
+<p>对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>∈</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">t\in T</annotation></semantics></math>，定义坐标映射</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>t</mi></msub><mo>:</mo><msup><mi>S</mi><mi>T</mi></msup><mo>→</mo><mi>S</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>π</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>x</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\pi_t:S^T\to S,
+\qquad
+\pi_t(x)=x(t).
+</annotation></semantics></math></p>
+<p>它从一整条路径中读取时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+的坐标。</p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mi>𝒮</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(S,\mathcal S)</annotation></semantics></math>
+是可测空间，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>S</mi><mi>T</mi></msup><annotation encoding="application/x-tex">S^T</annotation></semantics></math>
+上的<strong>乘积
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数</strong>定义为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝒮</mi><mrow><mo>⊗</mo><mi>T</mi></mrow></msup><mo>=</mo><mi>σ</mi><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><msubsup><mi>π</mi><mi>t</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>A</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>:</mo><mi>t</mi><mo>∈</mo><mi>T</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>A</mi><mo>∈</mo><mi>𝒮</mi><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathcal S^{\otimes T}
+=\sigma\bigl(\pi_t^{-1}(A):t\in T,\ A\in\mathcal S\bigr).
+</annotation></semantics></math></p>
+<p>这表示：取使每个坐标映射
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\pi_t</annotation></semantics></math>
+都可测的最小
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数。</p>
+<p>更具体地，下面这种集合称为有限维柱集：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>x</mi><mo>∈</mo><msup><mi>S</mi><mi>T</mi></msup><mo>:</mo><mi>x</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><msub><mi>A</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi>x</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><msub><mi>A</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+C=\{x\in S^T:x(t_1)\in A_1,\ldots,x(t_n)\in A_n\}.
+</annotation></semantics></math></p>
+<p>它只检查有限多个时刻，而不限制路径在其余时刻的值。乘积
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数就是由所有这种有限观测生成的。</p>
+<p>于是，随机过程整体诱导出路径空间上的概率测度</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝖯</mi><mi>X</mi></msub><mo>=</mo><msub><mi>𝐗</mi><mi>#</mi></msub><mi>ℙ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathsf P_X=\mathbf X_{\#}\mathbb P.
+</annotation></semantics></math></p>
+<p>对柱集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>，有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝖯</mi><mi>X</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>C</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><msub><mi>t</mi><mn>1</mn></msub></msub><mo>∈</mo><msub><mi>A</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>X</mi><msub><mi>t</mi><mi>n</mi></msub></msub><mo>∈</mo><msub><mi>A</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathsf P_X(C)
+=\mathbb P(X_{t_1}\in A_1,\ldots,X_{t_n}\in A_n).
+</annotation></semantics></math></p>
+<p>这正是“随机地选出一条路径”的严格含义。</p>
+<hr />
+<h2 id="5-四个例子定义中的每个部件分别在做什么">5.
+四个例子：定义中的每个部件分别在做什么</h2>
+<h3 id="51-随机斜率随机性只有一个来源">5.1
+随机斜率：随机性只有一个来源</h3>
+<p>令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+为实随机变量，定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mi>t</mi><mi>A</mi><mo>,</mo><mi>q</mi><mi>q</mi><mi>u</mi><mi>a</mi><mi>d</mi><mi>t</mi><mo>≥</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X_t=tA,qquad t\ge 0.
+</annotation></semantics></math></p>
+<p>对固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>t</mi></msub><annotation encoding="application/x-tex">X_t</annotation></semantics></math>
+是随机变量；对固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>，路径为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><mi>t</mi><mi>A</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+t\longmapsto tA(\omega),
+</annotation></semantics></math></p>
+<p>即一条过原点、斜率随机的直线。</p>
+<p>这个过程虽然包含无穷多个随机变量，但它们完全由一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+决定。例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">s&gt;0</annotation></semantics></math>
+时，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><mfrac><mi>t</mi><mi>s</mi></mfrac><msub><mi>X</mi><mi>s</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X_t=\frac ts X_s.
+</annotation></semantics></math></p>
+<p>因此，知道一个非零时刻的状态就知道整条路径。这个例子提醒我们：随机变量的数量多，不代表过程的随机结构复杂；关键在联合依赖。</p>
+<h3 id="52-bernoulli-序列离散时间中的新随机信息">5.2 Bernoulli
+序列：离散时间中的新随机信息</h3>
+<p>令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mn>1</mn></msub><mo>,</mo><msub><mi>ξ</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">\xi_1,\xi_2,\ldots</annotation></semantics></math>
+独立同分布，并满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ξ</mi><mi>n</mi></msub><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>p</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ξ</mi><mi>n</mi></msub><mo>=</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mo>−</mo><mi>p</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb P(\xi_n=1)=p,
+\qquad
+\mathbb P(\xi_n=0)=1-p.
+</annotation></semantics></math></p>
+<p>过程
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ξ</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>n</mi><mo>≥</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">(\xi_n)_{n\ge1}</annotation></semantics></math>
+可以表示每轮试验是否成功。参数集是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mi>ℕ</mi></mrow><annotation encoding="application/x-tex">T=\mathbb N</annotation></semantics></math>，状态空间是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">S=\{0,1\}</annotation></semantics></math>。一次结果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+对应一条无限 0—1 序列。</p>
+<p>这里每个时刻都引入一次新的随机信息，并且不同时刻相互独立。它与随机斜率过程形成两个极端：后者所有时刻由一个随机量锁定，前者每个时刻都产生独立随机量。</p>
+<h3 id="53-简单对称随机游走把局部扰动累积成位置">5.3
+简单对称随机游走：把局部扰动累积成位置</h3>
+<p>令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mn>1</mn></msub><mo>,</mo><msub><mi>ξ</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">\xi_1,\xi_2,\ldots</annotation></semantics></math>
+独立，并且</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ξ</mi><mi>k</mi></msub><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ξ</mi><mi>k</mi></msub><mo>=</mo><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb P(\xi_k=1)=\mathbb P(\xi_k=-1)=\frac12.
+</annotation></semantics></math></p>
+<p>定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>S</mi><mi>n</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>ξ</mi><mi>k</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S_0=0,
+\qquad
+S_n=\sum_{k=1}^{n}\xi_k.
+</annotation></semantics></math></p>
+<p>先解释公式：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ξ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\xi_k</annotation></semantics></math>
+是第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+步的方向；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>
+是前
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+步位移的总和，所以表示第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+步后的位置。</p>
+<p>注意：增量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ξ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\xi_k</annotation></semantics></math>
+相互独立，但位置
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>1</mn></msub><mo>,</mo><msub><mi>S</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">S_1,S_2,\ldots</annotation></semantics></math>
+不独立，因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>
+包含了
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>m</mi></msub><annotation encoding="application/x-tex">S_m</annotation></semantics></math>
+已经使用过的前
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+个增量。</p>
+<h3 id="54-计数过程把随机到达编码为阶梯路径">5.4
+计数过程：把随机到达编码为阶梯路径</h3>
+<p>假设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mn>1</mn></msub><mo>,</mo><msub><mi>T</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">T_1,T_2,\ldots</annotation></semantics></math>
+是依次发生的到达时刻，定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mo accent="false">∞</mo></munderover><msub><mn>𝟏</mn><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>T</mi><mi>k</mi></msub><mo>≤</mo><mi>t</mi><mo stretchy="false" form="postfix">}</mo></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+N(t)=\sum_{k=1}^{\infty}\mathbf 1_{\{T_k\le t\}}.
+</annotation></semantics></math></p>
+<p>这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mn>𝟏</mn><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>T</mi><mi>k</mi></msub><mo>≤</mo><mi>t</mi><mo stretchy="false" form="postfix">}</mo></mrow></msub><annotation encoding="application/x-tex">\mathbf 1_{\{T_k\le t\}}</annotation></semantics></math>
+是示性函数：第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+次到达在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+前发生时取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>，否则取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>。因此这个无穷和实际上统计了时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+之前发生的到达次数。</p>
+<p>对每次固定的系统运行，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t\mapsto N(t)</annotation></semantics></math>
+是一条取非负整数值的阶梯函数。第 3 章 Poisson
+过程研究一类特别重要的计数过程；但在定义 Poisson
+过程前，必须先分清“到达时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>k</mi></msub><annotation encoding="application/x-tex">T_k</annotation></semantics></math>”与“截止时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+的到达数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(t)</annotation></semantics></math>”这两种描述。</p>
+<hr />
+<h2 id="6-为什么每个时刻的分布不够">6. 为什么每个时刻的分布不够？</h2>
+<h3 id="61-相同的单时刻分布可以有完全不同的时间结构">6.1
+相同的单时刻分布，可以有完全不同的时间结构</h3>
+<p>考虑只包含两个时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">T=\{1,2\}</annotation></semantics></math>
+的过程。</p>
+<p>第一种过程取一个 Bernoulli 随机变量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>，令</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>=</mo><mi>Z</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>X</mi><mn>2</mn></msub><mo>=</mo><mi>Z</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X_1=Z,\qquad X_2=Z.
+</annotation></semantics></math></p>
+<p>第二种过程取相互独立的 Bernoulli 随机变量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Z</mi><mn>1</mn></msub><mo>,</mo><msub><mi>Z</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">Z_1,Z_2</annotation></semantics></math>，令</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>=</mo><msub><mi>Z</mi><mn>1</mn></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>Y</mi><mn>2</mn></msub><mo>=</mo><msub><mi>Z</mi><mn>2</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+Y_1=Z_1,\qquad Y_2=Z_2.
+</annotation></semantics></math></p>
+<p>假设它们成功概率都为 (1/2)。于是对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">t=1,2</annotation></semantics></math>，都有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mo>∼</mo><mo>Bernoulli</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mi>/</mi><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>Y</mi><mi>t</mi></msub><mo>∼</mo><mo>Bernoulli</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mi>/</mi><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X_t\sim\operatorname{Bernoulli}(1/2),
+\qquad
+Y_t\sim\operatorname{Bernoulli}(1/2).
+</annotation></semantics></math></p>
+<p>也就是说，逐时刻看，两个过程完全相同。但它们的联合概率不同：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mn>1</mn></msub><mo>=</mo><msub><mi>X</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\mathbb P(X_1=X_2)=1,
+</annotation></semantics></math></p>
+<p>而</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mn>1</mn></msub><mo>=</mo><msub><mi>Y</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mn>1</mn></msub><mo>=</mo><msub><mi>Y</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mn>1</mn></msub><mo>=</mo><msub><mi>Y</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo>+</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb P(Y_1=Y_2)
+=\mathbb P(Y_1=Y_2=0)+\mathbb P(Y_1=Y_2=1)
+=\frac14+\frac14
+=\frac12.
+</annotation></semantics></math></p>
+<p>所以，要描述随机过程，不能只给出每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>t</mi></msub><annotation encoding="application/x-tex">X_t</annotation></semantics></math>
+的一维分布；必须给出多个时刻的联合分布。</p>
+<h3 id="62-有限维分布的严格定义">6.2 有限维分布的严格定义</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>t</mi><mo>∈</mo><mi>T</mi></mrow></msub></mrow><annotation encoding="application/x-tex">X=(X_t)_{t\in T}</annotation></semantics></math>
+是实值随机过程。任取有限多个时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">t_1,\ldots,t_n</annotation></semantics></math>，构造随机向量</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><msub><mi>t</mi><mn>1</mn></msub></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>X</mi><msub><mi>t</mi><mi>n</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>:</mo><mi>Ω</mi><mo>→</mo><msup><mi>ℝ</mi><mi>n</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(X_{t_1},\ldots,X_{t_n}):\Omega\to\mathbb R^n.
+</annotation></semantics></math></p>
+<p>它的分布记为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub></mrow></msub><mo>=</mo><mi>ℙ</mi><mo>∘</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><msub><mi>t</mi><mn>1</mn></msub></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>X</mi><msub><mi>t</mi><mi>n</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mu_{t_1,\ldots,t_n}
+=\mathbb P\circ(X_{t_1},\ldots,X_{t_n})^{-1}.
+</annotation></semantics></math></p>
+<p>这个记号表示：对每个 Borel 集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>⊆</mo><msup><mi>ℝ</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">B\subseteq\mathbb R^n</annotation></semantics></math>，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℙ</mi><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><msub><mi>t</mi><mn>1</mn></msub></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>X</mi><msub><mi>t</mi><mi>n</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><mi>B</mi><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mu_{t_1,\ldots,t_n}(B)
+=\mathbb P\bigl((X_{t_1},\ldots,X_{t_n})\in B\bigr).
+</annotation></semantics></math></p>
+<p>所有这样的概率测度组成的族</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">{</mo><msub><mi>μ</mi><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub></mrow></msub><mo>:</mo><mi>n</mi><mo>≥</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub><mo>∈</mo><mi>T</mi><mo stretchy="true" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">
+\left\{\mu_{t_1,\ldots,t_n}:
+n\ge1,\ t_1,\ldots,t_n\in T\right\}
+</annotation></semantics></math></p>
+<p>称为过程
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+的<strong>有限维分布族</strong>。</p>
+<p>“有限维”指的是：即使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+含有不可数多个时刻，我们每次只观察有限多个坐标。</p>
+<h3 id="63-相容性不同的有限观测不能互相矛盾">6.3
+相容性：不同的有限观测不能互相矛盾</h3>
+<p>不是任意给每组时刻指定一个分布，都能拼成随机过程。这些分布至少必须满足两类相容条件。</p>
+<p>为了简洁，引入推前记号：若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><mi>E</mi><mo>→</mo><mi>F</mi></mrow><annotation encoding="application/x-tex">f:E\to F</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+上的测度，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>#</mi></msub><mi>μ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>A</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>μ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>f</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>A</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f_{\#}\mu(A)=\mu(f^{-1}(A)).
+</annotation></semantics></math></p>
+<h4
+id="条件一交换观察顺序只会交换坐标">条件一：交换观察顺序只会交换坐标</h4>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mi>π</mi></msub><mo>:</mo><msup><mi>ℝ</mi><mi>n</mi></msup><mo>→</mo><msup><mi>ℝ</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">r_\pi:\mathbb R^n\to\mathbb R^n</annotation></semantics></math>
+按置换
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math>
+重排坐标：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mi>π</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mrow><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+r_\pi(x_1,\ldots,x_n)
+=(x_{\pi(1)},\ldots,x_{\pi(n)}).
+</annotation></semantics></math></p>
+<p>则应有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mrow><msub><mi>t</mi><mrow><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mrow><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub></mrow></msub><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>r</mi><mi>π</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>#</mi></msub><msub><mi>μ</mi><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mu_{t_{\pi(1)},\ldots,t_{\pi(n)}}
+=(r_\pi)_{\#}\mu_{t_1,\ldots,t_n}.
+</annotation></semantics></math></p>
+<p>含义是：先看
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mn>1</mn></msub><annotation encoding="application/x-tex">t_1</annotation></semantics></math>
+再看
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mn>2</mn></msub><annotation encoding="application/x-tex">t_2</annotation></semantics></math>，与先看
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mn>2</mn></msub><annotation encoding="application/x-tex">t_2</annotation></semantics></math>
+再看
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mn>1</mn></msub><annotation encoding="application/x-tex">t_1</annotation></semantics></math>，不应产生两套彼此无关的概率规律；只是坐标次序改变。</p>
+<h4
+id="条件二忽略额外坐标应恢复原来的边缘分布">条件二：忽略额外坐标应恢复原来的边缘分布</h4>
+<p>令投影</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mn>1</mn><mo>:</mo><mi>m</mi></mrow></msub><mo>:</mo><msup><mi>ℝ</mi><mi>n</mi></msup><mo>→</mo><msup><mi>ℝ</mi><mi>m</mi></msup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>p</mi><mrow><mn>1</mn><mo>:</mo><mi>m</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+p_{1:m}:\mathbb R^n\to\mathbb R^m,
+\qquad
+p_{1:m}(x_1,\ldots,x_n)=(x_1,\ldots,x_m),
+</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>&lt;</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m&lt;n</annotation></semantics></math>。则应有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>p</mi><mrow><mn>1</mn><mo>:</mo><mi>m</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>#</mi></msub><msub><mi>μ</mi><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub></mrow></msub><mo>=</mo><msub><mi>μ</mi><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>m</mi></msub></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(p_{1:m})_{\#}\mu_{t_1,\ldots,t_n}
+=\mu_{t_1,\ldots,t_m}.
+</annotation></semantics></math></p>
+<p>它表达一个显然但必须写出的要求：从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+个时刻的联合分布中忘掉后
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>−</mo><mi>m</mi></mrow><annotation encoding="application/x-tex">n-m</annotation></semantics></math>
+个坐标，得到的分布必须与原先指定的前
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+个时刻分布相同。</p>
+<hr />
+<h2 id="7-kolmogorov-扩张定理有限信息能否产生无限对象">7. Kolmogorov
+扩张定理：有限信息能否产生无限对象？</h2>
+<h3 id="71-定理要解决的不是计算问题而是存在问题">7.1
+定理要解决的不是计算问题，而是存在问题</h3>
+<p>在应用中，我们经常先猜出所有有限时刻的联合规律。例如想构造 Brown
+运动时，可以先规定任意有限组时刻上的随机向量服从某个多元正态分布。</p>
+<p>但这时存在一个逻辑缺口：</p>
+<blockquote>
+<p>即使每个有限维分布单独合法，而且彼此不矛盾，是否真的存在某个概率空间和一整族随机变量，同时实现所有这些分布？</p>
+</blockquote>
+<p>有限维模型的数目可能是无限甚至不可数的。不能因为每一小块看起来合理，就直接断言它们能拼成一个整体。</p>
+<h3 id="72-实值情形的定理陈述">7.2 实值情形的定理陈述</h3>
+<p><strong>定理 7.1（Kolmogorov 扩张定理，实值版本）</strong><br />
+设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+为任意指标集。对每组互异的有限指标
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub><mo>∈</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">t_1,\ldots,t_n\in T</annotation></semantics></math>，给定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mi>n</mi></msup><annotation encoding="application/x-tex">\mathbb R^n</annotation></semantics></math>
+上的概率测度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub></mrow></msub><annotation encoding="application/x-tex">\mu_{t_1,\ldots,t_n}</annotation></semantics></math>。若这族测度满足上一节的置换相容性与边缘相容性，则在路径空间</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Ω</mi><mo>=</mo><msup><mi>ℝ</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">
+\Omega=\mathbb R^T
+</annotation></semantics></math></p>
+<p>及其乘积
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℱ</mi><mo>=</mo><mi>ℬ</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℝ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>⊗</mo><mi>T</mi></mrow></msup></mrow><annotation encoding="application/x-tex">
+\mathcal F=\mathcal B(\mathbb R)^{\otimes T}
+</annotation></semantics></math></p>
+<p>上，存在唯一的概率测度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℙ</mi><annotation encoding="application/x-tex">\mathbb P</annotation></semantics></math>，使坐标过程</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ω</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+X_t(\omega)=\omega(t)
+</annotation></semantics></math></p>
+<p>具有指定的所有有限维分布。</p>
+<p>定理中的“唯一”是指在由有限维柱集生成的乘积
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数上唯一。</p>
+<h3 id="73-每个部件为什么这样选">7.3 每个部件为什么这样选？</h3>
+<ol type="1">
+<li><strong>样本空间取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mi>T</mi></msup><annotation encoding="application/x-tex">\mathbb R^T</annotation></semantics></math></strong>：一个样本点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+本身就是函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><mi>ω</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t\mapsto\omega(t)</annotation></semantics></math>，所以天然代表一条路径。</li>
+<li><strong>过程取坐标映射
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ω</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X_t(\omega)=\omega(t)</annotation></semantics></math></strong>：从路径中读取时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+的值，不需要额外构造。</li>
+<li><strong>先在柱集上规定概率</strong>：有限维分布已经告诉我们所有有限坐标约束的概率。</li>
+<li><strong>再扩张成测度</strong>：真正困难的是证明这些柱集概率能够一致地延伸到生成的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数上。</li>
+</ol>
+<p>这就是“扩张”二字的含义：把有限维柱集上的概率规则扩张为整个路径可测空间上的概率测度。</p>
+<h3 id="74-它解决了什么又没有解决什么">7.4
+它解决了什么，又没有解决什么？</h3>
+<p>它解决了：<strong>具有指定有限维分布的过程存在。</strong></p>
+<p>它没有自动解决：</p>
+<ul>
+<li>样本路径是否连续；</li>
+<li>样本路径是否右连续；</li>
+<li>路径是否处处有界；</li>
+<li>两个逐时刻几乎处处相等的过程是否共享同样的整条路径。</li>
+</ul>
+<p>这些都是“路径正则性”问题，需要额外条件与定理。教材把“有限维分布与
+Kolmogorov
+定理”放在基本概念之后，正是因为必须先解决整体过程的存在，再进一步研究路径性质。</p>
+<hr />
+<h2 id="8-一个重要陷阱逐时刻几乎必然相等不等于整条路径几乎必然相等">8.
+一个重要陷阱：逐时刻几乎必然相等，不等于整条路径几乎必然相等</h2>
+<p>这个例子会把上一节的限制表现得非常清楚。</p>
+<p>令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>U</mi><annotation encoding="application/x-tex">U</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0,1]</annotation></semantics></math>
+上服从均匀分布。定义两个过程</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><msub><mn>𝟏</mn><mrow><mo stretchy="false" form="prefix">{</mo><mi>U</mi><mo>=</mo><mi>t</mi><mo stretchy="false" form="postfix">}</mo></mrow></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>Y</mi><mi>t</mi></msub><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="2.0em"></mspace><mi>t</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X_t=\mathbf 1_{\{U=t\}},
+\qquad
+Y_t=0,
+\qquad t\in[0,1].
+</annotation></semantics></math></p>
+<h3 id="81-固定一个时刻看">8.1 固定一个时刻看</h3>
+<p>对任意固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，由于连续均匀随机变量取到单点的概率为零，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><msub><mi>Y</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>U</mi><mo>≠</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb P(X_t=Y_t)
+=\mathbb P(U\ne t)
+=1.
+</annotation></semantics></math></p>
+<p>不仅如此，任取有限多个时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">t_1,\ldots,t_n</annotation></semantics></math>，都有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><msub><mi>t</mi><mn>1</mn></msub></msub><mo>=</mo><mi>⋯</mi><mo>=</mo><msub><mi>X</mi><msub><mi>t</mi><mi>n</mi></msub></msub><mo>=</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb P(X_{t_1}=\cdots=X_{t_n}=0)=1.
+</annotation></semantics></math></p>
+<p>所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+与零过程
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+具有相同的所有有限维分布。</p>
+<h3 id="82-固定一个样本点看">8.2 固定一个样本点看</h3>
+<p>一旦
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>u</mi></mrow><annotation encoding="application/x-tex">U(\omega)=u</annotation></semantics></math>
+确定，路径就是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>t</mi><mo>=</mo><mi>u</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>t</mi><mo>≠</mo><mi>u</mi><mi>.</mi></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+X_t(\omega)=
+\begin{cases}
+1,&amp;t=u,\\
+0,&amp;t\ne u.
+\end{cases}
+</annotation></semantics></math></p>
+<p>它必定在随机位置
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>
+出现一个高度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+的尖峰，因此没有任何一条
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+的路径与零路径完全相同：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><msub><mi>Y</mi><mi>t</mi></msub><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 对所有 </mtext><mspace width="0.333em"></mspace></mrow><mi>t</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb P\bigl(X_t=Y_t\text{ 对所有 }t\in[0,1]\bigr)=0.
+</annotation></semantics></math></p>
+<h3 id="83-两个概念">8.3 两个概念</h3>
+<p>若对每个固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，都有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><msub><mi>Y</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\mathbb P(X_t=Y_t)=1,
+</annotation></semantics></math></p>
+<p>则称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+互为<strong>修正</strong>或<strong>版本</strong>。</p>
+<p>若</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>t</mi></msub><mo>=</mo><msub><mi>Y</mi><mi>t</mi></msub><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 对所有 </mtext><mspace width="0.333em"></mspace></mrow><mi>t</mi><mo>∈</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\mathbb P(X_t=Y_t\text{ 对所有 }t\in T)=1,
+</annotation></semantics></math></p>
+<p>则称二者<strong>不可区别</strong>。</p>
+<p>不可区别蕴含互为修正；当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+不可数时，反向一般不成立。原因是：对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+各有一个概率为零的例外集，不代表把不可数多个例外集取并后仍为零。测度只有可数可加性，不能任意把“对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>”与“对几乎所有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>”交换。</p>
+<p>这也解释了为什么连续时间随机过程必须认真研究连续修正、右连续修正等问题，而不能仅靠有限维分布想当然地判断路径。</p>
+<hr />
+<h2 id="9-一次完整推导随机游走的跨时刻协方差">9.
+一次完整推导：随机游走的跨时刻协方差</h2>
+<p>现在用简单对称随机游走</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>n</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>ξ</mi><mi>k</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ξ</mi><mi>k</mi></msub><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ξ</mi><mi>k</mi></msub><mo>=</mo><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow><annotation encoding="application/x-tex">
+S_n=\sum_{k=1}^{n}\xi_k,
+\qquad
+\mathbb P(\xi_k=1)=\mathbb P(\xi_k=-1)=\frac12
+</annotation></semantics></math></p>
+<p>说明“时间依赖”如何进入公式。</p>
+<h3 id="91-推导前先说明目标">9.1 推导前先说明目标</h3>
+<p>我们要计算三个量：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>S</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mo>Cov</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>m</mi></msub><mo>,</mo><msub><mi>S</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb E[S_n],\qquad
+\operatorname{Var}(S_n),\qquad
+\operatorname{Cov}(S_m,S_n).
+</annotation></semantics></math></p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>S</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb E[S_n]</annotation></semantics></math>
+描述第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+步位置的中心；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\operatorname{Var}(S_n)</annotation></semantics></math>
+描述位置波动随时间增长的尺度；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Cov</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>m</mi></msub><mo>,</mo><msub><mi>S</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\operatorname{Cov}(S_m,S_n)</annotation></semantics></math>
+描述两个时刻的位置共享多少随机信息。</li>
+</ul>
+<p>前两个是一维分布的数字特征；第三个开始反映过程的跨时刻结构。</p>
+<h3 id="92-单步的均值与方差">9.2 单步的均值与方差</h3>
+<p>由定义，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mn>1</mn><mo>⋅</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb E[\xi_k]
+=1\cdot\frac12+(-1)\cdot\frac12
+=0.
+</annotation></semantics></math></p>
+<p>又因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ξ</mi><mi>k</mi><mn>2</mn></msubsup><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\xi_k^2=1</annotation></semantics></math>，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msubsup><mi>ξ</mi><mi>k</mi><mn>2</mn></msubsup><mo stretchy="true" form="postfix">]</mo></mrow><mo>−</mo><mi>𝔼</mi><msup><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mn>2</mn></msup><mo>=</mo><mn>1</mn><mo>−</mo><mn>0</mn><mo>=</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Var}(\xi_k)
+=\mathbb E[\xi_k^2]-\mathbb E[\xi_k]^2
+=1-0
+=1.
+</annotation></semantics></math></p>
+<h3 id="93-位置的均值">9.3 位置的均值</h3>
+<p>利用期望的线性性，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>S</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mi>𝔼</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb E[S_n]
+=\mathbb E\!\left[\sum_{k=1}^{n}\xi_k\right]
+=\sum_{k=1}^{n}\mathbb E[\xi_k]
+=0.
+</annotation></semantics></math></p>
+<p>这一结果表示过程没有向左或向右的系统漂移。</p>
+<h3 id="94-位置的方差">9.4 位置的方差</h3>
+<p>因为各步独立，所以协方差项为零：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>Var</mo><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ξ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>n</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Var}(S_n)
+=\operatorname{Var}\!\left(\sum_{k=1}^{n}\xi_k\right)
+=\sum_{k=1}^{n}\operatorname{Var}(\xi_k)
+=n.
+</annotation></semantics></math></p>
+<p>因此标准差为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mrow><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msqrt><mo>=</mo><msqrt><mi>n</mi></msqrt><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\sqrt{\operatorname{Var}(S_n)}=\sqrt n.
+</annotation></semantics></math></p>
+<p>这意味着走了
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+步以后，典型位移尺度不是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>，而是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mi>n</mi></msqrt><annotation encoding="application/x-tex">\sqrt n</annotation></semantics></math>。后面学习
+Brown 运动时，时间长度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+上的位移尺度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mi>t</mi></msqrt><annotation encoding="application/x-tex">\sqrt t</annotation></semantics></math>
+会再次出现；这不是形式巧合，而是随机扰动累积与中心极限定理共同产生的尺度。</p>
+<h3 id="95-两个时刻的协方差">9.5 两个时刻的协方差</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>≤</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m\le n</annotation></semantics></math>。先把后一个位置拆成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>n</mi></msub><mo>=</mo><msub><mi>S</mi><mi>m</mi></msub><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>n</mi></msub><mo>−</mo><msub><mi>S</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S_n=S_m+(S_n-S_m).
+</annotation></semantics></math></p>
+<p>这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>m</mi></msub><annotation encoding="application/x-tex">S_m</annotation></semantics></math>
+是前
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+步的累计位移，而</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>n</mi></msub><mo>−</mo><msub><mi>S</mi><mi>m</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mi>m</mi><mo>+</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>ξ</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">
+S_n-S_m=\sum_{k=m+1}^{n}\xi_k
+</annotation></semantics></math></p>
+<p>是之后新增的位移。由于两部分由互不相交的独立增量构成，它们相互独立，因而协方差为零。</p>
+<p>于是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mo>Cov</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>m</mi></msub><mo>,</mo><msub><mi>S</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mo>Cov</mo><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><msub><mi>S</mi><mi>m</mi></msub><mo>,</mo><msub><mi>S</mi><mi>m</mi></msub><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>n</mi></msub><mo>−</mo><msub><mi>S</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mo>Cov</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>m</mi></msub><mo>,</mo><msub><mi>S</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mo>Cov</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>m</mi></msub><mo>,</mo><msub><mi>S</mi><mi>n</mi></msub><mo>−</mo><msub><mi>S</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>0</mn></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mi>m</mi><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\operatorname{Cov}(S_m,S_n)
+&amp;=\operatorname{Cov}\bigl(S_m,S_m+(S_n-S_m)\bigr)\\
+&amp;=\operatorname{Cov}(S_m,S_m)
++\operatorname{Cov}(S_m,S_n-S_m)\\
+&amp;=\operatorname{Var}(S_m)+0\\
+&amp;=m.
+\end{aligned}
+</annotation></semantics></math></p>
+<p>若不预设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>≤</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m\le n</annotation></semantics></math>，对称地得到</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mo>Cov</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>S</mi><mi>m</mi></msub><mo>,</mo><msub><mi>S</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>min</mo><mo stretchy="false" form="prefix">{</mo><mi>m</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{\operatorname{Cov}(S_m,S_n)=\min\{m,n\}.}
+</annotation></semantics></math></p>
+<p>现在解释这个公式的结构。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>m</mi></msub><annotation encoding="application/x-tex">S_m</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>
+共同使用了前
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>min</mo><mo stretchy="false" form="prefix">{</mo><mi>m</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\min\{m,n\}</annotation></semantics></math>
+个随机增量；每个增量贡献方差
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>，所以协方差正好等于共享增量的数量。</p>
+<p>这说明：</p>
+<ul>
+<li>独立的是不重叠时间段的<strong>增量</strong>；</li>
+<li>不同时刻的<strong>位置</strong>通常不独立；</li>
+<li>过程的依赖可以由“共享了哪些历史随机量”来理解。</li>
+</ul>
+<p>这正呼应 Wiener 对 Brown
+运动的观察：位置之间存在依赖，独立性应当施加在不相交区间的位移上。</p>
+<hr />
+<h2 id="10-用两个轴建立课程地图">10. 用两个轴建立课程地图</h2>
+<p>随机过程最基础的分类来自两个问题：参数集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+是离散还是连续？状态空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+是离散还是连续？</p>
+<table>
+<thead>
+<tr class="header">
+<th>时间参数</th>
+<th>状态空间</th>
+<th>典型对象</th>
+<th>路径直观</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>离散</td>
+<td>离散</td>
+<td>有限或可数状态 Markov 链</td>
+<td>状态序列</td>
+</tr>
+<tr class="even">
+<td>离散</td>
+<td>连续</td>
+<td>时间序列、连续状态递推模型</td>
+<td>实数或向量序列</td>
+</tr>
+<tr class="odd">
+<td>连续</td>
+<td>离散</td>
+<td>Poisson 计数过程、连续时间 Markov 链</td>
+<td>带跳跃的阶梯函数</td>
+</tr>
+<tr class="even">
+<td>连续</td>
+<td>连续</td>
+<td>Brown 运动</td>
+<td>连续但高度不规则的曲线</td>
+</tr>
+</tbody>
+</table>
+<p>你提供的教材目录可以按“要解决的问题”理解，而不是按名词背诵：</p>
+<table>
+<thead>
+<tr class="header">
+<th>章节</th>
+<th>核心问题</th>
+<th>与前文的连接</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>第 2 章 基本概念与类型</td>
+<td>怎样定义一整族随机变量并刻画其联合规律？</td>
+<td>本文建立对象，下一篇继续分类</td>
+</tr>
+<tr class="even">
+<td>第 3 章 Poisson 过程</td>
+<td>随机事件怎样在连续时间中到达？</td>
+<td>重点研究计数路径与独立增量</td>
+</tr>
+<tr class="odd">
+<td>第 4 章 更新过程</td>
+<td>设备更换、服务完成等循环怎样长期累积？</td>
+<td>放宽 Poisson 到达间隔的特殊假设</td>
+</tr>
+<tr class="even">
+<td>第 5 章 Markov 链</td>
+<td>当未来只通过当前状态依赖过去时，怎样研究转移与长期行为？</td>
+<td>用状态转移压缩历史信息</td>
+</tr>
+<tr class="odd">
+<td>第 6 章 鞅</td>
+<td>在已有信息下“公平、无可预测漂移”怎样严格表达？</td>
+<td>需要先学习子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数与条件期望</td>
+</tr>
+<tr class="even">
+<td>第 7 章 Brown 运动</td>
+<td>怎样建立连续时间、连续状态的随机扰动模型？</td>
+<td>有限维分布、路径正则性与独立增量汇合</td>
+</tr>
+<tr class="odd">
+<td>第 11 章 MCMC</td>
+<td>怎样设计一个 Markov 链，使它长期产生目标分布的样本？</td>
+<td>把过程的长期理论转化为计算方法</td>
+</tr>
+</tbody>
+</table>
+<p>这里暂时没有给“鞅”等对象下正式定义，因为正式定义需要你尚未学习的条件期望。等进入相应章节时，应先建立条件期望相对于子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数的严格定义，再讨论鞅；否则“公平游戏”只会成为无法推导的口号。</p>
+<hr />
+<h2 id="11-三个容易混淆但必须分开的层次">11.
+三个容易混淆但必须分开的层次</h2>
+<h3 id="111-模型中的原始样本与观察到的状态">11.1
+模型中的原始样本与观察到的状态</h3>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+是一次完整随机结果，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X_t(\omega)</annotation></semantics></math>
+是我们在时刻
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+从这次结果中提取的状态。通常不需要把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+解释成一个简单的物理量；在典范路径空间中，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+就是一整条路径。</p>
+<h3 id="112-单时刻分布与联合分布">11.2 单时刻分布与联合分布</h3>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>t</mi></msub><annotation encoding="application/x-tex">X_t</annotation></semantics></math>
+的分布回答某个时刻的概率问题；</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><msub><mi>t</mi><mn>1</mn></msub></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>X</mi><msub><mi>t</mi><mi>n</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+(X_{t_1},\ldots,X_{t_n})
+</annotation></semantics></math></p>
+<p>的分布回答有限多个时刻如何共同变化。时间依赖存在于联合分布中，不能从边缘分布自动恢复。</p>
+<h3 id="113-有限维分布与路径性质">11.3 有限维分布与路径性质</h3>
+<p>有限维分布在乘积
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数上决定过程的分布，但当时间不可数时，连续性等全路径性质需要额外的正则性论证。尖峰过程说明，逐时刻看不到的零概率例外可能沿着随机时刻组合成每条路径都会出现的现象。</p>
+<hr />
+<h2 id="12-自检题">12. 自检题</h2>
+<p>建议先独立回答，再看后面的参考答案。</p>
+<h3 id="题-1辨认两个变量">题 1：辨认两个变量</h3>
+<p>天气过程
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X_t(\omega)</annotation></semantics></math>
+表示第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+天的温度。固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+和固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+分别得到什么对象？</p>
+<h3 id="题-2同边缘不同联合">题 2：同边缘、不同联合</h3>
+<p>构造两个过程
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><msub><mi>X</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">X_1,X_2</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>,</mo><msub><mi>Y</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">Y_1,Y_2</annotation></semantics></math>，使四个随机变量都服从标准正态分布，但满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mn>1</mn></msub><mo>=</mo><msub><mi>X</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>Y</mi><mn>1</mn></msub><mo>,</mo><msub><mi>Y</mi><mn>2</mn></msub><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 独立</mtext></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb P(X_1=X_2)=1,
+\qquad
+Y_1,Y_2\text{ 独立}.
+</annotation></semantics></math></p>
+<h3 id="题-3协方差为什么不是零">题 3：协方差为什么不是零？</h3>
+<p>简单随机游走的增量相互独立，为什么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>m</mi></msub><annotation encoding="application/x-tex">S_m</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>&lt;</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m&lt;n</annotation></semantics></math>
+时仍然相关？</p>
+<h3 id="题-4可测性的真正作用">题 4：可测性的真正作用</h3>
+<p>随机变量定义中的可测性，究竟保证了什么概率表达式有意义？</p>
+<h3 id="题-5扩张定理的输入与输出">题 5：扩张定理的输入与输出</h3>
+<p>Kolmogorov
+扩张定理以什么为输入，产生什么输出？它是否自动保证路径连续？</p>
+<hr />
+<h2 id="13-参考答案">13. 参考答案</h2>
+<h3 id="题-1">题 1</h3>
+<p>固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，得到随机变量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ω</mi><mo>↦</mo><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\omega\mapsto X_t(\omega)</annotation></semantics></math>，描述第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+天温度在不同可能世界中的分布。固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>，得到路径
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><msub><mi>X</mi><mi>t</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t\mapsto X_t(\omega)</annotation></semantics></math>，描述某一次完整天气实现随日期的变化。</p>
+<h3 id="题-2">题 2</h3>
+<p>令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi><mo>,</mo><msub><mi>Z</mi><mn>1</mn></msub><mo>,</mo><msub><mi>Z</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">Z,Z_1,Z_2</annotation></semantics></math>
+相互独立且都服从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(0,1)</annotation></semantics></math>。取</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>=</mo><msub><mi>X</mi><mn>2</mn></msub><mo>=</mo><mi>Z</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>Y</mi><mn>1</mn></msub><mo>=</mo><msub><mi>Z</mi><mn>1</mn></msub><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>Y</mi><mn>2</mn></msub><mo>=</mo><msub><mi>Z</mi><mn>2</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X_1=X_2=Z,
+\qquad
+Y_1=Z_1,\quad Y_2=Z_2.
+</annotation></semantics></math></p>
+<p>四个边缘分布相同，但
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><msub><mi>X</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">X_1,X_2</annotation></semantics></math>
+完全相关，而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>,</mo><msub><mi>Y</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">Y_1,Y_2</annotation></semantics></math>
+独立。</p>
+<h3 id="题-3">题 3</h3>
+<p>因为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>n</mi></msub><mo>=</mo><msub><mi>S</mi><mi>m</mi></msub><mo>+</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mi>m</mi><mo>+</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>ξ</mi><mi>k</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S_n=S_m+\sum_{k=m+1}^{n}\xi_k.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>m</mi></msub><annotation encoding="application/x-tex">S_m</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>
+的一部分。独立的是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>m</mi></msub><annotation encoding="application/x-tex">S_m</annotation></semantics></math>
+与后续新增增量，而不是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>m</mi></msub><annotation encoding="application/x-tex">S_m</annotation></semantics></math>
+与包含它的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>。二者共享前
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+个增量，因此协方差为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>。</p>
+<h3 id="题-4">题 4</h3>
+<p>可测性保证对任意状态空间中的可测集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>，原像</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>ω</mi><mo>:</mo><mi>X</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><mi>B</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">
+\{\omega:X(\omega)\in B\}
+</annotation></semantics></math></p>
+<p>属于事件
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>-代数，从而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>∈</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P(X\in B)</annotation></semantics></math>
+有定义。</p>
+<h3 id="题-5">题 5</h3>
+<p>输入是一族满足置换相容性与边缘相容性的有限维分布；输出是路径空间上的概率测度以及对应的坐标过程。它保证过程存在，但不自动保证样本路径连续。</p>
+<hr />
+<h2 id="14-本文结论">14. 本文结论</h2>
+<p>把全文压缩成五句话：</p>
+<ol type="1">
+<li>随机过程是一族定义在同一概率空间上的随机变量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>t</mi><mo>∈</mo><mi>T</mi></mrow></msub></mrow><annotation encoding="application/x-tex">X=(X_t)_{t\in T}</annotation></semantics></math>。</li>
+<li>固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+得到随机变量，固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+得到样本路径；两种视角不能混淆。</li>
+<li>单时刻分布不包含时间依赖，必须考察有限多个时刻的联合分布。</li>
+<li>相容的有限维分布通过 Kolmogorov
+扩张定理产生路径空间上的概率测度。</li>
+<li>有限维分布解决“各有限观测如何联合”，但连续性等路径性质需要额外理论。</li>
+</ol>
+<p>你关于不可测集的直觉也可以压缩成一句准确表述：</p>
+<blockquote>
+<p>不是所有概率测度都禁止定义在幂集上；真正的障碍是，在连续空间中，我们不能同时保留所有子集可测、自然对称性和可数可加性。</p>
+</blockquote>
+<hr />
+<h2 id="15-下一篇预告">15. 下一篇预告</h2>
+<p>下一篇建议对应教材第 2.3 节“随机过程的基本类型”，主题为：</p>
+<blockquote>
+<p><strong>应用随机过程（二）：怎样比较两条随机演化——均值函数、协方差函数、独立增量、平稳性与
+Markov 性</strong></p>
+</blockquote>
+<p>生成下一篇前需要再确认两个新先修点：</p>
+<ol type="1">
+<li>你是否学过多元正态分布及其协方差矩阵的严格性质；</li>
+<li>你对条件分布的掌握是否包括正则条件概率，还是只包括具有密度时的初等公式。</li>
+</ol>
+<p>这两个答案会决定第二篇能否严格定义 Gauss 过程与 Markov
+性，以及需要在哪一层引入条件概率核。</p>
+<hr />
+<h2 id="参考资料">参考资料</h2>
+<ol type="1">
+<li>张波、商豪、邓军：《应用随机过程（第五版）》，中国人民大学出版社。本文章节顺序依据你提供的目录。</li>
+<li>A. N. Kolmogorov, <em>Foundations of the Theory of Probability</em>.
+<a
+href="https://www.york.ac.uk/depts/maths/histstat/kolmogorov_foundations.pdf">英译本扫描件</a>.</li>
+<li>L. Bachelier, “Théorie de la spéculation,” <em>Annales scientifiques
+de l’École Normale Supérieure</em>, 1900. <a
+href="https://www.numdam.org/item/ASENS_1900_3_17__21_0/">原文与
+DOI</a>.</li>
+<li>A. Einstein, “On the Movement of Small Particles Suspended in a
+Stationary Liquid Demanded by the Molecular-Kinetic Theory of Heat,”
+1905. <a
+href="https://www.damtp.cam.ac.uk/user/gold/pdfs/teaching/old_literature/Einstein1905.pdf">英译本</a>.</li>
+<li>N. Wiener, “Differential-Space,” <em>Journal of Mathematics and
+Physics</em>, 1923. <a
+href="https://djalil.chafai.net/docs/M2/history-brownian-motion/Wiener%20-%201923.pdf">原文扫描件</a>.</li>
+</ol>
+<hr />
+<section id="reader-feedback" data-feedback-status="completed" style="margin-top: 3rem; padding: 1.25rem; border: 1px solid #d8dee4; border-radius: 10px; background: #f6f8fa;">
+<h2>读后反馈与修订记录</h2>
+<article class="feedback-entry" data-date="2026-07-17" data-round="1" data-status="resolved">
+<h3>2026-07-17 · 生成规范反馈（整理）</h3>
+<p><strong>原始反馈要点：</strong>此前语料过短；部分高阶数学概念没有严格定义；公式出现后没有先解释含义；内容存在术语和工具堆叠，读完仍不清楚系统组成与功能。</p>
+<p><strong>问题分类：</strong>长度、先修、定义、推导、结构。</p>
+<p><strong>处理：</strong>本文改为约 30—35 分钟阅读量，补入严格定义、符号说明、完整协方差推导、课程结构图景、自检题与答案；相关规则已写入语料 Skill。</p>
+<p><strong>状态：</strong>已处理。</p>
+</article>
+<article class="feedback-entry" data-date="2026-07-17" data-round="2" data-status="resolved">
+<h3>2026-07-17 · 公式渲染反馈（整理）</h3>
+<p><strong>原始反馈要点：</strong>Markdown 中的 LaTeX 公式两次未能在实际阅读界面正确渲染，仅调整定界符没有解决问题。</p>
+<p><strong>问题分类：</strong>渲染。</p>
+<p><strong>处理：</strong>正式阅读版改为完整 HTML，并将 LaTeX 转换为原生 MathML；公式原始 TeX 保留在 MathML annotation 中，不再依赖聊天界面的 Markdown 数学渲染。</p>
+<p><strong>状态：</strong>已处理。</p>
+</article>
+<article class="feedback-entry" data-date="2026-07-17" data-round="3" data-status="resolved">
+<h3>2026-07-17 · 第 3 轮：难度分布与自检位置</h3>
+<p><strong>用户原始反馈：</strong>这部分讲得很好；主要问题是难度分布有些不合理。在速览一门课的内容时，文章后部由于读者尚未熟悉前部建立的符号体系，学习起来比较困难。后续课程概览应降低后半部分难度，并把自检拆成多份，放在文章中间相应位置。</p>
+<p><strong>问题分类：</strong>难度、先修、结构、自检。</p>
+<p><strong>处理：</strong>本文作为已读文章不再重排正文；已将“课程速览后半程降难度”“区分本篇掌握与仅需识别”“分段设置局部自检”写入语料 Skill，后续从泛函分析系列开始执行。</p>
+<p><strong>是否更新 Skill：</strong>是；新增难度曲线与分布式自检规则。</p>
+<p><strong>状态：</strong>已处理。</p>
+</article>
+</section>
+</body>
+</html>

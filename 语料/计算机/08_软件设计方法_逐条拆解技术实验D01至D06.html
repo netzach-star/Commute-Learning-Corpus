@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>从需求到设计（二）：逐条拆解 D-01～D-06——六个技术实验究竟在验证什么</title>
+  <meta name="corpus-id" content="computer-008">
+  <meta name="corpus-category" content="计算机">
+  <meta name="corpus-series" content="软件工程与系统设计">
+  <meta name="corpus-status" content="unread">
+  <meta name="estimated-reading-time" content="40—50 分钟">
+  <meta name="generated-date" content="2026-07-24">
+  <meta name="source-basis" content="用户提供的 V4 剩余技术实验片段；补充通用系统设计机制与官方技术规范">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #5d6878;
+      --line: #d9e0ea;
+      --soft: #f5f8fc;
+      --blue: #175cd3;
+      --blue-soft: #eaf2ff;
+      --green: #157f5b;
+      --green-soft: #eaf8f2;
+      --amber: #925400;
+      --amber-soft: #fff6e3;
+      --red: #b42318;
+      --red-soft: #fff0ee;
+      --violet: #6941c6;
+      --violet-soft: #f3efff;
+      --shadow: 0 10px 30px rgba(28,45,76,.07);
+    }
+    * { box-sizing: border-box; }
+    html { font-size: 17px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      max-width: 960px; margin: 0 auto; padding: 38px 42px 86px;
+      color: var(--ink); background: #fff;
+      font-family: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", STSong, serif;
+      line-height: 1.86; overflow-wrap: break-word;
+    }
+    h1,h2,h3,h4,nav,.sans,table { font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    h1 { margin:0; font-size:2.08rem; line-height:1.34; letter-spacing:-.025em; }
+    h2 { margin:3.35rem 0 1.15rem; padding-bottom:.42rem; border-bottom:1px solid var(--line); font-size:1.5rem; line-height:1.42; }
+    h3 { margin:2.2rem 0 .75rem; font-size:1.22rem; line-height:1.45; }
+    h4 { margin:1.55rem 0 .5rem; font-size:1.05rem; }
+    p { margin:.86rem 0; } li { margin:.38rem 0; }
+    a { color:var(--blue); text-decoration-thickness:1px; text-underline-offset:.16em; }
+    code,kbd { font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace; font-size:.9em; }
+    code { padding:.1em .32em; border-radius:4px; background:var(--soft); }
+    pre { margin:1.15rem 0; padding:1rem 1.1rem; overflow-x:auto; border:1px solid #cbd5e1; border-radius:10px; background:#101828; color:#eef4ff; line-height:1.62; }
+    pre code { padding:0; background:transparent; color:inherit; }
+    header.hero { margin-bottom:2.3rem; padding:1.8rem 0 1.35rem; }
+    .eyebrow { margin-bottom:.65rem; color:var(--blue); font-size:.88rem; font-weight:700; letter-spacing:.08em; }
+    .subtitle { margin:1rem 0 0; color:var(--muted); font-size:1.08rem; }
+    .meta { display:flex; gap:.55rem; flex-wrap:wrap; margin-top:1.15rem; }
+    .tag { padding:.28rem .62rem; border:1px solid var(--line); border-radius:999px; color:#40506a; background:var(--soft); font-family:"Noto Sans CJK SC","PingFang SC",sans-serif; font-size:.82rem; }
+    nav#toc { margin:1.8rem 0 3rem; padding:1.15rem 1.35rem; border:1px solid var(--line); border-radius:12px; background:var(--soft); }
+    nav#toc strong { display:block; margin-bottom:.5rem; }
+    nav#toc ol { columns:2; column-gap:2.6rem; margin:0; padding-left:1.25rem; }
+    nav#toc li { break-inside:avoid; margin:.25rem 0; }
+    .lead,.thesis,.definition,.warning,.example,.source-note,.comparison-note,.exercise {
+      margin:1.3rem 0; padding:1rem 1.15rem; border-radius:10px;
+    }
+    .lead { border-left:4px solid var(--blue); background:var(--blue-soft); }
+    .thesis { border:1px solid #b9cff4; background:linear-gradient(135deg,#f7faff,#eef5ff); box-shadow:var(--shadow); font-size:1.04rem; }
+    .definition { border:1px solid #b9cff4; background:var(--blue-soft); }
+    .warning { border:1px solid #f1c8c3; background:var(--red-soft); }
+    .example,.exercise { border:1px solid #f0d5a3; background:var(--amber-soft); }
+    .source-note { border:1px solid #d4c8f5; background:var(--violet-soft); }
+    .comparison-note { border:1px solid #a9dccb; background:var(--green-soft); }
+    .concept-map { margin:1.6rem 0 2.3rem; padding:1.2rem; border:1px solid var(--line); border-radius:14px; background:#fbfdff; box-shadow:var(--shadow); }
+    .grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:1.2rem 0; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.9rem; margin:1.2rem 0; }
+    .card { padding:1rem; border:1px solid var(--line); border-radius:10px; background:#fff; }
+    .card h3,.card h4 { margin-top:0; }
+    .pipeline { display:flex; flex-wrap:wrap; align-items:stretch; gap:.55rem; margin:1.25rem 0; }
+    .pipeline .node { flex:1 1 125px; min-width:115px; padding:.78rem .7rem; border:1px solid #c9d6e8; border-radius:9px; background:#fff; text-align:center; font-family:"Noto Sans CJK SC",sans-serif; font-size:.9rem; }
+    .pipeline .node strong { display:block; color:#173f78; }
+    .pipeline .sep { display:flex; align-items:center; color:#6b778b; }
+    .state-row { display:grid; grid-template-columns:150px 1fr; gap:.9rem; margin:.55rem 0; padding:.72rem .85rem; border:1px solid var(--line); border-radius:9px; background:#fff; }
+    .state-row strong { color:#173f78; font-family:"Noto Sans CJK SC",sans-serif; }
+    table { display:block; width:100%; margin:1.35rem 0; overflow-x:auto; border-collapse:collapse; font-size:.92rem; line-height:1.62; }
+    th,td { min-width:145px; padding:.72rem .76rem; border:1px solid var(--line); vertical-align:top; }
+    th { color:#27364f; background:var(--soft); text-align:left; }
+    .small { color:var(--muted); font-size:.9rem; }
+    .checklist { padding-left:0; list-style:none; }
+    .checklist li { position:relative; padding-left:1.7rem; }
+    .checklist li::before { position:absolute; left:.1rem; color:var(--green); content:"✓"; font-family:sans-serif; font-weight:700; }
+    .question { margin:1rem 0; padding:.8rem 1rem; border-left:4px solid #97a7bd; background:#f8fafc; }
+    details { margin:.8rem 0; padding:.75rem .95rem; border:1px solid var(--line); border-radius:9px; background:#fff; }
+    summary { cursor:pointer; color:#253858; font-family:"Noto Sans CJK SC",sans-serif; font-weight:700; }
+    .source-list li { margin:.65rem 0; }
+    #reader-feedback { margin-top:4rem; padding:1.2rem; border:1px dashed #aab7ca; border-radius:12px; background:#fafcff; }
+    #reader-feedback h2 { margin-top:0; }
+    @media (max-width:760px) {
+      body { padding:24px 20px 64px; line-height:1.8; }
+      h1 { font-size:1.72rem; } h2 { margin-top:2.75rem; font-size:1.34rem; }
+      nav#toc ol { columns:1; } .grid-2,.grid-3 { grid-template-columns:1fr; }
+      .pipeline { display:grid; grid-template-columns:1fr; }
+      .pipeline .sep { justify-content:center; transform:rotate(90deg); }
+      .state-row { grid-template-columns:1fr; gap:.22rem; }
+    }
+    @media print {
+      body { max-width:none; padding:0; color:#000; }
+      nav#toc { break-after:page; } h2,h3 { break-after:avoid; }
+      table,.card,.definition,.warning,.example,.source-note { break-inside:avoid; }
+      a { color:#000; text-decoration:none; }
+    }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="eyebrow">软件工程与系统设计 · 第二篇</div>
+  <h1>从需求到设计（二）：逐条拆解 D-01～D-06——六个技术实验究竟在验证什么</h1>
+  <p class="subtitle">把双 AgentSession、canonical link、outbox、召回预算、ETag 与受控更新还原成可理解的风险、实验和设计决策。</p>
+  <div class="meta">
+    <span class="tag">语料编号 computer-008</span>
+    <span class="tag">预计阅读 40—50 分钟</span>
+    <span class="tag">先修：读过本系列第一篇或具有小型项目经验</span>
+    <span class="tag">状态：待读</span>
+  </div>
+</header>
+<nav id="toc" aria-label="文章目录"><strong>目录</strong><ol>
+<li><a href="#map">先读懂实验条目的共同结构</a></li>
+<li><a href="#d01">D-01：双 AgentSession 隔离</a></li>
+<li><a href="#d02">D-02：无向关联与双端版本</a></li>
+<li><a href="#d03">D-03：核心事务与 outbox</a></li>
+<li><a href="#d04">D-04：候选召回预算</a></li>
+<li><a href="#d05">D-05：独立 ReviewWorkspace</a></li>
+<li><a href="#d06">D-06：L2 受控更新</a></li>
+<li><a href="#dependencies">六个实验怎样互相依赖</a></li>
+<li><a href="#rewrite">怎样把实验计划写得让人看懂</a></li>
+<li><a href="#questions">自检题与参考答案</a></li>
+</ol></nav>
+
+<section class="lead" id="map">
+  <strong>本篇任务：</strong>不把 D-01～D-06 当作六堆术语逐词翻译，而是把每一项还原成四个问题：它保护什么需求、担心什么失败、怎样制造证据、实验结果会改变什么设计。
+</section>
+
+<div class="source-note">
+  <strong>材料边界：</strong>下文把用户提供的实验片段视为项目事实；对 <code>Stage 0</code>、<code>V2</code>、<code>V4</code>、<code>InnoSpark</code>、<code>L2</code>、<code>P0</code>、<code>S-09</code>、<code>Bundle</code> 等没有定义的内部对象，不推断其精确实现。文中“可能的系统结构”只用于解释通用工程机制。
+</div>
+
+<h2>一、先读懂实验条目的共同结构</h2>
+
+<p>这六项虽然主题不同，但句法高度一致。每项都包含：</p>
+
+<div class="grid-2">
+  <div class="card"><h3>一个尚未被证明的假设</h3><p>例如 Session Adapter 能隔离历史、数据库与 outbox 能共同提交、同一 documentId 能受控更新。</p></div>
+  <div class="card"><h3>一个最小实验边界</h3><p>只搭出足以验证假设的系统切片，不先完成全部产品功能。</p></div>
+  <div class="card"><h3>可观察的通过标准</h3><p>不是“感觉可行”，而是看不到越权内容、没有重复记录、重启后能恢复、延迟和 token 在预算内。</p></div>
+  <div class="card"><h3>一个实施闸门</h3><p>原文要求“在对应实现前完成”，意思是后续代码不得建立在未经验证的地基上。</p></div>
+</div>
+
+<p>因此，阅读任何技术实验时，先把它改写为：</p>
+
+<pre><code>我们准备依赖假设 H 完成功能 F。
+如果 H 不成立，设计 D 将被推翻或出现严重故障 E。
+所以先构造最小实验 S，观察指标 O。
+通过后采用 D；失败则切换到备选方案 A，或者把能力登记为阻断。</code></pre>
+
+<div class="thesis"><strong>实验计划不是实现步骤的缩写。</strong>它是一组“决策所需证据”的清单。理解这一点后，D-01～D-06 就不再是六个莫名其妙的附加任务，而是六个不同类型的架构风险。</div>
+
+<section id="d01">
+<h2>二、D-01：双 AgentSession 隔离——“两个 Agent”不能只是两个名字</h2>
+
+<h3>1. 需求表面上说了什么</h3>
+<p>系统里存在两个不同职责的 Agent：一个处理内容，一个处理关联。普通需求文档可能只写“分别由两个子 Agent 完成”。但设计者必须继续问：</p>
+<ul>
+  <li>它们是否拥有不同的会话历史？</li>
+  <li>它们分别能看见哪些数据？</li>
+  <li>重启后怎样恢复各自状态？</li>
+  <li>主 Agent 是否仍偷偷承载了所有大内容，从而让所谓拆分失去意义？</li>
+</ul>
+
+<h3>2. “会话隔离”至少有三层</h3>
+<table>
+<thead><tr><th>隔离层次</th><th>要防止什么</th><th>如何观察</th></tr></thead>
+<tbody>
+<tr><td>历史隔离</td><td>内容 Agent 的消息被关联 Agent 自动继承，导致上下文污染</td><td>恢复两个会话后，分别检查消息序列和摘要</td></tr>
+<tr><td>数据可见性隔离</td><td>Agent 通过工具或提示得到职责外数据</td><td>为两个会话使用不同输入与工具权限，做越权读取测试</td></tr>
+<tr><td>持久化隔离</td><td>重启、检查点恢复或 session id 混用后串线</td><td>保存、终止进程、恢复，再核对 task/session 映射</td></tr>
+</tbody>
+</table>
+
+<p>原文的两个标准非常具体：</p>
+<ul>
+  <li>内容会话看不到候选目录；</li>
+  <li>关联会话看不到原始来源，只看到合法文档。</li>
+</ul>
+<p>这不是简单的“不要在提示词里告诉它”。若原始数据仍被放进同一共享历史，或者两个 Agent 调用同一个不做权限过滤的读取工具，那么模型即使暂时没有复述，也不能称为隔离。真正的设计需要在数据进入模型之前建立边界。</p>
+
+<div class="warning">
+  <strong>重要区别：</strong>上下文隔离不自动等于安全隔离。若威胁模型包括恶意提示、越权工具调用或敏感信息泄漏，只分开聊天历史远远不够，还要在工具权限、查询过滤、凭证和审计上隔离。
+</div>
+
+<h3>3. 为什么要求“主会话无大内容”</h3>
+<p>如果主会话先读完所有原始来源、候选目录和两个子任务的全部过程，再把一部分转交给子 Agent，那么系统虽然有三个会话，计算和风险仍集中在主会话：</p>
+<ul>
+  <li>主会话 token 持续膨胀；</li>
+  <li>本应隔离的信息已经在主会话汇合；</li>
+  <li>主会话摘要错误会同时污染两个分支；</li>
+  <li>恢复主会话成为整个任务的单点。</li>
+</ul>
+<p>“主会话无大内容”说明主 Agent 更像调度器：保存任务标识、阶段、检查点和子会话引用，而不是保存所有工作材料。</p>
+
+<h3>4. 为什么实验要求固定模型</h3>
+<p>如果测试过程中同时更换模型，失败究竟来自 Session Adapter、提示、模型能力还是模型行为漂移就难以判断。固定模型是在控制变量：先验证会话基础设施，再单独评估模型选择。</p>
+
+<h3>5. 一次可理解的实验流程</h3>
+<ol>
+  <li>创建一个 task，并在其下创建 content-session 与 relation-session。</li>
+  <li>向内容会话写入原始来源，但不提供候选目录。</li>
+  <li>向关联会话写入允许引用的文档集合，但不提供原始来源。</li>
+  <li>分别提出诱导问题，确认它们不能复述职责外数据。</li>
+  <li>让两个会话各产生不同历史和检查点。</li>
+  <li>终止进程后恢复，确认 task 能找到两条独立会话。</li>
+  <li>检查主会话只保留调度状态和结果引用。</li>
+</ol>
+
+<p>如果失败，设计者要判断失败属于哪一层：Session Adapter 根本不支持一 task 多 session，持久化模型不能区分它们，还是工具层没有权限过滤。不同失败会导向不同设计，而不是一律“再改提示词”。</p>
+</section>
+
+<section id="d02">
+<h2>三、D-02：无向关联双端版本——一条边为什么会牵动两个文档</h2>
+
+<h3>1. 无向关系的逻辑对象只有一条</h3>
+<p>若文档 A 与 B 互相关联，从用户语义看，<code>A—B</code> 与 <code>B—A</code> 是同一关系。所谓 canonical link，是为这条无方向关系定义唯一表示。例如可以把两个 documentId 排序后形成：</p>
+
+<pre><code>left_id  = min(documentA, documentB)
+right_id = max(documentA, documentB)
+canonical_key = (left_id, right_id, relation_type)</code></pre>
+
+<p>这里的具体字段只是示意。核心不变量是：</p>
+<div class="definition"><strong>对同一对端点和同一关系类型，系统中最多存在一条当前有效的逻辑关联。</strong></div>
+
+<p>如果分别保存 A→B 与 B→A 两行，就必须长期保证两行同时创建、同时删除、属性一致。任何中途失败都会产生半条关系。只保存一条 canonical link，能把“关系事实”的源头统一起来。</p>
+
+<h3>2. 为什么仍然要更新两端版本</h3>
+<p>关系事实只有一条，不等于用户可见结果只影响一端。若 A 的页面展示“相关文档 B”，B 的页面也展示“相关文档 A”，那么新增或删除 link 会改变两个文档的可见表示。原文因此要求：</p>
+<ul>
+  <li>两端关联修订均增加；</li>
+  <li>两端 Bundle 和 Markdown 都重建。</li>
+</ul>
+<p>这暗示系统可能区分：</p>
+<ul>
+  <li><strong>源事实：</strong>canonical link；</li>
+  <li><strong>文档修订：</strong>记录文档可见状态发生变化；</li>
+  <li><strong>派生表示：</strong>Bundle、Markdown 或其他 serving projection。</li>
+</ul>
+<p>一个常见错误是把派生表示当成源事实，直接在 A 的 Markdown 和 B 的 Markdown 里各写一遍关联。这样删除、重建和并发冲突都会变得困难。</p>
+
+<h3>3. “并发反向操作”在担心什么</h3>
+<p>设两个请求几乎同时到达：</p>
+<pre><code>请求 1：给 A 添加关联 B
+请求 2：给 B 添加关联 A</code></pre>
+<p>若应用先检查“有没有”，再插入，两边都可能在检查时看到不存在，然后各自插入，产生重复。安全设计通常需要把唯一性放到数据库约束中，而不是只靠应用层先查后写。PostgreSQL 的唯一约束与 <code>INSERT ... ON CONFLICT</code> 等机制，可以把并发下的唯一结果交给数据库原子裁决。</p>
+
+<p>删除和更新还会涉及锁顺序。假如请求 1 先锁 A 再锁 B，请求 2 先锁 B 再锁 A，两者可能互相等待。原文要求“无死锁”，通常意味着所有事务都按稳定顺序取得两端资源，例如总是先锁较小 documentId 对应的对象，再锁较大的。</p>
+
+<div class="comparison-note">
+  <strong>需要同时满足的两类规则：</strong><br>
+  数据库唯一约束防止“重复边”；统一锁顺序防止“两个事务各拿一端、互相等待”。二者解决的不是同一个问题。
+</div>
+
+<h3>4. 这个实验真正验证的不是一个接口</h3>
+<p>它同时验证一条完整链路：</p>
+<div class="pipeline">
+  <div class="node"><strong>关联命令</strong>输入 A、B</div><div class="sep">→</div>
+  <div class="node"><strong>事务</strong>写 canonical link</div><div class="sep">→</div>
+  <div class="node"><strong>版本</strong>两端 revision 增加</div><div class="sep">→</div>
+  <div class="node"><strong>异步投影</strong>安排两端重建</div><div class="sep">→</div>
+  <div class="node"><strong>Serving</strong>两端最终可见</div>
+</div>
+<p>通过标准必须检查数据库、修订号、任务数量和最终页面，而不是只看 API 返回 200。</p>
+</section>
+
+<section id="d03">
+<h2>四、D-03：核心事务与 outbox——封住“提交成功但后续任务丢了”的缝隙</h2>
+
+<p>D-03 是整组实验的可靠性核心。它针对的是一种常见双写：</p>
+<pre><code>第一处写：把文档新版本设为 current
+第二处写：向队列发送“请重建 Bundle/Markdown”的任务</code></pre>
+<p>如果这两处不属于同一个原子提交，就会出现：</p>
+<ul>
+  <li>数据库已更新，进程在发任务前崩溃：没有人重建投影；</li>
+  <li>任务已发出，数据库随后回滚：worker 为一个不存在的版本工作；</li>
+  <li>客户端重试或 relay 重试：同一投影任务被创建多次。</li>
+</ul>
+
+<p>Transactional Outbox 的核心做法是：在同一个数据库事务里同时写入业务变化和一条持久化 outbox 事件。事务提交后，独立 relay/worker 读取 outbox，再投递或创建 projection job。这样“业务状态存在但没有任何待处理记录”的不可恢复缝隙被封住。</p>
+
+<table>
+<thead><tr><th>原文标准</th><th>它保护的不变量</th></tr></thead>
+<tbody>
+<tr><td>commit 前失败无 current 变化</td><td>事务回滚时，外部不能看到半完成的新版本</td></tr>
+<tr><td>commit 后 worker 丢失仍可恢复</td><td>任务意图已经持久化，可被其他 worker 重放</td></tr>
+<tr><td>重复消费只产生一个 projection job</td><td>消费者具有幂等键或唯一约束</td></tr>
+<tr><td>旧 serving 继续可读</td><td>新投影未完成时，不把稳定旧版本提前撤下</td></tr>
+</tbody>
+</table>
+
+<p>这四条把事务边界、消息交付、幂等处理和无中断发布连成了一个整体。下一篇将专门用完整故障时间线解释。</p>
+</section>
+
+<section id="d04">
+<h2>五、D-04：候选召回预算——不要让大模型为检索层背锅</h2>
+
+<h3>1. 关联建议通常不是让模型阅读整个知识库</h3>
+<p>当知识库变大，把所有 tag、node 和文档放进模型上下文既昂贵又不可行。常见流程是：</p>
+<div class="pipeline">
+  <div class="node"><strong>召回</strong>快速找候选</div><div class="sep">→</div>
+  <div class="node"><strong>重排/过滤</strong>提高相关性</div><div class="sep">→</div>
+  <div class="node"><strong>模型判断</strong>选择、解释或提议新节点</div><div class="sep">→</div>
+  <div class="node"><strong>人工审阅</strong>接受或修改</div>
+</div>
+<p>召回层决定模型“有机会看到什么”。如果正确旧节点从未进入候选集，模型只能：</p>
+<ul>
+  <li>错误选择一个较差候选；</li>
+  <li>建议创建新节点；</li>
+  <li>输出“没有合适节点”。</li>
+</ul>
+<p>因此“模型频繁建议新节点”未必说明模型太爱创造，也可能说明检索层漏掉已有节点。</p>
+
+<h3>2. 为什么要同时测 precision、延迟和 token</h3>
+<table>
+<thead><tr><th>指标</th><th>回答的问题</th><th>单独优化的危险</th></tr></thead>
+<tbody>
+<tr><td>候选 precision</td><td>送给模型的候选中，有多少是真正相关的</td><td>过低会让上下文充满噪声，模型判断困难</td></tr>
+<tr><td>候选 recall</td><td>正确已有节点有多少被召回</td><td>过低会制造虚假的“必须新建”</td></tr>
+<tr><td>延迟</td><td>真实规模下用户要等多久</td><td>只追求精度可能采用无法交互的慢方案</td></tr>
+<tr><td>token</td><td>候选描述占多少上下文与成本</td><td>扩大候选数会挤压原文、推理和输出空间</td></tr>
+</tbody>
+</table>
+
+<p>原文只明确写了 precision、延迟和 token，没有明确写 recall；但“若模型频繁建议新节点，先修召回”本身表明设计者关心召回缺失。这里应在正式实验文档中把指标定义补齐，例如：</p>
+<ul>
+  <li>测试集怎样建立；</li>
+  <li>正确候选是否可能不止一个；</li>
+  <li>测 precision@k、recall@k 还是人工可接受率；</li>
+  <li>知识库规模和 tag/node 分布；</li>
+  <li>延迟的 p50、p95 预算；</li>
+  <li>平均与上限 token。</li>
+</ul>
+
+<h3>3. 为什么“不提高新节点上限”是一条设计原则</h3>
+<p>若检索坏了，允许模型创建更多新节点，会把短期失败变成长期数据污染：同义节点越来越多，召回更困难，模型更容易继续新建。正确修复顺序应是：</p>
+<pre><code>先检查已有正确节点是否进入候选
+→ 再检查候选描述是否足以辨认
+→ 再检查模型选择能力与提示
+→ 最后才讨论新节点策略</code></pre>
+</section>
+
+<section id="d05">
+<h2>六、D-05：ReviewWorkspace 独立构建——用假后端检验真正的模块边界</h2>
+
+<h3>1. “前端可独立运行”不是指能打开一个空页面</h3>
+<p>原文要求在不启动 InnoSpark 的环境中，使用 fake ReviewApi 完成内容预览、tag/related/node 审阅、ETag 冲突和发布确认。这是在验证：</p>
+<ul>
+  <li>ReviewWorkspace 是否只依赖一个明确的 API 契约；</li>
+  <li>业务规则是否被偷偷放在主系统页面或内部数据库访问中；</li>
+  <li>错误状态是否也是契约的一部分；</li>
+  <li>未来能否复用、单独测试或替换宿主。</li>
+</ul>
+
+<p>Fake API 的价值不是“省得先写后端”，而是迫使团队说明接口的完整语义。若前端必须调用十几个未公开内部函数、读取主进程内存或依赖某个全局状态，fake 很快就会暴露边界不成立。</p>
+
+<h3>2. 为什么 ETag 冲突必须进入独立实验</h3>
+<p>典型场景是：</p>
+<ol>
+  <li>审阅者甲打开版本 v5；</li>
+  <li>审阅者乙也打开 v5，并先发布修改，服务端变成 v6；</li>
+  <li>甲仍基于旧 v5 提交。</li>
+</ol>
+<p>若服务端无条件接受，甲会覆盖乙的更新，形成 lost update。HTTP 的 ETag 与 <code>If-Match</code> 可以表达乐观并发控制：客户端提交时带上自己读取到的版本标记；若服务端当前标记不匹配，返回 412 Precondition Failed，而不是静默覆盖。</p>
+
+<div class="example">
+  <strong>重点不是记住状态码：</strong>前端必须把冲突当作正常业务分支，向用户展示“当前内容已变化”，提供刷新、比较或重新应用修改的路径。只在后端返回错误而前端弹出“发布失败”，仍然没有完成设计。
+</div>
+
+<h3>3. 独立构建验证了什么解耦</h3>
+<table>
+<thead><tr><th>被解耦的东西</th><th>实验怎样证明</th></tr></thead>
+<tbody>
+<tr><td>UI 与真实后端进程</td><td>只启动静态前端和 fake API 仍能跑完整流程</td></tr>
+<tr><td>UI 与数据库结构</td><td>前端只使用 API DTO，不认识内部表</td></tr>
+<tr><td>审阅流程与宿主应用导航</td><td>可通过独立入口加载 workspace</td></tr>
+<tr><td>成功路径与错误路径</td><td>fake 可稳定模拟冲突、校验失败和发布确认</td></tr>
+</tbody>
+</table>
+
+<p>若实验成功，后端可以稍后实现真实 ReviewApi，前端则以契约测试保证二者对齐。若失败，应先修边界，而不是把前端“临时嵌进去”。</p>
+</section>
+
+<section id="d06">
+<h2>七、D-06：L2 受控更新——同一个 documentId 到底怎样表示“新版本”</h2>
+
+<p>这项最依赖项目内部上下文。我们只知道它要求根据 Stage 0 S-09 的实际能力，在三条路中选择：</p>
+<ul>
+  <li>upsert；</li>
+  <li>版本化 manifest pointer；</li>
+  <li>记录为 capability 阻断。</li>
+</ul>
+<p>并且 P0 环境必须证明：同一 documentId 更新后，不会出现新旧两个活跃来源。</p>
+
+<h3>1. 三条路线分别意味着什么</h3>
+<table>
+<thead><tr><th>路线</th><th>一般含义</th><th>优点</th><th>主要风险</th></tr></thead>
+<tbody>
+<tr><td>Upsert</td><td>同一逻辑键存在则更新，不存在则插入</td><td>调用者语义简单，活跃记录可保持唯一</td><td>底层是否真的原子、历史版本放在哪里、缓存如何失效</td></tr>
+<tr><td>版本化 manifest pointer</td><td>内容版本不可变，另有一个指针声明当前活跃版本</td><td>保留历史、回滚清晰、构建可先完成再切换指针</td><td>所有读取路径必须遵守指针；切换和清理需设计</td></tr>
+<tr><td>Capability 阻断</td><td>确认底层当前不能安全更新，把能力列为阻塞而非伪装完成</td><td>诚实地保护数据正确性</td><td>功能延期，需要替代流程或依赖方改计划</td></tr>
+</tbody>
+</table>
+
+<h3>2. “两个活跃来源”为什么危险</h3>
+<p>假设 documentId=42 的旧内容与新内容都被检索层视为 active：</p>
+<ul>
+  <li>搜索可能同时返回两份相似文档；</li>
+  <li>模型可能引用旧版本，或把两份内容当成两个来源；</li>
+  <li>关联、标签和统计会分裂；</li>
+  <li>用户无法判断哪一份是正式版本；</li>
+  <li>后续更新可能继续复制，形成版本污染。</li>
+</ul>
+<p>所以需要明确不变量：</p>
+<div class="definition"><strong>对每个逻辑 documentId，在任何对外可读时刻，最多有一个被认定为 current/active 的来源；历史版本可以存在，但必须与活跃读取语义分离。</strong></div>
+
+<h3>3. 为什么要在真实 P0 环境证明</h3>
+<p>本地 mock 能证明调用代码按预期执行，却不能证明外部系统的实际更新语义。真实环境可能：</p>
+<ul>
+  <li>把更新实现为新增对象；</li>
+  <li>异步删除旧索引，存在较长重叠窗口；</li>
+  <li>缓存旧版本；</li>
+  <li>只按内部对象 id 而非 documentId 唯一；</li>
+  <li>不同查询入口使用不同“active”过滤。</li>
+</ul>
+<p>因此 D-06 本质上是外部能力验证。若 S-09 没有证明所需能力，设计文档不能用“应该支持”替代证据。</p>
+</section>
+
+<section id="dependencies">
+<h2>八、六个实验怎样互相依赖</h2>
+
+<p>它们不是六个完全独立的待办。可以把依赖理解为三条链：</p>
+
+<div class="concept-map">
+  <div class="state-row"><strong>Agent 工作链</strong><span>D-01 会话隔离 → D-04 为关联 Agent 提供可控候选 → D-05 由人审阅 Agent 结果</span></div>
+  <div class="state-row"><strong>数据正确性链</strong><span>D-02 canonical link 与双端版本 → D-03 可靠地安排双端投影 → D-06 确保下游来源只激活一个版本</span></div>
+  <div class="state-row"><strong>模块边界链</strong><span>D-01 证明 Session Adapter 边界 → D-05 证明 ReviewApi 边界 → D-06 证明外部 L2 能力边界</span></div>
+</div>
+
+<p>若要排实施顺序，不应只按编号机械执行，而应看哪一项的失败会推翻最多下游设计。通常会话能力、核心数据不变量与外部更新能力属于高影响地基；界面细节和模型提示可以在边界稳定后迭代。</p>
+
+<h3>一个更清楚的阶段表</h3>
+<table>
+<thead><tr><th>阶段</th><th>先验证</th><th>通过后才能放心投入</th></tr></thead>
+<tbody>
+<tr><td>基础能力确认</td><td>D-01、D-06</td><td>双 Agent 主流程、L2 发布链路</td></tr>
+<tr><td>核心数据闭环</td><td>D-02、D-03</td><td>关系编辑、版本与投影的正式实现</td></tr>
+<tr><td>智能建议质量</td><td>D-04</td><td>稳定的 tag/node 推荐和新节点策略</td></tr>
+<tr><td>人工审阅体验</td><td>D-05</td><td>真实 API 接入、宿主集成与发布流程</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="rewrite">
+<h2>九、怎样把这组实验写得让项目负责人也能看懂</h2>
+
+<p>原条目对实现者很紧凑，但缺少背景。推荐每项补成下面结构：</p>
+
+<pre><code>编号与标题
+关联需求：保护哪条用户能力或系统承诺
+现有证据：Stage 0 已经证明了什么
+未决风险：仍不知道什么，最坏后果是什么
+候选设计：准备采用什么，以及备选方案
+实验环境：哪些是真实组件，哪些是 fake/mock
+步骤：怎样构造最小验证
+通过标准：每一条如何测量和记录
+失败解释：不同失败分别说明什么
+决策规则：通过/失败后采用哪条路线
+下游阻塞：哪些实现不得提前开始
+证据归档：代码、日志、数据集、结论放在哪里</code></pre>
+
+<h3>以 D-05 为例的可读改写</h3>
+<div class="example">
+  <p><strong>关联需求：</strong>审阅模块应当可以独立开发和复用，不依赖 InnoSpark 主进程内部状态。</p>
+  <p><strong>风险：</strong>现有 UI 设想可能隐含读取主系统内部对象，导致所谓独立模块实际上无法脱离宿主。</p>
+  <p><strong>实验：</strong>只启动 ReviewWorkspace 和一个按照 ReviewApi 契约实现的 fake server。</p>
+  <p><strong>通过标准：</strong>完成内容预览、tag/related/node 修改、模拟 ETag 冲突、确认发布；浏览器网络请求中不得出现契约之外的内部接口。</p>
+  <p><strong>决策：</strong>通过则冻结第一版 ReviewApi 契约并分别开发前后端；失败则先修改模块边界，不进入主系统集成。</p>
+</div>
+
+<p>这样写，读者即使不知道前端框架，也能判断实验是否必要、证据是否充分、失败后是否真的会改变设计。</p>
+</section>
+
+<section id="questions">
+<h2>十、自检题与参考答案</h2>
+<div class="question"><strong>问题 1：</strong>为什么把两个 Agent 放在两个提示词中，不足以证明会话隔离？</div>
+<details><summary>参考答案</summary><p>因为隔离还涉及历史持久化、工具权限、数据进入模型前的过滤、task/session 映射和重启恢复。提示词只是模型行为约束，不是完整的数据与权限边界。</p></details>
+<div class="question"><strong>问题 2：</strong>canonical link 与“两端都显示关联”是否矛盾？</div>
+<details><summary>参考答案</summary><p>不矛盾。canonical link 是唯一源事实；A、B 两端的列表、Markdown 和 Bundle 可以是由同一事实构建的两个派生表示。</p></details>
+<div class="question"><strong>问题 3：</strong>为什么数据库唯一约束和统一锁顺序都需要？</div>
+<details><summary>参考答案</summary><p>唯一约束防止并发创建重复逻辑记录；统一锁顺序降低两个事务互相持锁等待的死锁风险。它们解决不同故障。</p></details>
+<div class="question"><strong>问题 4：</strong>模型频繁创建新节点时，为什么先查召回？</div>
+<details><summary>参考答案</summary><p>模型只能从可见候选中选择。若正确旧节点没被召回，模型的新建建议可能是检索缺失造成的假象；直接放宽新建会污染知识库并进一步恶化召回。</p></details>
+<div class="question"><strong>问题 5：</strong>fake ReviewApi 能证明真实后端正确吗？</div>
+<details><summary>参考答案</summary><p>不能。它主要证明前端可依赖明确契约独立运行，并帮助完善成功与错误语义。真实后端仍需契约测试、集成测试和端到端测试。</p></details>
+<div class="question"><strong>问题 6：</strong>D-06 失败时为什么“记录能力阻断”也是合格结论？</div>
+<details><summary>参考答案</summary><p>Spike 的目标是获得真实决策证据，不是强迫预设方案通过。若底层不能保证单一活跃来源，诚实阻断比以不可靠实现伪装完成功能更有价值。</p></details>
+
+<h3>本篇结论</h3>
+<p>D-01～D-06 分别验证了会话边界、关系与版本不变量、异步可靠性、检索质量预算、前后端契约边界和外部更新能力。它们共同说明：设计文档中的实验不是“多做一些测试”，而是在大规模实现前确认最可能推翻架构的假设。</p>
+
+<h3>参考资料</h3>
+<ul class="source-list small">
+  <li>用户提供的《针对 V4 的剩余技术实验》D-01～D-06：项目案例与原始通过标准。</li>
+  <li>RFC 9110, HTTP Semantics：ETag、If-Match 与 412 条件失败的一般语义。<a href="https://www.rfc-editor.org/rfc/rfc9110">RFC 9110 官方文本</a></li>
+  <li>PostgreSQL Documentation：Unique Constraints、INSERT ... ON CONFLICT、锁与死锁规避。<a href="https://www.postgresql.org/docs/current/">PostgreSQL 当前官方文档</a></li>
+  <li>AWS Prescriptive Guidance, Transactional Outbox Pattern：双写问题、outbox 与幂等消费者。<a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html">AWS Transactional Outbox 指南</a></li>
+</ul>
+</section>
+
+<section id="reader-feedback" data-feedback-status="pending">
+  <h2>读后反馈与修订记录</h2>
+  <article class="feedback-entry">
+    <h3>2026-07-24 · 第 0 轮</h3>
+    <p><strong>原始反馈：</strong>待读，尚未收到正文反馈。</p>
+    <p><strong>问题分类：</strong>待定</p>
+    <p><strong>处理：</strong>作为“从需求到设计”系列的第二篇生成，保持项目内部术语的材料边界，并补充可迁移的软件工程解释。</p>
+    <p><strong>状态：</strong>待处理</p>
+  </article>
+</section>
+</body>
+</html>

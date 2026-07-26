@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-id" content="marxism-001">
+  <meta name="corpus-category" content="马列">
+  <meta name="corpus-status" content="awaiting_review">
+  <meta name="estimated-reading-time" content="40-50 minutes">
+  <meta name="corpus-integrated-date" content="2026-07-19">
+  <meta name="series-position" content="1 of 7">
+  <title>马克思主义思想史（一）：从理论来源到主要分流</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202124;
+      --muted: #5f6368;
+      --paper: #ffffff;
+      --soft: #f6f8f7;
+      --line: #d9dfdc;
+      --red: #a52a2a;
+      --red-dark: #6f1d1d;
+      --red-soft: #fbefed;
+      --gold: #9a6b17;
+      --gold-soft: #fbf6e9;
+      --green: #276749;
+      --green-soft: #edf7f1;
+      --blue: #315b7d;
+      --blue-soft: #edf4f9;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      background: var(--paper);
+      font-size: 17px;
+    }
+
+    body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 36px 42px 84px;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC",
+        "STSong", "SimSun", serif;
+      line-height: 1.86;
+      overflow-wrap: anywhere;
+    }
+
+    h1, h2, h3, h4, nav, .sans, .chip, .label, table, summary {
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC",
+        "Microsoft YaHei", "Heiti SC", sans-serif;
+    }
+
+    h1, h2, h3, h4 { color: #161717; line-height: 1.38; }
+    h1 { margin: 0.55rem 0 1.15rem; font-size: clamp(2rem, 6vw, 3.1rem); letter-spacing: -0.035em; }
+    h2 { margin: 3.4rem 0 1.1rem; padding-bottom: 0.42rem; border-bottom: 1px solid var(--line); font-size: 1.55rem; }
+    h3 { margin: 2.25rem 0 0.75rem; font-size: 1.24rem; }
+    h4 { margin: 1.7rem 0 0.55rem; font-size: 1.08rem; }
+    p { margin: 0.84rem 0; }
+    ul, ol { padding-left: 1.5rem; }
+    li { margin: 0.38rem 0; }
+    strong { color: #111; }
+    a { color: var(--blue); text-underline-offset: 0.16em; }
+    a:hover { color: var(--red); }
+
+    .hero {
+      margin: 0 -12px 2rem;
+      padding: 34px 32px 30px;
+      border: 1px solid var(--line);
+      border-top: 6px solid var(--red);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 100% 0, rgba(165, 42, 42, 0.10), transparent 32%),
+        linear-gradient(145deg, #fff 0%, #faf8f4 100%);
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--red-dark);
+      font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif;
+      font-size: 0.84rem;
+      font-weight: 750;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .deck { max-width: 42rem; color: #3f4442; font-size: 1.08rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.35rem; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.28rem 0.68rem;
+      border: 1px solid #dec9c6;
+      border-radius: 999px;
+      color: var(--red-dark);
+      background: rgba(255,255,255,0.76);
+      font-size: 0.82rem;
+      font-weight: 650;
+    }
+
+    .reading-note, .warning, .definition, .method-note, .takeaway {
+      margin: 1.35rem 0;
+      padding: 0.95rem 1.1rem;
+      border-radius: 10px;
+    }
+
+    .reading-note { border-left: 4px solid var(--gold); background: var(--gold-soft); }
+    .warning { border-left: 4px solid var(--red); background: var(--red-soft); }
+    .definition { border-left: 4px solid var(--blue); background: var(--blue-soft); }
+    .method-note { border-left: 4px solid var(--green); background: var(--green-soft); }
+    .takeaway { border: 1px solid #dec9c6; background: #fffaf8; }
+    .reading-note > :first-child, .warning > :first-child, .definition > :first-child,
+    .method-note > :first-child, .takeaway > :first-child { margin-top: 0; }
+    .reading-note > :last-child, .warning > :last-child, .definition > :last-child,
+    .method-note > :last-child, .takeaway > :last-child { margin-bottom: 0; }
+
+    .label {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 750;
+      letter-spacing: 0.06em;
+    }
+
+    nav#toc {
+      margin: 1.7rem 0 2.6rem;
+      padding: 1rem 1.15rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--soft);
+    }
+
+    nav#toc h2 { margin: 0 0 0.6rem; padding: 0; border: 0; font-size: 1.1rem; }
+    nav#toc ol { columns: 2; column-gap: 2.6rem; margin: 0; padding-left: 1.35rem; }
+    nav#toc li { break-inside: avoid; margin: 0.3rem 0; }
+    nav#toc a { color: #34413b; text-decoration: none; }
+    nav#toc a:hover { color: var(--red); text-decoration: underline; }
+
+    .map-shell {
+      margin: 1.35rem 0;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfcfb;
+    }
+
+    .map-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+
+    .map-card {
+      min-height: 100%;
+      padding: 0.78rem 0.82rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .map-card strong { display: block; margin-bottom: 0.22rem; font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif; }
+    .map-card span { display: block; color: var(--muted); font-size: 0.86rem; line-height: 1.55; }
+    .map-card.origin { border-top: 4px solid var(--gold); }
+    .map-card.branch { border-top: 4px solid var(--green); }
+    .map-center {
+      margin: 0.85rem auto;
+      padding: 0.95rem 1.05rem;
+      max-width: 690px;
+      border: 2px solid #c48075;
+      border-radius: 12px;
+      background: var(--red-soft);
+      text-align: center;
+    }
+    .map-center strong { font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif; font-size: 1.06rem; }
+    .map-center p { margin: 0.35rem 0 0; color: #5b3431; font-size: 0.9rem; }
+    .map-arrow { color: var(--muted); font-family: sans-serif; text-align: center; line-height: 1; }
+
+    .grid-2, .grid-3 {
+      display: grid;
+      gap: 0.85rem;
+      margin: 1rem 0;
+    }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .concept-card {
+      padding: 0.92rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #fff;
+    }
+    .concept-card h3, .concept-card h4 { margin-top: 0; }
+    .concept-card p:last-child { margin-bottom: 0; }
+
+    .term {
+      margin: 1rem 0;
+      padding: 0.85rem 1rem;
+      border-left: 4px solid #9bb2a6;
+      background: #f7faf8;
+    }
+    .term dt { font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif; font-weight: 800; }
+    .term dd { margin: 0.25rem 0 0; }
+
+    .table-wrap { width: 100%; margin: 1.15rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+    table { width: 100%; min-width: 680px; border-collapse: collapse; font-size: 0.89rem; line-height: 1.58; }
+    th, td { padding: 0.72rem 0.76rem; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+    th { color: #2d3833; background: #f0f3f1; font-weight: 750; }
+    tr:last-child td { border-bottom: 0; }
+    tbody tr:nth-child(even) td { background: #fcfdfc; }
+
+    .timeline { position: relative; margin: 1.4rem 0 1.4rem 0.35rem; padding-left: 1.45rem; border-left: 2px solid #c8d0cc; }
+    .time-item { position: relative; margin: 0 0 1.35rem; }
+    .time-item::before {
+      content: "";
+      position: absolute;
+      left: -1.88rem;
+      top: 0.52rem;
+      width: 0.72rem;
+      height: 0.72rem;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 0 1px var(--red);
+    }
+    .time-item h3 { margin: 0 0 0.3rem; }
+    .time-item p { margin: 0.35rem 0; }
+    .time { color: var(--red-dark); font-family: "Noto Sans CJK SC", sans-serif; font-size: 0.82rem; font-weight: 800; }
+
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+    .steps > li {
+      counter-increment: step;
+      position: relative;
+      margin: 0 0 0.85rem;
+      padding: 0.85rem 0.95rem 0.85rem 3.15rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+    .steps > li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0.85rem;
+      top: 0.78rem;
+      display: grid;
+      place-items: center;
+      width: 1.65rem;
+      height: 1.65rem;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--red-dark);
+      font-family: sans-serif;
+      font-size: 0.86rem;
+      font-weight: 750;
+    }
+
+    .mini-case {
+      margin: 1.3rem 0;
+      padding: 1.05rem 1.15rem;
+      border: 1px solid #bcd4c5;
+      border-radius: 12px;
+      background: #f7fbf8;
+    }
+    .mini-case h3 { margin-top: 0; color: #1e5137; }
+
+    .source-type {
+      display: inline-block;
+      margin-right: 0.35rem;
+      padding: 0.05rem 0.42rem;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--muted);
+      font-family: "Noto Sans CJK SC", sans-serif;
+      font-size: 0.72rem;
+      font-weight: 750;
+      vertical-align: 0.08rem;
+    }
+    .source-type.primary { background: var(--red-dark); }
+    .source-type.academic { background: var(--blue); }
+    .source-type.official { background: var(--green); }
+
+    details {
+      margin: 0.75rem 0;
+      padding: 0.68rem 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+    }
+    summary { cursor: pointer; font-weight: 700; }
+    details p:last-child { margin-bottom: 0; }
+
+    .references li { margin-bottom: 0.65rem; }
+    .references small { display: block; color: var(--muted); }
+
+    #reader-feedback {
+      margin-top: 4rem;
+      padding: 1.1rem 1.2rem;
+      border: 2px dashed #c7cfcb;
+      border-radius: 12px;
+      background: #fafbfa;
+    }
+    #reader-feedback h2 { margin-top: 0; }
+    .empty-feedback { color: var(--muted); }
+    footer { margin-top: 2.5rem; color: var(--muted); font-size: 0.8rem; text-align: center; }
+
+    @media (max-width: 760px) {
+      body { padding: 20px 17px 64px; font-size: 0.98rem; }
+      .hero { margin: 0 0 1.5rem; padding: 24px 20px 22px; border-radius: 13px; }
+      nav#toc ol { columns: 1; }
+      .map-row, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .map-card { min-height: auto; }
+      h2 { margin-top: 2.8rem; }
+      .table-wrap { margin-left: -4px; width: calc(100% + 8px); }
+    }
+
+    @media print {
+      body { max-width: none; padding: 18mm; font-size: 11pt; }
+      .hero { break-inside: avoid; }
+      a { color: inherit; }
+      h2, h3, h4 { break-after: avoid; }
+      .concept-card, .term, .mini-case, details { break-inside: avoid; }
+      nav#toc { break-after: page; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <p class="eyebrow">马列学习规划 · 思想史系列 1 / 7</p>
+    <h1>马克思主义的前世今生：从理论来源到主要分流</h1>
+    <p class="deck">这篇先不要求你站进任何一个派别，而是回答一个更基础的问题：从马克思到今天，人们究竟继承了什么，又围绕哪些真实历史难题发生分裂？</p>
+    <div class="chips" aria-label="文章信息">
+      <span class="chip">预计 40—50 分钟</span>
+      <span class="chip">难度：入门—进阶之间</span>
+      <span class="chip">核心任务：建立全景坐标系</span>
+      <span class="chip">状态：待读后反馈</span>
+    </div>
+  </header>
+
+  <aside class="reading-note">
+    <span class="label">阅读说明</span>
+    <p>本篇比项目通常的单次通勤语料略长，因为它承担整个七篇系列的“地图”功能。第一次阅读时，只要抓住每节开头的定义、表格和末尾的“结论压缩”；人物、年份和书名不必一次记住。</p>
+  </aside>
+
+  <aside class="warning">
+    <span class="label">立场与方法</span>
+    <p>本文把马克思主义当作一个内部有争论、会被经验修正的思想传统，而不是一套只需背诵的正确答案。它也不会因为读者倾向毛派，就默认毛派对苏联、改革开放或当代中国的判断已经成立。理论学习的第一步，恰恰是把自我认同暂时放在证据之后。</p>
+  </aside>
+
+  <nav id="toc" aria-label="目录">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#map">先看全景地图</a></li>
+      <li><a href="#terms">把常见名称钉住</a></li>
+      <li><a href="#conditions">马克思主义为何在十九世纪出现</a></li>
+      <li><a href="#sources">马克思继承并改造了什么</a></li>
+      <li><a href="#core">马克思理论的五个模块</a></li>
+      <li><a href="#branches">马克思之后为何不断分流</a></li>
+      <li><a href="#comparison">主要流派怎样看待彼此</a></li>
+      <li><a href="#dialectics">唯物辩证法怎样真正用于分析</a></li>
+      <li><a href="#pitfalls">八个常见误区</a></li>
+      <li><a href="#memory">结论压缩与记忆框架</a></li>
+      <li><a href="#series">后续六篇路线</a></li>
+      <li><a href="#questions">自检题与答案</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <section id="map">
+      <h2>一、先看全景地图：马克思主义不是一棵笔直的树</h2>
+
+      <div class="definition">
+        <span class="label">本篇核心结论</span>
+        <p><strong>马克思主义是一组围绕资本主义、阶级权力和人类解放展开的研究问题与政治实践传统。</strong>后来的流派并非只在“谁更忠于原文”上争吵，而是在不同历史条件下，对五个问题给出了不同答案：资本主义怎样运行？谁可能改变它？靠什么组织？如何取得并约束政治权力？替代制度怎样避免产生新的支配？</p>
+      </div>
+
+      <div class="map-shell" role="img" aria-label="马克思主义理论来源与主要分流关系图">
+        <div class="map-row">
+          <div class="map-card origin"><strong>德国哲学</strong><span>历史、矛盾、辩证法、异化；主要是黑格尔与费尔巴哈</span></div>
+          <div class="map-card origin"><strong>英国政治经济学</strong><span>劳动、价值、工资、利润、地租；主要是斯密与李嘉图</span></div>
+          <div class="map-card origin"><strong>社会主义与工人运动</strong><span>合作社会的设想、阶级斗争、宪章运动与早期共产主义</span></div>
+          <div class="map-card origin"><strong>现实历史</strong><span>工业革命、法国大革命、1848 年革命、巴黎公社</span></div>
+        </div>
+        <div class="map-arrow" aria-hidden="true">↓　批判继承，而非简单拼装　↓</div>
+        <div class="map-center">
+          <strong>马克思与恩格斯：把哲学批判、政治经济学批判和工人解放连成一个问题</strong>
+          <p>实践与辩证法｜历史唯物主义｜商品与资本｜阶级、国家与革命｜共产主义的开放目标</p>
+        </div>
+        <div class="map-arrow" aria-hidden="true">↓　新环境提出新问题，答案开始分流　↓</div>
+        <div class="map-row">
+          <div class="map-card branch"><strong>第二国际</strong><span>正统派、修正主义、卢森堡：议会改革能否累积为社会主义？</span></div>
+          <div class="map-card branch"><strong>列宁与苏联分流</strong><span>先锋党、帝国主义、国家；其后有马克思列宁主义、托洛茨基主义、左翼共产主义</span></div>
+          <div class="map-card branch"><strong>中国革命与毛主义</strong><span>农民、民族解放、新民主主义、群众路线、继续革命与反官僚化</span></div>
+          <div class="map-card branch"><strong>西方与当代扩展</strong><span>霸权、文化、心理、性别、种族、殖民、生态与分析哲学重构</span></div>
+        </div>
+      </div>
+
+      <p>这张图故意没有画成“马克思 → 列宁 → 斯大林 → 毛泽东”的单线继承。那条线是二十世纪部分共产党建立的正统谱系，能够说明它们如何理解自身，却不能容纳社会民主主义、卢森堡、托洛茨基、委员会共产主义、葛兰西、法兰克福学派、分析马克思主义以及社会主义女性主义等大量真实存在的传统。</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>判断一个流派，先问</th><th>可能出现的分歧</th></tr></thead>
+          <tbody>
+            <tr><td>资本主义的核心机制是什么？</td><td>剩余价值与阶级关系；市场与竞争；金融和垄断；帝国主义；文化与意识形态；性别化再生产；生态掠夺。</td></tr>
+            <tr><td>主要变革主体是谁？</td><td>产业工人；工农联盟；被殖民民族；多种劳动者与社会运动的联盟；没有先验指定的单一主体。</td></tr>
+            <tr><td>组织形式是什么？</td><td>群众党、先锋党、工会、工人委员会、游击队、统一战线、议会政党或去中心化运动。</td></tr>
+            <tr><td>怎样看国家与民主？</td><td>利用并改造议会国家；打碎旧国家机器；建立苏维埃或公社式政权；警惕党国官僚化；把民主扩展到经济领域。</td></tr>
+            <tr><td>社会主义怎样运行？</td><td>中央计划、参与式计划、市场社会主义、工人自治、公共所有加民主控制，以及不同组合。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="terms">
+      <h2>二、先把常见名称钉住</h2>
+      <p>政治讨论最容易在名称上制造一种虚假的熟悉感。下面不是宣布唯一正确的词典，而是给本系列设定可重复使用的<strong>工作定义</strong>。</p>
+
+      <dl class="term">
+        <dt>马克思的理论</dt>
+        <dd>马克思在不同时期形成、并且仍在变化的文本与论证。青年时期重异化和人的解放，成熟时期集中于政治经济学批判，但两者究竟是“断裂”还是“连续发展”，学界一直有争论。它不是马克思亲手封闭完成的体系：《资本论》只有第一卷由他生前出版，许多笔记后来才整理面世。</dd>
+      </dl>
+
+      <dl class="term">
+        <dt>马克思主义</dt>
+        <dd>从马克思、恩格斯出发形成的理论与实践传统。它既包括努力保卫经典命题的人，也包括以马克思的问题意识为基础、却修改甚至拒绝某些经典命题的人。因此，“马克思说了什么”与“马克思主义后来成了什么”必须分开。</dd>
+      </dl>
+
+      <dl class="term">
+        <dt>社会主义与共产主义</dt>
+        <dd>在十九世纪，这两个词的用法并不稳定。今天可以暂时把<strong>社会主义</strong>理解为以社会和民主控制主要生产资料、克服资本对劳动支配的一族制度主张；把<strong>共产主义</strong>理解为更彻底消除阶级支配、生产以人的需要和自由发展为目标的远景。马克思在《哥达纲领批判》中谈到共产主义社会的较低与较高阶段，但没有给出完整制度蓝图。现代学术讨论也强调：单纯由国家所有、而缺乏社会的民主控制，不能自动推出社会主义。<a href="https://plato.stanford.edu/entries/socialism/">[学术说明]</a></dd>
+      </dl>
+
+      <dl class="term">
+        <dt>社会民主主义</dt>
+        <dd>这个词发生过显著的历史变义。十九世纪末到二十世纪初，许多革命马克思主义者和改良派都在“社会民主党”内部，列宁的党也曾名为俄国社会民主工党。第一次世界大战、俄国革命和共产国际成立以后，共产主义运动与社会民主主义逐渐分家；今天这个词通常指接受议会民主、以福利和再分配改革资本主义的左翼传统。不能把现代含义倒灌到所有早期文本。</dd>
+      </dl>
+
+      <dl class="term">
+        <dt>列宁主义与“马克思列宁主义”</dt>
+        <dd><strong>列宁主义</strong>可以指列宁关于政党、革命、国家、民族和帝国主义的具体理论；<strong>马克思列宁主义</strong>则通常指列宁去世后在苏联逐步定型、并成为共产党官方意识形态的体系。二者高度相关，却不完全等同。把后来制度化的每一条教义都直接归给列宁，会抹去列宁思想本身的变化与苏联内部争论；1938 年苏联《联共（布）党史简明教程》对哲学体系的标准化，是这种定型的重要节点。<a href="https://www.rep.routledge.com/articles/thematic/marxist-philosophy-russian-and-soviet/v-1/sections/the-depths-of-the-stalin-era">[学术说明]</a></dd>
+      </dl>
+
+      <dl class="term">
+        <dt>毛泽东思想与毛主义</dt>
+        <dd><strong>毛泽东思想</strong>在中国共产党正式表述中，是中国革命与建设经验的理论总结，并被定义为集体智慧；国际语境中的<strong>毛主义</strong>通常指从毛泽东及 1976 年以前中共实践中形成的革命传统。后者内部仍分成“毛泽东思想”“马克思列宁毛主义”等不同自称，对文化大革命、群众战争和社会主义社会阶级斗争的评价也不同。两个词不能机械互换。</dd>
+      </dl>
+
+      <dl class="term">
+        <dt>修正主义</dt>
+        <dd>本来指伯恩施坦对经典马克思主义若干命题的公开修改，后来成为各派指控对手“表面继承、实质背叛”的斗争性用语。它能告诉你<strong>说话者怎样划界</strong>，却不能替代论证。只要看到“某某是修正主义”，下一步就应问：具体修改了哪个命题？依据是什么？修改造成了什么政治后果？</dd>
+      </dl>
+    </section>
+
+    <section id="conditions">
+      <h2>三、马克思主义为什么会在十九世纪出现？</h2>
+
+      <div class="definition">
+        <span class="label">核心命题</span>
+        <p>马克思主义不是先从书斋里想出一个平等社会，再寻找现实去套。它首先是对一种历史反差的解释：<strong>资本主义一方面以前所未有的速度扩展生产力和形式自由，另一方面又把大多数生产者置于失去生产资料、必须出售劳动力的结构中。</strong></p>
+      </div>
+
+      <h3>1. 政治革命已经宣布“人人自由”，社会生活为何仍不自由？</h3>
+      <p>法国大革命摧毁了大量封建等级特权，把法律上的自由、平等与公民身份推到欧洲政治中心。马克思并不否认这种“政治解放”的历史进步，但他追问：如果一个人在法律上可以自由签约，却因为没有土地、工具或资本而不得不接受雇佣条件，这种自由是否充分？形式平等的交换，为什么可能产生持续的不平等权力？</p>
+
+      <h3>2. 工业革命极大增加财富，为何贫困与不安全仍大规模存在？</h3>
+      <p>工厂制、机器和世界市场提高了劳动生产率，也重组了生活：生产者与生产资料分离，劳动时间受工厂纪律支配，周期性危机使失业和工资波动成为结构性风险。问题不再只是“某个资本家贪婪”，而是竞争如何迫使企业追求积累、降低成本、延长或强化劳动。马克思要解释的是一个<strong>即使参与者个人品德良好，也会产生支配与危机的制度机制</strong>。</p>
+
+      <h3>3. 1830、1848 年的革命为何反复爆发，又为何反复受挫？</h3>
+      <p>十九世纪欧洲的政治冲突显示，“人民反对旧制度”并不意味着人民内部利益一致。资产者可能反对贵族和专制，却也会在工人提出独立的社会要求时转向秩序；小生产者、农民和工人的处境也不相同。马克思因而逐渐把政治事件理解为多种阶级关系、国家形式和国际环境的具体组合，而非抽象的“自由对专制”。</p>
+
+      <h3>4. 早期社会主义已经批判贫困，为什么还需要新理论？</h3>
+      <p>圣西门、傅立叶、欧文等早期社会主义者敏锐地发现了竞争社会的破坏性，并提出合作社、共同体或有组织生产等方案。马克思与恩格斯肯定其批判力量，但认为仅靠道德说服、天才设计或小规模示范，不能说明旧秩序为何会被改变、由谁改变、改变的物质条件在哪里。于是，社会主义被重新提出为一个关于<strong>历史条件、阶级力量和自我解放</strong>的问题，而不仅是一张理想社会图纸。斯坦福哲学百科也提醒：马克思既批评空想社会主义的蓝图方法，也高度评价第一代社会主义者对资本主义的批判，不能把二者简化成“空想全错、科学全对”。<a href="https://plato.stanford.edu/entries/marx/#UtopSoci">[学术说明]</a></p>
+    </section>
+
+    <section id="sources">
+      <h2>四、马克思继承了什么，又改造了什么？</h2>
+      <p>列宁 1913 年把马克思主义的来源概括为“德国哲学、英国政治经济学和法国社会主义”。这是非常有用的入门框架，但要记住：它是列宁的回顾性组织，不是完整的影响清单；英国工人运动、法国政治史、古典共和主义、自然科学和具体革命经验同样重要。<a href="https://www.marxists.org/chinese/lenin/12.htm">[一手文本]</a></p>
+
+      <div class="grid-2">
+        <article class="concept-card">
+          <h3>1. 从黑格尔继承“过程与关系”</h3>
+          <p><strong>继承：</strong>社会制度不是静止自然物，而是有历史的关系；一个秩序可能靠内部矛盾运动并转化。现象背后存在经过中介连接的整体。</p>
+          <p><strong>改造：</strong>黑格尔把历史理解与精神、自我意识的发展紧密相连；马克思把重点转向现实的人如何生产生活、形成社会关系并在实践中改变世界。辩证法不再只是概念自我运动，而要进入劳动、财产、阶级和国家。</p>
+        </article>
+        <article class="concept-card">
+          <h3>2. 从费尔巴哈继承感性与宗教批判</h3>
+          <p><strong>继承：</strong>把宗教观念还原到现实的人，而不是用神解释人。</p>
+          <p><strong>改造：</strong>费尔巴哈仍把人看成主要进行直观和思考的抽象“类存在”。马克思追问：是什么社会生活不断生产这种异化？所以不能只靠纠正观念，而要改变产生观念的实践关系。《关于费尔巴哈的提纲》由此把认识与改造世界连接起来。<a href="https://www.marxists.org/chinese/marx-engels/03/001.htm">[一手文本]</a></p>
+        </article>
+        <article class="concept-card">
+          <h3>3. 从斯密、李嘉图继承经济范畴</h3>
+          <p><strong>继承：</strong>劳动、价值、工资、利润、地租、阶级分配，以及把经济看成有客观规律的体系。</p>
+          <p><strong>改造：</strong>马克思不满足于问商品以什么比例交换，而要问：为什么人的劳动产品普遍采取商品形式？为什么劳动力本身成为商品？利润为何能在等价交换的表面下持续产生？他的对象是资本主义社会关系，而不只是价格计算。</p>
+        </article>
+        <article class="concept-card">
+          <h3>4. 从社会主义者与工人运动继承解放目标</h3>
+          <p><strong>继承：</strong>私有财产批判、合作生产、社会平等，以及工人作为集体行动者的现实出现。</p>
+          <p><strong>改造：</strong>共产主义不应由教育者赐给被动群众。马克思逐渐坚持，劳动者的解放必须是劳动者自身的行动；理论的任务不是替群众画完未来，而是揭示现实运动的条件、矛盾和可能性。</p>
+        </article>
+      </div>
+
+      <div class="takeaway">
+        <span class="label">马克思真正的新意</span>
+        <p>不是分别发明“辩证法”“劳动价值论”或“社会主义”，而是把三种批判接通：<strong>人的观念为何被支配，要到社会关系中解释；社会关系为何如此，要到物质生产和阶级结构中解释；而这些结构如何改变，又必须回到有组织的实践。</strong></p>
+      </div>
+    </section>
+
+    <section id="core">
+      <h2>五、马克思理论的五个模块</h2>
+
+      <h3>模块 A：实践的、历史的辩证法</h3>
+      <div class="definition">
+        <span class="label">工作定义</span>
+        <p><strong>辩证分析</strong>是在一个有边界的历史对象中，研究彼此依存又相互冲突的关系，追踪这些关系经由哪些中介产生变化，并判断在特定阶段哪种关系对整体运动起主要作用。它不是“任何事都有好坏两面”，也不是用“否定之否定”替代证据。</p>
+      </div>
+      <p>马克思的出发点不是孤立个人，也不是抽象整体，而是<strong>关系中的人</strong>。例如“资本家”不是一种性格，“无产者”也不是一种道德品质；二者是在生产资料所有权、劳动力买卖和生产控制权中形成的关系位置。个人可以换位置，关系结构仍可能持续。</p>
+      <p>辩证法同时要求历史特殊性。商品、市场和货币在资本主义之前就存在，但只有当劳动力大规模成为商品、生产主要为了资本增殖时，资本主义生产方式才形成。不能因为古代也有买卖，就说资本主义自古存在。</p>
+      <aside class="method-note">
+        <p><strong>术语史提醒：</strong>马克思并没有把自己的全部方法写成一套封闭的“辩证唯物主义”教科书体系。恩格斯对自然、历史和哲学作了更广的系统化，普列汉诺夫、列宁和苏联哲学又继续定型。因此，本系列说“使用唯物辩证法”时，主要指可落实到具体社会研究的关系、矛盾、过程、总体与实践方法；至于自然界是否存在一套普遍辩证规律，是另一个需要独立论证的问题。</p>
+      </aside>
+
+      <h3>模块 B：历史唯物主义</h3>
+      <div class="definition">
+        <span class="label">工作定义</span>
+        <p><strong>历史唯物主义</strong>首先要求从人们如何取得生活资料、如何组织生产与再生产出发，解释社会制度、阶级冲突和观念形态；它不等于“经济单向决定一切”。</p>
+      </div>
+
+      <div class="grid-3">
+        <article class="concept-card"><h4>生产力</h4><p>劳动者的能力与知识、工具和技术、自然条件，以及协作能力。它回答“社会能够怎样生产”。</p></article>
+        <article class="concept-card"><h4>生产关系</h4><p>人们在生产中形成的控制、占有、分工和分配关系。它回答“谁决定生产、谁占有剩余、谁服从谁”。</p></article>
+        <article class="concept-card"><h4>上层建筑与意识形态</h4><p>法律、国家、政治组织以及使秩序显得合理或自然的观念。它们受经济结构制约，也会反过来组织、保护或改变经济关系。</p></article>
+      </div>
+
+      <p>1859 年《〈政治经济学批判〉序言》给出了最著名的概括：当生产关系由生产力的发展形式变成桎梏时，会开启社会革命时代。<a href="https://www.marxists.org/chinese/marx-engels/13/001.htm">[一手文本]</a> 但这段高度压缩的文字有多种解释。机械版本把历史写成“技术发展 → 关系必然崩溃 → 新社会自动到来”；更有说服力的读法必须加入阶级斗争、政治组织、国家力量、战争与偶然性。斯坦福哲学百科明确指出，马克思没有把完整历史理论系统写出，后世对生产力优先、阶级斗争和功能解释的权重一直争论。<a href="https://plato.stanford.edu/entries/marx/#TheoHist">[学术说明]</a></p>
+
+      <h3>模块 C：对资本主义生产方式的政治经济学批判</h3>
+      <dl class="term">
+        <dt>商品</dt>
+        <dd>为了交换而生产的有用物。它既有满足需要的使用价值，又在交换体系中表现为价值。商品形式把私人劳动怎样成为社会总劳动的一部分，交给市场事后确认。</dd>
+      </dl>
+      <dl class="term">
+        <dt>劳动力</dt>
+        <dd>人进行劳动的能力。工人出售的不是一包已经完成的“劳动”，而是在一定时间内使用其劳动力的权利。劳动力成为普遍商品，要求劳动者在人身上自由，却又同生产资料相分离。</dd>
+      </dl>
+      <dl class="term">
+        <dt>剩余价值与剥削</dt>
+        <dd>工人在生产中创造的新价值超过劳动力价值的部分，由资本占有。关键不是资本家在市场上少付了合同约定的工资，而是<strong>劳动力这种特殊商品能够在使用中创造比自身再生产费用更多的价值</strong>。因此，法律上的等价交换与生产中的阶级剥削可以同时成立。</dd>
+      </dl>
+      <dl class="term">
+        <dt>资本</dt>
+        <dd>不是单纯的一堆机器或货币，而是以增殖为目的、支配活劳动并不断再生产自身的社会关系。竞争使单个资本即便没有无限贪欲，也面临积累、创新和压低成本的压力。</dd>
+      </dl>
+      <dl class="term">
+        <dt>商品拜物教</dt>
+        <dd>生产者之间的社会关系通过商品、价格和货币表现为物与物之间的自然关系。它不是“人太爱买东西”，而是私人生产者必须借助物的交换关系才能建立社会联系；由人创造的关系因而显得独立并反过来支配人。<a href="https://www.marxists.org/chinese/marx/capital/01.htm">[《资本论》第一章]</a></dd>
+      </dl>
+
+      <p>这一模块的总运动是：资本购买生产资料和劳动力，组织生产并取得剩余价值，再把剩余转为更多资本。积累扩大生产能力，也集中资本、重组劳动、制造相对过剩人口并周期性地暴露供给与有支付能力的需求之间的矛盾。马克思不是简单说“工资低于劳动贡献，所以不公平”，而是在重建一种社会形式如何通过正常、合法的交换不断再生产阶级关系。</p>
+      <p>这里也存在真实理论争议：劳动价值论怎样解释市场价格？“价值”究竟是价格理论、社会形式理论，还是二者兼有？不接受劳动价值论，是否仍能从财产、权力与支配关系说明剥削？当代研究给出了彼此竞争的答案，不能用“资产阶级经济学”五个字跳过。<a href="https://plato.stanford.edu/entries/marx/#Econ">[争议概览]</a></p>
+
+      <h3>模块 D：阶级、国家与革命</h3>
+      <p><strong>阶级</strong>首先由生产关系中的位置界定，但经济位置不会自动产生统一的政治行动。工人之间也竞争，并受地域、性别、民族、技能和组织差异影响；从“客观位置相近”到“形成能够行动的政治力量”，需要共同经验、组织和意识。</p>
+      <p><strong>国家</strong>在马克思那里也不只有一句“统治阶级的工具”。它确实维持财产和阶级秩序，但具体国家还要协调统治集团内部冲突、争取被统治者同意、管理公共事务，并可能在社会力量平衡下拥有相对自主性。马克思分析法兰西政治时，就没有把每个政府决定直接还原成某个资本家的命令。</p>
+      <p><strong>革命</strong>不是贫困自动引爆的瞬间，而是旧统治能力、被统治者行动、组织形式、联盟关系和国际环境共同变化的过程。1871 年巴黎公社促使马克思进一步思考：工人阶级不能只接管现成官僚—军事机器，而需要以可罢免代表、减少职业官僚特权等形式重构政治权力。后来各派围绕“打碎什么、保留什么、由谁约束新权力”产生了最深的分歧。</p>
+      <p>同一时期，马克思主义也在与无政府主义的争论中划定边界。马克思与巴枯宁都反对资本和阶级国家，却在政治行动、集中组织和过渡权力上分歧尖锐：马克思一方主张劳动者必须组织成政治力量并取得权力；巴枯宁一方担心任何“过渡国家”和集中的革命组织都会产生新的统治。无政府主义不是马克思主义内部派别，却提出了此后党国官僚化争论中反复出现的警告。</p>
+
+      <h3>模块 E：共产主义作为开放的解放目标</h3>
+      <p>马克思很少详细描述未来制度，因为他反对脱离现实条件写“未来食堂的菜谱”。可以从文本中确认的方向包括：生产资料不再作为一个阶级支配另一个阶级的资本；生产者共同控制自己的社会生产；必要劳动时间缩短；人的多方面能力得到发展；阶级统治消失，强制性国家功能随之缩减。</p>
+      <p>《哥达纲领批判》区分了带着旧社会痕迹的较低阶段与更高阶段。在较低阶段，按劳动贡献分配仍保留形式平等造成的实际差异；在更高阶段，才可能实行“各尽所能，按需分配”。<a href="https://www.marxists.org/chinese/marx-engels/19/002.htm">[一手文本]</a> 这也暴露了马克思传统的一个长期难题：拒绝空想蓝图可以防止先验设计，却也可能让权力制约、信息协调、少数权利和经济激励等制度问题准备不足。</p>
+    </section>
+
+    <section id="branches">
+      <h2>六、马克思之后：新历史问题怎样迫使理论分流</h2>
+      <p>下面的时间线不是“正统传承表”，而是“问题—回答”表。每次分裂都应先看现实条件，再看理论文本。</p>
+
+      <div class="timeline">
+        <article class="time-item">
+          <span class="time">1883—1895｜恩格斯与“马克思主义”的初步体系化</span>
+          <h3>难题：马克思留下大量未完成手稿，分散的研究怎样成为工人运动可学习的共同理论？</h3>
+          <p>马克思逝世后，恩格斯整理并出版《资本论》第二、三卷，以《反杜林论》《社会主义从空想到科学的发展》等著作普及历史观、政治经济学和社会主义。他还把辩证方法扩展到自然研究。这个工作使复杂文本成为较完整、可传播的“马克思主义”，也开启了后世争论：恩格斯是在忠实展开马克思，还是把开放的批判研究改造成了更像世界观的体系？两种看法都有文本依据，后续会在第二篇专门处理。<a href="https://www.marxists.org/chinese/marx-engels/19/020.htm">[一手文本]</a></p>
+        </article>
+
+        <article class="time-item">
+          <span class="time">1883—1914｜第二国际与修正主义争论</span>
+          <h3>难题：资本主义没有按最简单的崩溃想象迅速终结，工人政党却通过议会与工会壮大</h3>
+          <p>伯恩施坦据此批评崩溃论和革命必然性，主张民主、工会、合作社与渐进改革本身就是社会主义道路。考茨基维护较“正统”的历史理论，却在实践上常把革命目标与议会日常工作并置。卢森堡反驳说，改革是不可缺少的斗争学校，但改革发生在资本主义关系内部，不能靠数量积累自动改变生产方式；若放弃最终目标，运动的阶级性质也会改变。她的《社会改良还是革命？》把争论明确为“改革与革命如何联系”，而不是幼稚的“要不要改善生活”。<a href="https://www.marxists.org/archive/luxemburg/1900/reform-revolution/">[一手文本]</a></p>
+        </article>
+
+        <article class="time-item">
+          <span class="time">1902—1924｜列宁主义与俄国革命</span>
+          <h3>难题：在专制、落后且工人占少数的帝国，社会主义政治怎样组织？</h3>
+          <p>列宁把自觉组织、政治斗争和全国性革命党置于核心，反对把工人运动留在自发经济斗争层面；又以帝国主义分析资本输出、垄断和列强竞争，说明资本主义已成为世界体系；在《国家与革命》中，他以巴黎公社为依据强调摧毁旧的官僚军事机器、建立过渡政权，最终目标仍是国家消亡。<a href="https://www.marxists.org/chinese/lenin/191708-09/index.htm">[一手文本]</a></p>
+          <p>支持者认为先锋党使分散斗争获得战略统一；批评者则追问：党代表阶级的关系怎样验证？在内战、经济崩溃和反对派受压制时，临时集中是否会固化为新的统治？这些问题后来不是抽象担忧，而成为苏联制度史的中心。</p>
+        </article>
+
+        <article class="time-item">
+          <span class="time">1917 以后｜苏联经验与共产主义运动分裂</span>
+          <h3>难题：革命在经济落后、战争破坏且国际孤立的国家成功后，能否建设社会主义？</h3>
+          <p>斯大林时期形成的马克思列宁主义强调党领导、计划经济、农业集体化和在一国推进社会主义；托洛茨基主义强调世界资本主义的不平衡与联合发展，认为落后国家的民主任务可能由无产阶级领导并不断转入社会主义，但孤立革命会官僚化，需要国际革命和工人民主；委员会共产主义及其他左翼共产主义则批评先锋党替代工人自治，把工人委员会视为更直接的权力形式。</p>
+          <p>这里至少有三组不能混为一谈的问题：计划经济是否等于劳动者掌权；快速工业化的成就与强制、饥荒、清洗怎样共同评价；外部战争压力能解释多少政治集中，又不能为哪些行为免责。各派往往抓住其中一面，把另一面变成禁区。</p>
+        </article>
+
+        <article class="time-item">
+          <span class="time">1920 年代—1976｜中国革命、毛泽东思想与国际毛主义</span>
+          <h3>难题：在半殖民地、农业人口占绝大多数的社会，革命主体、道路与阶段如何改变？</h3>
+          <p>毛泽东把马克思列宁主义同中国革命条件结合，突出农民动员、农村根据地、持久战、工农联盟和新民主主义革命；在哲学上强调实践、矛盾的特殊性、主要矛盾及其主要方面；在组织上发展群众路线和整风；在社会主义时期则把官僚化、阶级再生与“继续革命”置于中心。《矛盾论》本来的直接对象之一正是反对脱离中国条件照搬公式。<a href="https://www.marxists.org/reference/archive/mao/selected-works/volume-1/mswv1_17.htm">[一手文本]</a></p>
+          <p>这条传统的强项，是迫使马克思主义正视农民、民族压迫、发展不平衡和革命后权力异化；它的最大争议，则在于群众动员与稳定制度、反官僚主义与个人权威、持续阶级斗争与法治秩序之间的关系。理论动机不能直接证明实践正确。中共 1981 年历史决议及此后的正式总结把“大跃进”和人民公社化称为错误，并把文化大革命定性为造成严重灾难的内乱；国际毛派对这些结论有不同解释，但任何成熟分析都必须正面处理实际伤害与制度机制，而不能只说“出发点正确”或“被坏人利用”。<a href="https://cpc.people.com.cn/BIG5/64162/71380/71387/71588/4854598.html">[官方历史文件]</a></p>
+        </article>
+
+        <article class="time-item">
+          <span class="time">1920 年代以后｜西方马克思主义</span>
+          <h3>难题：先进资本主义国家为何没有按预期革命，工人为何可能支持保守主义甚至法西斯主义？</h3>
+          <p>卢卡奇从商品拜物教发展出“物化”与阶级意识问题；葛兰西研究统治如何不仅靠强制，也通过市民社会、知识分子和常识取得霸权，并区分正面冲击式的“运动战”与长期争夺阵地的“阵地战”；法兰克福学派结合马克思、韦伯、弗洛伊德等，研究权威人格、大众文化、工具理性与法西斯主义。西方马克思主义因此把文化、意识和主体形成提到前台。<a href="https://www.rep.routledge.com/articles/thematic/marxism-western/v-1">[学术概览]</a></p>
+          <p>它补充了经济还原论，却也常被革命马克思主义者批评为远离工人组织和政治经济学。法兰克福学派的起点恰恰是一个历史失败：经济危机没有自动产生社会主义意识，反而可能通向法西斯主义。<a href="https://plato.stanford.edu/entries/critical-theory/">[学术概览]</a></p>
+        </article>
+
+        <article class="time-item">
+          <span class="time">二战后至今｜全球南方、女性主义、生态与分析马克思主义</span>
+          <h3>难题：阶级分析怎样处理殖民体系、性别化照料、种族化支配、生态边界与理论可检验性？</h3>
+          <p>依附论和世界体系分析把不平等交换、核心—边缘结构与殖民遗产纳入资本积累；马克思主义女性主义追问，家庭与照料劳动怎样再生产劳动力，为什么阶级关系总以性别化方式存在；生态马克思主义研究资本积累怎样破坏人—自然的物质代谢；分析马克思主义则用分析哲学、博弈论和经验社会科学重构阶级、剥削与历史解释，并公开放弃或修改它认为无法成立的经典命题。<a href="https://plato.stanford.edu/entries/marxism-analytical/">[学术概览]</a></p>
+          <p>这些发展说明，后来者不必只在“全盘保卫马克思”与“全盘抛弃马克思”之间选择。一个理论传统可以保留问题和价值承诺，同时逐条检验机制。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="comparison">
+      <h2>七、主要流派怎样看待彼此？</h2>
+      <aside class="warning">
+        <p><strong>先提醒：</strong>下表写的是典型倾向，不是给每位作者贴永久标签。同一流派内部可能在民主、市场、暴力、民族和历史评价上严重分裂；“对手眼中的你”也不等于你的自我说明。</p>
+      </aside>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>流派</th><th>它主要保留什么</th><th>它主要修改或强调什么</th><th>它通常怎样批评别人</th><th>别人通常怎样批评它</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>改良主义社会民主</strong></td><td>资本主义批判、平等、劳动组织</td><td>以议会民主、福利国家、工会和渐进改革替代革命断裂</td><td>革命派低估民主制度的可塑性，容易造成专制与灾难</td><td>把缓和资本主义矛盾误作超越资本主义，最终受制于资本投资权</td></tr>
+            <tr><td><strong>卢森堡式革命马克思主义</strong></td><td>阶级自我解放、群众行动、国际主义</td><td>改革是组织和教育过程，但不能替代权力与所有制变革；警惕过度集中的党</td><td>修正主义丢掉目标；官僚集中压制群众主动性</td><td>对革命后的组织、国家和经济协调方案不够具体</td></tr>
+            <tr><td><strong>列宁主义／马克思列宁主义</strong></td><td>阶级斗争、革命国家、资本主义世界体系</td><td>先锋党、民主集中制、帝国主义时代、革命过渡</td><td>改良派被资产阶级国家吸收；自发主义无法形成全国战略</td><td>党可能从领导阶级滑向替代阶级，集中制可能固化为官僚统治</td></tr>
+            <tr><td><strong>托洛茨基主义</strong></td><td>十月革命与苏维埃传统、国际主义</td><td>不断革命、不平衡与联合发展、反官僚化和世界革命</td><td>斯大林主义把革命民族化并形成官僚特权；阶段论可能把领导权交给民族资产阶级</td><td>低估一国长期生存和国家建设的约束，组织上也有碎片化倾向</td></tr>
+            <tr><td><strong>毛主义</strong></td><td>列宁主义政党、阶级斗争、反帝与革命国家</td><td>农民和工农联盟、群众路线、持久人民战争、矛盾特殊性、社会主义时期继续革命</td><td>苏联后期与改良派是修正主义；只发展生产力会再生资本主义</td><td>阶级斗争扩大化、群众运动制度化不足，个人权威与暴力可能破坏民主和法制</td></tr>
+            <tr><td><strong>委员会／左翼共产主义</strong></td><td>工人自我解放、反资本与反官僚</td><td>工人委员会和生产者自治，反对政党替代与议会主义</td><td>党国模式产生新的统治集团</td><td>低估大规模协调、防御、联盟和长期组织的必要性</td></tr>
+            <tr><td><strong>西方马克思主义</strong></td><td>异化、拜物教、总体性、意识形态批判</td><td>文化、霸权、心理、主体与日常生活</td><td>正统派经济决定论无法解释同意、法西斯主义和资本主义稳定</td><td>理论学院化、语言晦涩，可能弱化政治经济学和组织实践</td></tr>
+            <tr><td><strong>分析马克思主义</strong></td><td>阶级、剥削、平等与社会主义问题</td><td>逻辑清晰、微观机制、经验检验和明确的规范论证</td><td>“辩证法”常掩盖含糊、功能主义和不可证伪的历史目的论</td><td>把关系总体拆得过碎，可能失去历史过程、实践和权力结构</td></tr>
+            <tr><td><strong>女性主义／生态／反殖民扩展</strong></td><td>资本积累、物质再生产和支配关系</td><td>照料劳动、父权、种族化与殖民性、自然边界</td><td>传统阶级中心论把实际存在的多重支配降为“次要矛盾”</td><td>若只并列身份或议题，可能失去资本主义总体机制与共同战略</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>表中最值得保留的不是哪派“获胜”，而是每派替你看守了一个风险：改良主义提醒革命权力可能压制自由；列宁主义提醒制度不会靠自发愿望改变；卢森堡与委员会共产主义提醒组织可能替代群众；毛主义提醒革命后仍会产生新的利益和官僚化；西方马克思主义提醒统治也靠同意与主体塑造；女性主义和反殖民理论提醒“工人阶级”从来不是无性别、无民族、无种族位置的抽象人；分析马克思主义提醒术语必须转成清楚机制。成熟框架不等于把它们平均混合，而是知道每种警报在什么条件下最重要。</p>
+    </section>
+
+    <section id="dialectics">
+      <h2>八、唯物辩证法怎样真正用于现实分析？</h2>
+
+      <div class="definition">
+        <span class="label">严格工作定义</span>
+        <p><strong>矛盾</strong>不是“出现不同意见”，而是一个关系结构中彼此依赖、同时又产生相反压力的方面。例如资本需要劳动来增殖，劳动者又受资本控制；提高工资能维持劳动力和需求，却会在其他条件不变时压缩利润。两方面不是外加的敌人，而在同一关系中共同生成。</p>
+        <p><strong>主要矛盾</strong>是对给定对象、尺度和阶段的整体运动具有最大组织作用的矛盾；<strong>矛盾的主要方面</strong>是在这组矛盾中暂时占支配地位、主要规定对象当前性质的一方。二者都不是凭政治偏好宣布的，也不是一经确定永久不变。</p>
+      </div>
+
+      <aside class="warning">
+        <p><strong>辩证不等于折中。</strong>如果证据表明某一方面起主导作用，结论完全可以鲜明。所谓“全面”是把反作用、中介和阶段变化纳入论证，不是在每个问题上机械地各打五十大板。</p>
+      </aside>
+
+      <h3>一套可操作的十步程序</h3>
+      <ol class="steps">
+        <li><strong>限定对象。</strong>你分析的是某项政策、一个行业、一种生产方式，还是一个国家在十年内的转型？对象不同，“主要矛盾”不会相同。</li>
+        <li><strong>限定时间与阶段。</strong>同一关系在扩张、危机、战争或技术跃迁阶段的主导机制可能改变。</li>
+        <li><strong>先画物质再生产。</strong>谁提供劳动、资金、土地、技术与照料？产品和剩余流向哪里？制度怎样延续到下一周期？</li>
+        <li><strong>识别关系位置与权力。</strong>不要先把人分成好坏；看谁控制关键资源、谁能制定规则、谁承担退出成本、谁拥有否决权。</li>
+        <li><strong>找出内在矛盾。</strong>只有当两个方面既互为条件、又产生方向相反的压力，才适合称为矛盾。普通的两个缺点或两种观点不够。</li>
+        <li><strong>列出中介。</strong>市场、企业、家庭、法律、财政、政党、媒体和国际体系怎样把一个层面的压力传到另一个层面？“经济基础影响文化”必须经过这些机制。</li>
+        <li><strong>比较主次。</strong>用影响范围、因果强度、持续时间、对其他矛盾的组织能力和可替代性判断主要矛盾；明确这只是当前尺度下的判断。</li>
+        <li><strong>分析趋势与反趋势。</strong>资本集中可能增强垄断，也会触发监管、竞争创新和劳动组织；不能把一种趋势直接写成无条件必然结果。</li>
+        <li><strong>加入行动与组织。</strong>结构给出约束和可能性，不替行动者作决定。要问谁能形成联盟、获得信息、承受代价并执行策略。</li>
+        <li><strong>用证据与反例收口。</strong>说明什么事实支持你的机制、什么事实会推翻它；再把事实判断、价值判断与行动建议分开。</li>
+      </ol>
+
+      <div class="mini-case">
+        <h3>完整小例子：怎样辩证看待十九世纪工时立法？</h3>
+        <p><strong>对象：</strong>以英国限制工厂劳动时间的立法为例，问题不是抽象问“改革好不好”，而是问：工时限制对工人力量与资本主义关系分别产生什么作用？</p>
+        <p><strong>第一方面——真实改善与力量积累：</strong>法律限制劳动日，能够减少身体耗损，扩大休息、教育和组织的时间；它还把孤立工人与单个资本家的不对称谈判，提升为阶级通过政治斗争统一设定最低标准。《共产党宣言》甚至把英国十小时法案视为工人利用资产阶级内部矛盾赢得的立法成果。<a href="https://www.marxists.org/archive/marx/works/1848/communist-manifesto/ch01.htm">[一手文本]</a></p>
+        <p><strong>第二方面——秩序的稳定与再生产：</strong>统一标准也可能保护劳动力长期再生产，避免单个资本因竞争过度延长工时，并提高国家与制度的合法性。改革因此不只是“对资本的胜利”，也可能帮助资本主义调整。</p>
+        <p><strong>主次判断：</strong>如果对象是“立法对当期劳动日的直接效果”，工人保护是主要方面；如果对象是“它是否消除了雇佣劳动与资本占有剩余”，答案是否定的，资本主义生产关系仍是主要规定。尺度变了，主要方面的判断也变了。</p>
+        <p><strong>政治结论：</strong>支持能够改善生活并增强劳动者组织能力的改革，同时检验它是否改变所有权、决策权和结构性退出成本；既不因改革会稳定制度就反对一切改革，也不因改革有效就宣布结构性矛盾已经消失。这才是“把握主要方面”而非口头上的两面论。</p>
+      </div>
+
+      <div class="method-note">
+        <span class="label">以后分析现实议题时的最短模板</span>
+        <p><strong>对象与阶段 → 物质关系 → 利益与权力位置 → 内在矛盾 → 制度中介 → 主次依据 → 趋势与反趋势 → 可行动的主体 → 证据与反例 → 有条件的结论。</strong></p>
+      </div>
+    </section>
+
+    <section id="pitfalls">
+      <h2>九、八个最常见的误区</h2>
+      <ol>
+        <li><strong>把历史唯物主义说成“经济决定一切”。</strong>正确问题是经济关系通过哪些制度和组织产生影响，以及政治、法律和意识形态如何反作用。</li>
+        <li><strong>把阶级当成收入档位或道德身份。</strong>阶级首先是对生产资料、劳动过程和剩余的关系位置；高收入雇员与小业主可能在收入上相近，关系位置却不同。</li>
+        <li><strong>把矛盾当成任何“两面性”。</strong>“某政策有优点也有缺点”只是评价清单；只有揭示两方面为何在同一结构中互相产生，才进入辩证分析。</li>
+        <li><strong>把“主要方面”当成偏好的许可证。</strong>如果没有对象边界、阶段和因果证据，“主要方面”只是把结论提前塞进概念。</li>
+        <li><strong>把历史趋势当成保证书。</strong>矛盾制造变革压力，不保证社会主义必胜。它也可能通向改良、威权、战争、生态崩溃或长期停滞。</li>
+        <li><strong>把国有化自动等同社会主义。</strong>还要问国家由谁控制、劳动者能否参与决策、剩余如何使用、权力能否被罢免和监督。</li>
+        <li><strong>用成败直接裁决全部理论。</strong>一次革命胜利不证明每项理论正确，一场灾难也不自动否定所有资本主义批判。需要把目标、机制、条件和结果拆开。</li>
+        <li><strong>用派系词替代事实。</strong>“修正主义”“小资产阶级”“走资派”“自由派”都必须落到可观察的制度主张、利益位置和行动上，否则只是缩短思考。</li>
+      </ol>
+    </section>
+
+    <section id="memory">
+      <h2>十、结论压缩：这一篇真正需要记住什么？</h2>
+
+      <div class="takeaway">
+        <span class="label">四句核心结论</span>
+        <ol>
+          <li><strong>资本主义是历史形成的社会关系，不是交换、机器或人性自私的简单同义词。</strong></li>
+          <li><strong>它的形式自由与实质支配能够同时存在：</strong>劳动者自由出售劳动力，却因生产资料分离而处于结构性弱势。</li>
+          <li><strong>马克思主义把这种关系放进历史运动中研究：</strong>生产力、生产关系、阶级斗争、国家、意识形态和组织实践共同决定变化。</li>
+          <li><strong>马克思之后的主要分流，都在回答“怎样从批判走到可持续的解放制度”：</strong>改革还是断裂、党还是自治、工人还是工农联盟、国家怎样过渡、官僚化怎样约束、文化与多重支配怎样纳入。</li>
+        </ol>
+      </div>
+
+      <h3>遇到任何流派，固定问六个问题</h3>
+      <ol>
+        <li>它把资本主义的主要机制放在哪里？</li>
+        <li>它把谁视为可能的变革主体，为什么？</li>
+        <li>它怎样把分散不满组织成持续行动？</li>
+        <li>它怎样看待国家、暴力、民主和法治？</li>
+        <li>革命或改革之后，生产、分配与权力怎样运转？</li>
+        <li>什么经验会迫使它承认自己错了？</li>
+      </ol>
+
+      <p>如果一个理论只能回答前四问，不能回答第五问，它容易停留在动员；如果不能回答第六问，它容易变成信仰。你最终需要的成熟分析框架，必须同时具有批判力、制度感和可修正性。</p>
+    </section>
+
+    <section id="series">
+      <h2>十一、后续六篇路线</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>篇次</th><th>核心历史问题</th><th>理论重点</th></tr></thead>
+          <tbody>
+            <tr><td>第 2 篇</td><td>为什么十九世纪的自由与财富同时制造新的不自由？</td><td>黑格尔、费尔巴哈、斯密、李嘉图、早期社会主义与工人运动；马克思怎样完成批判性改造。</td></tr>
+            <tr><td>第 3 篇</td><td>资本主义为什么能在“自由交换”中持续产生阶级支配？</td><td>商品、价值形式、劳动力、剩余价值、积累、危机、拜物教；细读《资本论》的论证链。</td></tr>
+            <tr><td>第 4 篇</td><td>工人政党壮大后，改革究竟通向社会主义还是稳定资本主义？</td><td>第二国际、伯恩施坦、考茨基、卢森堡；改革—革命关系与群众罢工。</td></tr>
+            <tr><td>第 5 篇</td><td>俄国革命为什么成功，又为什么形成高度集中的党国结构？</td><td>列宁的党、帝国主义与国家理论；十月革命、内战、苏联分流、斯大林与托洛茨基之争。</td></tr>
+            <tr><td>第 6 篇</td><td>马克思主义进入农业中国后改变了什么，付出了什么代价？</td><td>新民主主义、工农联盟、持久战、群众路线、《实践论》《矛盾论》、继续革命及其制度难题。</td></tr>
+            <tr><td>第 7 篇</td><td>为什么阶级政治没有按经典预期发展，今天还缺哪些维度？</td><td>葛兰西、卢卡奇、法兰克福学派、依附论、女性主义、生态与分析马克思主义；整合为现实分析框架。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>这一顺序有意把毛泽东放在马克思、第二国际和列宁之后。否则，“主要矛盾”“群众路线”“修正主义”等词会显得天然正确，却看不见它们分别在回应什么前史。</p>
+    </section>
+
+    <section id="questions">
+      <h2>十二、自检题与参考答案</h2>
+      <details>
+        <summary>1. 为什么“马克思主义的三个来源”不能被理解为一张完整的影响清单？</summary>
+        <p>因为它是列宁为概括理论结构而作的回顾性分类。马克思还受工人运动、具体革命史、古典共和主义和自然科学等影响，而且他不是把三种来源拼接，而是逐一批判改造。</p>
+      </details>
+      <details>
+        <summary>2. 历史唯物主义与经济决定论的区别是什么？</summary>
+        <p>历史唯物主义要求从物质生产和再生产关系出发，但经济作用要经过国家、法律、组织、家庭和意识形态等中介；这些领域也会反作用。经济决定论则把关系简化成单向、自动和无须机制的因果。</p>
+      </details>
+      <details>
+        <summary>3. 为什么等价交换与剥削在马克思那里可以同时存在？</summary>
+        <p>工人可以按劳动力价值得到工资，合同在市场形式上等价；但资本购买的是一定时间内使用劳动力的权利，劳动力在生产中能创造超过自身价值的新增价值，差额由资本占有。</p>
+      </details>
+      <details>
+        <summary>4. 伯恩施坦与卢森堡的争论为什么不是“要改革还是不要改革”？</summary>
+        <p>双方都参与现实改革。分歧在于：改革能否自身逐渐变成社会主义，还是主要作为改善生活、组织阶级和准备更深制度变化的手段。卢森堡反对的是把手段与最终生产关系变革切断。</p>
+      </details>
+      <details>
+        <summary>5. 毛主义对经典欧洲马克思主义作了哪些关键改写？</summary>
+        <p>把农业人口和民族解放置于革命战略中心，以工农联盟、农村根据地和持久战回应不平衡发展；强调矛盾特殊性与具体分析；在革命后继续关注官僚化与阶级再生。但这些理论创新不自动证明群众运动和继续革命的具体制度安排正确。</p>
+      </details>
+      <details>
+        <summary>6. “辩证观点”为什么不等于中间立场？</summary>
+        <p>辩证分析要求说明相反方面如何在同一关系中互相产生，并用对象、阶段和证据判断主次。如果一方在当前过程起支配作用，结论可以很鲜明；全面不是平均。</p>
+      </details>
+    </section>
+
+    <section id="references">
+      <h2>参考资料与来源分层</h2>
+      <p>正文把三类材料分开：经典作者的一手文本只能证明作者怎样论述；学术百科用于展示解释争议；政党历史文件用于说明该组织如何正式评价自身历史，不自动等于无争议的全部史实。</p>
+
+      <h3>一手文本</h3>
+      <ol class="references">
+        <li><span class="source-type primary">一手</span><a href="https://www.marxists.org/chinese/lenin/12.htm">列宁：《马克思主义的三个来源和三个组成部分》</a><small>“三大来源”经典概括；应同时把它当作列宁自己的体系化解释。</small></li>
+        <li><span class="source-type primary">一手</span><a href="https://www.marxists.org/chinese/marx-engels/03/001.htm">马克思：《关于费尔巴哈的提纲》</a><small>实践、旧唯物主义与唯心主义批判。</small></li>
+        <li><span class="source-type primary">一手</span><a href="https://www.marxists.org/chinese/marx-engels/13/001.htm">马克思：《〈政治经济学批判〉序言》</a><small>历史唯物主义最著名的压缩表述。</small></li>
+        <li><span class="source-type primary">一手</span><a href="https://www.marxists.org/archive/marx/works/1848/communist-manifesto/">马克思、恩格斯：《共产党宣言》</a><small>阶级斗争、现代资产阶级与无产阶级政治形成。</small></li>
+        <li><span class="source-type primary">一手</span><a href="https://www.marxists.org/chinese/marx/capital/01.htm">马克思：《资本论》第一卷第一章“商品”</a><small>商品、价值形式与商品拜物教。</small></li>
+        <li><span class="source-type primary">一手</span><a href="https://www.marxists.org/chinese/marx-engels/19/002.htm">马克思：《哥达纲领批判》</a><small>过渡时期、共产主义两阶段与分配原则。</small></li>
+        <li><span class="source-type primary">一手</span><a href="https://www.marxists.org/chinese/marx-engels/19/020.htm">恩格斯：《社会主义从空想到科学的发展》</a><small>恩格斯对历史、辩证法和社会主义的通俗体系化。</small></li>
+        <li><span class="source-type primary">一手</span><a href="https://www.marxists.org/archive/luxemburg/1900/reform-revolution/">卢森堡：《社会改良还是革命？》</a><small>改革与社会主义目标的关系。</small></li>
+        <li><span class="source-type primary">一手</span><a href="https://www.marxists.org/chinese/lenin/191708-09/index.htm">列宁：《国家与革命》</a><small>国家、巴黎公社、过渡政权与国家消亡。</small></li>
+        <li><span class="source-type primary">一手</span><a href="https://www.marxists.org/reference/archive/mao/selected-works/volume-1/mswv1_16.htm">毛泽东：《实践论》</a>；<a href="https://www.marxists.org/reference/archive/mao/selected-works/volume-1/mswv1_17.htm">《矛盾论》</a>；<a href="https://www.marxists.org/reference/archive/mao/selected-works/volume-2/mswv2_26.htm">《新民主主义论》</a><small>认识论、矛盾方法与中国革命阶段理论。</small></li>
+        <li><span class="source-type primary">一手</span><a href="https://www.marxists.org/archive/gramsci/prison_notebooks/state_civil/index.htm">葛兰西：《狱中札记》“国家与市民社会”选段</a>；<a href="https://www.marxists.org/archive/lukacs/works/history/">卢卡奇：《历史与阶级意识》</a><small>霸权、阵地战、物化与阶级意识。</small></li>
+      </ol>
+
+      <h3>学术概览与争议</h3>
+      <ol class="references">
+        <li><span class="source-type academic">学术</span><a href="https://plato.stanford.edu/entries/marx/">Stanford Encyclopedia of Philosophy: Karl Marx</a><small>2025 年修订；覆盖异化、历史理论、经济学、意识形态、国家与共产主义，并明确标出争议。</small></li>
+        <li><span class="source-type academic">学术</span><a href="https://plato.stanford.edu/entries/socialism/">Stanford Encyclopedia of Philosophy: Socialism</a><small>区分资本主义、社会主义、国家主义、计划与市场社会主义。</small></li>
+        <li><span class="source-type academic">学术</span><a href="https://plato.stanford.edu/entries/critical-theory/">Stanford Encyclopedia of Philosophy: Critical Theory (Frankfurt School)</a><small>法兰克福学派的历史条件、跨学科方法与当代扩展。</small></li>
+        <li><span class="source-type academic">学术</span><a href="https://plato.stanford.edu/entries/marxism-analytical/">Stanford Encyclopedia of Philosophy: Analytical Marxism</a><small>分析马克思主义的方法、历史解释、阶级与剥削争论。</small></li>
+        <li><span class="source-type academic">学术</span><a href="https://www.rep.routledge.com/articles/thematic/marxism-western/v-1">Routledge Encyclopedia of Philosophy: Western Marxism</a><small>“西方马克思主义”作为宽泛与狭义分类的说明。</small></li>
+        <li><span class="source-type academic">学术</span><a href="https://academic.oup.com/edited-volume/35402/chapter/302647340">Timothy Cheek, “Mao and Maoism”, The Oxford Handbook of the History of Communism</a><small>毛泽东思想、政治实践及关键历史节点的学术概览。</small></li>
+      </ol>
+
+      <h3>中国共产党正式历史评价</h3>
+      <ol class="references">
+        <li><span class="source-type official">官方</span><a href="https://cpc.people.com.cn/BIG5/64162/71380/71387/71588/4854598.html">《关于建国以来党的若干历史问题的决议》（1981）</a><small>用于确认中共对毛泽东历史地位、毛泽东思想和文化大革命的正式评价；不是用它代替全部独立历史研究。</small></li>
+        <li><span class="source-type official">官方</span><a href="https://us.china-embassy.gov.cn/chn/zt_1/zggcdcl100zn_120353/shijiujieliuzhong/202112/t20211228_10476199.htm">《中共中央关于党的百年奋斗重大成就和历史经验的决议》（2021）</a><small>可用于比较 1981 年评价在后来官方叙述中的延续。</small></li>
+      </ol>
+    </section>
+  </main>
+
+  <section id="reader-feedback" data-feedback-status="pending">
+    <h2>读后反馈与修订记录</h2>
+    <p class="empty-feedback">尚未收到本篇读后反馈。阅读后可直接指出：哪一节太抽象、哪个流派讲得失衡、哪些概念仍像口号、希望下一篇先展开哪条线。反馈将保留原意追加在这里，并据此修订正文。</p>
+  </section>
+
+  <footer>
+    <p>语料编号：marxism-001 · 领域：马列 · 生成日期：2026-07-19 · 状态：awaiting_review</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>图论导论（一）：七桥问题为什么通向拓扑？</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <meta name="corpus-id" content="04">
+  <meta name="domain" content="mathematics">
+  <meta name="production-status" content="draft-ready">
+  <meta name="reading-status" content="unread">
+  <meta name="expected-reading-time" content="40-45-minutes">
+  <meta name="generated-date" content="2026-07-18">
+  <meta name="revision-round" content="0">
+  <style>
+    :root { color-scheme:light; --ink:#17202d; --muted:#586477; --line:#d7e0e8; --soft:#f4f7fa; --accent:#146b62; --accent-soft:#e7f5f2; --warm:#fff8eb; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0 auto; padding:2.2rem 1.35rem 5rem; max-width:930px; color:var(--ink); background:#fff; font:17px/1.82 system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; }
+    h1 { font-size:2rem; line-height:1.3; margin:0 0 1.2rem; }
+    h2 { margin-top:3rem; padding-top:.45rem; border-top:1px solid var(--line); font-size:1.55rem; }
+    h3 { margin-top:2rem; font-size:1.18rem; }
+    p, li { text-align:justify; }
+    blockquote { margin:1.2rem 0; padding:.85rem 1rem; border-left:4px solid var(--accent); background:var(--accent-soft); color:#174f49; }
+    nav#TOC { margin:1.4rem 0 2.5rem; padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; }
+    nav#TOC::before { content:"目录"; display:block; font-weight:700; margin-bottom:.45rem; }
+    nav#TOC ul { margin:.25rem 0; padding-left:1.4rem; }
+    a { color:#0f665d; text-underline-offset:3px; }
+    .course-tree { padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; overflow-x:auto; }
+    .course-tree ul { margin:.3rem 0; }
+    .mechanism-flow { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:.55rem; align-items:center; margin:1.4rem 0; padding:1rem; border:1px solid var(--line); border-radius:12px; background:linear-gradient(135deg,#f2faf8,#f5f8fc); }
+    .mechanism-flow div:not(.arrow) { min-height:92px; padding:.75rem; border:1px solid #bcded8; border-radius:10px; background:#fff; }
+    .mechanism-flow strong, .mechanism-flow span { display:block; }
+    .mechanism-flow span { margin-top:.35rem; color:var(--muted); font-size:.91rem; line-height:1.55; }
+    .mechanism-flow .arrow { color:var(--accent); font-weight:800; font-size:1.25rem; }
+    .graph-figure { margin:1.4rem 0; padding:1rem; border:1px solid var(--line); border-radius:14px; background:var(--soft); color:#31516b; }
+    .graph-figure svg { display:block; width:100%; height:auto; max-height:360px; }
+    .graph-figure figcaption { margin-top:.75rem; color:var(--muted); font-size:.94rem; line-height:1.65; text-align:center; }
+    table { width:100%; border-collapse:collapse; display:block; overflow-x:auto; margin:1.2rem 0; }
+    th, td { min-width:145px; border:1px solid var(--line); padding:.65rem .75rem; vertical-align:top; }
+    th { background:var(--soft); }
+    math[display="block"] { display:block; overflow-x:auto; overflow-y:hidden; padding:.45rem 0; }
+    details { margin:1rem 0 1.5rem; padding:.75rem 1rem; border:1px solid var(--line); border-radius:10px; background:var(--soft); }
+    summary { cursor:pointer; font-weight:700; }
+    #reader-feedback { margin-top:3.5rem; padding:1rem 1.2rem; background:var(--warm); border:1px solid #ead7ad; border-radius:12px; }
+    .feedback-entry { padding:.5rem 0 1rem; }
+    code { overflow-wrap:anywhere; }
+    @media (max-width:760px) {
+      .mechanism-flow { grid-template-columns:1fr; }
+      .mechanism-flow .arrow { transform:rotate(90deg); text-align:center; line-height:1; }
+    }
+    @media (max-width:600px) {
+      body { padding:1.2rem .92rem 4rem; font-size:16px; line-height:1.78; }
+      h1 { font-size:1.65rem; }
+      h2 { font-size:1.34rem; margin-top:2.5rem; }
+      h3 { font-size:1.1rem; }
+      p, li { text-align:left; }
+      blockquote, .course-tree, #reader-feedback { margin-left:0; margin-right:0; padding:.75rem .85rem; }
+      .graph-figure { padding:.5rem; }
+      th, td { min-width:132px; }
+    }
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">图论导论（一）：七桥问题为什么通向拓扑？</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#先搭教材六章知识树" id="toc-先搭教材六章知识树">0.
+先搭教材六章知识树</a></li>
+<li><a href="#chapter-1" id="toc-chapter-1">1. 第 1
+章：图的基本概念——Euler 到底抽象掉了什么？</a></li>
+<li><a href="#chapter-2" id="toc-chapter-2">2. 第 2
+章：树与图空间——这里与代数拓扑的联系最直接</a></li>
+<li><a href="#chapter-3" id="toc-chapter-3">3. 第 3
+章：平图与平面图——什么时候图的画法变成拓扑问题？</a></li>
+<li><a href="#chapter-4" id="toc-chapter-4">4. 第 4
+章：网络流与连通度——局部容量如何决定全局通行能力？</a></li>
+<li><a href="#chapter-5" id="toc-chapter-5">5. 第 5
+章：匹配与独立集——怎样证明一一安排存在？</a></li>
+<li><a href="#chapter-6" id="toc-chapter-6">6. 第 6
+章：染色理论——有限资源怎样隔离冲突？</a></li>
+<li><a href="#把六章压缩成可复述的结构"
+id="toc-把六章压缩成可复述的结构">7. 把六章压缩成可复述的结构</a></li>
+<li><a href="#结论与下一步" id="toc-结论与下一步">8.
+结论与下一步</a></li>
+<li><a href="#参考资料" id="toc-参考资料">参考资料</a></li>
+</ul>
+</nav>
+<blockquote>
+<p><strong>教材主线</strong>：徐俊明《图论及其应用（第 4
+版）》，中国科学技术大学出版社，第 1—6 章<br />
+<strong>预计阅读时间</strong>：40—45 分钟<br />
+<strong>阅读状态</strong>：未读<br />
+<strong>本篇需要掌握</strong>：六章各自解决的问题及其连接；图、度、路、圈、树、圈空间、平面性、网络流、匹配和染色的核心定义；Euler
+路判据、树的等价性质、圈空间维数、Euler 公式、最大流最小割、Menger
+定理和 Hall 定理的含义<br />
+<strong>本篇只需识别</strong>：本原方阵指数、电网络方程、矩阵树定理证明、Kuratowski
+定理证明、方化矩形构造、最优安排算法、四色定理和整数流理论的证明<br />
+<strong>已知基础</strong>：线性代数、初等组合计数、点集拓扑与少量代数拓扑；只接触过哥尼斯堡七桥问题，不假定系统学过图论</p>
+</blockquote>
+<hr />
+<h2 id="先搭教材六章知识树">0. 先搭教材六章知识树</h2>
+<p>图论研究的不是“画得像什么”，而是有限对象之间怎样连接。它的力量来自一种有意的遗忘：把道路长度、桥梁形状、地图比例等全部删去，只保留“哪些对象通过哪些关系相连”。删去的信息越多，能保留下来的结论越必须依赖结构本身。</p>
+<p>按照教材，第 1—6 章构成下面六个一级分支。</p>
+<div class="course-tree" aria-label="图论教材六章知识树">
+<ul>
+<li>
+<strong>图论：有限连接结构</strong>
+<ul>
+<li>
+<a href="#chapter-1">第 1 章　图的基本概念</a>：把现实问题压缩为顶点和边
+</li>
+<li>
+<a href="#chapter-2">第 2 章　树与图空间</a>：分离“连接骨架”和“独立的圈”
+</li>
+<li>
+<a href="#chapter-3">第 3
+章　平图与平面图</a>：研究连接结构能否无交叉地嵌入平面
+</li>
+<li>
+<a href="#chapter-4">第 4
+章　网络流与连通度</a>：刻画系统能运多少、坏多少仍不断
+</li>
+<li>
+<a href="#chapter-5">第 5
+章　匹配与独立集</a>：处理互不冲突的选择和一一安排
+</li>
+<li>
+<a href="#chapter-6">第 6 章　染色理论</a>：用有限资源隔离彼此冲突的对象
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p>六章共享五种核心机制：</p>
+<div class="mechanism-flow" aria-label="图论五个核心机制">
+<div>
+<strong>抽象</strong><span>从地图或关系中只保留关联</span>
+</div>
+<div class="arrow">
+→
+</div>
+<div>
+<strong>局部计数</strong><span>度数、容量、可选邻点</span>
+</div>
+<div class="arrow">
+→
+</div>
+<div>
+<strong>全局结构</strong><span>路、圈、连通、嵌入</span>
+</div>
+<div class="arrow">
+→
+</div>
+<div>
+<strong>障碍与证书</strong><span>奇度点、割、禁形、Hall 条件</span>
+</div>
+<div class="arrow">
+→
+</div>
+<div>
+<strong>构造算法</strong><span>树、增广路、匹配、着色</span>
+</div>
+</div>
+<p>贯穿全文的一条提问是：</p>
+<blockquote>
+<p>怎样把“找不到一个方案”升级为“证明任何方案都不可能”，或者反过来给出一个可执行的构造？</p>
+</blockquote>
+<p>七桥问题的奇度点、平面图的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>5</mn></msub><annotation encoding="application/x-tex">K_5</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mrow><mn>3</mn><mo>,</mo><mn>3</mn></mrow></msub><annotation encoding="application/x-tex">K_{3,3}</annotation></semantics></math>、网络流的割、匹配的
+Hall 条件，都是“不可能性证书”；Euler
+回、支撑树、增广路和贪心着色，则提供构造。</p>
+<hr />
+<h2 id="chapter-1">1. 第 1 章：图的基本概念——Euler
+到底抽象掉了什么？</h2>
+<h3 id="从地图到图图形表示不是图本身">1.1
+从地图到图：图形表示不是图本身</h3>
+<p><strong>定义 1.1（图）</strong> 一个有限无向图记作</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>V</mi><mo>,</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+G=(V,E),
+</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>
+是有限的顶点集，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+是边集；每条边关联两个端点。若允许同一对顶点之间有多条边，就得到多重图；若允许边的两个端点相同，就允许环。没有环和重边的图称为简单图。</p>
+<p>图的纸面画法只是一个表示。同一个抽象图可以把顶点放在完全不同的位置、把边画成直线或曲线。只要每条边的两个端点没有改变，图的组合结构就没有改变。</p>
+<p><strong>定义 1.2（图同构）</strong> 两个图
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>V</mi><mo>,</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">G=(V,E)</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>W</mi><mo>,</mo><mi>F</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">H=(W,F)</annotation></semantics></math>
+同构，是指存在双射</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mo>:</mo><mi>V</mi><mo>→</mo><mi>W</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\varphi:V\to W,
+</annotation></semantics></math></p>
+<p>使任意
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>,</mo><mi>v</mi><mo>∈</mo><mi>V</mi></mrow><annotation encoding="application/x-tex">u,v\in V</annotation></semantics></math>
+都满足：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mi>v</mi></mrow><annotation encoding="application/x-tex">uv</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+中是边，当且仅当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>φ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\varphi(u)\varphi(v)</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+中是边。图同构允许顶点改名，却不允许改变邻接关系。</p>
+<p>这解释了为什么图论图形与几何图形不同：图同构不关心长度、角度和位置，只关心谁与谁相邻。</p>
+<h3 id="七桥问题的精确压缩">1.2 七桥问题的精确压缩</h3>
+<p>1736 年，Euler
+在题名为“关于位置几何问题的解答”的论文中处理哥尼斯堡七桥问题。他没有在地图上尝试更多路线，而是把四块陆地压成四个顶点，把每座桥压成一条边。</p>
+<figure class="graph-figure">
+<svg viewBox="0 0 640 320" role="img" aria-labelledby="bridges-title bridges-desc">
+<title id="bridges-title">
+哥尼斯堡七桥的抽象多重图
+</title>
+<desc id="bridges-desc">四个顶点 A、B、C、D，A 与 B 有两条边，A 与 C
+有两条边，A 与 D、B 与 D、C 与 D 各有一条边。</desc>
+<g class="edges" fill="none" stroke="currentColor" stroke-width="5">
+<path d="M300 145 Q210 35 125 68" />
+<path d="M292 168 Q205 128 125 82" />
+<path d="M300 176 Q205 192 125 238" />
+<path d="M308 196 Q215 292 125 252" /> <path d="M350 160 L515 160" />
+<path d="M120 60 Q345 4 525 142" />
+<path d="M120 260 Q345 316 525 178" /> </g>
+<g class="nodes" fill="#ffffff" stroke="currentColor" stroke-width="5">
+<circle cx="330" cy="170" r="35" /> <circle cx="95" cy="70" r="32" />
+<circle cx="95" cy="250" r="32" /> <circle cx="545" cy="160" r="32" />
+</g>
+<g class="labels" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="700">
+<text x="330" y="170">A</text><text x="95" y="70">B</text>
+<text x="95" y="250">C</text><text x="545" y="160">D</text> </g>
+</svg>
+<figcaption>
+七桥问题的抽象图：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>deg</mo><mi>A</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">\deg A=5</annotation></semantics></math>，其余三个顶点的度都是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>。地图的形状已经消失，只剩桥与陆地的关联。
+</figcaption>
+</figure>
+<p><strong>定义 1.3（顶点的度）</strong> 顶点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
+的度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>deg</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\deg(v)</annotation></semantics></math>
+是与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
+关联的边数；环在它的端点处贡献
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>。</p>
+<p>每条非环边对两个端点各贡献
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>，所以把全部顶点度数相加时，每条边恰好被数两次：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><munder><mo>∑</mo><mrow><mi>v</mi><mo>∈</mo><mi>V</mi></mrow></munder><mo>deg</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>2</mn><mrow><mo stretchy="true" form="prefix">|</mo><mi>E</mi><mo stretchy="true" form="postfix">|</mo></mrow><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{\sum_{v\in V}\deg(v)=2|E|.}
+</annotation></semantics></math></p>
+<p>这称为握手定理。右边是偶数，因此奇度顶点的数目必为偶数。</p>
+<h3 id="euler-的奇偶论证完整地在说什么">1.3 Euler
+的奇偶论证完整地在说什么？</h3>
+<p>一条 <strong>迹</strong>
+是边不重复的行走；经过图中每条边恰好一次的迹称为 Euler
+迹。若起点与终点相同，则称 Euler 回。</p>
+<p>考虑一条使用所有边的行走。对任何既不是起点也不是终点的顶点，每次沿一条边进入，都必须沿另一条尚未使用的边离开；使用在该点的边成对出现，所以该顶点度数为偶数。只有起点可能“多离开一次”，终点可能“多进入一次”。因此：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">存在 Euler 迹</mtext><mo>⇒</mo><mrow><mtext mathvariant="normal">奇度顶点恰有 </mtext><mspace width="0.333em"></mspace></mrow><mn>0</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 个或 </mtext><mspace width="0.333em"></mspace></mrow><mn>2</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 个</mtext></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{存在 Euler 迹}
+\Longrightarrow
+\text{奇度顶点恰有 }0\text{ 个或 }2\text{ 个}.
+</annotation></semantics></math></p>
+<p>七桥图有四个奇度顶点，所以不可能一次不重不漏走过七桥。矛盾不在于“某条具体路线走坏了”，而在于任何路线都必须满足进出配对这一局部守恒律。</p>
+<p>对有限连通图，反方向也成立：</p>
+<ul>
+<li>全部顶点度为偶数，当且仅当图有 Euler 回；</li>
+<li>恰有两个奇度顶点，当且仅当图有起点、终点不同的 Euler 迹。</li>
+</ul>
+<p>充分性的构造思想是：从任意顶点不断沿未用边前进。若所有度为偶数，就不可能在起点以外的顶点提前走死，因此会形成一个闭迹；若还有未使用边，就从闭迹上与未用边相接的顶点再造一个闭迹，并把两段拼接。这就是后来所谓
+Hierholzer 构造的核心。</p>
+<h3 id="这和拓扑究竟有什么关系">1.4 这和拓扑究竟有什么关系？</h3>
+<p>需要区分三层说法。</p>
+<p><strong>第一层：历史方法上的关系。</strong> Euler 的论文把问题称为
+<em>geometria
+situs</em>，即位置几何。他意识到通常几何所研究的长度、角度、面积对问题完全无用；真正重要的是各陆块由哪些桥连接。这种“在连续变形和重新绘制下丢弃度量，只保留位置关系”的取向，是后来
+<em>analysis situs</em> 和拓扑学的先声。</p>
+<p><strong>第二层：现代数学对象上的关系。</strong>
+把每条抽象边实现为区间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0,1]</annotation></semantics></math>，再按端点粘到顶点上，就得到图的几何实现
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">|</mo><mi>G</mi><mo stretchy="true" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">|G|</annotation></semantics></math>。它是一个一维
+CW
+复形，也就是货真价实的拓扑空间。连通分支、圈的数目、割开某点是否断开等图论概念，都能翻译为这个空间的拓扑性质。</p>
+<p><strong>第三层：不要说得过头。</strong> Euler
+当时并没有使用同胚、基本群或同调；奇偶证明本身是组合计数。它与拓扑相连，是因为证明首先提取了一个不依赖地图形状的关联结构，而不是因为奇偶数来自某个连续变形公式。</p>
+<p>还有一个重要区别：图同构比拓扑同胚更严格。在一条边中间插入一个度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+的新顶点，会改变抽象图，却不改变几何实现的同胚类型。这种操作称为边的细分。后面
+Kuratowski 定理用“包含
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>5</mn></msub><annotation encoding="application/x-tex">K_5</annotation></semantics></math>
+或
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mrow><mn>3</mn><mo>,</mo><mn>3</mn></mrow></msub><annotation encoding="application/x-tex">K_{3,3}</annotation></semantics></math>
+的某个细分”刻画非平面图，那里拓扑意义会变得完全直接。</p>
+<h3 id="路连通距离圈从局部邻接走向全局">1.5
+路、连通、距离、圈：从局部邻接走向全局</h3>
+<p>路是顶点互不重复的行走；圈是起点等于终点、其他顶点不重复的闭路。若任意两个顶点之间都有路，图称为连通图。两点距离</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+d(u,v)
+</annotation></semantics></math></p>
+<p>是连接
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>,</mo><mi>v</mi></mrow><annotation encoding="application/x-tex">u,v</annotation></semantics></math>
+的最短路长度；图的直径是所有有限距离的最大值。<strong>围长</strong>则是最短圈的长度。</p>
+<p>这些定义把“是否相邻”的一步关系扩展成全局几何。注意它不是欧氏几何：图的边在纸上画得多长无关紧要，每条无权边只计作一步。</p>
+<p>Hamilton 圈经过每个顶点恰好一次，与 Euler
+回经过每条边恰好一次不同。Euler 问题由顶点度的奇偶性完全判定；Hamilton
+问题一般没有如此简单的局部判据。两者的差别应牢牢记住：</p>
+<table>
+<thead>
+<tr class="header">
+<th>问题</th>
+<th>必须恰好一次覆盖什么</th>
+<th>典型局部信息是否足够</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Euler</td>
+<td>每条边</td>
+<td>连通性与奇度顶点数给出完全判据</td>
+</tr>
+<tr class="even">
+<td>Hamilton</td>
+<td>每个顶点</td>
+<td>度数条件通常只必要而不充分</td>
+</tr>
+</tbody>
+</table>
+<h3 id="矩阵表示把图送进线性代数">1.6 矩阵表示把图送进线性代数</h3>
+<p>简单图的邻接矩阵
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">A=(a_{ij})</annotation></semantics></math>
+定义为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><msub><mi>v</mi><mi>i</mi></msub><msub><mi>v</mi><mi>j</mi></msub><mo>∈</mo><mi>E</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><msub><mi>v</mi><mi>i</mi></msub><msub><mi>v</mi><mi>j</mi></msub><mo>∉</mo><mi>E</mi><mi>.</mi></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+a_{ij}=
+\begin{cases}
+1,&amp;v_i v_j\in E,\\
+0,&amp;v_i v_j\notin E.
+\end{cases}
+</annotation></semantics></math></p>
+<p>矩阵幂具有组合意义：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>A</mi><mi>k</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">(A^k)_{ij}</annotation></semantics></math>
+等于从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>v</mi><mi>i</mi></msub><annotation encoding="application/x-tex">v_i</annotation></semantics></math>
+到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>v</mi><mi>j</mi></msub><annotation encoding="application/x-tex">v_j</annotation></semantics></math>、长度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+的游走数。因为矩阵乘法中的中间指标恰好枚举下一步经过的顶点。</p>
+<p>若某个非负矩阵的某次幂所有元素都为正，就称它本原；教材的本原指数研究“最迟到多少步，任意两点之间都出现指定长度的游走”。本篇只需识别它是图的周期性与
+Perron–Frobenius 理论之间的接口。</p>
+<h3 id="分段自检一第-1-章">分段自检一：第 1 章</h3>
+<ol type="1">
+<li>七桥问题的证明中，地图的哪些信息被删除了，哪些信息被保留？</li>
+<li>为什么一条 Euler 迹至多有两个奇度顶点？</li>
+<li>在一条边上插入度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+的顶点，为什么图不再同构，但几何实现仍同胚？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>删除了桥长、方向、河岸形状和地图比例；保留四块陆地与七座桥之间的端点关联。</li>
+<li>中间顶点的进入边和离开边必须配对；只有起点与终点可能各剩一条不配对的边。</li>
+<li>顶点数和边数改变，所以不是同一抽象图；但新顶点只是把一个区间分成两个首尾粘接的区间，所得一维拓扑空间仍与原区间同胚。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-2">2. 第 2
+章：树与图空间——这里与代数拓扑的联系最直接</h2>
+<h3 id="树为什么是没有冗余的连接骨架">2.1
+树为什么是“没有冗余的连接骨架”？</h3>
+<p><strong>定义 2.1（树）</strong> 连通且不含圈的图称为树。</p>
+<p>对有限图
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>，下面几种说法等价：</p>
+<ol type="1">
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+连通且无圈；</li>
+<li>任意两顶点之间有唯一一条路；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+连通，且删除任意一条边都会不连通；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+无圈，且添加任意一条新边都会产生唯一一个圈；</li>
+<li>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+个顶点，则恰有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n-1</annotation></semantics></math>
+条边。</li>
+</ol>
+<p>这些等价条件从不同角度表达“刚好够连通”：没有一条多余边，也没有缺少一条必要边。</p>
+<p>拓扑上，树的几何实现可以逐步把叶边收缩掉，最后缩成一点，所以树是可缩空间。图中的圈正是阻止这种收缩的障碍。</p>
+<p>连通图
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+的 <strong>支撑树</strong>
+是包含全部顶点的树形子图。它把网络拆成两部分：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mtext mathvariant="normal">支撑树的 </mtext><mspace width="0.333em"></mspace></mrow><mi>n</mi><mo>−</mo><mn>1</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 条骨架边</mtext></mrow><mo>+</mo><mtext mathvariant="normal">每条非树边带来的独立圈</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{支撑树的 }n-1\text{ 条骨架边}
++
+\text{每条非树边带来的独立圈}.
+</annotation></semantics></math></p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+个顶点、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+条边，那么非树边数是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>m</mi><mo>−</mo><mi>n</mi><mo>+</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+m-(n-1)=m-n+1.
+</annotation></semantics></math></p>
+<p>这正是连通图的独立圈数。</p>
+<h3 id="图的向量空间其实是最初等的一维同调">2.2
+图的向量空间其实是最初等的一维同调</h3>
+<p>教材第 2.2
+节“图的向量空间”不是把图硬塞进线性代数。它把“边集的异或”和“圈的边界为零”写成链复形。</p>
+<p>在二元域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝔽</mi><mn>2</mn></msub><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathbb F_2=\{0,1\}</annotation></semantics></math>
+上，令</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mn>1</mn></msub><mo>=</mo><msubsup><mi>𝔽</mi><mn>2</mn><mi>E</mi></msubsup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>C</mi><mn>0</mn></msub><mo>=</mo><msubsup><mi>𝔽</mi><mn>2</mn><mi>V</mi></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+C_1=\mathbb F_2^E,
+\qquad
+C_0=\mathbb F_2^V.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>1</mn></msub><annotation encoding="application/x-tex">C_1</annotation></semantics></math>
+的向量可看成边的子集：系数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+表示选中该边；向量相加就是对称差，即只保留恰好出现在两个集合之一的边。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>0</mn></msub><annotation encoding="application/x-tex">C_0</annotation></semantics></math>
+同理表示顶点子集。</p>
+<p>定义边界算子</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mn>1</mn></msub><mo>:</mo><msub><mi>C</mi><mn>1</mn></msub><mo>→</mo><msub><mi>C</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">
+\partial_1:C_1\to C_0
+</annotation></semantics></math></p>
+<p>把一条边
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mo>=</mo><mi>u</mi><mi>v</mi></mrow><annotation encoding="application/x-tex">e=uv</annotation></semantics></math>
+送到两个端点之和：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>e</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>u</mi><mo>+</mo><mi>v</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\partial_1(e)=u+v.
+</annotation></semantics></math></p>
+<p>对一个边集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mn>1</mn></msub><mi>X</mi></mrow><annotation encoding="application/x-tex">\partial_1X</annotation></semantics></math>
+恰好由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+中度数为奇数的顶点组成。因此</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mn>1</mn></msub><mi>X</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">
+\partial_1X=0
+</annotation></semantics></math></p>
+<p>当且仅当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+的每个顶点都有偶数条入选边。这样的边集由若干圈的对称差构成，故
+<strong>圈空间</strong> 为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒞</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>ker</mo><msub><mi>∂</mi><mn>1</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathcal C(G)=\ker\partial_1.
+</annotation></semantics></math></p>
+<p>若图有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+个顶点、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+条边、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+个连通分支，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>rank</mo><msub><mi>∂</mi><mn>1</mn></msub><mo>=</mo><mi>n</mi><mo>−</mo><mi>c</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{rank}\partial_1=n-c.
+</annotation></semantics></math></p>
+<p>由秩—零度定理，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mo>dim</mo><mi>𝒞</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>m</mi><mo>−</mo><mi>n</mi><mo>+</mo><mi>c</mi><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{\dim\mathcal C(G)=m-n+c.}
+</annotation></semantics></math></p>
+<p>对连通图就是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>−</mo><mi>n</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">m-n+1</annotation></semantics></math>，与支撑树之外的边数完全一致。选定支撑树后，每加入一条非树边都会产生一个基本圈；这些基本圈构成圈空间的一组基。</p>
+<h3 id="为什么这真的是同调而不只是类比">2.3
+为什么这真的是同调，而不只是类比？</h3>
+<p>把图看成一维 CW 复形时，没有二维胞腔，所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">C_2=0</annotation></semantics></math>，从而</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo>;</mo><msub><mi>𝔽</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mo>ker</mo><msub><mi>∂</mi><mn>1</mn></msub></mrow><mrow><mo>im</mo><msub><mi>∂</mi><mn>2</mn></msub></mrow></mfrac><mo>=</mo><mo>ker</mo><msub><mi>∂</mi><mn>1</mn></msub><mo>=</mo><mi>𝒞</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+H_1(G;\mathbb F_2)
+=\frac{\ker\partial_1}{\operatorname{im}\partial_2}
+=\ker\partial_1
+=\mathcal C(G).
+</annotation></semantics></math></p>
+<p>因此圈空间就是图的一维同调群。它的维数</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>1</mn></msub><mo>=</mo><mi>m</mi><mo>−</mo><mi>n</mi><mo>+</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">
+\beta_1=m-n+c
+</annotation></semantics></math></p>
+<p>是第一 Betti 数，记录独立的一维洞。对连通图，基本群是秩为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>−</mo><mi>n</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">m-n+1</annotation></semantics></math>
+的自由群；把基本群交换化并把系数模
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>，就得到这里的圈空间。</p>
+<p>这回答了七桥问题与拓扑关系中最实质的一环：Euler
+的原始奇偶论证是组合的，但教材第二章已经进入代数拓扑的原型——把局部端点关系写成边界算子，用核测量圈。</p>
+<p>与圈空间对偶的是 <strong>割空间</strong>。对顶点集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>⊆</mo><mi>V</mi></mrow><annotation encoding="application/x-tex">S\subseteq V</annotation></semantics></math>，割</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>u</mi><mi>v</mi><mo>∈</mo><mi>E</mi><mo>:</mo><mi>u</mi><mo>∈</mo><mi>S</mi><mo>,</mo><mi>v</mi><mo>∉</mo><mi>S</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">
+\delta(S)
+=\{uv\in E:u\in S, v\notin S\}
+</annotation></semantics></math></p>
+<p>由横跨
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+与其补集的边组成。所有割的张成空间维数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>−</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">n-c</annotation></semantics></math>，并且在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>𝔽</mi><mn>2</mn><mi>E</mi></msubsup><annotation encoding="application/x-tex">\mathbb F_2^E</annotation></semantics></math>
+的标准内积下，圈空间与割空间正交：任意一个圈穿过任意一个割的次数必为偶数，因为每次从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+内走出去，最终必须再走回来。</p>
+<h3 id="支撑树有多少棵">2.4 支撑树有多少棵？</h3>
+<p>定义 Laplace 矩阵</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><mi>D</mi><mo>−</mo><mi>A</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+L=D-A,
+</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+是度矩阵，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+是邻接矩阵。矩阵树定理断言：删去
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+的任意一行和对应列，所得余子式的行列式等于图的支撑树数目。</p>
+<p>这个结论把组合枚举变成线性代数行列式。它的证明涉及关联矩阵和
+Cauchy–Binet
+公式，本篇只需识别其功能：支撑树不是任意选取的辅助物，而是可以通过谱与行列式整体计数的核心结构。</p>
+<h3 id="最小连接与最短路不是同一个问题">2.5
+最小连接与最短路不是同一个问题</h3>
+<p>若每条边有非负权重
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>e</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">w(e)</annotation></semantics></math>：</p>
+<ul>
+<li><strong>最小支撑树问题</strong>要求连接全部顶点，使总边权
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mrow><mi>e</mi><mo>∈</mo><mi>T</mi></mrow></msub><mi>w</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>e</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\sum_{e\in T}w(e)</annotation></semantics></math>
+最小；</li>
+<li><strong>最短路问题</strong>给定两个顶点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>,</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">s,t</annotation></semantics></math>，要求一条
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+的路，使沿途边权和最小。</li>
+</ul>
+<p>最小支撑树服务于“整体铺设成本”，最短路服务于“一次行程成本”。Kruskal
+算法按权从小到大加边，只要不产生圈就保留；它依赖割性质：跨过任意割的最轻边，总能进入某棵最小支撑树。Dijkstra
+算法则维护从源点到各点的暂定距离，每次固定当前最小者；非负权保证以后绕路不可能把已固定距离降低。</p>
+<p>电网络方程把边权解释为电阻或电导，把 Kirchhoff 电流守恒写成图 Laplace
+方程。它进一步连接网络、线性方程和能量最小化；本篇只需识别这一接口。</p>
+<h3 id="分段自检二第-2-章">分段自检二：第 2 章</h3>
+<ol type="1">
+<li>为什么一棵有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+个顶点的树恰有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n-1</annotation></semantics></math>
+条边？</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mn>1</mn></msub><mi>X</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\partial_1X=0</annotation></semantics></math>
+在图上表达什么奇偶条件？</li>
+<li>连通图增加一条不在支撑树中的边，为什么恰产生一个新的基本圈？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>从单顶点开始，每增加一个新顶点，为保持连通且不造圈，必须且只能用一条边接入；归纳得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n-1</annotation></semantics></math>。</li>
+<li>边集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+在每个顶点处的入选边数都是偶数，所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+属于圈空间。</li>
+<li>支撑树中新增边的两个端点原本已有唯一一条树路；新边与这条路合成唯一的圈。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-3">3. 第 3
+章：平图与平面图——什么时候图的画法变成拓扑问题？</h2>
+<h3 id="平面图与平图必须区分">3.1 平面图与平图必须区分</h3>
+<p>一个抽象图若能在平面上画出，使边只在公共端点处相交，就称为
+<strong>平面图</strong>。一次具体的无交叉画法连同由它确定的面，称为
+<strong>平图</strong>。</p>
+<p>同一平面图可以有不同平图表示；“某张画法有交叉”也不代表图非平面，因为可能换一种画法就能消除交叉。平面性问的是是否存在无交叉嵌入，而不是当前图片是否漂亮。</p>
+<h3 id="euler-公式为何是拓扑不变量">3.2 Euler
+公式为何是拓扑不变量？</h3>
+<p>设一个连通平图有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
+个顶点、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>e</mi><annotation encoding="application/x-tex">e</annotation></semantics></math>
+条边和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+个面，外部无界区域也算一个面。Euler 公式为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mi>v</mi><mo>−</mo><mi>e</mi><mo>+</mo><mi>f</mi><mo>=</mo><mn>2</mn><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{v-e+f=2.}
+</annotation></semantics></math></p>
+<p>可以用支撑树理解它。若图本身是树，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mo>=</mo><mi>v</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">e=v-1</annotation></semantics></math>，平面补集只有一个面，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>−</mo><mi>e</mi><mo>+</mo><mi>f</mi><mo>=</mo><mi>v</mi><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>v</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>1</mn><mo>=</mo><mn>2</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+v-e+f=v-(v-1)+1=2.
+</annotation></semantics></math></p>
+<p>若图含圈，删除圈上的一条边不会破坏连通性，却会把这条边两侧的两个面合并：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>e</mi><annotation encoding="application/x-tex">e</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+同时减少
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>，所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>−</mo><mi>e</mi><mo>+</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">v-e+f</annotation></semantics></math>
+不变。反复删除非桥边，最终得到支撑树，故原图也满足公式。</p>
+<p>这个证明展示的不是某张图的面积计算，而是细胞分解的不变量。若图把闭曲面切成圆盘状的面，则更一般地</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>−</mo><mi>e</mi><mo>+</mo><mi>f</mi><mo>=</mo><mi>χ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+v-e+f=\chi(S),
+</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>χ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\chi(S)</annotation></semantics></math>
+是曲面的 Euler 示性数。对球面
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>χ</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\chi=2</annotation></semantics></math>；对可定向亏格为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+的闭曲面，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>χ</mi><mo>=</mo><mn>2</mn><mo>−</mo><mn>2</mn><mi>g</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\chi=2-2g.
+</annotation></semantics></math></p>
+<p>平面加上一个无穷远点就是球面，所以平面图公式右端为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>。这条关系比七桥问题更直接地属于拓扑：不同的三角剖分或图嵌入会改变
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>,</mo><mi>e</mi><mo>,</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">v,e,f</annotation></semantics></math>，但交替和保持不变。</p>
+<h3 id="euler-公式怎样给出非平面性证书">3.3 Euler
+公式怎样给出非平面性证书？</h3>
+<p>设简单连通平图有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>≥</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">v\ge3</annotation></semantics></math>。每个面的边界长度至少为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>；每条边邻接两个面，因此</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mi>f</mi><mo>≤</mo><mn>2</mn><mi>e</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+3f\le2e.
+</annotation></semantics></math></p>
+<p>与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>−</mo><mi>e</mi><mo>+</mo><mi>f</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">v-e+f=2</annotation></semantics></math>
+合并：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>=</mo><mi>v</mi><mo>−</mo><mi>e</mi><mo>+</mo><mi>f</mi><mo>≤</mo><mi>v</mi><mo>−</mo><mi>e</mi><mo>+</mo><mfrac><mrow><mn>2</mn><mi>e</mi></mrow><mn>3</mn></mfrac><mo>=</mo><mi>v</mi><mo>−</mo><mfrac><mi>e</mi><mn>3</mn></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
+2=v-e+f
+\le v-e+\frac{2e}{3}
+=v-\frac e3,
+</annotation></semantics></math></p>
+<p>从而</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mi>e</mi><mo>≤</mo><mn>3</mn><mi>v</mi><mo>−</mo><mn>6</mn><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{e\le3v-6.}
+</annotation></semantics></math></p>
+<p>完全图
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>5</mn></msub><annotation encoding="application/x-tex">K_5</annotation></semantics></math>
+有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><mn>5</mn><mo>,</mo><mi>e</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">v=5,e=10</annotation></semantics></math>，但
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mo>&gt;</mo><mn>3</mn><mo>⋅</mo><mn>5</mn><mo>−</mo><mn>6</mn><mo>=</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">10&gt;3\cdot5-6=9</annotation></semantics></math>，所以非平面。</p>
+<p>对二部平面图，所有圈长度至少为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>，于是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mi>f</mi><mo>≤</mo><mn>2</mn><mi>e</mi></mrow><annotation encoding="application/x-tex">4f\le2e</annotation></semantics></math>，推出</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mo>≤</mo><mn>2</mn><mi>v</mi><mo>−</mo><mn>4</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+e\le2v-4.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mrow><mn>3</mn><mo>,</mo><mn>3</mn></mrow></msub><annotation encoding="application/x-tex">K_{3,3}</annotation></semantics></math>
+有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><mn>6</mn><mo>,</mo><mi>e</mi><mo>=</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">v=6,e=9</annotation></semantics></math>，但
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>9</mn><mo>&gt;</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">9&gt;8</annotation></semantics></math>，也非平面。这给出简短的不可能性证明；不过边数界不是所有图的完全判据。</p>
+<h3 id="kuratowski-定理为什么带着拓扑二字">3.4 Kuratowski
+定理为什么带着“拓扑”二字？</h3>
+<p>Kuratowski 在 1930
+年证明：有限图非平面，当且仅当它包含一个子图，该子图是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>5</mn></msub><annotation encoding="application/x-tex">K_5</annotation></semantics></math>
+或
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mrow><mn>3</mn><mo>,</mo><mn>3</mn></mrow></msub><annotation encoding="application/x-tex">K_{3,3}</annotation></semantics></math>
+的某个细分。</p>
+<p>细分只是在边上插入度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+的点，不改变图作为一维空间的拓扑类型。定理因此不是列举两张固定图片，而是说一切非平面性都含有两种基本拓扑障碍之一。它把“是否能嵌入平面”这一全局问题，化为寻找禁止的子空间类型。</p>
+<p>这里也能看出图论和点集拓扑的边界：平面性研究的是一维复形能否嵌入二维平面；不仅要知道图自身的同胚类型，还要知道它与环境空间的嵌入关系。</p>
+<h3 id="对偶图正多面体与印刷电路板">3.5
+对偶图、正多面体与印刷电路板</h3>
+<p>给定连通平图
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>，在每个面内放一个顶点；若原图一条边分隔两个面，就在对应顶点之间连一条对偶边，得到对偶图
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>G</mi><mo>*</mo></msup><annotation encoding="application/x-tex">G^*</annotation></semantics></math>。原图的圈对应对偶图的割，原图的割对应对偶图的圈。这是第
+2 章“圈空间—割空间”正交关系在平面嵌入下的几何版本。</p>
+<p>正多面体的顶点—边骨架给出球面上的正则平图。把每个顶点度、每个面边数和
+Euler 公式结合，可证明正多面体只有五种。</p>
+<p>印刷电路板设计则把平面性变成现实约束：连线若不能交叉，就要重新布置元件、增加层数或允许跨接。Kuratowski
+障碍解释的不是“这幅线路图画得不好”，而是单层布局在拓扑上不可能。</p>
+<h3 id="分段自检三第-3-章">分段自检三：第 3 章</h3>
+<ol type="1">
+<li>一张有交叉的图形为什么不能直接证明抽象图非平面？</li>
+<li>删除圈上一条边时，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>−</mo><mi>e</mi><mo>+</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">v-e+f</annotation></semantics></math>
+为什么不变？</li>
+<li>Kuratowski 定理为什么使用“细分”，而不只说包含
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>5</mn></msub><annotation encoding="application/x-tex">K_5</annotation></semantics></math>
+或
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mrow><mn>3</mn><mo>,</mo><mn>3</mn></mrow></msub><annotation encoding="application/x-tex">K_{3,3}</annotation></semantics></math>？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>平面性要求存在至少一种无交叉画法；当前画法的交叉可能通过重新嵌入消除。</li>
+<li>顶点数不变，边数减一，同时两个面合并使面数减一，因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mi>e</mi><mo>+</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">-e+f</annotation></semantics></math>
+不变。</li>
+<li>在边上插入度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+的点不改变一维空间的拓扑类型；禁止细分才能捕捉所有经过拉长或分段后的基本非平面障碍。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-4">4. 第 4
+章：网络流与连通度——局部容量如何决定全局通行能力？</h2>
+<h3 id="从有没有路到最多能运多少">4.1 从“有没有路”到“最多能运多少”</h3>
+<p>在有向网络
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>V</mi><mo>,</mo><mi>A</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N=(V,A)</annotation></semantics></math>
+中，指定源点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>、汇点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，每条弧
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+有容量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c(a)\ge0</annotation></semantics></math>。一个可行流
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+满足：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>c</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+0\le f(a)\le c(a)
+</annotation></semantics></math></p>
+<p>以及除
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>,</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">s,t</annotation></semantics></math>
+外每个顶点的流量守恒：流入总量等于流出总量。流值
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mo stretchy="true" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">|f|</annotation></semantics></math>
+是从源点净流出的总量。</p>
+<p>对包含
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+而不包含
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+的顶点集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>，从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+指向外部的弧形成一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>—<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+割，其容量为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mover><mi>S</mi><mo accent="true">¯</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>∑</mo><mrow><mi>u</mi><mo>∈</mo><mi>S</mi><mo>,</mo><mspace width="0.167em"></mspace><mi>v</mi><mo>∉</mo><mi>S</mi></mrow></munder><mi>c</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+c(S,\overline S)
+=\sum_{u\in S,\,v\notin S}c(u,v).
+</annotation></semantics></math></p>
+<p>任何从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+的流都必须穿过这个割，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mi>c</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mover><mi>S</mi><mo accent="true">¯</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|f|\le c(S,\overline S).
+</annotation></semantics></math></p>
+<p>这叫弱对偶：任意可行流给下界，任意割给上界。</p>
+<h3 id="最大流最小割为何令人意外">4.2 最大流最小割为何令人意外？</h3>
+<p>Ford 与 Fulkerson 的最大流最小割定理断言：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><munder><mo>max</mo><mi>f</mi></munder><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><munder><mo>min</mo><mrow><mi>S</mi><mo>∋</mo><mi>s</mi><mo>,</mo><mspace width="0.167em"></mspace><mi>t</mi><mo>∉</mo><mi>S</mi></mrow></munder><mi>c</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo>,</mo><mover><mi>S</mi><mo accent="true">¯</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\max_f |f|
+=
+\min_{S\ni s,\,t\notin S}c(S,\overline S).}
+</annotation></semantics></math></p>
+<p>左边在所有运输方案中最大化流量；右边在所有断开源汇的瓶颈中最小化总容量。两个看似不同的优化问题恰好相等。</p>
+<p>构造使用
+<strong>剩余网络</strong>。若一条弧还没满，就允许沿正向继续加流；若已经送出一部分，也允许沿反向撤销流量。只要剩余网络中存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+的增广路，就沿路的最小剩余容量增加流。若再也没有增广路，令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+为剩余网络中从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+可达的顶点集；所有从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+到外部的原弧都已饱和，所有从外部进入
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+的流都可被抵消，于是当前流值正好等于该割容量。此时同时得到最大流和最小割两个证书。</p>
+<p>历史上，这一理论把铁路、通信与运输问题中的“瓶颈直觉”变成了严格的线性优化对偶。</p>
+<h3 id="menger-定理把路和割统一起来">4.3 Menger
+定理把路和割统一起来</h3>
+<p>两条
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>—<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+路若除端点外不共享顶点，称为内部点不交。Menger
+定理的顶点形式说：在不相邻顶点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>,</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">s,t</annotation></semantics></math>
+之间，内部点不交路的最大条数，等于删除后能使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>,</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">s,t</annotation></semantics></math>
+断开的最少顶点数。</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mo>max</mo><mo stretchy="false" form="prefix">{</mo><mrow><mtext mathvariant="normal">内部点不交 </mtext><mspace width="0.333em"></mspace></mrow><mi>s</mi><mtext mathvariant="normal">—</mtext><mi>t</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 路数</mtext></mrow><mo stretchy="false" form="postfix">}</mo><mo>=</mo><mo>min</mo><mo stretchy="false" form="prefix">{</mo><mrow><mtext mathvariant="normal">分离 </mtext><mspace width="0.333em"></mspace></mrow><mi>s</mi><mo>,</mo><mi>t</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 的顶点数</mtext></mrow><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\max\{\text{内部点不交 }s\text{—}t\text{ 路数}\}
+=
+\min\{\text{分离 }s,t\text{ 的顶点数}\}.}
+</annotation></semantics></math></p>
+<p>它与最大流最小割是同一种“打包—阻断”对偶。把每个顶点拆成入口和出口，中间连一条容量为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+的弧，就把“每个中间顶点最多使用一次”化为容量限制；整数最大流分解成若干条点不交路。</p>
+<p>图的点连通度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>κ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\kappa(G)</annotation></semantics></math>
+是使图不连通或退化为单点所需删除的最少顶点数；边连通度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(G)</annotation></semantics></math>
+类似地删除边。若最小度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\delta(G)</annotation></semantics></math>，则通常有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>κ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>δ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\kappa(G)\le\lambda(G)\le\delta(G).
+</annotation></semantics></math></p>
+<p>第一不等式说，点故障通常比边故障更有破坏力；第二不等式来自删除某个最小度顶点的全部关联边即可孤立它。</p>
+<h3 id="三个应用为什么都挂在本章">4.4 三个应用为什么都挂在本章？</h3>
+<ul>
+<li><strong>运输方案设计</strong>：寻找满足供需与容量的可行流；最优方案再加入成本，成为最小费用流。</li>
+<li><strong>中国投递员问题</strong>：要求覆盖每条街道至少一次并回到起点。它从第
+1 章 Euler
+回出发，给奇度顶点配对并重复最便宜的路径，使图变成全偶图。它覆盖边，不要与覆盖顶点的货郎担问题混淆。</li>
+<li><strong>方化矩形</strong>：把正方形分割的水平线段视为顶点、小正方形视为带电阻的边，边长对应电流或电势差。Kirchhoff
+定律把几何拼接翻译为电网络方程。</li>
+</ul>
+<p>这些例子展示图论应用的共同步骤：先选择顶点与边的语义，再决定要守恒的是流量、次数还是电势关系。</p>
+<hr />
+<h2 id="chapter-5">5. 第 5 章：匹配与独立集——怎样证明一一安排存在？</h2>
+<h3 id="匹配独立集与覆盖分别控制什么冲突">5.1
+匹配、独立集与覆盖分别控制什么冲突？</h3>
+<p><strong>匹配</strong>是两两没有公共端点的边集；它表示一组互不争用对象的配对。饱和顶点数最大的匹配称为最大匹配；若每个顶点都被饱和，则是完美匹配。</p>
+<p><strong>独立集</strong>是两两不相邻的顶点集；它表示一组可以同时选择而互不冲突的对象。<strong>顶点覆盖</strong>则是与每条边至少一个端点相交的顶点集。一个集合
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+独立，当且仅当补集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>\</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">V\setminus S</annotation></semantics></math>
+是顶点覆盖，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>τ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>V</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\alpha(G)+\tau(G)=|V|,
+</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+是最大独立集大小，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+是最小顶点覆盖大小。</p>
+<p>不要把三个问题混在一起：匹配选边且端点不冲突；独立集选点且点之间无边；顶点覆盖选点去击中所有边。</p>
+<h3 id="hall-定理怎样把局部需求变成全局可安排性">5.2 Hall
+定理怎样把局部需求变成全局可安排性？</h3>
+<p>设二部图
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>∪</mo><mi>Y</mi><mo>,</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">G=(X\cup Y,E)</annotation></semantics></math>
+表示人员
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+与岗位
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+的可行关系。对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>⊆</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">S\subseteq X</annotation></semantics></math>，令</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>y</mi><mo>∈</mo><mi>Y</mi><mo>:</mo><mrow><mtext mathvariant="normal">存在 </mtext><mspace width="0.333em"></mspace></mrow><mi>x</mi><mo>∈</mo><mi>S</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 与 </mtext><mspace width="0.333em"></mspace></mrow><mi>y</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 相邻</mtext></mrow><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+N(S)=\{y\in Y:\text{存在 }x\in S\text{ 与 }y\text{ 相邻}\}.
+</annotation></semantics></math></p>
+<p>若想用匹配覆盖所有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+中人员，任意
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+个人必须合计至少有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+个可选岗位，否则抽屉原理立即造成冲突。因此必要条件是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>≥</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>S</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mo>∀</mo><mi>S</mi><mo>⊆</mo><mi>X</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|N(S)|\ge|S|,
+\qquad \forall S\subseteq X.
+</annotation></semantics></math></p>
+<p>Hall 定理的惊人之处是：这也是充分条件。</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mrow><mtext mathvariant="normal">存在覆盖 </mtext><mspace width="0.333em"></mspace></mrow><mi>X</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 的匹配</mtext></mrow><mo>⇔</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>≥</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>S</mi><mo stretchy="true" form="postfix">|</mo></mrow><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 对所有 </mtext><mspace width="0.333em"></mspace></mrow><mi>S</mi><mo>⊆</mo><mi>X</mi><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\text{存在覆盖 }X\text{ 的匹配}
+\Longleftrightarrow
+|N(S)|\ge|S|\text{ 对所有 }S\subseteq X.}
+</annotation></semantics></math></p>
+<p>充分性可以通过增广路理解。若当前匹配还没覆盖某个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>0</mn></msub><mo>∈</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">x_0\in X</annotation></semantics></math>，就从它出发，交替走“未匹配边—已匹配边”，寻找一个未被饱和的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+顶点。找到后把路径上匹配与非匹配状态翻转，匹配边数增加
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>。若找不到，搜索到的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+顶点集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+的所有邻点都已被匹配回
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+内，并且起点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math>
+未匹配，于是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>S</mi><mo stretchy="true" form="postfix">|</mo></mrow></mrow><annotation encoding="application/x-tex">|N(S)|&lt;|S|</annotation></semantics></math>，恰好给出
+Hall 条件失败的证书。</p>
+<p>这与最大流算法具有同一结构：要么找到增广路改进方案，要么搜索失败产生一个割或邻集证书，证明已经不可能改进。</p>
+<h3 id="二部图中匹配与覆盖为何精确对偶">5.3
+二部图中匹配与覆盖为何精确对偶？</h3>
+<p>Kőnig 定理断言，在二部图中</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>τ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\nu(G)=\tau(G),
+</annotation></semantics></math></p>
+<p>即最大匹配大小等于最小顶点覆盖大小。任意匹配的每条边都必须被覆盖中的不同选择“击中”，所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mo>≤</mo><mi>τ</mi></mrow><annotation encoding="application/x-tex">\nu\le\tau</annotation></semantics></math>
+容易；反向不等式来自增广路搜索产生的特殊顶点覆盖。</p>
+<p>这又是“打包—阻断”对偶：匹配尽可能打包互不相交的边，顶点覆盖用尽可能少的点阻断所有边。第
+4 章以路和割表达同一思想，本章换成边和覆盖。</p>
+<h3 id="人员安排最优安排与货郎担问题">5.4
+人员安排、最优安排与货郎担问题</h3>
+<p>人员安排只问是否存在或最多能安排多少对；若每对人员—岗位还有成本，就成为带权二部匹配或指派问题。匈牙利方法利用对偶势函数和零权边逐步构造最优匹配，本篇只需识别其对象是“全局一一配对成本最小”。</p>
+<p>货郎担问题通常指旅行商问题：在带权完全图中寻找经过每个顶点恰好一次并回到起点的最短
+Hamilton 圈。它与中国投递员问题差别如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th>问题</th>
+<th>必须覆盖</th>
+<th>允许重复</th>
+<th>图论核心</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>中国投递员</td>
+<td>每条边</td>
+<td>可重复边和顶点</td>
+<td>Euler 化、奇点配对</td>
+</tr>
+<tr class="even">
+<td>旅行商</td>
+<td>每个顶点</td>
+<td>通常不重复顶点</td>
+<td>最短 Hamilton 圈</td>
+</tr>
+</tbody>
+</table>
+<p>前者已有道路网，必须巡遍所有街道；后者只要求访问城市，选择哪些城市间连接进入路线。现实描述相似，数学结构却不同。</p>
+<h3 id="分段自检四第-45-章">分段自检四：第 4—5 章</h3>
+<ol type="1">
+<li>最大流最小割中，流和割分别提供哪一方向的证书？</li>
+<li>Menger 定理怎样由最大流模型得到？</li>
+<li>若三个人合计只会两个岗位，Hall 条件在哪个集合上失败？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>可行流给出可达到的下界，任意割给出不可超过的上界；两者相等时同时证明最优。</li>
+<li>给边容量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+得边不交版本；把顶点拆成入口—出口并令中间弧容量为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>，得到点不交版本。</li>
+<li>取这三个人组成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>，有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>S</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">|S|=3</annotation></semantics></math>
+而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">|N(S)|=2</annotation></semantics></math>，所以不可能全匹配。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-6">6. 第 6 章：染色理论——有限资源怎样隔离冲突？</h2>
+<h3 id="点染色把排课频率和地图统一起来">6.1
+点染色把排课、频率和地图统一起来</h3>
+<p>图的一个正常点染色是映射</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>:</mo><mi>V</mi><mo>→</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+c:V\to\{1,2,\ldots,k\},
+</annotation></semantics></math></p>
+<p>使相邻顶点颜色不同。所需最少颜色数称为色数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>χ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\chi(G)</annotation></semantics></math>。</p>
+<p>颜色不是颜料，而是不可同时共享的资源类别。顶点可表示课程，相邻表示有共同学生，则颜色表示考试时段；顶点也可表示发射台，相邻表示会互相干扰，则颜色表示频段。</p>
+<p>完全子图
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mi>r</mi></msub><annotation encoding="application/x-tex">K_r</annotation></semantics></math>
+中任意两点相邻，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>χ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≥</mo><mi>ω</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\chi(G)\ge\omega(G),
+</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+是最大团大小。另一方面，按任意次序贪心着色，每个顶点至多看到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Delta(G)</annotation></semantics></math>
+种邻点颜色，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>χ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>Δ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\chi(G)\le\Delta(G)+1.
+</annotation></semantics></math></p>
+<p>下界由冲突证书给出，上界由具体算法给出。二者之间的间隙就是结构尚未利用的空间。</p>
+<h3 id="边染色为什么等于另一个图的点染色">6.2
+边染色为什么等于另一个图的点染色？</h3>
+<p>正常边染色要求相邻边——共享端点的两条边——颜色不同，最少颜色数记为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>χ</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\chi&#39;(G)</annotation></semantics></math>。若边表示需要共同机器的任务，颜色可表示时间槽。</p>
+<p>构造线图
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">L(G)</annotation></semantics></math>：原图每条边变成一个顶点，两顶点在原边共享端点时相邻。于是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>χ</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>χ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\chi&#39;(G)=\chi(L(G)).
+</annotation></semantics></math></p>
+<p>对简单图，Vizing 定理给出非常紧的范围：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>χ</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>Δ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\Delta(G)\le\chi&#39;(G)\le\Delta(G)+1.
+</annotation></semantics></math></p>
+<p>本篇只需掌握对象转换，不追证明。</p>
+<h3 id="地图染色为什么要经过平面对偶">6.3
+地图染色为什么要经过平面对偶？</h3>
+<p>地图要求共享一段边界的面颜色不同。给平图取对偶图：每个面变成顶点，共享边界的两个面在对偶图中相邻。于是地图面染色变成对偶图点染色。</p>
+<p>四色问题的历史很能说明图论怎样发展：十九世纪中期提出“任何平面地图是否四种颜色足够”；Kempe
+在 1879
+年给出一度被接受的证明，后来发现论证有缺口，但其中的交换链思想仍保留下来，并能证明五色定理。Appel
+与 Haken 在 1976 年宣布、1977
+年发表计算机辅助证明：把无限多平面图压缩为一个不可避免的有限构形集，再用计算机检验其可约性。</p>
+<p>四色定理说明每个平面图都满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>χ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mn>4</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\chi(G)\le4.
+</annotation></semantics></math></p>
+<p>它与第 3 章的联系不是“地图看起来在平面上”，而是平面嵌入、对偶图和
+Euler 公式共同限制了局部结构。经典放电法的出发点正是由 Euler
+公式推出平面图平均度小于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>，因此必有度数不超过
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+的顶点；困难在于怎样把这一局部稀疏性强化成四种颜色总够用。</p>
+<h3 id="整数流为什么又会回到面染色">6.4
+整数流为什么又会回到面染色？</h3>
+<p>在平面图中，原图的圈对应对偶图的割。对偶关系使“在边上赋满足守恒的非零流”与“给对偶图的面或顶点赋颜色”发生联系。Tutte
+把四色问题改写成每个无桥平面图是否存在某类 nowhere-zero
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>-flow。</p>
+<p>这条支线把第 2 章的圈—割对偶、第 3 章的平面对偶、第 4 章的流守恒和第
+6
+章的染色连接成闭环。本篇只需识别这条连接，不要求掌握整数流群的完整理论。</p>
+<h3 id="本章向整门课交付什么">6.5 本章向整门课交付什么？</h3>
+<p>染色把“不能同时发生”的二元冲突转化为图边，再以最少类别解决资源分配。它与匹配的区别是：匹配选择一批互不冲突的关系；染色则要把全部对象分层，使每层都是独立集。</p>
+<p>因此一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-点染色等价于把顶点集分解成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+个独立集：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>=</mo><msub><mi>V</mi><mn>1</mn></msub><mo>⊔</mo><mi>⋯</mi><mo>⊔</mo><msub><mi>V</mi><mi>k</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>V</mi><mi>i</mi></msub><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 均为独立集</mtext></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V=V_1\sqcup\cdots\sqcup V_k,
+\qquad
+V_i\text{ 均为独立集}.
+</annotation></semantics></math></p>
+<p>第 5 章研究“最大的一个独立集有多大”，第 6
+章研究“至少需要多少个独立集覆盖全部顶点”。</p>
+<hr />
+<h2 id="把六章压缩成可复述的结构">7. 把六章压缩成可复述的结构</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>教材分支</th>
+<th>旧工具的缺陷</th>
+<th>新的核心结构</th>
+<th>关键证书或构造</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>第 1 章 基本概念</td>
+<td>地图与关系含有大量无关几何信息</td>
+<td>顶点、边、度、路、圈、矩阵</td>
+<td>奇度点证明 Euler 路不可能；拼接闭迹构造 Euler 回</td>
+</tr>
+<tr class="even">
+<td>第 2 章 树与图空间</td>
+<td>连通性没有区分骨架与冗余圈</td>
+<td>树、支撑树、圈空间、割空间</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>−</mo><mi>n</mi><mo>+</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">m-n+c</annotation></semantics></math>
+个独立圈；边界算子与支撑树基</td>
+</tr>
+<tr class="odd">
+<td>第 3 章 平面性</td>
+<td>当前画法的交叉不等于不可嵌入</td>
+<td>平图、面、对偶、细分</td>
+<td>Euler
+公式、边数界、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mn>5</mn></msub><mi>/</mi><msub><mi>K</mi><mrow><mn>3</mn><mo>,</mo><mn>3</mn></mrow></msub></mrow><annotation encoding="application/x-tex">K_5/K_{3,3}</annotation></semantics></math>
+禁形</td>
+</tr>
+<tr class="even">
+<td>第 4 章 流与连通度</td>
+<td>“有路”不能衡量容量与抗毁性</td>
+<td>流、割、点不交路、连通度</td>
+<td>增广路或最小割；Menger 路—割对偶</td>
+</tr>
+<tr class="odd">
+<td>第 5 章 匹配与独立集</td>
+<td>局部可选不保证全局一一安排</td>
+<td>匹配、邻集、独立集、覆盖</td>
+<td>Hall 邻集条件；增广路或失败集合</td>
+</tr>
+<tr class="even">
+<td>第 6 章 染色</td>
+<td>冲突对象需要共享有限资源</td>
+<td>点染色、边染色、面染色</td>
+<td>团与度给界；平面结构限制色数</td>
+</tr>
+</tbody>
+</table>
+<p>整门课可以再压缩成四条跨章边：</p>
+<ol type="1">
+<li><strong>Euler 迹的偶度条件 → 第 2 章边界算子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∂</mi><mn>1</mn></msub><mi>X</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\partial_1X=0</annotation></semantics></math>
+→ 圈空间与一维同调</strong>；</li>
+<li><strong>树与独立圈数 → 第 3 章 Euler 公式 → 曲面的 Euler
+示性数</strong>；</li>
+<li><strong>圈—割正交 → 平面对偶 →
+网络流的瓶颈与整数流—染色对偶</strong>；</li>
+<li><strong>增广路 → 最大流、Menger 路系和最大匹配 → 失败时产生割或 Hall
+证书</strong>。</li>
+</ol>
+<p>现在可以精确回答开头的问题：</p>
+<blockquote>
+<p>七桥解法本身是度数奇偶的组合证明；它通向拓扑，是因为 Euler
+首先把地图换成了只记录关联的一维结构。此后，树的可缩性、圈空间的一维同调、平面嵌入、Euler
+示性数以及禁止细分，把这种方法逐步发展成真正的拓扑理论。</p>
+</blockquote>
+<hr />
+<h2 id="结论与下一步">8. 结论与下一步</h2>
+<ol type="1">
+<li>图不是一张固定图片，而是顶点—边关联结构；图形可以改变，同构关系不变。</li>
+<li>七桥图有四个奇度顶点，因此不存在 Euler
+迹。关键是每个中间顶点的进入与离开必须配对。</li>
+<li>图作为一维 CW 复形后，树是可缩的，圈空间就是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>G</mi><mo>;</mo><msub><mi>𝔽</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">H_1(G;\mathbb F_2)</annotation></semantics></math>，维数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>−</mo><mi>n</mi><mo>+</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">m-n+c</annotation></semantics></math>；这给出图论与代数拓扑最直接的接口。</li>
+<li>平面性研究一维复形能否嵌入平面。Euler
+公式是球面的示性数公式，Kuratowski 定理用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>5</mn></msub><annotation encoding="application/x-tex">K_5</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mrow><mn>3</mn><mo>,</mo><mn>3</mn></mrow></msub><annotation encoding="application/x-tex">K_{3,3}</annotation></semantics></math>
+的细分给出完全的拓扑障碍。</li>
+<li>最大流最小割、Menger 定理与 Hall
+定理共享“打包—阻断”对偶：要么构造更多路或匹配，要么给出证明不可能的割或邻集。</li>
+<li>染色把全部冲突对象分解为独立集；平面对偶又把地图染色与图的点染色、整数流连接起来。</li>
+</ol>
+<p>若以后按教材继续深入，最合适的下一篇是：</p>
+<blockquote>
+<p><strong>图论（二）：树、圈空间与同调——为什么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>−</mo><mi>n</mi><mo>+</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">m-n+c</annotation></semantics></math>
+同时数非树边、独立圈和一维洞？</strong></p>
+</blockquote>
+<p>它将完整构造关联矩阵与边界算子，证明圈空间和割空间的维数及正交分解，并把支撑树基、基本群自由生成元和第一同调逐项对应。</p>
+<hr />
+<h2 id="参考资料">参考资料</h2>
+<ol type="1">
+<li>徐俊明：《图论及其应用（第 4
+版）》，中国科学技术大学出版社。本文一级结构依照用户提供的第 1—6
+章目录；出版社与版本信息由作者课程页面及书目记录交叉核验。</li>
+<li>L. Euler, “Solutio problematis ad geometriam situs pertinentis,”
+1736/1741. <a href="https://eulerarchive.maa.org/backup/E053.html">Euler
+Archive 原文与书目信息</a>。</li>
+<li>J. B. Listing, <em>Vorstudien zur Topologie</em>, 1847/1848. <a
+href="https://archive.org/details/vorstudienzurto00listgoog">Harvard
+馆藏数字扫描</a>。</li>
+<li>H. Poincaré, “Analysis Situs,” 1895. <a
+href="https://webhomes.maths.ed.ac.uk/~v1ranick/papers/poincare2009.pdf">原文及五篇续篇的英译汇编</a>。</li>
+<li>K. Kuratowski, “Sur le problème des courbes gauches en Topologie,”
+1930. <a href="https://eudml.org/doc/212352">EuDML 原文记录</a>。</li>
+<li>L. R. Ford Jr. and D. R. Fulkerson, “Maximal Flow Through a
+Network,” 1956. <a
+href="https://www.cs.yale.edu/homes/lans/readings/routing/ford-max_flow-1956.pdf">原论文扫描</a>。</li>
+<li>P. Hall, “On Representatives of Subsets,” 1935. <a
+href="https://doi.org/10.1112/jlms/s1-10.37.26">DOI 记录</a>。</li>
+<li>E. W. Dijkstra, “A Note on Two Problems in Connexion with Graphs,”
+1959. <a href="https://doi.org/10.1007/BF01386390">DOI 记录</a>。</li>
+<li>K. Appel and W. Haken, “Every Planar Map Is Four Colorable. Part I:
+Discharging,” 1977. <a
+href="https://projecteuclid.org/journals/illinois-journal-of-mathematics/volume-21/issue-3/Every-planar-map-is-four-colorable-Part-I-Discharging/10.1215/ijm/1256049011.pdf">Project
+Euclid 原文</a>。</li>
+</ol>
+<hr />
+<section id="reader-feedback" data-feedback-status="pending">
+<h2>
+读后反馈与修订记录
+</h2>
+<article class="feedback-entry" data-status="pending">
+<h3>
+2026-07-18 · 初稿发布
+</h3>
+<p>
+<strong>初稿设计：</strong>以教材第 1—6
+章为一级知识树；重点扩充七桥问题从位置几何到拓扑、图作为一维 CW
+复形、圈空间与同调、Euler 示性数和 Kuratowski
+细分的历史—数学连接。每章仍保留应用问题与构造算法，设置四处分段自检。
+</p>
+<p>
+<strong>等待反馈：</strong>首次阅读后，请重点判断：（1）七桥奇偶证明与拓扑之间的三层关系是否已经清楚；（2）第
+2 章圈空间—同调是否过快；（3）后半篇流、匹配、染色的结构是否容易区分。
+</p>
+<p>
+<strong>状态：</strong>等待首次阅读反馈。
+</p>
+</article>
+</section>
+</body>
+</html>

@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" xml:lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8"/>
+<meta content="pandoc" name="generator"/>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<title>从群与环到伽罗瓦理论：抽象代数怎样解释一般五次方程没有根式公式</title>
+<style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+<meta content="math-011" name="corpus-id"/><meta content="数学" name="corpus-category"/><meta content="抽象代数与伽罗瓦理论" name="corpus-series"/><meta content="awaiting_review" name="corpus-status"/><meta content="未读" name="reading-status"/><meta content="55-65 minutes" name="estimated-reading-time"/><meta content="2026-07-24" name="generated-date"/><meta content="2026-07-24" name="source-cutoff"/><style>
+:root{color-scheme:light;--ink:#172033;--muted:#5e6878;--line:#d9e0ea;--soft:#f6f8fc;--blue:#175cd3;--blue-soft:#eaf2ff;--green:#157f5b;--green-soft:#eaf8f2;--amber:#9a5b00;--amber-soft:#fff6e3;--violet:#6941c6;--violet-soft:#f3efff;--red:#b42318;--red-soft:#fff0ee;--shadow:0 10px 30px rgba(28,45,76,.07)}
+*{box-sizing:border-box}html{font-size:17px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{max-width:960px;margin:0 auto;padding:38px 44px 88px;color:var(--ink);background:#fff;font-family:"Noto Serif CJK SC","Source Han Serif SC","Songti SC",STSong,serif;line-height:1.86;overflow-wrap:break-word}h1,h2,h3,h4,nav,.core-map,table,summary{font-family:"Noto Sans CJK SC","Source Han Sans SC","PingFang SC","Microsoft YaHei",sans-serif}header#title-block-header{margin:0 0 1.35rem;padding:1.7rem 1.8rem 1.55rem;border:1px solid #d8e1ee;border-top:6px solid var(--violet);border-radius:16px;background:linear-gradient(145deg,#fff 0%,#faf8ff 100%);box-shadow:var(--shadow)}h1.title{margin:0;font-size:2.08rem;line-height:1.34;letter-spacing:-.025em;color:#101828}h1{margin:3.7rem 0 1.25rem;font-size:1.7rem;line-height:1.4;color:#101828}h2{margin:2.55rem 0 .9rem;font-size:1.35rem;line-height:1.45;color:#172033}h3{margin:2rem 0 .65rem;font-size:1.15rem;line-height:1.5;color:#24324b}p{margin:.85rem 0}li{margin:.38rem 0}strong{color:#101828}a{color:var(--blue);text-underline-offset:.16em}blockquote{margin:1.35rem 0;padding:1rem 1.15rem;border-left:4px solid var(--violet);border-radius:0 10px 10px 0;background:var(--violet-soft);color:#28364f}blockquote>:first-child{margin-top:0}blockquote>:last-child{margin-bottom:0}nav#TOC{margin:1.5rem 0 2.8rem;padding:1rem 1.2rem;border:1px solid var(--line);border-radius:12px;background:var(--soft)}nav#TOC:before{display:block;margin-bottom:.55rem;font-weight:750;content:"目录"}nav#TOC ul{margin:.25rem 0;padding-left:1.35rem}nav#TOC>ul{columns:2;column-gap:2.6rem}nav#TOC li{break-inside:avoid;margin:.25rem 0}nav#TOC a{text-decoration:none;color:#344158}nav#TOC a:hover{text-decoration:underline;color:var(--blue)}table{display:block;width:100%;margin:1.25rem 0;overflow-x:auto;border-collapse:collapse;font-size:.94rem}th,td{padding:.62rem .72rem;border:1px solid var(--line);vertical-align:top}th{background:var(--soft);text-align:left;color:#25324a}tr:nth-child(even) td{background:#fcfdff}.core-map{margin:1.7rem 0 2.6rem;padding:1.15rem;border:1px solid #d8e1ee;border-radius:16px;background:#fbfdff;box-shadow:var(--shadow)}.map-title{margin-bottom:.85rem;font-weight:800;color:#172033}.map-row{display:flex;align-items:center;justify-content:center;gap:.55rem;flex-wrap:wrap;margin:.65rem 0 .25rem}.node{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:.48rem .72rem;border-radius:10px;border:1px solid;font-weight:700;text-align:center}.known{border-color:#aeb9c7;background:#f3f5f8;color:#344054}.field{border-color:#d6b36d;background:var(--amber-soft);color:#7b4a00}.split{border-color:#7cc6a9;background:var(--green-soft);color:#0d6a4a}.galois{border-color:#bdabed;background:var(--violet-soft);color:#5736a4}.group{border-color:#8eb6f1;background:var(--blue-soft);color:#17478d}.solvable{border-color:#7cc6a9;background:var(--green-soft);color:#0d6a4a}.impossible{border-color:#e29b94;background:var(--red-soft);color:#922018}.arrow{font-size:.82rem;color:var(--muted);font-weight:700}.map-caption{margin:.75rem 0 0;text-align:center;color:var(--muted);font-size:.9rem}.map-row.second{padding-top:.72rem;border-top:1px dashed var(--line)}math{font-family:"STIX Two Math","Cambria Math","Latin Modern Math",serif;font-size:1.02em}math[display="block"]{display:block;max-width:100%;margin:1.2rem auto;padding:.22rem .1rem;overflow-x:auto;overflow-y:hidden}.checkpoint{margin:1.25rem 0;border:1px solid #cbd8ea;border-radius:10px;background:#fbfdff}.checkpoint summary{cursor:pointer;padding:.85rem 1rem;font-weight:730;color:#263a5d}.checkpoint .answer{padding:.2rem 1rem 1rem;color:#39465b}.checkpoint[open] summary{border-bottom:1px solid #dde5ef}#reader-feedback{margin-top:4rem;padding-top:1.4rem;border-top:3px solid #d8e1ee}#reader-feedback>h1{margin-top:0}.feedback-entry{padding:1rem 1.1rem;border:1px solid var(--line);border-radius:12px;background:var(--soft)}.feedback-entry h2{margin-top:0}code{padding:.12em .28em;border-radius:4px;background:var(--soft)}hr{margin:2.6rem 0;border:0;border-top:1px solid var(--line)}
+@media(max-width:720px){html{font-size:16px}body{padding:22px 18px 60px;line-height:1.78}header#title-block-header{padding:1.2rem 1.05rem}h1.title{font-size:1.65rem}h1{font-size:1.48rem}h2{font-size:1.25rem}nav#TOC>ul{columns:1}.map-row{align-items:stretch;flex-direction:column}.arrow{text-align:center}.node{width:100%}th,td{min-width:150px}}
+@media print{body{max-width:none;padding:0;color:#000}header#title-block-header,.core-map{box-shadow:none}nav#TOC{break-after:page}h1,h2,h3{break-after:avoid}table,blockquote,math[display="block"],.checkpoint{break-inside:avoid}a{color:#000;text-decoration:none}}
+</style></head>
+<body>
+<header id="title-block-header">
+<h1 class="title">从群与环到伽罗瓦理论：抽象代数怎样解释一般五次方程没有根式公式</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#先把结论说准确" id="toc-先把结论说准确">0.
+先把结论说准确</a></li>
+<li><a href="#你已经学到哪里群论和环论分别为后文准备了什么" id="toc-你已经学到哪里群论和环论分别为后文准备了什么">1.
+你已经学到哪里：群论和环论分别为后文准备了什么</a></li>
+<li><a href="#环论以后抽象代数并不存在唯一的一条路" id="toc-环论以后抽象代数并不存在唯一的一条路">2.
+环论以后，抽象代数并不存在唯一的一条路</a>
+<ul>
+<li><a href="#域论与-galois-理论研究方程数域和对称" id="toc-域论与-galois-理论研究方程数域和对称">2.1 域论与 Galois
+理论：研究方程、数域和对称</a></li>
+<li><a href="#模与表示论把群和环线性化" id="toc-模与表示论把群和环线性化">2.2
+模与表示论：把群和环“线性化”</a></li>
+<li><a href="#交换代数与代数几何把理想当作几何信息" id="toc-交换代数与代数几何把理想当作几何信息">2.3
+交换代数与代数几何：把理想当作几何信息</a></li>
+<li><a href="#非交换代数同调代数与范畴论" id="toc-非交换代数同调代数与范畴论">2.4
+非交换代数、同调代数与范畴论</a></li>
+</ul></li>
+<li><a href="#历史主线公式研究为什么最终逼出了群与域" id="toc-历史主线公式研究为什么最终逼出了群与域">3.
+历史主线：公式研究为什么最终逼出了群与域</a>
+<ul>
+<li><a href="#二三四次方程曾制造一种错误期待" id="toc-二三四次方程曾制造一种错误期待">3.1
+二、三、四次方程曾制造一种错误期待</a></li>
+<li><a href="#ruffini-与-abel先证明通用公式不存在" id="toc-ruffini-与-abel先证明通用公式不存在">3.2 Ruffini 与
+Abel：先证明“通用公式不存在”</a></li>
+<li><a href="#galois从寻找公式改成研究根的对称群" id="toc-galois从寻找公式改成研究根的对称群">3.3
+Galois：从寻找公式改成研究根的对称群</a></li>
+</ul></li>
+<li><a href="#第一个新对象域扩张" id="toc-第一个新对象域扩张">4.
+第一个新对象：域扩张</a>
+<ul>
+<li><a href="#定义与符号" id="toc-定义与符号">4.1 定义与符号</a></li>
+<li><a href="#代数元与最小多项式" id="toc-代数元与最小多项式">4.2
+代数元与最小多项式</a></li>
+<li><a href="#加入一个根就是构造商域" id="toc-加入一个根就是构造商域">4.3 “加入一个根”就是构造商域</a></li>
+<li><a href="#塔式定理" id="toc-塔式定理">4.4 塔式定理</a></li>
+</ul></li>
+<li><a href="#为什么只加入一个根还不够分裂域" id="toc-为什么只加入一个根还不够分裂域">5.
+为什么只加入一个根还不够：分裂域</a>
+<ul>
+<li><a href="#定义" id="toc-定义">5.1 定义</a></li>
+<li><a href="#例x3-2-的一个根域不是分裂域" id="toc-例x3-2-的一个根域不是分裂域">5.2
+例：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>3</mn></msup><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">x^3-2</annotation></semantics></math>
+的一个根域不是分裂域</a></li>
+</ul></li>
+<li><a href="#从根的置换到域自同构" id="toc-从根的置换到域自同构">6.
+从根的置换到域自同构</a>
+<ul>
+<li><a href="#定义固定基域的自同构" id="toc-定义固定基域的自同构">6.1
+定义：固定基域的自同构</a></li>
+<li><a href="#为什么自同构一定置换根" id="toc-为什么自同构一定置换根">6.2 为什么自同构一定置换根</a></li>
+<li><a href="#例二次扩张" id="toc-例二次扩张">6.3 例：二次扩张</a></li>
+</ul></li>
+<li><a href="#正规可分与-galois-扩张" id="toc-正规可分与-galois-扩张">7.
+正规、可分与 Galois 扩张</a>
+<ul>
+<li><a href="#可分扩张" id="toc-可分扩张">7.1 可分扩张</a></li>
+<li><a href="#正规扩张" id="toc-正规扩张">7.2 正规扩张</a></li>
+<li><a href="#galois-扩张" id="toc-galois-扩张">7.3 Galois 扩张</a></li>
+</ul></li>
+<li><a href="#伽罗瓦理论的中心子群与中间域反向对应" id="toc-伽罗瓦理论的中心子群与中间域反向对应">8.
+伽罗瓦理论的中心：子群与中间域反向对应</a>
+<ul>
+<li><a href="#固定域" id="toc-固定域">8.1 固定域</a></li>
+<li><a href="#基本定理" id="toc-基本定理">8.2 基本定理</a></li>
+<li><a href="#例mathbb-qsqrt2sqrt3-与-klein-四元群" id="toc-例mathbb-qsqrt2sqrt3-与-klein-四元群">8.3
+例：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>2</mn></msqrt><mo>,</mo><msqrt><mn>3</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb Q(\sqrt2,\sqrt3)</annotation></semantics></math>
+与 Klein 四元群</a></li>
+</ul></li>
+<li><a href="#根式公式怎样被翻译成群论" id="toc-根式公式怎样被翻译成群论">9. 根式公式怎样被翻译成群论</a>
+<ul>
+<li><a href="#根式塔" id="toc-根式塔">9.1 根式塔</a></li>
+<li><a href="#可解群" id="toc-可解群">9.2 可解群</a></li>
+<li><a href="#galois-的判别定理" id="toc-galois-的判别定理">9.3 Galois
+的判别定理</a>
+<ul>
+<li><a href="#正向机制根式塔为什么给出可解群" id="toc-正向机制根式塔为什么给出可解群">正向机制：根式塔为什么给出可解群</a></li>
+<li><a href="#反向机制可解群为什么能还原根式塔" id="toc-反向机制可解群为什么能还原根式塔">反向机制：可解群为什么能还原根式塔</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#为什么二三四次有公式而五次出现断裂" id="toc-为什么二三四次有公式而五次出现断裂">10.
+为什么二、三、四次有公式，而五次出现断裂</a>
+<ul>
+<li><a href="#s_2s_3s_4-都可解" id="toc-s_2s_3s_4-都可解">10.1
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>2</mn></msub><annotation encoding="application/x-tex">S_2</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>3</mn></msub><annotation encoding="application/x-tex">S_3</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>4</mn></msub><annotation encoding="application/x-tex">S_4</annotation></semantics></math>
+都可解</a></li>
+<li><a href="#s_5-不可解障碍是-a_5" id="toc-s_5-不可解障碍是-a_5">10.2
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>
+不可解：障碍是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math></a></li>
+</ul></li>
+<li><a href="#收尾证明一个具体五次多项式怎样排除通用根式公式" id="toc-收尾证明一个具体五次多项式怎样排除通用根式公式">11.
+收尾证明：一个具体五次多项式怎样排除通用根式公式</a>
+<ul>
+<li><a href="#第一步eisenstein-判别法给出不可约性" id="toc-第一步eisenstein-判别法给出不可约性">11.1 第一步：Eisenstein
+判别法给出不可约性</a></li>
+<li><a href="#第二步模-7-分解读出一个-23-型置换" id="toc-第二步模-7-分解读出一个-23-型置换">11.2 第二步：模 7
+分解读出一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">(</mo><mn>2</mn><mo form="postfix" stretchy="true">)</mo></mrow><mrow><mo form="prefix" stretchy="true">(</mo><mn>3</mn><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">(2)(3)</annotation></semantics></math>
+型置换</a></li>
+<li><a href="#第三步5-循环加换位生成-s_5" id="toc-第三步5-循环加换位生成-s_5">11.3 第三步：5-循环加换位生成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math></a></li>
+<li><a href="#第四步由不可解群推出不能用根式求解" id="toc-第四步由不可解群推出不能用根式求解">11.4
+第四步：由不可解群推出不能用根式求解</a></li>
+</ul></li>
+<li><a href="#伽罗瓦理论到底包含哪些内容" id="toc-伽罗瓦理论到底包含哪些内容">12.
+伽罗瓦理论到底包含哪些内容</a></li>
+<li><a href="#历史顺序与教科书顺序为什么不完全相同" id="toc-历史顺序与教科书顺序为什么不完全相同">13.
+历史顺序与教科书顺序为什么不完全相同</a></li>
+<li><a href="#本篇需要掌握与只需识别" id="toc-本篇需要掌握与只需识别">14. 本篇需要掌握与只需识别</a>
+<ul>
+<li><a href="#需要掌握" id="toc-需要掌握">14.1 需要掌握</a></li>
+<li><a href="#本篇只需识别" id="toc-本篇只需识别">14.2
+本篇只需识别</a></li>
+</ul></li>
+<li><a href="#综合自检" id="toc-综合自检">15. 综合自检</a></li>
+<li><a href="#结论压缩" id="toc-结论压缩">16. 结论压缩</a></li>
+<li><a href="#参考资料" id="toc-参考资料">参考资料</a></li>
+</ul>
+</nav>
+<blockquote>
+<p><strong>系列定位</strong>：抽象代数课程衔接与数学史<br/>
+<strong>预计阅读时间</strong>：55—65 分钟<br/>
+<strong>课程衔接依据</strong>：你给出的教材目录显示，已经学完第 1—4
+章：群、群的进一步讨论、环、环的进一步讨论。本文把子群、商群、群同态基本定理、群作用、Sylow
+定理、理想与商环、素理想与极大理想、整环、域、唯一分解整环、主理想整环、Euclid
+整环及多项式环视为已学内容；从“域的扩张”开始建立新知识。<br/>
+<strong>本文任务</strong>：先说明环论以后抽象代数通常分成哪些主线，再沿历史问题与教科书依赖关系进入域论和经典伽罗瓦理论，最后完整证明：不存在一套只用四则运算与开方、能够解出所有一元五次方程的通用公式。<br/>
+<strong>重要更正</strong>：“一般五次方程不能用根式求解”不等于“五次方程没有根”，也不等于“每个五次方程都不能用根式求解”。</p>
+</blockquote>
+<div aria-label="从已学群环到五次方程不可解的知识链" class="core-map">
+<div class="map-title">
+全文只需要先抓住这一条主链
+</div>
+<div class="map-row">
+<p><span class="node known">群与环</span><span class="arrow">研究系数所在的数域</span> <span class="node field">域扩张</span><span class="arrow">加入全部根</span>
+<span class="node split">分裂域</span><span class="arrow">考察保持基域不动的对称</span> <span class="node galois">Galois 群</span></p>
+</div>
+<div class="map-row second">
+<p><span class="node galois">中间域</span><span class="arrow">反向对应</span> <span class="node group">子群</span><span class="arrow">根式塔对应</span> <span class="node solvable">可解群</span><span class="arrow">而</span> <span class="node impossible">S₅ 不可解</span></p>
+</div>
+<div class="map-caption">
+所以，五次方程问题最终不是“公式算得够不够巧”，而是根的对称群能否逐层拆成交换的部分。
+</div>
+</div>
+<h1 id="先把结论说准确">0. 先把结论说准确</h1>
+<p>考虑一元五次方程</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>5</mn></msub><msup><mi>x</mi><mn>5</mn></msup><mo>+</mo><msub><mi>a</mi><mn>4</mn></msub><msup><mi>x</mi><mn>4</mn></msup><mo>+</mo><msub><mi>a</mi><mn>3</mn></msub><msup><mi>x</mi><mn>3</mn></msup><mo>+</mo><msub><mi>a</mi><mn>2</mn></msub><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msub><mi>a</mi><mn>1</mn></msub><mi>x</mi><mo>+</mo><msub><mi>a</mi><mn>0</mn></msub><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>a</mi><mn>5</mn></msub><mo>≠</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+a_5x^5+a_4x^4+a_3x^3+a_2x^2+a_1x+a_0=0,
+\qquad a_5\ne 0.
+</annotation></semantics></math></p>
+<p>所谓“存在五次方程的根式公式”，是指存在一套对任意系数都适用的有限表达式，只允许：</p>
+<ul>
+<li>系数之间做加、减、乘、除；</li>
+<li>反复取平方根、立方根以及一般的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+次根；</li>
+<li>允许使用复数和单位根，从而不把“实数中无法开方”误当作障碍。</li>
+</ul>
+<p>二次方程有这样的公式；三次和四次方程也有，虽然公式很长。五次开始，正确结论是：</p>
+<blockquote>
+<p><strong>Abel–Ruffini
+定理的现代说法</strong>：不存在一套能够用根式解出所有一般五次方程的通用公式。更高次数同样如此。</p>
+</blockquote>
+<p>这句话没有否定以下事实：</p>
+<ol type="1">
+<li>每个复系数五次多项式仍有五个复根，按重数计算；</li>
+<li>可以数值逼近这些根；</li>
+<li>某些五次方程非常容易用根式求解，例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>5</mn></msup><mo>−</mo><mn>2</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x^5-2=0</annotation></semantics></math>；</li>
+<li>甚至有大量结构特殊的五次方程可由根式求解；</li>
+<li>“不能用根式”也不等于不能用更广的特殊函数表示。</li>
+</ol>
+<p>真正要解释的是：<strong>为什么二、三、四次的成功不能继续机械推广到五次？如何判断某一个具体方程究竟能不能用根式解？</strong></p>
+<p>Abel 先证明了“一般公式不存在”；Galois
+随后给出更强的结构性回答：一个具体多项式能否由根式求解，恰好由它的
+Galois 群是否为可解群决定。</p>
+<h1 id="你已经学到哪里群论和环论分别为后文准备了什么">1.
+你已经学到哪里：群论和环论分别为后文准备了什么</h1>
+<p>从目录看，你的前四章不是伽罗瓦理论之前可有可无的预备，而是它的两条支柱。</p>
+<table>
+<colgroup>
+<col style="width: 50%"/>
+<col style="width: 50%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>已学部分</th>
+<th>后文真正会使用的作用</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>子群、正规子群、商群</td>
+<td>描述 Galois 群内部的层级；“可解群”正是用正规子群列定义</td>
+</tr>
+<tr class="even">
+<td>群同态基本定理</td>
+<td>把限制映射的核、像与中间扩张联系起来</td>
+</tr>
+<tr class="odd">
+<td>群作用</td>
+<td>Galois 群作用在多项式的根上，因此自然嵌入对称群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td>Sylow 定理</td>
+<td>识别有限 Galois 群及其子群结构</td>
+</tr>
+<tr class="odd">
+<td>环、理想和商环</td>
+<td>用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow><mi>/</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>p</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">F[x]/(p(x))</annotation></semantics></math>
+严格构造“向域中加入一个根”</td>
+</tr>
+<tr class="even">
+<td>整环与域</td>
+<td>多项式的系数必须生活在一个基域中；域保证非零元素可除</td>
+</tr>
+<tr class="odd">
+<td>素理想与极大理想</td>
+<td>在交换环中，商环成为整环或域的判据</td>
+</tr>
+<tr class="even">
+<td>多项式环与唯一分解</td>
+<td>讨论不可约多项式、最小多项式和因式分解</td>
+</tr>
+<tr class="odd">
+<td>主理想整环、Euclid 整环</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">F[x]</annotation></semantics></math>
+是 Euclid 整环，因此有最大公因式和不可约分解</td>
+</tr>
+</tbody>
+</table>
+<p>你现在缺少的不是更多群论，而是把“多项式的根”转译为一个域扩张，再让群作用于这个扩张。</p>
+<p>这一点解释了为什么许多教材在群与环之后进入“域的扩张”：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">多项式问题</mtext><mo>→</mo><mtext mathvariant="normal">加入根得到更大的域</mtext><mo>→</mo><mtext mathvariant="normal">研究扩张的自同构群</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{多项式问题}
+\longrightarrow
+\text{加入根得到更大的域}
+\longrightarrow
+\text{研究扩张的自同构群}.
+</annotation></semantics></math></p>
+<h1 id="环论以后抽象代数并不存在唯一的一条路">2.
+环论以后，抽象代数并不存在唯一的一条路</h1>
+<p>“抽象代数接下来发展成什么”没有单一答案。现代代数更像一棵树。你的教材选择先走域扩张，是因为它要通向
+Galois 理论；另一些教材会先讲模。</p>
+<h2 id="域论与-galois-理论研究方程数域和对称">2.1 域论与 Galois
+理论：研究方程、数域和对称</h2>
+<p>核心对象是域扩张
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">E/F</annotation></semantics></math>、代数元、分裂域、域自同构和
+Galois 群。它回答：</p>
+<ul>
+<li>一个多项式的根要加入多大的数域？</li>
+<li>根之间存在哪些保持有理关系的置换？</li>
+<li>哪些方程能用根式求解？</li>
+<li>尺规作图为何有些能做、有些不能？</li>
+<li>有限域为什么对每个素数幂只有一个同构类型？</li>
+</ul>
+<p>这是本文主线。</p>
+<h2 id="模与表示论把群和环线性化">2.2 模与表示论：把群和环“线性化”</h2>
+<p>向量空间是“标量来自域”的线性对象；模把标量域换成一般环。于是：</p>
+<ul>
+<li>Abel 群就是整数环
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℤ</mi><annotation encoding="application/x-tex">\mathbb Z</annotation></semantics></math>
+上的模；</li>
+<li>线性代数中的特征值、Jordan 标准形可重写成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">F[x]</annotation></semantics></math>-模分类；</li>
+<li>群表示是让群作用在线性空间上，把抽象群元素变成矩阵。</li>
+</ul>
+<p>历史上，这是群论、线性代数和物理对称性相遇的主线。</p>
+<h2 id="交换代数与代数几何把理想当作几何信息">2.3
+交换代数与代数几何：把理想当作几何信息</h2>
+<p>环论继续向前，会研究局部化、Noether
+环、整扩张、维数、完备化和同调方法。代数几何则把交换环和几何空间反向联系起来：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">几何空间</mtext><mspace width="1.0em"></mspace><mo>↔</mo><mspace width="1.0em"></mspace><mtext mathvariant="normal">函数环及其素理想结构</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{几何空间}
+\quad\leftrightarrow\quad
+\text{函数环及其素理想结构}.
+</annotation></semantics></math></p>
+<p>你之前读过的概形、层和现代代数几何，正建立在这条分支上。</p>
+<h2 id="非交换代数同调代数与范畴论">2.4
+非交换代数、同调代数与范畴论</h2>
+<p>矩阵环、群代数、算子代数往往不交换；同调代数用正合列和导出函子测量“局部信息不能拼成整体”的障碍；范畴论则抽取对象、态射与泛性质，统一不同代数结构。</p>
+<p>这些方向并非都要学完才能学 Galois
+理论。对当前目标，最自然的依赖链是：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">群与环</mtext><mo>→</mo><mtext mathvariant="normal">域扩张</mtext><mo>→</mo><mtext mathvariant="normal">分裂域</mtext><mo>→</mo><mtext mathvariant="normal">Galois 对应</mtext><mo>→</mo><mtext mathvariant="normal">根式可解性</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{群与环}
+\to
+\text{域扩张}
+\to
+\text{分裂域}
+\to
+\text{Galois 对应}
+\to
+\text{根式可解性}.
+</annotation></semantics></math></p>
+<details class="checkpoint">
+<summary>
+局部自检 1：为什么“学完环以后”不能直接只研究多项式的根，而要引入域扩张？
+</summary>
+<div class="answer">
+因为根往往不在原系数域中。例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">x^2-2</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>
+中没有根。必须构造包含新根、同时仍可进行四则运算的最小域；随后才能比较“加入一个根”“加入所有根”和这些扩张的对称性。
+</div>
+</details>
+<h1 id="历史主线公式研究为什么最终逼出了群与域">3.
+历史主线：公式研究为什么最终逼出了群与域</h1>
+<h2 id="二三四次方程曾制造一种错误期待">3.1
+二、三、四次方程曾制造一种错误期待</h2>
+<p>二次方程的求根公式古已有之。16 世纪，del Ferro、Tartaglia、Cardano
+一线解决一般三次方程，Ferrari
+随后解决四次方程。于是一个自然期待形成了：次数增加只会让公式更复杂，但总能继续找到。</p>
+<p>然而这些公式并不是简单“配方次数更高”。其共同机制是：先构造某些由根组成、在部分置换下行为简单的辅助量，再求解低阶辅助方程。后来
+Lagrange 系统研究这些
+<strong>预解式</strong>（resolvents），发现三次、四次公式之所以成立，与根的置换结构密切相关。</p>
+<p>这里出现了关键转向：</p>
+<blockquote>
+<p>求根公式表面上操作的是系数，深层上控制的是根在置换下怎样重新排列。</p>
+</blockquote>
+<p>Lagrange
+已经靠近群论，但当时尚没有现代抽象群、域扩张和自同构的语言。</p>
+<h2 id="ruffini-与-abel先证明通用公式不存在">3.2 Ruffini 与
+Abel：先证明“通用公式不存在”</h2>
+<p>Ruffini 在 1799
+年尝试证明五次以上一般方程不能用根式求解，但论证存在缺口。Abel 在 1824
+年给出被接受的严格证明，否定一般五次根式公式。</p>
+<p>这个结果非常重要，却仍留下一个更精细的问题：</p>
+<ul>
+<li>一般五次方程没有统一公式；</li>
+<li>但
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>5</mn></msup><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">x^5-2</annotation></semantics></math>
+明明可以开五次方；</li>
+<li>那么对给定的一个多项式，怎样判断它属于“可解”还是“不可解”？</li>
+</ul>
+<p>Abel 的结论是总体否定，尚未提供一个以结构为核心的逐个判定原则。</p>
+<h2 id="galois从寻找公式改成研究根的对称群">3.3
+Galois：从寻找公式改成研究根的对称群</h2>
+<p>Galois 的核心贡献不是再造一个更复杂的求根技巧，而是改变问题：</p>
+<ol type="1">
+<li>取一个包含全部根的域；</li>
+<li>考察所有保持基域元素不变的域自同构；</li>
+<li>这些自同构必然置换多项式的根，形成一个有限群；</li>
+<li>方程能否逐层开根，转化为这个群能否逐层分解成 Abel 群。</li>
+</ol>
+<p>Galois 1831
+年的手稿把目标明确表述为寻找方程由根式可解的条件；手稿在其去世后于 1846
+年由 Liouville 整理发表。后来 Dedekind、Kronecker、Weber、Steinitz 和
+Artin 等人逐步把“方程的置换理论”重写成今天的域扩张—自同构理论。</p>
+<p>现代教科书中的 Galois 理论因此不是 Galois 原文的逐字形式化，而是
+19—20 世纪代数学家共同完成的重构。</p>
+<h1 id="第一个新对象域扩张">4. 第一个新对象：域扩张</h1>
+<h2 id="定义与符号">4.1 定义与符号</h2>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+都是域，且
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mi>E</mi></mrow><annotation encoding="application/x-tex">F\subseteq E</annotation></semantics></math>，并且两者的加法、乘法在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+上一致。称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+的一个 <strong>域扩张</strong>，记作</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi><mspace width="2.0em"></mspace><mtext mathvariant="normal">或</mtext><mspace width="2.0em"></mspace><mi>F</mi><mo>⊆</mo><mi>E</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+E/F
+\qquad\text{或}\qquad
+F\subseteq E.
+</annotation></semantics></math></p>
+<p>此时
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+自动成为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+上的向量空间。它的维数称为扩张次数：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">[</mo><mi>E</mi><mo>:</mo><mi>F</mi><mo form="postfix" stretchy="true">]</mo></mrow><mo>=</mo><msub><mo>dim</mo><mi>F</mi></msub><mi>E</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[E:F]=\dim_F E.
+</annotation></semantics></math></p>
+<p>若维数有限，称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">E/F</annotation></semantics></math>
+为有限扩张。</p>
+<p>例：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mo>⊆</mo><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>2</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow><mo>=</mo><mo form="prefix" stretchy="false">{</mo><mi>a</mi><mo>+</mo><mi>b</mi><msqrt><mn>2</mn></msqrt><mo>:</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo>∈</mo><mi>ℚ</mi><mo form="postfix" stretchy="false">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb Q\subseteq \mathbb Q(\sqrt2)
+=
+\{a+b\sqrt2:a,b\in\mathbb Q\}.
+</annotation></semantics></math></p>
+<p>集合
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo form="prefix" stretchy="false">{</mo><mn>1</mn><mo>,</mo><msqrt><mn>2</mn></msqrt><mo form="postfix" stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{1,\sqrt2\}</annotation></semantics></math>
+是一组
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>-基，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">[</mo><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>2</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow><mo>:</mo><mi>ℚ</mi><mo form="postfix" stretchy="true">]</mo></mrow><mo>=</mo><mn>2</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[\mathbb Q(\sqrt2):\mathbb Q]=2.
+</annotation></semantics></math></p>
+<h2 id="代数元与最小多项式">4.2 代数元与最小多项式</h2>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">E/F</annotation></semantics></math>
+为域扩张，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>∈</mo><mi>E</mi></mrow><annotation encoding="application/x-tex">\alpha\in E</annotation></semantics></math>。若存在非零多项式
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>∈</mo><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">f(x)\in F[x]</annotation></semantics></math>
+使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>=</mo><mn>0</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+f(\alpha)=0,
+</annotation></semantics></math></p>
+<p>则称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+上是代数的；否则称为超越的。</p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+代数，则存在唯一的首一不可约多项式</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>m</mi><mrow><mi>α</mi><mo>,</mo><mi>F</mi></mrow></msub><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>∈</mo><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">
+m_{\alpha,F}(x)\in F[x]
+</annotation></semantics></math></p>
+<p>以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+为根，称为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+上的最小多项式。</p>
+<p>例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mn>2</mn></msqrt><annotation encoding="application/x-tex">\sqrt2</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>
+上的最小多项式是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">x^2-2</annotation></semantics></math>。</p>
+<h2 id="加入一个根就是构造商域">4.3 “加入一个根”就是构造商域</h2>
+<p>考虑求值同态</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>ev</mo><mi>α</mi></msub><mo>:</mo><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow><mo>→</mo><mi>E</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>↦</mo><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{ev}_\alpha:F[x]\to E,
+\qquad
+f(x)\mapsto f(\alpha).
+</annotation></semantics></math></p>
+<p>它的核是所有以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+为根的多项式。由最小多项式的定义，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ker</mo><mrow><mo form="prefix" stretchy="true">(</mo><msub><mo>ev</mo><mi>α</mi></msub><mo form="postfix" stretchy="true">)</mo></mrow><mo>=</mo><mrow><mo form="prefix" stretchy="true">(</mo><msub><mi>m</mi><mrow><mi>α</mi><mo>,</mo><mi>F</mi></mrow></msub><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\ker(\operatorname{ev}_\alpha)=(m_{\alpha,F}(x)).
+</annotation></semantics></math></p>
+<p>第一同构定理给出</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow><mi>/</mi><mrow><mo form="prefix" stretchy="true">(</mo><msub><mi>m</mi><mrow><mi>α</mi><mo>,</mo><mi>F</mi></mrow></msub><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo form="postfix" stretchy="true">)</mo></mrow><mo>≅</mo><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>α</mi><mo form="postfix" stretchy="true">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+F[x]/(m_{\alpha,F}(x))
+\cong
+F[\alpha].
+</annotation></semantics></math></p>
+<p>因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>m</mi><mrow><mi>α</mi><mo>,</mo><mi>F</mi></mrow></msub><annotation encoding="application/x-tex">m_{\alpha,F}</annotation></semantics></math>
+不可约，所以理想
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo form="prefix" stretchy="true">(</mo><msub><mi>m</mi><mrow><mi>α</mi><mo>,</mo><mi>F</mi></mrow></msub><mo form="postfix" stretchy="true">)</mo></mrow><annotation encoding="application/x-tex">(m_{\alpha,F})</annotation></semantics></math>
+极大，商环是域；因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>α</mi><mo form="postfix" stretchy="true">]</mo></mrow><mo>=</mo><mi>F</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">F[\alpha]=F(\alpha)</annotation></semantics></math>。</p>
+<p>这一步把你学过的理想、商环、极大理想和不可约多项式全部连接起来。</p>
+<p><strong>核心定理 4.1</strong> 若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+上代数，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">[</mo><mi>F</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>:</mo><mi>F</mi><mo form="postfix" stretchy="true">]</mo></mrow><mo>=</mo><mo>deg</mo><msub><mi>m</mi><mrow><mi>α</mi><mo>,</mo><mi>F</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[F(\alpha):F]=\deg m_{\alpha,F}.
+</annotation></semantics></math></p>
+<p>证明理由是：在商环
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow><mi>/</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>m</mi><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">F[x]/(m)</annotation></semantics></math>
+中，每个剩余类可唯一写成次数小于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mo>deg</mo><mi>m</mi></mrow><annotation encoding="application/x-tex">n=\deg m</annotation></semantics></math>
+的多项式，故</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>,</mo><mi>α</mi><mo>,</mo><msup><mi>α</mi><mn>2</mn></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>α</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">
+1,\alpha,\alpha^2,\ldots,\alpha^{n-1}
+</annotation></semantics></math></p>
+<p>构成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>-基。</p>
+<h2 id="塔式定理">4.4 塔式定理</h2>
+<p><strong>核心定理 4.2（塔式定理）</strong> 若</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mi>K</mi><mo>⊆</mo><mi>E</mi></mrow><annotation encoding="application/x-tex">
+F\subseteq K\subseteq E
+</annotation></semantics></math></p>
+<p>且两个相关次数有限，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">[</mo><mi>E</mi><mo>:</mo><mi>F</mi><mo form="postfix" stretchy="true">]</mo></mrow><mo>=</mo><mrow><mo form="prefix" stretchy="true">[</mo><mi>E</mi><mo>:</mo><mi>K</mi><mo form="postfix" stretchy="true">]</mo></mrow><mrow><mo form="prefix" stretchy="true">[</mo><mi>K</mi><mo>:</mo><mi>F</mi><mo form="postfix" stretchy="true">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[E:F]=[E:K][K:F].
+</annotation></semantics></math></p>
+<p>这是后面计算分裂域次数、判断中间域和对应子群阶数的基本工具。它本质上是向量空间维数的乘法法则。</p>
+<details class="checkpoint">
+<summary>
+局部自检 2：计算
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo form="prefix" stretchy="true">[</mo><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>2</mn></msqrt><mo>,</mo><msqrt><mn>3</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow><mo>:</mo><mi>ℚ</mi><mo form="postfix" stretchy="true">]</mo></mrow><annotation encoding="application/x-tex">[\mathbb Q(\sqrt2,\sqrt3):\mathbb Q]</annotation></semantics></math>。
+</summary>
+<div class="answer">
+先有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">[</mo><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>2</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow><mo>:</mo><mi>ℚ</mi><mo form="postfix" stretchy="true">]</mo></mrow><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">[\mathbb Q(\sqrt2):\mathbb Q]=2</annotation></semantics></math>。而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mn>3</mn></msqrt><mo>∉</mo><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>2</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\sqrt3\notin\mathbb Q(\sqrt2)</annotation></semantics></math>，故它在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>2</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb Q(\sqrt2)</annotation></semantics></math>
+上仍给出二次扩张。由塔式定理，次数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn><mo>=</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">2\times2=4</annotation></semantics></math>。
+</div>
+</details>
+<h1 id="为什么只加入一个根还不够分裂域">5.
+为什么只加入一个根还不够：分裂域</h1>
+<h2 id="定义">5.1 定义</h2>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>∈</mo><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">f(x)\in F[x]</annotation></semantics></math>。若扩域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">E/F</annotation></semantics></math>
+满足：</p>
+<ol type="1">
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">E[x]</annotation></semantics></math>
+中完全分解为一次因子；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+的全部根在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+上生成；</li>
+</ol>
+<p>则称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+上的 <strong>分裂域</strong>。</p>
+<p>若根为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>α</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">\alpha_1,\ldots,\alpha_n</annotation></semantics></math>，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>=</mo><mi>F</mi><mrow><mo form="prefix" stretchy="true">(</mo><msub><mi>α</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>α</mi><mi>n</mi></msub><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+E=F(\alpha_1,\ldots,\alpha_n).
+</annotation></semantics></math></p>
+<p>分裂域在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>-同构意义下唯一。</p>
+<h2 id="例x3-2-的一个根域不是分裂域">5.2
+例：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>3</mn></msup><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">x^3-2</annotation></semantics></math>
+的一个根域不是分裂域</h2>
+<p>令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mroot><mn>2</mn><mn>3</mn></mroot></mrow><annotation encoding="application/x-tex">\alpha=\sqrt[3]2</annotation></semantics></math>。则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+\mathbb Q(\alpha)
+</annotation></semantics></math></p>
+<p>包含实根
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>，但另外两个根为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ω</mi><mi>α</mi><mo>,</mo><mspace width="2.0em"></mspace><msup><mi>ω</mi><mn>2</mn></msup><mi>α</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>ω</mi><mo>=</mo><msup><mi>e</mi><mrow><mn>2</mn><mi>π</mi><mi>i</mi><mi>/</mi><mn>3</mn></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\omega\alpha,
+\qquad
+\omega^2\alpha,
+\qquad
+\omega=e^{2\pi i/3}.
+</annotation></semantics></math></p>
+<p>因此分裂域是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo>,</mo><mi>ω</mi><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+L=\mathbb Q(\alpha,\omega).
+</annotation></semantics></math></p>
+<p>由 Eisenstein
+判别法，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>3</mn></msup><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">x^3-2</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb Q[x]</annotation></semantics></math>
+中不可约，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">[</mo><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>:</mo><mi>ℚ</mi><mo form="postfix" stretchy="true">]</mo></mrow><mo>=</mo><mn>3</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[\mathbb Q(\alpha):\mathbb Q]=3.
+</annotation></semantics></math></p>
+<p>由于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>⊆</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">\mathbb Q(\alpha)\subseteq\mathbb R</annotation></semantics></math>
+而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ω</mi><mo>∉</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">\omega\notin\mathbb R</annotation></semantics></math>，再加入
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+给出二次扩张，因此</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">[</mo><mi>L</mi><mo>:</mo><mi>ℚ</mi><mo form="postfix" stretchy="true">]</mo></mrow><mo>=</mo><mn>6</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[L:\mathbb Q]=6.
+</annotation></semantics></math></p>
+<p>这个例子已经显示：</p>
+<ul>
+<li>一个根生成的域次数是 3；</li>
+<li>包含全部根的分裂域次数是 6；</li>
+<li>Galois 群的阶将等于 6，并且实际同构于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>3</mn></msub><annotation encoding="application/x-tex">S_3</annotation></semantics></math>。</li>
+</ul>
+<h1 id="从根的置换到域自同构">6. 从根的置换到域自同构</h1>
+<h2 id="定义固定基域的自同构">6.1 定义：固定基域的自同构</h2>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">E/F</annotation></semantics></math>
+为域扩张。若</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo>:</mo><mi>E</mi><mo>→</mo><mi>E</mi></mrow><annotation encoding="application/x-tex">
+\sigma:E\to E
+</annotation></semantics></math></p>
+<p>是域自同构，并且对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>∈</mo><mi>F</mi></mrow><annotation encoding="application/x-tex">a\in F</annotation></semantics></math>
+都有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>a</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>=</mo><mi>a</mi></mrow><annotation encoding="application/x-tex">\sigma(a)=a</annotation></semantics></math>，称其为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>-自同构。所有这类自同构组成群</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Aut</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><mi>F</mi><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Aut}(E/F).
+</annotation></semantics></math></p>
+<p>如果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+是某个多项式族在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+上的分裂域，则称</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><mi>F</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>=</mo><mo>Aut</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><mi>F</mi><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+\operatorname{Gal}(E/F)=\operatorname{Aut}(E/F)
+</annotation></semantics></math></p>
+<p>为相应 Galois 群。</p>
+<h2 id="为什么自同构一定置换根">6.2 为什么自同构一定置换根</h2>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>=</mo><msub><mi>a</mi><mi>n</mi></msub><msup><mi>x</mi><mi>n</mi></msup><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>a</mi><mn>0</mn></msub><mo>∈</mo><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">f(x)=a_nx^n+\cdots+a_0\in F[x]</annotation></semantics></math>，且
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(\alpha)=0</annotation></semantics></math>，那么对任意固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+的自同构
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>=</mo><mi>σ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo form="postfix" stretchy="true">)</mo></mrow><mo>=</mo><msub><mi>a</mi><mi>n</mi></msub><mi>σ</mi><msup><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow><mi>n</mi></msup><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>a</mi><mn>0</mn></msub><mo>=</mo><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>σ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+0=\sigma(f(\alpha))
+=a_n\sigma(\alpha)^n+\cdots+a_0
+=f(\sigma(\alpha)).
+</annotation></semantics></math></p>
+<p>所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\sigma(\alpha)</annotation></semantics></math>
+仍是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+的根。</p>
+<p>于是 Galois 群自然作用在根集上，并嵌入某个对称群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>。这里的“对称”不是平面图形的几何对称，而是保持基域上一切代数关系的对称。</p>
+<h2 id="例二次扩张">6.3 例：二次扩张</h2>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>∈</mo><mi>ℚ</mi></mrow><annotation encoding="application/x-tex">d\in\mathbb Q</annotation></semantics></math>
+不是平方数。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mi>d</mi></msqrt><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb Q(\sqrt d)</annotation></semantics></math>
+的任意
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>-自同构必须把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mi>d</mi></msqrt><annotation encoding="application/x-tex">\sqrt d</annotation></semantics></math>
+送到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mi>d</mi></mrow><annotation encoding="application/x-tex">x^2-d</annotation></semantics></math>
+的另一个根，因此只有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mi>d</mi></msqrt><mo>↦</mo><msqrt><mi>d</mi></msqrt><mo>,</mo><mspace width="2.0em"></mspace><msqrt><mi>d</mi></msqrt><mo>↦</mo><mi>−</mi><msqrt><mi>d</mi></msqrt><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\sqrt d\mapsto\sqrt d,
+\qquad
+\sqrt d\mapsto-\sqrt d.
+</annotation></semantics></math></p>
+<p>故</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mi>d</mi></msqrt><mo form="postfix" stretchy="true">)</mo></mrow><mi>/</mi><mi>ℚ</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>≅</mo><msub><mi>C</mi><mn>2</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Gal}(\mathbb Q(\sqrt d)/\mathbb Q)\cong C_2.
+</annotation></semantics></math></p>
+<h1 id="正规可分与-galois-扩张">7. 正规、可分与 Galois 扩张</h1>
+<p>“分裂域有足够多自同构”需要两个性质。</p>
+<h2 id="可分扩张">7.1 可分扩张</h2>
+<p>代数元
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+上称为可分的，如果其最小多项式在代数闭包中没有重根。扩张
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">E/F</annotation></semantics></math>
+称可分，如果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+中每个代数元都可分。</p>
+<p>在特征 0 的域上，所有不可约多项式都可分。因此本文处理的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>
+上扩张不需要担心不可分现象。</p>
+<h2 id="正规扩张">7.2 正规扩张</h2>
+<p>有限扩张
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">E/F</annotation></semantics></math>
+称正规，如果每个在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">F[x]</annotation></semantics></math>
+中不可约、并且在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+中有一个根的多项式，都在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+中完全分裂。</p>
+<p>有限扩张正规，当且仅当它是某族多项式在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+上的分裂域。</p>
+<p>例如：</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>2</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow><mi>/</mi><mi>ℚ</mi></mrow><annotation encoding="application/x-tex">\mathbb Q(\sqrt2)/\mathbb Q</annotation></semantics></math>
+正规；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mroot><mn>2</mn><mn>3</mn></mroot><mo form="postfix" stretchy="true">)</mo></mrow><mi>/</mi><mi>ℚ</mi></mrow><annotation encoding="application/x-tex">\mathbb Q(\sqrt[3]2)/\mathbb Q</annotation></semantics></math>
+不正规，因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>3</mn></msup><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">x^3-2</annotation></semantics></math>
+在其中有一个根，却没有另外两个复根；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mroot><mn>2</mn><mn>3</mn></mroot><mo>,</mo><mi>ω</mi><mo form="postfix" stretchy="true">)</mo></mrow><mi>/</mi><mi>ℚ</mi></mrow><annotation encoding="application/x-tex">\mathbb Q(\sqrt[3]2,\omega)/\mathbb Q</annotation></semantics></math>
+正规且可分。</li>
+</ul>
+<h2 id="galois-扩张">7.3 Galois 扩张</h2>
+<p>有限扩张
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">E/F</annotation></semantics></math>
+称为 Galois 扩张，如果它既正规又可分。</p>
+<p><strong>核心定理 7.1</strong> 若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">E/F</annotation></semantics></math>
+是有限 Galois 扩张，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">|</mo><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><mi>F</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo form="postfix" stretchy="true">|</mo></mrow><mo>=</mo><mrow><mo form="prefix" stretchy="true">[</mo><mi>E</mi><mo>:</mo><mi>F</mi><mo form="postfix" stretchy="true">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|\operatorname{Gal}(E/F)|=[E:F].
+</annotation></semantics></math></p>
+<p>一般有限扩张只满足自同构数不超过扩张次数；正规与可分保证自同构数达到上界。</p>
+<h1 id="伽罗瓦理论的中心子群与中间域反向对应">8.
+伽罗瓦理论的中心：子群与中间域反向对应</h1>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">E/F</annotation></semantics></math>
+是有限 Galois 扩张，记</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><mi>F</mi><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+G=\operatorname{Gal}(E/F).
+</annotation></semantics></math></p>
+<h2 id="固定域">8.1 固定域</h2>
+<p>对任意子群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>≤</mo><mi>G</mi></mrow><annotation encoding="application/x-tex">H\le G</annotation></semantics></math>，定义其固定域</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>E</mi><mi>H</mi></msup><mo>=</mo><mo form="prefix" stretchy="false">{</mo><mi>x</mi><mo>∈</mo><mi>E</mi><mo>:</mo><mi>σ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>=</mo><mi>x</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 对所有 </mtext><mspace width="0.333em"></mspace></mrow><mi>σ</mi><mo>∈</mo><mi>H</mi><mo form="postfix" stretchy="false">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+E^H
+=
+\{x\in E:\sigma(x)=x\text{ 对所有 }\sigma\in H\}.
+</annotation></semantics></math></p>
+<p>显然</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><msup><mi>E</mi><mi>H</mi></msup><mo>⊆</mo><mi>E</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+F\subseteq E^H\subseteq E.
+</annotation></semantics></math></p>
+<p>反过来，对任意中间域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⊆</mo><mi>K</mi><mo>⊆</mo><mi>E</mi></mrow><annotation encoding="application/x-tex">F\subseteq K\subseteq E</annotation></semantics></math>，可以考察固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+的自同构群</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><mi>K</mi><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Gal}(E/K).
+</annotation></semantics></math></p>
+<h2 id="基本定理">8.2 基本定理</h2>
+<p><strong>核心定理 8.1（Galois 理论基本定理）</strong> 若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">E/F</annotation></semantics></math>
+是有限 Galois 扩张，则存在一一对应</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">{</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>F</mi><mo>⊆</mo><mi>K</mi><mo>⊆</mo><mi>E</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mtext mathvariant="normal">中间域</mtext></mtd></mtr></mtable><mo form="postfix" stretchy="true">}</mo></mrow><mo>↔</mo><mrow><mo form="prefix" stretchy="true">{</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>H</mi><mo>≤</mo><mi>G</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mtext mathvariant="normal">子群</mtext></mtd></mtr></mtable><mo form="postfix" stretchy="true">}</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\left\{
+\begin{array}{c}
+F\subseteq K\subseteq E\\
+\text{中间域}
+\end{array}
+\right\}
+\longleftrightarrow
+\left\{
+\begin{array}{c}
+H\le G\\
+\text{子群}
+\end{array}
+\right\},
+</annotation></semantics></math></p>
+<p>由</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>↦</mo><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><mi>K</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>H</mi><mo>↦</mo><msup><mi>E</mi><mi>H</mi></msup></mrow><annotation encoding="application/x-tex">
+K\mapsto\operatorname{Gal}(E/K),
+\qquad
+H\mapsto E^H
+</annotation></semantics></math></p>
+<p>给出，而且包含关系反向：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mn>1</mn></msub><mo>⊆</mo><msub><mi>K</mi><mn>2</mn></msub><mspace width="1.0em"></mspace><mo>⇔</mo><mspace width="1.0em"></mspace><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><msub><mi>K</mi><mn>2</mn></msub><mo form="postfix" stretchy="true">)</mo></mrow><mo>≤</mo><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><msub><mi>K</mi><mn>1</mn></msub><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+K_1\subseteq K_2
+\quad\Longleftrightarrow\quad
+\operatorname{Gal}(E/K_2)
+\le
+\operatorname{Gal}(E/K_1).
+</annotation></semantics></math></p>
+<p>同时</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">[</mo><mi>E</mi><mo>:</mo><mi>K</mi><mo form="postfix" stretchy="true">]</mo></mrow><mo>=</mo><mrow><mo form="prefix" stretchy="true">|</mo><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><mi>K</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo form="postfix" stretchy="true">|</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mrow><mo form="prefix" stretchy="true">[</mo><mi>K</mi><mo>:</mo><mi>F</mi><mo form="postfix" stretchy="true">]</mo></mrow><mo>=</mo><mrow><mo form="prefix" stretchy="true">[</mo><mi>G</mi><mo>:</mo><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><mi>K</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo form="postfix" stretchy="true">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[E:K]=|\operatorname{Gal}(E/K)|,
+\qquad
+[K:F]=[G:\operatorname{Gal}(E/K)].
+</annotation></semantics></math></p>
+<p>中间扩张
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">K/F</annotation></semantics></math>
+正规，当且仅当对应子群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>=</mo><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><mi>K</mi><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">H=\operatorname{Gal}(E/K)</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+中正规；此时</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>K</mi><mi>/</mi><mi>F</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>≅</mo><mi>G</mi><mi>/</mi><mi>H</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Gal}(K/F)\cong G/H.
+</annotation></semantics></math></p>
+<p>这条定理把域扩张问题翻译成了有限群问题。</p>
+<h2 id="例mathbb-qsqrt2sqrt3-与-klein-四元群">8.3
+例：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>2</mn></msqrt><mo>,</mo><msqrt><mn>3</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb Q(\sqrt2,\sqrt3)</annotation></semantics></math>
+与 Klein 四元群</h2>
+<p>令</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>=</mo><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>2</mn></msqrt><mo>,</mo><msqrt><mn>3</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+E=\mathbb Q(\sqrt2,\sqrt3).
+</annotation></semantics></math></p>
+<p>每个自同构可以独立选择</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mn>2</mn></msqrt><mo>↦</mo><mi>±</mi><msqrt><mn>2</mn></msqrt><mo>,</mo><mspace width="2.0em"></mspace><msqrt><mn>3</mn></msqrt><mo>↦</mo><mi>±</mi><msqrt><mn>3</mn></msqrt><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\sqrt2\mapsto\pm\sqrt2,
+\qquad
+\sqrt3\mapsto\pm\sqrt3,
+</annotation></semantics></math></p>
+<p>所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>≅</mo><msub><mi>C</mi><mn>2</mn></msub><mo>×</mo><msub><mi>C</mi><mn>2</mn></msub><mo>=</mo><msub><mi>V</mi><mn>4</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+G\cong C_2\times C_2=V_4.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mn>4</mn></msub><annotation encoding="application/x-tex">V_4</annotation></semantics></math>
+的三个二阶子群分别对应三个二次中间域：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>2</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>3</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><msqrt><mn>6</mn></msqrt><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb Q(\sqrt2),
+\qquad
+\mathbb Q(\sqrt3),
+\qquad
+\mathbb Q(\sqrt6).
+</annotation></semantics></math></p>
+<p>“子群格”与“中间域格”形状相同，但上下颠倒。这是 Galois
+对应最值得形成图像记忆的例子。</p>
+<details class="checkpoint">
+<summary>
+局部自检 3：为什么中间域越大，对应子群反而越小？
+</summary>
+<div class="answer">
+因为要求一个自同构固定更多元素，会留下更少的自同构。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mn>1</mn></msub><mo>⊆</mo><msub><mi>K</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">K_1\subseteq K_2</annotation></semantics></math>，固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>2</mn></msub><annotation encoding="application/x-tex">K_2</annotation></semantics></math>
+的自同构自动固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mn>1</mn></msub><annotation encoding="application/x-tex">K_1</annotation></semantics></math>，所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><msub><mi>K</mi><mn>2</mn></msub><mo form="postfix" stretchy="true">)</mo></mrow><mo>≤</mo><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>E</mi><mi>/</mi><msub><mi>K</mi><mn>1</mn></msub><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\operatorname{Gal}(E/K_2)\le\operatorname{Gal}(E/K_1)</annotation></semantics></math>。
+</div>
+</details>
+<h1 id="根式公式怎样被翻译成群论">9. 根式公式怎样被翻译成群论</h1>
+<h2 id="根式塔">9.1 根式塔</h2>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+是基域。若存在域塔</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>=</mo><msub><mi>F</mi><mn>0</mn></msub><mo>⊆</mo><msub><mi>F</mi><mn>1</mn></msub><mo>⊆</mo><mi>⋯</mi><mo>⊆</mo><msub><mi>F</mi><mi>r</mi></msub></mrow><annotation encoding="application/x-tex">
+F=F_0\subseteq F_1\subseteq\cdots\subseteq F_r
+</annotation></semantics></math></p>
+<p>使对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+都有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>i</mi></msub><mo>=</mo><msub><mi>F</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mrow><mo form="prefix" stretchy="true">(</mo><msub><mi>α</mi><mi>i</mi></msub><mo form="postfix" stretchy="true">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msubsup><mi>α</mi><mi>i</mi><msub><mi>n</mi><mi>i</mi></msub></msubsup><mo>∈</mo><msub><mi>F</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+F_i=F_{i-1}(\alpha_i),
+\qquad
+\alpha_i^{n_i}\in F_{i-1},
+</annotation></semantics></math></p>
+<p>则称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>r</mi></msub><mi>/</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">F_r/F</annotation></semantics></math>
+是一个根式扩张。</p>
+<p>一个多项式在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+上
+<strong>可由根式解</strong>，意思是它的分裂域可以嵌入某个根式扩张中。</p>
+<p>这一定义把“有限公式”改写成“逐层加入一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+次根”的域塔。</p>
+<h2 id="可解群">9.2 可解群</h2>
+<p>有限群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+称为可解群，如果存在正规列</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo form="prefix" stretchy="false">{</mo><mi>e</mi><mo form="postfix" stretchy="false">}</mo><mo>=</mo><msub><mi>G</mi><mi>r</mi></msub><mo>⊲</mo><msub><mi>G</mi><mrow><mi>r</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>⊲</mo><mi>⋯</mi><mo>⊲</mo><msub><mi>G</mi><mn>0</mn></msub><mo>=</mo><mi>G</mi></mrow><annotation encoding="application/x-tex">
+\{e\}=G_r\triangleleft G_{r-1}\triangleleft\cdots\triangleleft G_0=G
+</annotation></semantics></math></p>
+<p>使每个商群</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>i</mi></msub><mi>/</mi><msub><mi>G</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">
+G_i/G_{i+1}
+</annotation></semantics></math></p>
+<p>都是 Abel 群。</p>
+<p>等价地，定义导出列</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>G</mi><mrow><mo form="prefix" stretchy="true">(</mo><mn>0</mn><mo form="postfix" stretchy="true">)</mo></mrow></msup><mo>=</mo><mi>G</mi><mo>,</mo><mspace width="2.0em"></mspace><msup><mi>G</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>i</mi><mo>+</mo><mn>1</mn><mo form="postfix" stretchy="true">)</mo></mrow></msup><mo>=</mo><mrow><mo form="prefix" stretchy="true">[</mo><msup><mi>G</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>i</mi><mo form="postfix" stretchy="true">)</mo></mrow></msup><mo>,</mo><msup><mi>G</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>i</mi><mo form="postfix" stretchy="true">)</mo></mrow></msup><mo form="postfix" stretchy="true">]</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+G^{(0)}=G,
+\qquad
+G^{(i+1)}=[G^{(i)},G^{(i)}],
+</annotation></semantics></math></p>
+<p>若某一步达到平凡群，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+可解。</p>
+<p>“可解群”这个名称正来自方程可解性，不是说这个群本身有一道待求解的方程。</p>
+<h2 id="galois-的判别定理">9.3 Galois 的判别定理</h2>
+<p><strong>核心定理 9.1（根式可解判据，特征 0）</strong> 设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>∈</mo><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">f(x)\in F[x]</annotation></semantics></math>，其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+为特征 0 的域。则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 可由根式解</mtext></mrow><mspace width="1.0em"></mspace><mo>⇔</mo><mspace width="1.0em"></mspace><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>f</mi><mi>/</mi><mi>F</mi><mo form="postfix" stretchy="true">)</mo></mrow><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 是可解群</mtext></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f\text{ 可由根式解}
+\quad\Longleftrightarrow\quad
+\operatorname{Gal}(f/F)\text{ 是可解群}.
+</annotation></semantics></math></p>
+<p>这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>f</mi><mi>/</mi><mi>F</mi><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\operatorname{Gal}(f/F)</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+的分裂域对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+的 Galois 群。</p>
+<h3 id="正向机制根式塔为什么给出可解群">正向机制：根式塔为什么给出可解群</h3>
+<p>若逐层加入
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>i</mi></msub><annotation encoding="application/x-tex">n_i</annotation></semantics></math>
+次根，先把所需单位根也加入基域，并取相应正规闭包。每一步的 Galois
+群可以控制为循环群或 Abel 群。把这些步骤组合起来，得到一个具有 Abel
+商群的正规列。子群和商群保持可解性，因此原多项式的 Galois 群可解。</p>
+<h3 id="反向机制可解群为什么能还原根式塔">反向机制：可解群为什么能还原根式塔</h3>
+<p>若 Galois
+群可解，可把正规列进一步细化，使各商群为素数阶循环群。Galois
+对应把该群列反向变成中间域塔。加入足够的单位根后，循环扩张可由加入某个元素的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+次根实现；于是得到根式塔。</p>
+<p>完整证明要使用单位根和 Kummer 型论证，但逻辑骨架已经清楚：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">逐层开根</mtext><mo>↔</mo><mtext mathvariant="normal">逐层 Abel 扩张</mtext><mo>↔</mo><mtext mathvariant="normal">Galois 群有 Abel 商群列</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{逐层开根}
+\leftrightarrow
+\text{逐层 Abel 扩张}
+\leftrightarrow
+\text{Galois 群有 Abel 商群列}.
+</annotation></semantics></math></p>
+<h1 id="为什么二三四次有公式而五次出现断裂">10.
+为什么二、三、四次有公式，而五次出现断裂</h1>
+<p>一般
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+次多项式的根没有特殊关系时，其 Galois 群是整个对称群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>。于是是否存在一般根式公式，取决于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>
+是否可解。</p>
+<h2 id="s_2s_3s_4-都可解">10.1
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>2</mn></msub><annotation encoding="application/x-tex">S_2</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>3</mn></msub><annotation encoding="application/x-tex">S_3</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>4</mn></msub><annotation encoding="application/x-tex">S_4</annotation></semantics></math>
+都可解</h2>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>2</mn></msub><mo>≅</mo><msub><mi>C</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">S_2\cong C_2</annotation></semantics></math>，显然可解；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>3</mn></msub><annotation encoding="application/x-tex">S_3</annotation></semantics></math>
+有正规列</li>
+</ul>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo form="prefix" stretchy="false">{</mo><mi>e</mi><mo form="postfix" stretchy="false">}</mo><mo>⊲</mo><msub><mi>A</mi><mn>3</mn></msub><mo>⊲</mo><msub><mi>S</mi><mn>3</mn></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\{e\}\triangleleft A_3\triangleleft S_3,
+</annotation></semantics></math></p>
+<p>商群分别为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>3</mn></msub><annotation encoding="application/x-tex">C_3</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>2</mn></msub><annotation encoding="application/x-tex">C_2</annotation></semantics></math>；
+-
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>4</mn></msub><annotation encoding="application/x-tex">S_4</annotation></semantics></math>
+有正规列</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo form="prefix" stretchy="false">{</mo><mi>e</mi><mo form="postfix" stretchy="false">}</mo><mo>⊲</mo><msub><mi>V</mi><mn>4</mn></msub><mo>⊲</mo><msub><mi>A</mi><mn>4</mn></msub><mo>⊲</mo><msub><mi>S</mi><mn>4</mn></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\{e\}\triangleleft V_4\triangleleft A_4\triangleleft S_4,
+</annotation></semantics></math></p>
+<p>其中</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mn>4</mn></msub><mi>/</mi><mo form="prefix" stretchy="false">{</mo><mi>e</mi><mo form="postfix" stretchy="false">}</mo><mo>≅</mo><msub><mi>C</mi><mn>2</mn></msub><mo>×</mo><msub><mi>C</mi><mn>2</mn></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>A</mi><mn>4</mn></msub><mi>/</mi><msub><mi>V</mi><mn>4</mn></msub><mo>≅</mo><msub><mi>C</mi><mn>3</mn></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>S</mi><mn>4</mn></msub><mi>/</mi><msub><mi>A</mi><mn>4</mn></msub><mo>≅</mo><msub><mi>C</mi><mn>2</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_4/\{e\}\cong C_2\times C_2,
+\qquad
+A_4/V_4\cong C_3,
+\qquad
+S_4/A_4\cong C_2.
+</annotation></semantics></math></p>
+<p>所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>4</mn></msub><annotation encoding="application/x-tex">S_4</annotation></semantics></math>
+仍可解。这从结构上解释了为什么四次公式虽然复杂，却仍能通过有限次开根完成。</p>
+<h2 id="s_5-不可解障碍是-a_5">10.2
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>
+不可解：障碍是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math></h2>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math>
+是非 Abel
+单群。可以用共轭类证明：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math>
+的共轭类大小为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>,</mo><mspace width="1.0em"></mspace><mn>20</mn><mspace width="0.278em"></mspace><mtext mathvariant="normal">（3-循环）</mtext><mo>,</mo><mspace width="1.0em"></mspace><mn>15</mn><mspace width="0.278em"></mspace><mtext mathvariant="normal">（双换位）</mtext><mo>,</mo><mspace width="1.0em"></mspace><mn>12</mn><mo>,</mo><mspace width="1.0em"></mspace><mn>12</mn><mspace width="0.278em"></mspace><mtext mathvariant="normal">（两类 5-循环）</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+1,
+\quad 20\;\text{（3-循环）},
+\quad 15\;\text{（双换位）},
+\quad 12,
+\quad 12\;\text{（两类 5-循环）}.
+</annotation></semantics></math></p>
+<p>正规子群必须是若干共轭类的并，并含单位元；其阶还必须整除
+60。由这些类大小的可能和可检查：除
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>60</mn><annotation encoding="application/x-tex">60</annotation></semantics></math>
+外，没有可能成为正规子群的阶。因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math>
+是单群。</p>
+<p>又因
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math>
+非 Abel，其交换子群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo form="prefix" stretchy="true">[</mo><msub><mi>A</mi><mn>5</mn></msub><mo>,</mo><msub><mi>A</mi><mn>5</mn></msub><mo form="postfix" stretchy="true">]</mo></mrow><annotation encoding="application/x-tex">[A_5,A_5]</annotation></semantics></math>
+非平凡；交换子群是正规子群，所以由单性</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">[</mo><msub><mi>A</mi><mn>5</mn></msub><mo>,</mo><msub><mi>A</mi><mn>5</mn></msub><mo form="postfix" stretchy="true">]</mo></mrow><mo>=</mo><msub><mi>A</mi><mn>5</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[A_5,A_5]=A_5.
+</annotation></semantics></math></p>
+<p>导出列永远停在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math>，不能到达平凡群，故
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math>
+不可解，从而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>
+也不可解。</p>
+<p>这里是次数 4 与次数 5
+的真正结构断点：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>4</mn></msub><annotation encoding="application/x-tex">S_4</annotation></semantics></math>
+内部还能逐层拆成 Abel
+商群，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>
+中出现了无法继续拆解的非 Abel 单群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math>。</p>
+<h1 id="收尾证明一个具体五次多项式怎样排除通用根式公式">11.
+收尾证明：一个具体五次多项式怎样排除通用根式公式</h1>
+<p>我们选取</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>=</mo><msup><mi>x</mi><mn>5</mn></msup><mo>−</mo><mn>4</mn><mi>x</mi><mo>+</mo><mn>2</mn><mo>∈</mo><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f(x)=x^5-4x+2\in\mathbb Q[x].
+</annotation></semantics></math></p>
+<p>目标是证明</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>f</mi><mi>/</mi><mi>ℚ</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>≅</mo><msub><mi>S</mi><mn>5</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Gal}(f/\mathbb Q)\cong S_5.
+</annotation></semantics></math></p>
+<p>随后由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>
+不可解和 Galois 判据，推出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+不能由根式求解。只要存在这样一个五次方程，就不可能有适用于所有五次方程的通用根式公式。</p>
+<h2 id="第一步eisenstein-判别法给出不可约性">11.1 第一步：Eisenstein
+判别法给出不可约性</h2>
+<p>对素数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">p=2</annotation></semantics></math>：</p>
+<ul>
+<li>首项系数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+不被 2 整除；</li>
+<li>其余系数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mi>−</mi><mn>4</mn><mo>,</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">0,0,0,-4,2</annotation></semantics></math>
+全被 2 整除；</li>
+<li>常数项
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+不被
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+整除。</li>
+</ul>
+<p>所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb Q[x]</annotation></semantics></math>
+中不可约。</p>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+的分裂域，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>L</mi><mi>/</mi><mi>ℚ</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>≤</mo><msub><mi>S</mi><mn>5</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+G=\operatorname{Gal}(L/\mathbb Q)\le S_5.
+</annotation></semantics></math></p>
+<p>不可约性意味着
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+在五个根上的作用是传递的。由轨道—稳定子定理，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+整除
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo form="prefix" stretchy="true">|</mo><mi>G</mi><mo form="postfix" stretchy="true">|</mo></mrow><annotation encoding="application/x-tex">|G|</annotation></semantics></math>；由
+Cauchy
+定理，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+含有一个阶为 5 的元素。作为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>
+的置换，这个元素只能是一个 5-循环。</p>
+<p>因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+含 5-循环。</p>
+<h2 id="第二步模-7-分解读出一个-23-型置换">11.2 第二步：模 7
+分解读出一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">(</mo><mn>2</mn><mo form="postfix" stretchy="true">)</mo></mrow><mrow><mo form="prefix" stretchy="true">(</mo><mn>3</mn><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">(2)(3)</annotation></semantics></math>
+型置换</h2>
+<p>在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝔽</mi><mn>7</mn></msub><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb F_7[x]</annotation></semantics></math>
+中直接相乘可验证</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>5</mn></msup><mo>−</mo><mn>4</mn><mi>x</mi><mo>+</mo><mn>2</mn><mo>≡</mo><mrow><mo form="prefix" stretchy="true">(</mo><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>4</mn><mi>x</mi><mo>+</mo><mn>6</mn><mo form="postfix" stretchy="true">)</mo></mrow><mrow><mo form="prefix" stretchy="true">(</mo><msup><mi>x</mi><mn>3</mn></msup><mo>+</mo><mn>3</mn><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>3</mn><mi>x</mi><mo>+</mo><mn>5</mn><mo form="postfix" stretchy="true">)</mo></mrow><mrow><mspace width="0.222em"></mspace><mo form="prefix" stretchy="false">(</mo><mo>mod</mo><mspace width="0.222em"></mspace><mn>7</mn><mo form="postfix" stretchy="false">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+x^5-4x+2
+\equiv
+(x^2+4x+6)(x^3+3x^2+3x+5)
+\pmod 7.
+</annotation></semantics></math></p>
+<p>二次因子的判别式为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>4</mn><mn>2</mn></msup><mo>−</mo><mn>4</mn><mo>⋅</mo><mn>6</mn><mo>=</mo><mn>16</mn><mo>−</mo><mn>24</mn><mo>≡</mo><mn>6</mn><mrow><mspace width="0.222em"></mspace><mo form="prefix" stretchy="false">(</mo><mo>mod</mo><mspace width="0.222em"></mspace><mn>7</mn><mo form="postfix" stretchy="false">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+4^2-4\cdot6=16-24\equiv6\pmod7.
+</annotation></semantics></math></p>
+<p>而模 7 的平方剩余只有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">0,1,2,4</annotation></semantics></math>，所以该二次多项式不可约。</p>
+<p>对三次因子逐一代入
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">0,1,\ldots,6</annotation></semantics></math>，均不为
+0，因此它没有一次因子；三次多项式若可约必有一次因子，所以它也不可约。两个因子互异，故模
+7 的分解是平方自由的。</p>
+<p><strong>Dedekind 循环型定理</strong>
+告诉我们：若一个整系数不可约多项式模某个未分歧素数分解为互异不可约因子，次数分别为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>d</mi><mi>r</mi></msub></mrow><annotation encoding="application/x-tex">d_1,\ldots,d_r</annotation></semantics></math>，那么其
+Galois 群中存在一个置换，循环型为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">(</mo><msub><mi>d</mi><mn>1</mn></msub><mo form="postfix" stretchy="true">)</mo></mrow><mrow><mo form="prefix" stretchy="true">(</mo><msub><mi>d</mi><mn>2</mn></msub><mo form="postfix" stretchy="true">)</mo></mrow><mi>⋯</mi><mrow><mo form="prefix" stretchy="true">(</mo><msub><mi>d</mi><mi>r</mi></msub><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(d_1)(d_2)\cdots(d_r).
+</annotation></semantics></math></p>
+<p>这里因子次数是 2 与 3，因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+中存在元素</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>a</mi><mi>b</mi><mo form="postfix" stretchy="true">)</mo></mrow><mrow><mo form="prefix" stretchy="true">(</mo><mi>c</mi><mi>d</mi><mi>e</mi><mo form="postfix" stretchy="true">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\tau=(ab)(cde).
+</annotation></semantics></math></p>
+<p>由于两个循环不交，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>τ</mi><mn>3</mn></msup><mo>=</mo><mrow><mo form="prefix" stretchy="true">(</mo><mi>a</mi><mi>b</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\tau^3=(ab),
+</annotation></semantics></math></p>
+<p>所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+含有一个换位。</p>
+<h2 id="第三步5-循环加换位生成-s_5">11.3 第三步：5-循环加换位生成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math></h2>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+中的
+5-循环，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+是一个换位。用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+的幂共轭
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，可得到一族换位</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>c</mi><mi>k</mi></msup><mi>t</mi><msup><mi>c</mi><mrow><mi>−</mi><mi>k</mi></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+c^ktc^{-k}.
+</annotation></semantics></math></p>
+<p>把五个点视为顶点，这些换位对应的边在
+5-循环作用下绕遍全部顶点，形成连通图。一个连通图的边换位生成全部对称群，因此</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo form="prefix" stretchy="false">⟨</mo><mi>c</mi><mo>,</mo><mi>t</mi><mo form="postfix" stretchy="false">⟩</mo><mo>=</mo><msub><mi>S</mi><mn>5</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\langle c,t\rangle=S_5.
+</annotation></semantics></math></p>
+<p>而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>≤</mo><msub><mi>S</mi><mn>5</mn></msub></mrow><annotation encoding="application/x-tex">G\le S_5</annotation></semantics></math>
+且包含
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>,</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">c,t</annotation></semantics></math>，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><msub><mi>S</mi><mn>5</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+G=S_5.
+</annotation></semantics></math></p>
+<h2 id="第四步由不可解群推出不能用根式求解">11.4
+第四步：由不可解群推出不能用根式求解</h2>
+<p>前面已经证明
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>
+不可解。由 Galois 根式判据，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>x</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>=</mo><msup><mi>x</mi><mn>5</mn></msup><mo>−</mo><mn>4</mn><mi>x</mi><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">
+f(x)=x^5-4x+2
+</annotation></semantics></math></p>
+<p>不能由根式求解。</p>
+<p>现在反设存在一套对所有五次方程都适用的根式公式。把系数</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>5</mn></msub><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>a</mi><mn>4</mn></msub><mo>=</mo><msub><mi>a</mi><mn>3</mn></msub><mo>=</mo><msub><mi>a</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>a</mi><mn>1</mn></msub><mo>=</mo><mi>−</mi><mn>4</mn><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>a</mi><mn>0</mn></msub><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">
+a_5=1,
+\quad a_4=a_3=a_2=0,
+\quad a_1=-4,
+\quad a_0=2
+</annotation></semantics></math></p>
+<p>代入该公式，就会得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+的全部根的根式表达，与上面的不可解性矛盾。</p>
+<p>因此：</p>
+<blockquote>
+<p><strong>不存在一般五次方程的通用根式公式。</strong></p>
+</blockquote>
+<p>这就是从你已学的群、正规子群、商群、群作用、环、理想、商环和不可约多项式，一路推到五次方程不可解的完整逻辑闭环。</p>
+<details class="checkpoint">
+<summary>
+局部自检
+4：为什么证明一个具体五次方程不能用根式求解，就足以否定“通用五次公式”？
+</summary>
+<div class="answer">
+通用公式必须对每一组五次方程系数都有效。若存在一组具体系数使对应多项式不能由根式求解，那么把这组系数代入所谓通用公式就会产生矛盾。因此一个反例已经足够。
+</div>
+</details>
+<h1 id="伽罗瓦理论到底包含哪些内容">12. 伽罗瓦理论到底包含哪些内容</h1>
+<p>若把“本科经典 Galois 理论”看成一门课程，通常包含以下模块。</p>
+<table>
+<colgroup>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>模块</th>
+<th>核心问题</th>
+<th>代表性结论</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>域扩张与次数</td>
+<td>加入新数后空间有多大</td>
+<td>最小多项式次数、塔式定理</td>
+</tr>
+<tr class="even">
+<td>代数扩张与代数闭包</td>
+<td>所有代数方程的根放在哪里</td>
+<td>代数闭包存在且在同构意义下唯一</td>
+</tr>
+<tr class="odd">
+<td>分裂域</td>
+<td>包含某多项式全部根的最小域</td>
+<td>分裂域存在且在基域同构意义下唯一</td>
+</tr>
+<tr class="even">
+<td>可分性</td>
+<td>根是否彼此不同</td>
+<td>特征 0 中代数扩张自动可分</td>
+</tr>
+<tr class="odd">
+<td>正规性</td>
+<td>一个根进入后共轭根是否全部进入</td>
+<td>有限正规扩张等价于某族多项式的分裂域</td>
+</tr>
+<tr class="even">
+<td>Galois 群</td>
+<td>保持基域不动的代数对称是什么</td>
+<td>有限 Galois 扩张中群阶等于扩张次数</td>
+</tr>
+<tr class="odd">
+<td>基本定理</td>
+<td>中间域怎样由子群编码</td>
+<td>中间域与子群反向一一对应</td>
+</tr>
+<tr class="even">
+<td>根式可解性</td>
+<td>方程能否逐层开根</td>
+<td>可由根式解当且仅当 Galois 群可解</td>
+</tr>
+<tr class="odd">
+<td>经典应用</td>
+<td>古典作图和多项式公式</td>
+<td>三等分角、倍立方、正多边形、五次方程</td>
+</tr>
+<tr class="even">
+<td>有限域与分圆扩张</td>
+<td>有限域和单位根怎样组织</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝔽</mi><msup><mi>p</mi><mi>n</mi></msup></msub><annotation encoding="application/x-tex">\mathbb F_{p^n}</annotation></semantics></math>
+的唯一性、分圆 Galois 群</td>
+</tr>
+</tbody>
+</table>
+<p>现代“Galois 理论”还向外延伸：</p>
+<ul>
+<li><strong>无限 Galois 理论</strong>：Galois 群成为 profinite 群；</li>
+<li><strong>数论中的绝对 Galois 群</strong>：研究
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Gal</mo><mrow><mo form="prefix" stretchy="true">(</mo><mover><mi>ℚ</mi><mo accent="true">¯</mo></mover><mi>/</mi><mi>ℚ</mi><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\operatorname{Gal}(\overline{\mathbb Q}/\mathbb Q)</annotation></semantics></math>
+及局部域、整体域；</li>
+<li><strong>逆 Galois 问题</strong>：哪些有限群能作为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>
+上扩张的 Galois 群；</li>
+<li><strong>微分 Galois
+理论</strong>：用代数群判断线性微分方程能否由初等函数、积分和指数等求解；</li>
+<li><strong>代数几何中的 étale 基本群</strong>：把拓扑覆盖空间的 Galois
+对应推广到代数簇；</li>
+<li><strong>Grothendieck 的 Galois
+范畴观点</strong>：把“覆盖—对称群—固定对象”的模式抽象化。</li>
+</ul>
+<p>但这些都建立在本文的经典核心上：域、扩张、自同构、固定域和反向对应。</p>
+<h1 id="历史顺序与教科书顺序为什么不完全相同">13.
+历史顺序与教科书顺序为什么不完全相同</h1>
+<p>历史上，人们先研究具体方程、根的置换和预解式，然后才逐步抽象出群、域和扩张。现代教材却通常按相反方向讲：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">域扩张</mtext><mo>→</mo><mtext mathvariant="normal">分裂域</mtext><mo>→</mo><mtext mathvariant="normal">自同构</mtext><mo>→</mo><mtext mathvariant="normal">Galois 对应</mtext><mo>→</mo><mtext mathvariant="normal">根式可解性</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{域扩张}
+\to
+\text{分裂域}
+\to
+\text{自同构}
+\to
+\text{Galois 对应}
+\to
+\text{根式可解性}.
+</annotation></semantics></math></p>
+<p>原因不是教材故意抹去历史，而是现代证明依赖关系要求先有严格对象。若完全照历史顺序，读者会不断操作尚未定义的“根的允许置换”；若只按形式顺序，又容易忘记所有定义最初为何产生。</p>
+<p>比较合理的学习方法是双线并行：</p>
+<ul>
+<li>用历史线回答“为什么要发明这个对象”；</li>
+<li>用教科书线回答“这个对象依赖哪些定义，定理怎样严格证明”。</li>
+</ul>
+<p>本文采用的正是这种结构。</p>
+<h1 id="本篇需要掌握与只需识别">14. 本篇需要掌握与只需识别</h1>
+<h2 id="需要掌握">14.1 需要掌握</h2>
+<ol type="1">
+<li>一般五次无根式公式不等于每个五次方程都不可解。</li>
+<li>域扩张是包含关系，同时使大域成为小域上的向量空间。</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo form="prefix" stretchy="true">(</mo><mi>α</mi><mo form="postfix" stretchy="true">)</mo></mrow><mo>≅</mo><mi>F</mi><mrow><mo form="prefix" stretchy="true">[</mo><mi>x</mi><mo form="postfix" stretchy="true">]</mo></mrow><mi>/</mi><mrow><mo form="prefix" stretchy="true">(</mo><msub><mi>m</mi><mrow><mi>α</mi><mo>,</mo><mi>F</mi></mrow></msub><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">F(\alpha)\cong F[x]/(m_{\alpha,F})</annotation></semantics></math>，且扩张次数等于最小多项式次数。</li>
+<li>分裂域要求包含全部根，而不是只包含一个根。</li>
+<li>Galois 群由固定基域的域自同构组成，并作用在根集上。</li>
+<li>有限 Galois 扩张等价于正规且可分扩张。</li>
+<li>Galois 基本定理把中间域和子群反向对应。</li>
+<li>根式塔对应 Galois 群的可解正规列。</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>4</mn></msub><annotation encoding="application/x-tex">S_4</annotation></semantics></math>
+可解而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>
+不可解，根本差异来自非 Abel 单群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math>。</li>
+<li>对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>5</mn></msup><mo>−</mo><mn>4</mn><mi>x</mi><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">x^5-4x+2</annotation></semantics></math>，Eisenstein
+给不可约性，模 7 分解给换位，再与 5-循环一起推出 Galois 群为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>。</li>
+</ol>
+<h2 id="本篇只需识别">14.2 本篇只需识别</h2>
+<ul>
+<li>正特征中的不可分扩张；</li>
+<li>代数闭包存在性的完整证明；</li>
+<li>Dedekind 循环型定理背后的素理想与 Frobenius 元；</li>
+<li>Kummer 理论的完整证明；</li>
+<li>一般多项式的 Galois 群为何恰为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>
+的函数域论证；</li>
+<li>无限 Galois 理论和绝对 Galois 群的拓扑结构。</li>
+</ul>
+<h1 id="综合自检">15. 综合自检</h1>
+<details class="checkpoint">
+<summary>
+题
+1：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℚ</mi><mrow><mo form="prefix" stretchy="true">(</mo><mroot><mn>2</mn><mn>3</mn></mroot><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb Q(\sqrt[3]2)</annotation></semantics></math>
+为什么不是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>3</mn></msup><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">x^3-2</annotation></semantics></math>
+的分裂域？
+</summary>
+<div class="answer">
+它只包含实根
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mroot><mn>2</mn><mn>3</mn></mroot><annotation encoding="application/x-tex">\sqrt[3]2</annotation></semantics></math>。另外两个根是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ω</mi><mroot><mn>2</mn><mn>3</mn></mroot></mrow><annotation encoding="application/x-tex">\omega\sqrt[3]2</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ω</mi><mn>2</mn></msup><mroot><mn>2</mn><mn>3</mn></mroot></mrow><annotation encoding="application/x-tex">\omega^2\sqrt[3]2</annotation></semantics></math>，需要再加入三次单位根
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>。
+</div>
+</details>
+<details class="checkpoint">
+<summary>
+题 2：Galois 群为什么是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>
+的子群，而不一定等于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>？
+</summary>
+<div class="answer">
+域自同构确实置换全部根，但必须保持根之间所有基域上的代数关系。任意置换未必保持这些关系，因此只得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>
+的某个子群。
+</div>
+</details>
+<details class="checkpoint">
+<summary>
+题 3：可解群中的“可解”与方程求解有什么直接联系？
+</summary>
+<div class="answer">
+根式表达对应逐层加入
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+次根；在加入单位根并正规化后，每一步对应 Abel 或循环 Galois
+群。于是根式塔对应具有 Abel 商群的正规列，这正是可解群的定义。
+</div>
+</details>
+<details class="checkpoint">
+<summary>
+题 4：为什么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math>
+的单性会阻止
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>
+可解？
+</summary>
+<div class="answer">
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math>
+非 Abel且没有非平凡真正规子群，所以它无法被正规列继续拆成更小的 Abel
+商群。其交换子群就是自身，导出列不会下降到平凡群。
+</div>
+</details>
+<details class="checkpoint">
+<summary>
+题 5：在最终证明中，模 7 的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>+</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">2+3</annotation></semantics></math>
+次因子分解提供了什么群元素？
+</summary>
+<div class="answer">
+Dedekind 定理给出循环型为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo form="prefix" stretchy="true">(</mo><mn>2</mn><mo form="postfix" stretchy="true">)</mo></mrow><mrow><mo form="prefix" stretchy="true">(</mo><mn>3</mn><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">(2)(3)</annotation></semantics></math>
+的元素。把它取三次幂，3-循环消失而 2-循环保留，因此得到一个换位。
+</div>
+</details>
+<h1 id="结论压缩">16. 结论压缩</h1>
+<p>你在前四章学到的群与环，在伽罗瓦理论中第一次形成一个高度闭合的统一应用：</p>
+<ul>
+<li>环论告诉我们怎样用不可约多项式和商环加入新根；</li>
+<li>线性代数给出扩张次数和塔式定理；</li>
+<li>群作用把域自同构变成根的置换；</li>
+<li>正规子群与商群编码中间扩张；</li>
+<li>可解群精确对应逐层开根；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mn>5</mn></msub><annotation encoding="application/x-tex">A_5</annotation></semantics></math>
+的非 Abel 单性造成次数 5 的结构断裂。</li>
+</ul>
+<p>因此，“一般五次方程没有根式公式”并不是人类还没有找到足够巧的公式，而是存在具体五次多项式，其根的代数对称群为不可解群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>；任何根式塔都只能产生可解群，二者结构上不可能相容。</p>
+<p>这也是 Galois
+理论最重要的思想：<strong>不直接计算根，而是研究在保持已知量不变时，根还能怎样被置换；对称群的结构决定公式是否可能存在。</strong></p>
+<h1 id="参考资料">参考资料</h1>
+<ol type="1">
+<li>Évariste Galois, <em>Mémoire sur les conditions de résolubilité des
+équations par radicaux</em>, manuscript dated 1831, published in
+<em>Journal de Mathématiques Pures et Appliquées</em> 11 (1846): <a class="uri" href="https://www.numdam.org/item/JMPA_1846_1_11__381_0.pdf" rel="noopener noreferrer" target="_blank">https://www.numdam.org/item/JMPA_1846_1_11__381_0.pdf</a></li>
+<li>Emil Artin, <em>Galois Theory: Lectures Delivered at the University
+of Notre Dame</em>: <a class="uri" href="https://projecteuclid.org/ebooks/notre-dame-mathematical-lectures/Galois-Theory/toc/ndml/1175197041" rel="noopener noreferrer" target="_blank">https://projecteuclid.org/ebooks/notre-dame-mathematical-lectures/Galois-Theory/toc/ndml/1175197041</a></li>
+<li>Tom Leinster, <em>Galois Theory</em> undergraduate course notes,
+University of Edinburgh: <a class="uri" href="https://webhomes.maths.ed.ac.uk/~tl/galois/" rel="noopener noreferrer" target="_blank">https://webhomes.maths.ed.ac.uk/~tl/galois/</a></li>
+<li>Keith Conrad, <em>Galois Groups over Q and Factorizations mod
+p</em>（Dedekind 循环型定理）: <a class="uri" href="https://kconrad.math.uconn.edu/blurbs/gradnumthy/galois-Q-factor-mod-p.pdf" rel="noopener noreferrer" target="_blank">https://kconrad.math.uconn.edu/blurbs/gradnumthy/galois-Q-factor-mod-p.pdf</a></li>
+<li>Al Koch, <em>Galois Theory</em>, University of
+Oregon（含具体五次多项式和模素数分解的完整教材式示例）: <a class="uri" href="https://pages.uoregon.edu/koch/Galois.pdf" rel="noopener noreferrer" target="_blank">https://pages.uoregon.edu/koch/Galois.pdf</a></li>
+<li>Adrian Rice, “Abel Answers the Question of the Quintic”, 纪念 Abel
+1824 年证明的历史文章: <a class="uri" href="https://cdn.ima.org.uk/wp/wp-content/uploads/2025/02/Abel-Answers-by-A.-Rice.pdf" rel="noopener noreferrer" target="_blank">https://cdn.ima.org.uk/wp/wp-content/uploads/2025/02/Abel-Answers-by-A.-Rice.pdf</a></li>
+</ol>
+
+<section data-feedback-status="pending" id="reader-feedback">
+<h1>
+读后反馈与修订记录
+</h1>
+<article class="feedback-entry" data-date="2026-07-24" data-round="0">
+<h2>
+2026-07-24 · 初始版本
+</h2>
+<p>
+<strong>写作需求：</strong>承接已学抽象代数教材第 1—4
+章，以历史与一般教科书顺序为双主线，说明此后抽象代数的主要发展，介绍伽罗瓦理论的内容，并以一般五次方程不存在根式公式的证明收尾。
+</p>
+<p>
+<strong>课程依据：</strong>根据用户提供的目录截图，将群、群的进一步讨论、环及环的进一步讨论视为已学；将域扩张、分裂域、正规与可分扩张、Galois
+对应和根式可解性视为新知识。
+</p>
+<p>
+<strong>处理：</strong>先给出环论后的代数分支地图，再集中展开域论—Galois
+主线；最终使用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>5</mn></msup><mo>−</mo><mn>4</mn><mi>x</mi><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">x^5-4x+2</annotation></semantics></math>，通过
+Eisenstein 判别、模 7 因子分解、Dedekind 循环型定理和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>5</mn></msub><annotation encoding="application/x-tex">S_5</annotation></semantics></math>
+不可解性完成闭环证明。
+</p>
+<p>
+<strong>Skill 更新：</strong>数学领域学习画像加入抽象代数第 1—4
+章完成情况，并明确当前不默认掌握域扩张和 Galois 理论。
+</p>
+<p>
+<strong>状态：</strong>待阅读反馈。
+</p>
+</article>
+</section></body>
+</html>

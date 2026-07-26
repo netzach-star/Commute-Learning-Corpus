@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>复分析导论（一）：解析函数为何如此刚性？</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <meta name="corpus-id" content="03">
+  <meta name="domain" content="mathematics">
+  <meta name="production-status" content="feedback-recorded">
+  <meta name="reading-status" content="read">
+  <meta name="expected-reading-time" content="40-45-minutes">
+  <meta name="generated-date" content="2026-07-18">
+  <meta name="revision-round" content="1">
+  <style>
+    :root { color-scheme:light; --ink:#18202f; --muted:#5e6879; --line:#d8e0e9; --soft:#f5f8fb; --accent:#7047a3; --accent-soft:#f1eafd; --warm:#fff8ed; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0 auto; padding:2.2rem 1.35rem 5rem; max-width:920px; color:var(--ink); background:#fff; font:17px/1.82 system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; }
+    h1 { font-size:2rem; line-height:1.3; margin:0 0 1.2rem; letter-spacing:.01em; }
+    h2 { margin-top:3rem; padding-top:.45rem; border-top:1px solid var(--line); font-size:1.55rem; }
+    h3 { margin-top:2rem; font-size:1.18rem; }
+    p, li { text-align:justify; }
+    blockquote { margin:1.2rem 0; padding:.85rem 1rem; border-left:4px solid var(--accent); background:var(--accent-soft); color:#392457; }
+    nav#TOC { margin:1.4rem 0 2.5rem; padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; }
+    nav#TOC::before { content:"目录"; display:block; font-weight:700; margin-bottom:.45rem; }
+    nav#TOC ul { margin:.25rem 0; padding-left:1.4rem; }
+    a { color:#5f338d; text-underline-offset:3px; }
+    .course-tree { padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; overflow-x:auto; }
+    .course-tree ul { margin:.3rem 0; }
+    .mechanism-flow { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:.55rem; align-items:center; margin:1.4rem 0; padding:1rem; border:1px solid var(--line); border-radius:12px; background:linear-gradient(135deg,#faf8ff,#f4f8ff); }
+    .mechanism-flow div:not(.arrow) { min-height:92px; padding:.75rem; border:1px solid #d9cbea; border-radius:10px; background:#fff; }
+    .mechanism-flow strong, .mechanism-flow span { display:block; }
+    .mechanism-flow span { margin-top:.35rem; color:var(--muted); font-size:.91rem; line-height:1.55; }
+    .mechanism-flow .arrow { color:var(--accent); font-weight:800; font-size:1.25rem; }
+    table { width:100%; border-collapse:collapse; display:block; overflow-x:auto; margin:1.2rem 0; }
+    th, td { min-width:145px; border:1px solid var(--line); padding:.65rem .75rem; vertical-align:top; }
+    th { background:var(--soft); }
+    math[display="block"] { display:block; overflow-x:auto; overflow-y:hidden; padding:.45rem 0; }
+    details { margin:1rem 0 1.5rem; padding:.75rem 1rem; border:1px solid var(--line); border-radius:10px; background:var(--soft); }
+    summary { cursor:pointer; font-weight:700; }
+    #reader-feedback { margin-top:3.5rem; padding:1rem 1.2rem; background:var(--warm); border:1px solid #ead8b8; border-radius:12px; }
+    .feedback-entry { padding:.5rem 0 1rem; }
+    code { overflow-wrap:anywhere; }
+    @media (max-width:760px) {
+      .mechanism-flow { grid-template-columns:1fr; }
+      .mechanism-flow .arrow { transform:rotate(90deg); text-align:center; line-height:1; }
+    }
+    @media (max-width:600px) {
+      body { padding:1.2rem .92rem 4rem; font-size:16px; line-height:1.78; }
+      h1 { font-size:1.65rem; }
+      h2 { font-size:1.34rem; margin-top:2.5rem; }
+      h3 { font-size:1.1rem; }
+      p, li { text-align:left; }
+      blockquote, .course-tree, #reader-feedback { margin-left:0; margin-right:0; padding:.75rem .85rem; }
+      th, td { min-width:132px; }
+    }
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">复分析导论（一）：解析函数为何如此刚性？</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#先搭教材的八章知识树" id="toc-先搭教材的八章知识树">0.
+先搭教材的八章知识树</a></li>
+<li><a href="#chapter-1" id="toc-chapter-1">1. 第 1
+章：复数与复变函数——为什么还要加入无穷远点？</a></li>
+<li><a href="#chapter-2" id="toc-chapter-2">2. 第 2
+章：解析函数与保形变换——复可微为什么比实可微强？</a></li>
+<li><a href="#chapter-3" id="toc-chapter-3">3. 第 3
+章：复积分——边界为什么能决定内部？</a></li>
+<li><a href="#chapter-4" id="toc-chapter-4">4. 第 4
+章：级数——解析函数怎样变成局部代数对象？</a></li>
+<li><a href="#chapter-5" id="toc-chapter-5">5. 第 5
+章：残数与辐角原理——一个系数怎样编码积分和零点？</a></li>
+<li><a href="#chapter-6" id="toc-chapter-6">6. 第 6
+章：解析开拓——局部公式究竟定义了多大的函数？</a></li>
+<li><a href="#chapter-7" id="toc-chapter-7">7. 第 7 章：正规族与 Riemann
+映射定理——怎样从函数序列中提取极限？</a></li>
+<li><a href="#chapter-8" id="toc-chapter-8">8. 第 8
+章：调和函数——解析函数为什么能解决边值问题？</a></li>
+<li><a href="#把八章压缩成可复述的课程树"
+id="toc-把八章压缩成可复述的课程树">9.
+把八章压缩成可复述的课程树</a></li>
+<li><a href="#结论与下一步" id="toc-结论与下一步">10.
+结论与下一步</a></li>
+<li><a href="#参考资料" id="toc-参考资料">参考资料</a></li>
+</ul>
+</nav>
+<blockquote>
+<p><strong>教材主线</strong>：庞学诚、梁金荣《复变函数》，科学出版社，第
+1—8 章<br />
+<strong>预计阅读时间</strong>：40—45 分钟<br />
+<strong>本篇需要掌握</strong>：八章各自解决的问题及其连接；复可微与解析、Cauchy–Riemann
+条件、Cauchy 积分公式、Taylor/Laurent
+展开、孤立奇点、残数定理、辐角原理、解析开拓、正规族、调和函数的核心含义<br />
+<strong>本篇只需识别</strong>：Riemann 曲面的完整构造、Koebe
+定理、模函数、Picard 两定理的证明、调和测度与次调和函数的技术细节<br />
+<strong>已知基础</strong>：实分析、点集拓扑、多元微积分、实变函数的级数与积分、初等线性代数；本文不假定已经学过复分析</p>
+</blockquote>
+<hr />
+<h2 id="先搭教材的八章知识树">0. 先搭教材的八章知识树</h2>
+<p>实分析允许函数有相当大的自由：连续函数可以处处不可微，可微函数也只受局部导数约束。复分析一开始只把自变量从实数换成复数，看似只是二维微积分；真正的结果却是，<strong>复可微一次，就要求函数同时协调平面内所有方向；在一个区域内处处复可微，则函数会自动拥有无穷阶导数、幂级数展开、强唯一性和全局积分约束。</strong></p>
+<p>本课程的核心问题因此是：这种惊人的刚性怎样一层层产生？按照教材目录，所有知识挂在下面八个一级分支上。</p>
+<div class="course-tree" aria-label="复分析教材知识树">
+<ul>
+<li>
+<strong>复分析：从复可微到全局刚性</strong>
+<ul>
+<li>
+<a href="#chapter-1">第 1
+章　复数与复变函数</a>：建立平面、球面和极限语言
+</li>
+<li>
+<a href="#chapter-2">第 2
+章　解析函数与保形变换</a>：解释复可微为何远强于实可微
+</li>
+<li>
+<a href="#chapter-3">第 3
+章　复积分</a>：把局部可微升级为闭路积分与内部重构
+</li>
+<li>
+<a href="#chapter-4">第 4 章　级数</a>：把解析函数变成可计算的局部幂级数
+</li>
+<li>
+<a href="#chapter-5">第 5
+章　残数与辐角原理</a>：从奇点的一个系数提取积分与零点信息
+</li>
+<li>
+<a href="#chapter-6">第 6
+章　解析开拓</a>：研究局部公式能延伸多远以及是否单值
+</li>
+<li>
+<a href="#chapter-7">第 7 章　正规族与 Riemann
+映射定理</a>：用函数族紧性构造极值映射
+</li>
+<li>
+<a href="#chapter-8">第 8 章　调和函数</a>：连接解析函数、势论与边值问题
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p>八章的一级结构必须记住；但真正贯穿证明的是六个核心机制：</p>
+<div class="mechanism-flow" aria-label="复分析六个核心机制">
+<div>
+<strong>方向无关的导数</strong><span>迫使 Cauchy–Riemann 条件</span>
+</div>
+<div class="arrow">
+→
+</div>
+<div>
+<strong>闭路积分为零</strong><span>产生 Cauchy 公式</span>
+</div>
+<div class="arrow">
+→
+</div>
+<div>
+<strong>内部由边界重构</strong><span>导出幂级数与唯一性</span>
+</div>
+<div class="arrow">
+→
+</div>
+<div>
+<strong>奇点局部化</strong><span>残数记录闭路贡献</span>
+</div>
+<div class="arrow">
+→
+</div>
+<div>
+<strong>局部公式延伸</strong><span>开拓与单值性</span>
+</div>
+<div class="arrow">
+→
+</div>
+<div>
+<strong>函数族紧性</strong><span>构造映射并控制极限</span>
+</div>
+</div>
+<p>箭头表示“前一机制提供后一机制的证明工具”，不是简单的时间顺序。第 8
+章的调和函数则从 Cauchy–Riemann
+条件分出另一条支线，并通过边值问题重新连回保形映射。</p>
+<p>贯穿全文的对象是单位圆盘</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔻</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>z</mi><mo>∈</mo><mi>ℂ</mi><mo>:</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathbb D=\{z\in\mathbb C:|z|&lt;1\}.
+</annotation></semantics></math></p>
+<p>它既是复平面中的区域，也是 Cauchy
+公式最自然的舞台、幂级数的收敛域、Möbius 变换的标准模型、Riemann
+映射定理的目标空间和 Poisson 公式的定义域。</p>
+<hr />
+<h2 id="chapter-1">1. 第 1
+章：复数与复变函数——为什么还要加入无穷远点？</h2>
+<h3 id="旧工具缺什么二维坐标没有记录乘法几何">1.1
+旧工具缺什么：二维坐标没有记录乘法几何</h3>
+<p>把复数写成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mi>x</mi><mo>+</mo><mi>i</mi><mi>y</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>x</mi><mo>,</mo><mi>y</mi><mo>∈</mo><mi>ℝ</mi><mo>,</mo><mspace width="2.0em"></mspace><msup><mi>i</mi><mn>2</mn></msup><mo>=</mo><mo>−</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+z=x+iy,
+\qquad x,y\in\mathbb R,
+\qquad i^2=-1.
+</annotation></semantics></math></p>
+<p>作为集合，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℂ</mi><annotation encoding="application/x-tex">\mathbb C</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\mathbb R^2</annotation></semantics></math>
+没有区别；但复乘法给平面增加了旋转—伸缩结构。若</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mi>r</mi><msup><mi>e</mi><mrow><mi>i</mi><mi>θ</mi></mrow></msup><mo>,</mo><mspace width="2.0em"></mspace><mi>w</mi><mo>=</mo><mi>ρ</mi><msup><mi>e</mi><mrow><mi>i</mi><mi>φ</mi></mrow></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">
+z=re^{i\theta},\qquad w=\rho e^{i\varphi},
+</annotation></semantics></math></p>
+<p>那么</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mi>w</mi><mo>=</mo><mi>r</mi><mi>ρ</mi><msup><mi>e</mi><mrow><mi>i</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo>+</mo><mi>φ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+zw=r\rho e^{i(\theta+\varphi)}.
+</annotation></semantics></math></p>
+<p>这条公式整体表示：模长相乘，辐角相加。也就是说，乘以非零复数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math>，就是把平面先伸缩
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>w</mi><mo stretchy="true" form="postfix">|</mo></mrow></mrow><annotation encoding="application/x-tex">\rho=|w|</annotation></semantics></math>
+倍，再旋转
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mo>=</mo><mo>arg</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">\varphi=\arg w</annotation></semantics></math>。后面“导数表示局部保角变换”正依赖这一几何意义。</p>
+<p>复数的模</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><msqrt><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup></mrow></msqrt></mrow><annotation encoding="application/x-tex">
+|z|=\sqrt{x^2+y^2}
+</annotation></semantics></math></p>
+<p>给出欧氏距离
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>,</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo>−</mo><mi>w</mi><mo stretchy="true" form="postfix">|</mo></mrow></mrow><annotation encoding="application/x-tex">d(z,w)=|z-w|</annotation></semantics></math>。因此复函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><mi>E</mi><mo>→</mo><mi>ℂ</mi></mrow><annotation encoding="application/x-tex">f:E\to\mathbb C</annotation></semantics></math>
+的极限与连续性仍使用你熟悉的度量定义。例如</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>lim</mo><mrow><mi>z</mi><mo>→</mo><msub><mi>z</mi><mn>0</mn></msub></mrow></munder><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">
+\lim_{z\to z_0}f(z)=L
+</annotation></semantics></math></p>
+<p>指对任意
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\varepsilon&gt;0</annotation></semantics></math>，存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\delta&gt;0</annotation></semantics></math>，使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo>−</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mi>δ</mi></mrow><annotation encoding="application/x-tex">0&lt;|z-z_0|&lt;\delta</annotation></semantics></math>
+时都有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>L</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mi>ε</mi></mrow><annotation encoding="application/x-tex">|f(z)-L|&lt;\varepsilon</annotation></semantics></math>。新困难不在极限定义，而在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>→</mo><msub><mi>z</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">z\to z_0</annotation></semantics></math>
+可以沿平面内无穷多个方向进行。</p>
+<h3 id="为什么辐角与对数会多值">1.2 为什么辐角与对数会多值？</h3>
+<p>对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">z\ne0</annotation></semantics></math>，辐角不是唯一实数，而是同余类</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>arg</mo><mi>z</mi><mo>=</mo><mi>θ</mi><mo>+</mo><mn>2</mn><mi>k</mi><mi>π</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>k</mi><mo>∈</mo><mi>ℤ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\arg z=\theta+2k\pi,
+\qquad k\in\mathbb Z.
+</annotation></semantics></math></p>
+<p>于是复对数的形式</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mi>z</mi><mo>=</mo><mo>ln</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>+</mo><mi>i</mi><mo>arg</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">
+\log z=\ln|z|+i\arg z
+</annotation></semantics></math></p>
+<p>天然多值。若想选出单值连续分支，必须从区域中切去一条曲线，避免绕原点一周后辐角增加
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>π</mi></mrow><annotation encoding="application/x-tex">2\pi</annotation></semantics></math>。这不是记号造成的麻烦，而是穿孔平面
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℂ</mi><mo>\</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathbb C\setminus\{0\}</annotation></semantics></math>
+的拓扑信息：绕原点的闭路不能在该空间内缩成一点。你学过基本群，可以把“对数不存在全局单值分支”理解为闭路绕数产生的障碍。第
+2 章的多值函数和 Riemann 曲面、第 6 章的单值性定理都会回到这里。</p>
+<h3 id="闭域上的连续性为什么仍要单列">1.3
+闭域上的连续性为什么仍要单列？</h3>
+<p>教材在进入无穷远点以前先整理闭域上连续函数的性质。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>⊂</mo><mi>ℂ</mi></mrow><annotation encoding="application/x-tex">K\subset\mathbb C</annotation></semantics></math>
+闭且有界，那么把它视为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\mathbb R^2</annotation></semantics></math>
+的子集，它就是紧集；连续函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><mi>K</mi><mo>→</mo><mi>ℂ</mi></mrow><annotation encoding="application/x-tex">f:K\to\mathbb C</annotation></semantics></math>
+因而一致连续，且模函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mo stretchy="true" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">|f|</annotation></semantics></math>
+能在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+上取得最大值与最小值。</p>
+<p>这些结论本身来自你已经学过的实分析和拓扑，但它们在复分析中会不断充当“局部公式变成统一估计”的最后一步：圆周上的连续函数有最大模，闭圆盘上的连续核一致连续，半圆弧积分可用“弧长乘最大模”控制。要注意，这里只使用连续性与紧性；第
+3
+章的最大模原理则强得多，它断言非常数解析函数不能在区域内部取得模最大值。</p>
+<h3 id="复球面怎样把无穷远点变成普通点">1.4
+复球面怎样把无穷远点变成普通点？</h3>
+<p>有理函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mi>Q</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">R(z)=P(z)/Q(z)</annotation></semantics></math>
+在有限平面上会出现极点；当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">z\to\infty</annotation></semantics></math>
+时，它又有确定的渐近性态。为了把“趋于无穷”纳入普通极限理论，引入扩充复平面</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>ℂ</mi><mo accent="true">̂</mo></mover><mo>=</mo><mi>ℂ</mi><mo>∪</mo><mo stretchy="false" form="prefix">{</mo><mi>∞</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\widehat{\mathbb C}=\mathbb C\cup\{\infty\}.
+</annotation></semantics></math></p>
+<p>它可以通过球极投影与二维球面
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>S</mi><mn>2</mn></msup><annotation encoding="application/x-tex">S^2</annotation></semantics></math>
+同胚，因而称为 <strong>Riemann 球面</strong>。在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∞</mi><annotation encoding="application/x-tex">\infty</annotation></semantics></math>
+附近使用局部坐标</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mfrac><mn>1</mn><mi>z</mi></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+w=\frac1z.
+</annotation></semantics></math></p>
+<p>所以“<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∞</mi><annotation encoding="application/x-tex">\infty</annotation></semantics></math>
+附近的性质”被转换成“<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mi>/</mi><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">g(w)=f(1/w)</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w=0</annotation></semantics></math>
+附近的性质”。例如多项式
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∞</mi><annotation encoding="application/x-tex">\infty</annotation></semantics></math>
+有极点；有理函数则成为从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>ℂ</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\widehat{\mathbb C}</annotation></semantics></math>
+到自身的全局映射。第 4.7
+节研究无穷远点性态时不需要发明新理论，只要使用坐标反演。</p>
+<h3 id="本章向后交付什么">1.5 本章向后交付什么？</h3>
+<p>本章提供三个基础节点：复乘法的旋转—伸缩几何、绕数造成的多值性、把无穷远点局部化的球面坐标。下一章在此基础上问：如果一个函数在每一点都有与复乘法相容的线性近似，会被迫满足什么条件？</p>
+<hr />
+<h2 id="chapter-2">2. 第 2
+章：解析函数与保形变换——复可微为什么比实可微强？</h2>
+<h3 id="严格定义一个差商必须容纳所有方向">2.1
+严格定义：一个差商必须容纳所有方向</h3>
+<p><strong>定义 2.1（复可微）</strong> 设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mo>⊂</mo><mi>ℂ</mi></mrow><annotation encoding="application/x-tex">D\subset\mathbb C</annotation></semantics></math>
+为开集，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><mi>D</mi><mo>→</mo><mi>ℂ</mi></mrow><annotation encoding="application/x-tex">f:D\to\mathbb C</annotation></semantics></math>。若极限</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>lim</mo><mrow><mi>h</mi><mo>→</mo><mn>0</mn></mrow></munder><mfrac><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo>+</mo><mi>h</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mi>h</mi></mfrac></mrow><annotation encoding="application/x-tex">
+f&#39;(z_0)=\lim_{h\to0}\frac{f(z_0+h)-f(z_0)}{h}
+</annotation></semantics></math></p>
+<p>存在，就称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>z</mi><mn>0</mn></msub><annotation encoding="application/x-tex">z_0</annotation></semantics></math>
+复可微。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+每一点复可微，就称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+<strong>解析</strong>或<strong>全纯</strong>。</p>
+<p>这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>
+是复数，能够沿任意方向趋于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>；极限必须得到同一个复数。相比之下，实映射
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>:</mo><msup><mi>ℝ</mi><mn>2</mn></msup><mo>→</mo><msup><mi>ℝ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">F:\mathbb R^2\to\mathbb R^2</annotation></semantics></math>
+的导数一般是任意
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2\times2</annotation></semantics></math>
+实矩阵，而复导数要求这个矩阵必须等价于“乘以某个复数”。</p>
+<p>把</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>+</mo><mi>i</mi><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>u</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>i</mi><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+f(x+iy)=u(x,y)+iv(x,y)
+</annotation></semantics></math></p>
+<p>写成两个实函数。先沿实轴取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><mi>Δ</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">h=\Delta x</annotation></semantics></math>：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>u</mi><mi>x</mi></msub><mo>+</mo><mi>i</mi><msub><mi>v</mi><mi>x</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f&#39;(z_0)=u_x+iv_x.
+</annotation></semantics></math></p>
+<p>再沿虚轴取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><mi>i</mi><mi>Δ</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">h=i\Delta y</annotation></semantics></math>：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><munder><mo>lim</mo><mrow><mi>Δ</mi><mi>y</mi><mo>→</mo><mn>0</mn></mrow></munder><mfrac><mrow><mi>u</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo>+</mo><mi>Δ</mi><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>u</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>i</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo>+</mo><mi>Δ</mi><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mrow><mi>i</mi><mi>Δ</mi><mi>y</mi></mrow></mfrac></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msub><mi>v</mi><mi>y</mi></msub><mo>−</mo><mi>i</mi><msub><mi>u</mi><mi>y</mi></msub><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+f&#39;(z_0)
+&amp;=\lim_{\Delta y\to0}
+\frac{u(x,y+\Delta y)-u(x,y)+i[v(x,y+\Delta y)-v(x,y)]}{i\Delta y}\\
+&amp;=v_y-iu_y.
+\end{aligned}
+</annotation></semantics></math></p>
+<p>同一个差商极限与方向无关，所以实部和虚部分别相等：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><msub><mi>u</mi><mi>x</mi></msub><mo>=</mo><msub><mi>v</mi><mi>y</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>u</mi><mi>y</mi></msub><mo>=</mo><mo>−</mo><msub><mi>v</mi><mi>x</mi></msub><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{u_x=v_y,\qquad u_y=-v_x.}
+</annotation></semantics></math></p>
+<p>这就是 <strong>Cauchy–Riemann
+条件</strong>。公式整体表示：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
+的四个一阶偏导不能独立变化，而要组成一个“旋转—伸缩矩阵”</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mi>f</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>u</mi><mi>x</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>u</mi><mi>y</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>v</mi><mi>x</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>v</mi><mi>y</mi></msub></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>a</mi></mtd><mtd columnalign="center" style="text-align: center"><mo>−</mo><mi>b</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>b</mi></mtd><mtd columnalign="center" style="text-align: center"><mi>a</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>a</mi><mo>=</mo><msub><mi>u</mi><mi>x</mi></msub><mo>,</mo><mi>b</mi><mo>=</mo><msub><mi>v</mi><mi>x</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+Df=
+\begin{pmatrix}
+u_x&amp;u_y\\
+v_x&amp;v_y
+\end{pmatrix}
+=
+\begin{pmatrix}
+a&amp;-b\\
+b&amp;a
+\end{pmatrix},
+\qquad a=u_x, b=v_x.
+</annotation></semantics></math></p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>,</mo><mi>v</mi></mrow><annotation encoding="application/x-tex">u,v</annotation></semantics></math>
+在邻域内具有连续一阶偏导，则 Cauchy–Riemann
+条件也足以推出复可微。连续性假设的作用，是把实可微的线性近似误差控制成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>o</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>h</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">o(|h|)</annotation></semantics></math>。</p>
+<p><strong>反例。</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mover><mi>z</mi><mo accent="true">¯</mo></mover></mrow><annotation encoding="application/x-tex">f(z)=\overline z</annotation></semantics></math>
+作为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ℝ</mi><mn>2</mn></msup><mo>→</mo><msup><mi>ℝ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\mathbb R^2\to\mathbb R^2</annotation></semantics></math>
+的映射处处实可微，但
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mi>x</mi><mo>,</mo><mi>v</mi><mo>=</mo><mo>−</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">u=x,v=-y</annotation></semantics></math>
+给出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>u</mi><mi>x</mi></msub><mo>=</mo><mn>1</mn><mo>≠</mo><mo>−</mo><mn>1</mn><mo>=</mo><msub><mi>v</mi><mi>y</mi></msub></mrow><annotation encoding="application/x-tex">u_x=1\ne-1=v_y</annotation></semantics></math>，所以处处不复可微。它说明“二维实可微”远弱于“复可微”。</p>
+<h3 id="复导数为什么意味着保角">2.2 复导数为什么意味着保角？</h3>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f&#39;(z_0)\ne0</annotation></semantics></math>，则局部增量满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo>+</mo><mi>h</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>h</mi><mo>+</mo><mi>o</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>h</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f(z_0+h)-f(z_0)=f&#39;(z_0)h+o(|h|).
+</annotation></semantics></math></p>
+<p>先解释这条式子：当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>
+很小时，函数的主要作用就是乘以复数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f&#39;(z_0)</annotation></semantics></math>；余项相对于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">|</mo><mi>h</mi><mo stretchy="true" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">|h|</annotation></semantics></math>
+可忽略。乘以非零复数只做旋转和等比例伸缩，因此在一阶近似下保持两条曲线的有向夹角。这就是“解析且导数非零推出局部保形”的原因。</p>
+<p>保形不是“保持长度”或“保持面积”。例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>2</mn><mi>z</mi></mrow><annotation encoding="application/x-tex">f(z)=2z</annotation></semantics></math>
+保角，却把长度放大两倍、面积放大四倍。真正保持的是局部角度。</p>
+<h3 id="分式线性变换为什么是球面上的基本对称">2.3
+分式线性变换为什么是球面上的基本对称？</h3>
+<p><strong>定义 2.2（Möbius 变换）</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>a</mi><mi>z</mi><mo>+</mo><mi>b</mi></mrow><mrow><mi>c</mi><mi>z</mi><mo>+</mo><mi>d</mi></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>a</mi><mi>d</mi><mo>−</mo><mi>b</mi><mi>c</mi><mo>≠</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+T(z)=\frac{az+b}{cz+d},
+\qquad ad-bc\ne0.
+</annotation></semantics></math></p>
+<p>在 Riemann 球面上约定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mi>d</mi><mi>/</mi><mi>c</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">T(-d/c)=\infty</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>∞</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>a</mi><mi>/</mi><mi>c</mi></mrow><annotation encoding="application/x-tex">T(\infty)=a/c</annotation></semantics></math>（<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c\ne0</annotation></semantics></math>）。它的导数是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>a</mi><mi>d</mi><mo>−</mo><mi>b</mi><mi>c</mi></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>c</mi><mi>z</mi><mo>+</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
+T&#39;(z)=\frac{ad-bc}{(cz+d)^2},
+</annotation></semantics></math></p>
+<p>在有限非极点处不为零，所以局部保形。平移、旋转伸缩和反演
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>↦</mo><mn>1</mn><mi>/</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">z\mapsto1/z</annotation></semantics></math>
+可以生成所有 Möbius 变换。它们把广义圆——普通圆或直线加上
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∞</mi><annotation encoding="application/x-tex">\infty</annotation></semantics></math>——仍映成广义圆。</p>
+<p>单位圆盘的基本自同构为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>φ</mi><mi>a</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>e</mi><mrow><mi>i</mi><mi>θ</mi></mrow></msup><mfrac><mrow><mi>z</mi><mo>−</mo><mi>a</mi></mrow><mrow><mn>1</mn><mo>−</mo><mover><mi>a</mi><mo accent="true">¯</mo></mover><mi>z</mi></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>a</mi><mo>∈</mo><mi>𝔻</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\varphi_a(z)=e^{i\theta}\frac{z-a}{1-\overline a z},
+\qquad a\in\mathbb D.
+</annotation></semantics></math></p>
+<p>分子使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+被送到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>，分母则恰好保证
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">|z|=1</annotation></semantics></math>
+时像仍在单位圆上。这类映射以后用于把任意点移到原点，从而把局部问题化为标准计算。</p>
+<h3 id="多值函数与-riemann-曲面只需怎样识别">2.4 多值函数与 Riemann
+曲面只需怎样识别？</h3>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mi>z</mi></msqrt><annotation encoding="application/x-tex">\sqrt z</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">\log z</annotation></semantics></math>
+不是普通意义上的全局单值函数。通常可以选割线得到一个分支；更几何的做法是把不同取值放到不同“层”上，再沿绕行规则粘合，使多值对象在新的曲面上成为单值函数。这就是
+Riemann
+曲面的基本动机。本篇只需记住：<strong>曲面不是为了增加抽象，而是为了让解析延拓后的多值关系重新成为普通单值函数。</strong></p>
+<h3 id="分段自检一第-12-章">分段自检一：第 1—2 章</h3>
+<ol type="1">
+<li>为什么检验差商沿实轴和虚轴的极限，就能得到 Cauchy–Riemann
+条件？</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f&#39;(z_0)\ne0</annotation></semantics></math>
+为什么只保证局部保角，而不保证保长？</li>
+<li>在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∞</mi><annotation encoding="application/x-tex">\infty</annotation></semantics></math>
+附近研究
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+时，应换用什么局部坐标？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>复导数要求差商沿所有方向趋于同一极限；实轴与虚轴给出两个必要表达式，令它们相等就得到两条偏微分关系。</li>
+<li>乘以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f&#39;(z_0)</annotation></semantics></math>
+是旋转加等比例伸缩；角度不变，但伸缩因子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">|f&#39;(z_0)|</annotation></semantics></math>
+一般不等于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>。</li>
+<li>使用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mn>1</mn><mi>/</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">w=1/z</annotation></semantics></math>，把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">z=\infty</annotation></semantics></math>
+转换成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w=0</annotation></semantics></math>。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-3">3. 第 3 章：复积分——边界为什么能决定内部？</h2>
+<h3 id="历史问题实积分的技巧为什么不能解释路径无关">3.1
+历史问题：实积分的技巧为什么不能解释路径无关？</h3>
+<p>十九世纪早期，复积分常被当作计算实积分的形式工具。Cauchy
+的关键推进是把积分路径本身纳入理论：对解析函数，闭路积分往往为零；反过来，这种全局约束又能重构函数内部的值。局部的复可微由此产生远距离的联系。</p>
+<p><strong>定义 3.1（曲线积分）</strong> 设分段
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>C</mi><mn>1</mn></msup><annotation encoding="application/x-tex">C^1</annotation></semantics></math>
+曲线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi><mo>:</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>→</mo><mi>D</mi></mrow><annotation encoding="application/x-tex">\gamma:[a,b]\to D</annotation></semantics></math>，复函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><mi>D</mi><mo>→</mo><mi>ℂ</mi></mrow><annotation encoding="application/x-tex">f:D\to\mathbb C</annotation></semantics></math>
+连续。定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∫</mo><mi>γ</mi></msub><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>z</mi><mo>=</mo><msubsup><mo>∫</mo><mi>a</mi><mi>b</mi></msubsup><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>γ</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>t</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\int_\gamma f(z)\,\mathrm dz
+=\int_a^b f(\gamma(t))\gamma&#39;(t)\,\mathrm dt.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\gamma&#39;(t)\,\mathrm dt</annotation></semantics></math>
+记录沿路径的有向微小位移；因此复积分同时依赖函数值和路径方向。若反向走同一路径，积分变号。</p>
+<h3 id="cauchy-积分定理解决什么">3.2 Cauchy 积分定理解决什么？</h3>
+<p>在一个没有孔洞的区域中，若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+解析，则沿闭曲线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>
+有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∮</mo><mi>γ</mi></msub><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>z</mi><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\oint_\gamma f(z)\,\mathrm dz=0.
+</annotation></semantics></math></p>
+<p>精确版本需要说明区域的拓扑和曲线条件。对本篇可先采用：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+单连通、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+解析、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+内分段光滑闭曲线。其几何意义是，积分只依赖端点而不依赖路径；于是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+存在原函数。</p>
+<p>为何“没有孔洞”重要？函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">1/z</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℂ</mi><mo>\</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathbb C\setminus\{0\}</annotation></semantics></math>
+解析，但沿单位圆
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><msup><mi>e</mi><mrow><mi>i</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">z=e^{it}</annotation></semantics></math>
+有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∮</mo><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>1</mn></mrow></msub><mfrac><mn>1</mn><mi>z</mi></mfrac><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>z</mi><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mrow><mn>2</mn><mi>π</mi></mrow></msubsup><mfrac><mn>1</mn><msup><mi>e</mi><mrow><mi>i</mi><mi>t</mi></mrow></msup></mfrac><mi>i</mi><msup><mi>e</mi><mrow><mi>i</mi><mi>t</mi></mrow></msup><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>t</mi><mo>=</mo><mn>2</mn><mi>π</mi><mi>i</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\oint_{|z|=1}\frac{1}{z}\,\mathrm dz
+=\int_0^{2\pi}\frac{1}{e^{it}}ie^{it}\,\mathrm dt
+=2\pi i.
+</annotation></semantics></math></p>
+<p>闭路绕过不在定义域中的奇点，不能收缩为一点。你的基本群知识在这里直接变成积分障碍。</p>
+<h3 id="cauchy-积分公式内部值由边界值重构">3.3 Cauchy
+积分公式：内部值由边界值重构</h3>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在包含闭圆盘
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mrow><mi>B</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>R</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mo accent="true">¯</mo></mover><annotation encoding="application/x-tex">\overline{B(a,R)}</annotation></semantics></math>
+的区域内解析，且
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mi>R</mi></mrow><annotation encoding="application/x-tex">|z-a|&lt;R</annotation></semantics></math>，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>π</mi><mi>i</mi></mrow></mfrac><msub><mo>∮</mo><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>ζ</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mi>R</mi></mrow></msub><mfrac><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ζ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>ζ</mi><mo>−</mo><mi>z</mi></mrow></mfrac><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>ζ</mi><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+f(z)=\frac{1}{2\pi i}\oint_{|\zeta-a|=R}
+\frac{f(\zeta)}{\zeta-z}\,\mathrm d\zeta.}
+</annotation></semantics></math></p>
+<p>先解释对象：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
+是圆内待求点，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ζ</mi><annotation encoding="application/x-tex">\zeta</annotation></semantics></math>
+是边界上的积分变量；核
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ζ</mi><mo>−</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">1/(\zeta-z)</annotation></semantics></math>
+把每个边界值按其相对位置加权；系数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mi>π</mi><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">1/(2\pi i)</annotation></semantics></math>
+来自基本积分
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∮</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ζ</mi><mo>−</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi mathvariant="normal">d</mi><mi>ζ</mi><mo>=</mo><mn>2</mn><mi>π</mi><mi>i</mi></mrow><annotation encoding="application/x-tex">\oint(\zeta-z)^{-1}\mathrm d\zeta=2\pi i</annotation></semantics></math>。</p>
+<p>推导的核心不是直接积分，而是把奇性分离：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ζ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>ζ</mi><mo>−</mo><mi>z</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ζ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>ζ</mi><mo>−</mo><mi>z</mi></mrow></mfrac><mo>+</mo><mfrac><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>ζ</mi><mo>−</mo><mi>z</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{f(\zeta)}{\zeta-z}
+=\frac{f(\zeta)-f(z)}{\zeta-z}
++\frac{f(z)}{\zeta-z}.
+</annotation></semantics></math></p>
+<p>第一项在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ζ</mi><mo>=</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">\zeta=z</annotation></semantics></math>
+的表面奇点可以消去，并在内部解析，所以闭路积分为零；第二项的积分是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>π</mi><mi>i</mi><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">2\pi i f(z)</annotation></semantics></math>。于是得到公式。</p>
+<p>这条公式是复分析刚性的发动机：函数内部不是独立自由变化，而是被任意包围它的边界值决定。</p>
+<h3 id="从一个公式导出无穷可微估计与-liouville-定理">3.4
+从一个公式导出无穷可微、估计与 Liouville 定理</h3>
+<p>因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
+只出现在核中，可以对核求导，得到</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>n</mi><mi>!</mi></mrow><mrow><mn>2</mn><mi>π</mi><mi>i</mi></mrow></mfrac><msub><mo>∮</mo><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>ζ</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mi>R</mi></mrow></msub><mfrac><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ζ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ζ</mi><mo>−</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msup></mfrac><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>ζ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f^{(n)}(z)=\frac{n!}{2\pi i}
+\oint_{|\zeta-a|=R}
+\frac{f(\zeta)}{(\zeta-z)^{n+1}}\,\mathrm d\zeta.
+</annotation></semantics></math></p>
+<p>因此“一次复可微”在区域内自动推出任意阶复可微，这是实分析中完全不存在的跃迁。</p>
+<p>在圆心
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ζ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">|f(\zeta)|\le M</annotation></semantics></math>。圆周长度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>π</mi><mi>R</mi></mrow><annotation encoding="application/x-tex">2\pi R</annotation></semantics></math>，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mrow><mo stretchy="true" form="prefix">|</mo><msup><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>≤</mo><mfrac><mrow><mi>n</mi><mi>!</mi></mrow><mrow><mn>2</mn><mi>π</mi></mrow></mfrac><msub><mo>∮</mo><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>ζ</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mi>R</mi></mrow></msub><mfrac><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ζ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><msup><mi>R</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msup></mfrac><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><mi mathvariant="normal">d</mi><mi>ζ</mi><mo stretchy="true" form="postfix">|</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>≤</mo><mfrac><mrow><mi>n</mi><mi>!</mi></mrow><mrow><mn>2</mn><mi>π</mi></mrow></mfrac><mo>⋅</mo><mfrac><mi>M</mi><msup><mi>R</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msup></mfrac><mo>⋅</mo><mn>2</mn><mi>π</mi><mi>R</mi><mo>=</mo><mfrac><mrow><mi>n</mi><mi>!</mi><mi>M</mi></mrow><msup><mi>R</mi><mi>n</mi></msup></mfrac><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+|f^{(n)}(a)|
+&amp;\le \frac{n!}{2\pi}
+\oint_{|\zeta-a|=R}
+\frac{|f(\zeta)|}{R^{n+1}}\,|\mathrm d\zeta|\\
+&amp;\le \frac{n!}{2\pi}\cdot
+\frac{M}{R^{n+1}}\cdot2\pi R
+=\frac{n!M}{R^n}.
+\end{aligned}
+</annotation></semantics></math></p>
+<p>这就是 <strong>Cauchy 估计</strong>。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在整个复平面解析且有界，则同一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+对任意
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+成立；取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n=1</annotation></semantics></math>
+并令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">R\to\infty</annotation></semantics></math>，得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f&#39;(a)=0</annotation></semantics></math>。所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+为常数，这就是 Liouville 定理。</p>
+<p>它还能迅速证明代数学基本定理：若非常数多项式
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+没有零点，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>P</mi></mrow><annotation encoding="application/x-tex">1/P</annotation></semantics></math>
+是整函数；又因
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">|P(z)|\to\infty</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>P</mi></mrow><annotation encoding="application/x-tex">1/P</annotation></semantics></math>
+在远处趋于零，在有限闭圆盘上也有界，于是由 Liouville
+定理为常数，矛盾。</p>
+<h3 id="最大模原理告诉我们什么">3.5 最大模原理告诉我们什么？</h3>
+<p>若非常数解析函数在连通区域内部取得模的最大值，它就必须为常数。直觉来自
+Cauchy
+公式的平均性质：中心值是周围值的加权平均；若中心模已经达到最大，三角不等式取等会迫使周围值方向完全一致，解析性再把这一局部常值传播到整个连通域。</p>
+<p>最大模原理把内部估计转移到边界，是后面 Schwarz 引理、Riemann
+映射定理、调和函数最大值原理的共同模板。</p>
+<hr />
+<h2 id="chapter-4">4. 第 4 章：级数——解析函数怎样变成局部代数对象？</h2>
+<h3 id="旧理论缺什么无穷可微仍不足以保证-taylor-展开">4.1
+旧理论缺什么：无穷可微仍不足以保证 Taylor 展开</h3>
+<p>在实分析中，存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>C</mi><mi>∞</mi></msup><annotation encoding="application/x-tex">C^\infty</annotation></semantics></math>
+函数，其 Taylor 级数不能还原原函数；例如在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x=0</annotation></semantics></math>
+处补成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mo>−</mo><mn>1</mn><mi>/</mi><msup><mi>x</mi><mn>2</mn></msup></mrow></msup><annotation encoding="application/x-tex">e^{-1/x^2}</annotation></semantics></math>。所以“任意阶可微”仍可能只是形式信息。</p>
+<p>复分析不同。把 Cauchy 核在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>ζ</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">|</mo></mrow></mrow><annotation encoding="application/x-tex">|z-a|&lt;|\zeta-a|</annotation></semantics></math>
+时展开：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mrow><mi>ζ</mi><mo>−</mo><mi>z</mi></mrow></mfrac><mo>=</mo><mfrac><mn>1</mn><mrow><mi>ζ</mi><mo>−</mo><mi>a</mi></mrow></mfrac><mo>⋅</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>−</mo><mfrac><mrow><mi>z</mi><mo>−</mo><mi>a</mi></mrow><mrow><mi>ζ</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></mfrac><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mo accent="false">∞</mo></munderover><mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>n</mi></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ζ</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msup></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac1{\zeta-z}
+=\frac1{\zeta-a}\cdot
+\frac1{1-\frac{z-a}{\zeta-a}}
+=\sum_{n=0}^{\infty}
+\frac{(z-a)^n}{(\zeta-a)^{n+1}}.
+</annotation></semantics></math></p>
+<p>把它代入 Cauchy 公式并逐项积分，得到</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mo accent="false">∞</mo></munderover><msub><mi>a</mi><mi>n</mi></msub><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>n</mi></msup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>a</mi><mi>n</mi></msub><mo>=</mo><mfrac><mrow><msup><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>n</mi><mi>!</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f(z)=\sum_{n=0}^{\infty}a_n(z-a)^n,
+\qquad
+a_n=\frac{f^{(n)}(a)}{n!}.
+</annotation></semantics></math></p>
+<p>因此解析函数在每一点附近都等于其 Taylor
+级数。<strong>解析性、局部幂级数表示和复可微在区域内处处成立，最终是等价的。</strong></p>
+<h3 id="为什么需要一致收敛">4.2 为什么需要一致收敛？</h3>
+<p>函数项级数</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mo accent="false">∞</mo></munderover><msub><mi>f</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+\sum_{n=0}^{\infty}f_n(z)
+</annotation></semantics></math></p>
+<p>若只逐点收敛，极限未必连续，更不能随意交换积分和求导。复分析常在每个紧子集上一致收敛：对任意紧集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>⊂</mo><mi>D</mi></mrow><annotation encoding="application/x-tex">K\subset D</annotation></semantics></math>，部分和在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+上一致收敛。这称为 <strong>内闭一致收敛</strong>或紧开收敛。</p>
+<p>它允许把局部对象稳定地传到极限：解析函数列若在紧子集上一致收敛，则极限仍解析，而且各阶导数也在更小紧集上一致收敛。第
+7 章的正规族正是围绕这种收敛建立的函数族紧性。</p>
+<h3 id="唯一性定理为什么一点附近的信息能锁死整个区域">4.3
+唯一性定理：为什么一点附近的信息能锁死整个区域？</h3>
+<p>若解析函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>,</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">f,g</annotation></semantics></math>
+在连通域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+上满足：集合</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>z</mi><mo>∈</mo><mi>D</mi><mo>:</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">
+\{z\in D:f(z)=g(z)\}
+</annotation></semantics></math></p>
+<p>在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+内有聚点，那么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>≡</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">f\equiv g</annotation></semantics></math>。原因是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><mi>f</mi><mo>−</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">h=f-g</annotation></semantics></math>
+的零点若在某点聚集，Taylor
+展开中不可能有第一个非零系数；否则零点在该点附近应当孤立。因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>
+在一个邻域恒为零，再沿连通域传播。</p>
+<p>这就是解析函数的强唯一性。实函数可以在一个区间恒为零、在别处非零；解析函数只要在任何有聚点的集合上被确定，就不能在别处自由改变。第
+6 章解析开拓的唯一性以此为基础。</p>
+<h3 id="laurent-级数怎样看穿奇点">4.4 Laurent 级数怎样看穿奇点？</h3>
+<p>当函数在穿孔圆环</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>z</mi><mo>:</mo><mi>r</mi><mo>&lt;</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mi>R</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">
+A=\{z:r&lt;|z-a|&lt;R\}
+</annotation></semantics></math></p>
+<p>内解析时，普通 Taylor 级数不够，因为中心
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+可能不在定义域。此时有唯一 Laurent 展开</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mo>−</mo><mi>∞</mi></mrow><mo accent="false">∞</mo></munderover><msub><mi>c</mi><mi>n</mi></msub><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>n</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f(z)=\sum_{n=-\infty}^{\infty}c_n(z-a)^n.
+</annotation></semantics></math></p>
+<p>负次幂部分称为主部。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+是孤立奇点，则按主部分三类：</p>
+<ul>
+<li><strong>可去奇点</strong>：所有负次项为零；补定义
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>c</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">f(a)=c_0</annotation></semantics></math>
+后解析，例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>sin</mo><mi>z</mi><mi>/</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">\sin z/z</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>；</li>
+<li><strong>极点</strong>：只有有限个负次项，最低次为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mi>m</mi></mrow></msup><annotation encoding="application/x-tex">(z-a)^{-m}</annotation></semantics></math>，例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><msup><mi>z</mi><mi>m</mi></msup></mrow><annotation encoding="application/x-tex">1/z^m</annotation></semantics></math>；</li>
+<li><strong>本性奇点</strong>：有无限多个负次项，例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mn>1</mn><mi>/</mi><mi>z</mi></mrow></msup><annotation encoding="application/x-tex">e^{1/z}</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>。</li>
+</ul>
+<p>这里“孤立”指存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">R&gt;0</annotation></semantics></math>，使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mi>R</mi></mrow><annotation encoding="application/x-tex">0&lt;|z-a|&lt;R</annotation></semantics></math>
+解析。分类不是命名游戏：它决定函数靠近奇点时的全部局部行为。可去奇点有有限极限，极点的模趋于无穷，本性奇点的像则极其稠密；第
+7 章 Picard 大定理会给出最强结论。</p>
+<h3 id="整函数亚纯函数与无穷远点">4.5 整函数、亚纯函数与无穷远点</h3>
+<p>在整个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℂ</mi><annotation encoding="application/x-tex">\mathbb C</annotation></semantics></math>
+解析的函数称为 <strong>整函数</strong>；只允许孤立极点的函数称为
+<strong>亚纯函数</strong>。在 Riemann 球面上，亚纯函数可以看作取值于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>ℂ</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\widehat{\mathbb C}</annotation></semantics></math>
+的解析映射。</p>
+<p>把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">z=\infty</annotation></semantics></math>
+换成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w=0</annotation></semantics></math>
+后可知：整函数若在无穷远点有极点，就是多项式；若在无穷远点为可去奇点，则是常数；非多项式整函数在无穷远点有本性奇点。这把第
+1 章的球面与本章的奇点分类连接起来。</p>
+<h3 id="分段自检二第-34-章">分段自检二：第 3—4 章</h3>
+<ol type="1">
+<li>Cauchy 积分公式为何比“闭路积分为零”更强？</li>
+<li>为什么有界整函数必须为常数？请指出让导数消失的参数。</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mn>1</mn><mi>/</mi><mi>z</mi></mrow></msup><annotation encoding="application/x-tex">e^{1/z}</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><msup><mi>z</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">1/z^3</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>sin</mo><mi>z</mi><mi>/</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">\sin z/z</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+分别是哪类孤立奇点？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>它不仅给出积分约束，还用边界值重构每个内部值，并可通过对核求导得到任意阶导数公式。</li>
+<li>Cauchy 估计给出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mi>M</mi><mi>/</mi><mi>R</mi></mrow><annotation encoding="application/x-tex">|f&#39;(a)|\le M/R</annotation></semantics></math>；整函数允许圆半径
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+任意增大，令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">R\to\infty</annotation></semantics></math>
+即得
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f&#39;(a)=0</annotation></semantics></math>。</li>
+<li>依次为本性奇点、三阶极点、可去奇点。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-5">5. 第 5
+章：残数与辐角原理——一个系数怎样编码积分和零点？</h2>
+<h3 id="从避开奇点到测量奇点">5.1 从“避开奇点”到“测量奇点”</h3>
+<p>Cauchy
+积分定理要求曲线包围区域内解析。一旦内部有奇点，闭路积分不再为零。与其把奇点视为理论失效，不如问：每个奇点对积分贡献多少？Laurent
+展开回答了这个问题。</p>
+<p><strong>定义 5.1（残数）</strong> 若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在孤立奇点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+附近展开为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mo>−</mo><mi>∞</mi></mrow><mo accent="false">∞</mo></munderover><msub><mi>c</mi><mi>n</mi></msub><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>n</mi></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">
+f(z)=\sum_{n=-\infty}^{\infty}c_n(z-a)^n,
+</annotation></semantics></math></p>
+<p>则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">c_{-1}</annotation></semantics></math>
+称为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+的残数，记作</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Res</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Res}(f,a)=c_{-1}.
+</annotation></semantics></math></p>
+<p>为什么唯独
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">c_{-1}</annotation></semantics></math>
+重要？沿小圆
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>−</mo><mi>a</mi><mo>=</mo><mi>r</mi><msup><mi>e</mi><mrow><mi>i</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">z-a=re^{it}</annotation></semantics></math>，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∮</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>n</mi></msup><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>z</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>2</mn><mi>π</mi><mi>i</mi><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>n</mi><mo>=</mo><mo>−</mo><mn>1</mn><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>n</mi><mo>≠</mo><mo>−</mo><mn>1</mn><mi>.</mi></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+\oint (z-a)^n\,\mathrm dz
+=
+\begin{cases}
+2\pi i,&amp;n=-1,\\
+0,&amp;n\ne-1.
+\end{cases}
+</annotation></semantics></math></p>
+<p>所以闭路积分会消去 Laurent 级数中所有其他项，只留下
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">(z-a)^{-1}</annotation></semantics></math>
+的系数。</p>
+<p><strong>残数定理</strong>：若闭曲线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>γ</mi><annotation encoding="application/x-tex">\gamma</annotation></semantics></math>
+内只有有限个孤立奇点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>a</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">a_1,\ldots,a_m</annotation></semantics></math>，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><msub><mo>∮</mo><mi>γ</mi></msub><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>z</mi><mo>=</mo><mn>2</mn><mi>π</mi><mi>i</mi><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><mo>Ind</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo>,</mo><msub><mi>a</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>Res</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo>,</mo><msub><mi>a</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\oint_\gamma f(z)\,\mathrm dz
+=2\pi i\sum_{k=1}^m
+\operatorname{Ind}(\gamma,a_k)
+\operatorname{Res}(f,a_k).}
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Ind</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo>,</mo><msub><mi>a</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\operatorname{Ind}(\gamma,a_k)</annotation></semantics></math>
+是曲线绕
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mi>k</mi></msub><annotation encoding="application/x-tex">a_k</annotation></semantics></math>
+的绕数。对简单正向闭曲线，它在内部为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>。公式整体表示：全局闭路积分等于各局部奇点贡献的代数和。</p>
+<h3 id="完整例子计算一个实积分">5.2 完整例子：计算一个实积分</h3>
+<p>求</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo>=</mo><msubsup><mo>∫</mo><mrow><mo>−</mo><mi>∞</mi></mrow><mi>∞</mi></msubsup><mfrac><mrow><mi mathvariant="normal">d</mi><mi>x</mi></mrow><mrow><mn>1</mn><mo>+</mo><msup><mi>x</mi><mn>2</mn></msup></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+I=\int_{-\infty}^{\infty}\frac{\mathrm dx}{1+x^2}.
+</annotation></semantics></math></p>
+<p>把被积函数延伸为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><msup><mi>z</mi><mn>2</mn></msup></mrow></mfrac><mo>=</mo><mfrac><mn>1</mn><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f(z)=\frac1{1+z^2}
+=\frac1{(z-i)(z+i)}.
+</annotation></semantics></math></p>
+<p>取上半圆轮廓。其内部只有极点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mi>i</mi></mrow><annotation encoding="application/x-tex">z=i</annotation></semantics></math>，且</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Res</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo>,</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>lim</mo><mrow><mi>z</mi><mo>→</mo><mi>i</mi></mrow></munder><mfrac><mrow><mi>z</mi><mo>−</mo><mi>i</mi></mrow><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>+</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>=</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>i</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Res}(f,i)
+=\lim_{z\to i}\frac{z-i}{(z-i)(z+i)}
+=\frac1{2i}.
+</annotation></semantics></math></p>
+<p>因此整个闭路积分为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>π</mi><mi>i</mi><mo>⋅</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>i</mi></mrow></mfrac><mo>=</mo><mi>π</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+2\pi i\cdot\frac1{2i}=\pi.
+</annotation></semantics></math></p>
+<p>还要说明半圆弧的积分为何消失。弧半径为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+时，弧长为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mi>R</mi></mrow><annotation encoding="application/x-tex">\pi R</annotation></semantics></math>；在弧上</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mfrac><mn>1</mn><mrow><msup><mi>R</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|f(z)|\le\frac1{R^2-1}.
+</annotation></semantics></math></p>
+<p>于是由长度乘上最大模估计，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><msub><mo>∫</mo><mtext mathvariant="normal">弧</mtext></msub><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>z</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mfrac><mrow><mi>π</mi><mi>R</mi></mrow><mrow><msup><mi>R</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow></mfrac><mo>→</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\left|\int_{\text{弧}}f(z)\,\mathrm dz\right|
+\le\frac{\pi R}{R^2-1}\to0.
+</annotation></semantics></math></p>
+<p>令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">R\to\infty</annotation></semantics></math>，实轴部分趋于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>I</mi><annotation encoding="application/x-tex">I</annotation></semantics></math>，所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo>=</mo><mi>π</mi></mrow><annotation encoding="application/x-tex">I=\pi</annotation></semantics></math>。残数法不是“把实积分神奇地变成复数”；它的结构是：选择闭路，使新添边界的积分可控，而内部奇点贡献容易计算。</p>
+<h3 id="辐角原理为什么能数零点">5.3 辐角原理为什么能数零点？</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在闭路内亚纯，边界上无零点和极点。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+阶零点，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>m</mi></msup><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≠</mo><mn>0</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+f(z)=(z-a)^m g(z),\qquad g(a)\ne0,
+</annotation></semantics></math></p>
+<p>从而</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>=</mo><mfrac><mi>m</mi><mrow><mi>z</mi><mo>−</mo><mi>a</mi></mrow></mfrac><mo>+</mo><mfrac><mrow><mi>g</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{f&#39;(z)}{f(z)}
+=\frac{m}{z-a}+\frac{g&#39;(z)}{g(z)}.
+</annotation></semantics></math></p>
+<p>所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mi>/</mi><mi>f</mi></mrow><annotation encoding="application/x-tex">f&#39;/f</annotation></semantics></math>
+在零点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+的残数是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+阶极点，同样计算得到残数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mi>m</mi></mrow><annotation encoding="application/x-tex">-m</annotation></semantics></math>。残数定理因此给出</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mfrac><mn>1</mn><mrow><mn>2</mn><mi>π</mi><mi>i</mi></mrow></mfrac><msub><mo>∮</mo><mi>γ</mi></msub><mfrac><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>z</mi><mo>=</mo><mi>Z</mi><mo>−</mo><mi>P</mi><mo>,</mo></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\frac1{2\pi i}\oint_\gamma\frac{f&#39;(z)}{f(z)}\,\mathrm dz
+=Z-P,}
+</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Z</mi><mo>,</mo><mi>P</mi></mrow><annotation encoding="application/x-tex">Z,P</annotation></semantics></math>
+分别是曲线内部零点和极点的总重数。</p>
+<p>左边还有几何意义：沿曲线观察
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(z)</annotation></semantics></math>
+的辐角总变化，除以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>π</mi></mrow><annotation encoding="application/x-tex">2\pi</annotation></semantics></math>，就是像曲线绕原点的次数。这便是
+<strong>辐角原理</strong>：函数值在边界怎样绕原点，决定内部有多少零点减去极点。</p>
+<h3 id="rouché-定理怎样把复杂函数和简单函数比较">5.4 Rouché
+定理怎样把复杂函数和简单函数比较？</h3>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>,</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">f,g</annotation></semantics></math>
+在简单闭曲线及其内部解析，并在边界上满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+|g(z)|&lt;|f(z)|,
+</annotation></semantics></math></p>
+<p>那么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>+</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">f+g</annotation></semantics></math>
+在内部有相同数量的零点（计重数）。原因是边界上</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>+</mo><mi>t</mi><mi>g</mi><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>≤</mo><mi>t</mi><mo>≤</mo><mn>1</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+f+tg,\qquad 0\le t\le1,
+</annotation></semantics></math></p>
+<p>始终不经过
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>，因此像曲线绕原点的绕数在连续变形中不变。</p>
+<p>例如在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">|z|=2</annotation></semantics></math>
+上，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><msup><mi>z</mi><mn>5</mn></msup><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>32</mn></mrow><annotation encoding="application/x-tex">|z^5|=32</annotation></semantics></math>，而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mn>3</mn><mi>z</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">|3z+1|\le7</annotation></semantics></math>，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mn>5</mn></msup><mo>+</mo><mn>3</mn><mi>z</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">
+z^5+3z+1
+</annotation></semantics></math></p>
+<p>与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>z</mi><mn>5</mn></msup><annotation encoding="application/x-tex">z^5</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">|z|&lt;2</annotation></semantics></math>
+内都有五个零点。这是一种“只看边界大小就数内部根”的稳定性定理。</p>
+<p>教材第 5.4 节的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>csc</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">\csc z</annotation></semantics></math>
+展式则展示残数的另一种能力：对适当辅助函数选择大轮廓，把整数点处的极点残数相加，可以得到部分分式展开。这里本篇只需记住其作用：<strong>残数不仅算积分，还能把全局亚纯函数拆成由各极点主部组成的级数。</strong></p>
+<hr />
+<h2 id="chapter-6">6. 第 6
+章：解析开拓——局部公式究竟定义了多大的函数？</h2>
+<h3 id="旧理论缺什么幂级数被自己的收敛圆困住">6.1
+旧理论缺什么：幂级数被自己的收敛圆困住</h3>
+<p>一个幂级数</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mn>0</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mo accent="false">∞</mo></munderover><msub><mi>a</mi><mi>n</mi></msub><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">
+f_0(z)=\sum_{n=0}^{\infty}a_n(z-z_0)^n
+</annotation></semantics></math></p>
+<p>只在某个收敛圆内直接定义函数。但圆周上最近的奇点可能只阻挡某个方向；沿其他方向，函数仍然能够继续。于是函数不应被等同于一条固定级数，而应理解为能够彼此重叠、相互接续的一族局部解析表示。</p>
+<p><strong>定义 6.1（直接解析开拓）</strong> 若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mn>1</mn></msub><annotation encoding="application/x-tex">f_1</annotation></semantics></math>
+在域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mn>1</mn></msub><annotation encoding="application/x-tex">D_1</annotation></semantics></math>
+解析，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mn>2</mn></msub><annotation encoding="application/x-tex">f_2</annotation></semantics></math>
+在域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mn>2</mn></msub><annotation encoding="application/x-tex">D_2</annotation></semantics></math>
+解析，且
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub><mo>∩</mo><msub><mi>D</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">D_1\cap D_2</annotation></semantics></math>
+的某个非空开集上满足
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mn>1</mn></msub><mo>=</mo><msub><mi>f</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">f_1=f_2</annotation></semantics></math>，则称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mn>2</mn></msub><annotation encoding="application/x-tex">f_2</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mn>1</mn></msub><annotation encoding="application/x-tex">f_1</annotation></semantics></math>
+到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mn>2</mn></msub><annotation encoding="application/x-tex">D_2</annotation></semantics></math>
+的直接解析开拓。</p>
+<p>沿一条路径，用有限或连续的一串重叠圆盘逐步开拓，就得到沿路径的解析开拓。唯一性定理保证每次重叠处没有选择自由；但绕不同路径返回同一点，可能得到不同值，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">\log z</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mi>z</mi></msqrt><annotation encoding="application/x-tex">\sqrt z</annotation></semantics></math>
+就是典型例子。</p>
+<h3 id="单值性定理在消除什么障碍">6.2 单值性定理在消除什么障碍？</h3>
+<p>单值性定理（常称 monodromy
+定理）的典型形式是：若一个函数元素能沿单连通域内每条路径继续，并且开拓过程局部一致，那么所得值与路径无关，从而定义域上存在单值解析函数。</p>
+<p>条件“单连通”消除了绕孔洞的不同路径类。可以把逻辑记成：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">局部唯一性</mtext><mo>+</mo><mtext mathvariant="normal">路径可连续变形</mtext><mo>⇒</mo><mtext mathvariant="normal">全局单值性</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{局部唯一性}
++\text{路径可连续变形}
+\Longrightarrow
+\text{全局单值性}.
+</annotation></semantics></math></p>
+<p>它把你在代数拓扑中学过的路径同伦，转化成解析函数值是否会发生分支跳转的问题。</p>
+<h3 id="schwarz-对称原理为什么能越过边界">6.3 Schwarz
+对称原理为什么能越过边界？</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+关于实轴对称，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+的上半部分解析，并连续到实轴，而且在实轴区间上取实值。定义下半部分</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mover><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>z</mi><mo accent="true">¯</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mo accent="true">¯</mo></mover><mi>.</mi></mrow><annotation encoding="application/x-tex">
+F(z)=\overline{f(\overline z)}.
+</annotation></semantics></math></p>
+<p>那么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+给出跨过实轴的解析延拓。共轭看起来是反解析操作，但“先把自变量共轭、再把函数值共轭”恢复了解析性；边界取实值保证上下两侧在实轴一致。</p>
+<p>这个原理说明边界并不总是函数的天然终点。若边界值具备合适对称，解析性会迫使函数越过边界继续存在。</p>
+<h3 id="gamma-函数怎样展示解析开拓">6.4
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+函数怎样展示解析开拓？</h3>
+<p>对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Re</mo><mi>z</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\operatorname{Re}z&gt;0</annotation></semantics></math>，定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mi>∞</mi></msubsup><msup><mi>t</mi><mrow><mi>z</mi><mo>−</mo><mn>1</mn></mrow></msup><msup><mi>e</mi><mrow><mo>−</mo><mi>t</mi></mrow></msup><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>t</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\Gamma(z)=\int_0^\infty t^{z-1}e^{-t}\,\mathrm dt.
+</annotation></semantics></math></p>
+<p>这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>t</mi><mrow><mi>z</mi><mo>−</mo><mn>1</mn></mrow></msup><mo>=</mo><msup><mi>e</mi><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>ln</mo><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">t^{z-1}=e^{(z-1)\ln t}</annotation></semantics></math>，因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t&gt;0</annotation></semantics></math>，使用实对数没有分支问题。积分在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+附近需要
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Re</mo><mi>z</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\operatorname{Re}z&gt;0</annotation></semantics></math>
+保证可积，在无穷处由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mo>−</mo><mi>t</mi></mrow></msup><annotation encoding="application/x-tex">e^{-t}</annotation></semantics></math>
+控制。</p>
+<p>分部积分得到递推式。先取</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><msup><mi>t</mi><mi>z</mi></msup><mo>,</mo><mspace width="2.0em"></mspace><mi mathvariant="normal">d</mi><mi>v</mi><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>t</mi></mrow></msup><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>t</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+u=t^z,\qquad \mathrm dv=e^{-t}\,\mathrm dt,
+</annotation></semantics></math></p>
+<p>则边界项在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Re</mo><mi>z</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\operatorname{Re}z&gt;0</annotation></semantics></math>
+时消失，并有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mi>∞</mi></msubsup><msup><mi>t</mi><mi>z</mi></msup><msup><mi>e</mi><mrow><mo>−</mo><mi>t</mi></mrow></msup><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>t</mi><mo>=</mo><mi>z</mi><msubsup><mo>∫</mo><mn>0</mn><mi>∞</mi></msubsup><msup><mi>t</mi><mrow><mi>z</mi><mo>−</mo><mn>1</mn></mrow></msup><msup><mi>e</mi><mrow><mo>−</mo><mi>t</mi></mrow></msup><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>t</mi><mo>=</mo><mi>z</mi><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\Gamma(z+1)
+=\int_0^\infty t^z e^{-t}\,\mathrm dt
+=z\int_0^\infty t^{z-1}e^{-t}\,\mathrm dt
+=z\Gamma(z).
+</annotation></semantics></math></p>
+<p>于是可以反过来定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mi>z</mi></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\Gamma(z)=\frac{\Gamma(z+1)}{z},
+</annotation></semantics></math></p>
+<p>把函数延伸到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>Re</mo><mi>z</mi><mo>&gt;</mo><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\operatorname{Re}z&gt;-1</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">z\ne0</annotation></semantics></math>；反复使用便得到除
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>,</mo><mo>−</mo><mn>1</mn><mo>,</mo><mo>−</mo><mn>2</mn><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">0,-1,-2,\ldots</annotation></semantics></math>
+外整个复平面的亚纯开拓，并在这些点有简单极点。一个原本只由半平面上的积分定义的函数，就这样借助函数方程扩展到几乎整个平面。</p>
+<h3 id="分段自检三第-56-章">分段自检三：第 5—6 章</h3>
+<ol type="1">
+<li>为什么 Laurent 展开中只有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">(z-a)^{-1}</annotation></semantics></math>
+项对小圆积分有贡献？</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mi>/</mi><mi>f</mi></mrow><annotation encoding="application/x-tex">f&#39;/f</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+阶零点和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+阶极点处的残数分别是什么？</li>
+<li>解析开拓的局部唯一性为什么仍不能自动保证全局单值？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>参数化小圆后，其他整数次幂在一个周期内积分为零；只有指数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">-1</annotation></semantics></math>
+抵消
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">d</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">\mathrm dz</annotation></semantics></math>
+中的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mi>i</mi><mi>t</mi></mrow></msup><annotation encoding="application/x-tex">e^{it}</annotation></semantics></math>，留下常数积分
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>π</mi><mi>i</mi></mrow><annotation encoding="application/x-tex">2\pi i</annotation></semantics></math>。</li>
+<li>分别为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mi>m</mi></mrow><annotation encoding="application/x-tex">-m</annotation></semantics></math>。</li>
+<li>不同路径可能绕过孔洞并返回同一点，局部唯一的开拓仍可能因路径同伦类不同而得到不同分支；单连通条件用于消除这种障碍。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-7">7. 第 7 章：正规族与 Riemann
+映射定理——怎样从函数序列中提取极限？</h2>
+<h3 id="旧理论缺什么逐点选极值映射可能根本不收敛">7.1
+旧理论缺什么：逐点选极值映射可能根本不收敛</h3>
+<p>许多存在性证明会构造一列越来越“好”的解析函数，并希望其极限实现最优目标。但逐点有界不能保证函数列存在解析的收敛子列。需要一种类似实分析中
+Arzelà–Ascoli 的紧性机制，而且收敛必须足够强，才能保留解析性。</p>
+<p><strong>定义 7.1（正规族）</strong> 设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℱ</mi><annotation encoding="application/x-tex">\mathcal F</annotation></semantics></math>
+是域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+上的一族解析函数。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℱ</mi><annotation encoding="application/x-tex">\mathcal F</annotation></semantics></math>
+中任意序列都存在子列，在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+的每个紧子集上一致收敛到解析函数，或在球面度量下趋于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∞</mi><annotation encoding="application/x-tex">\infty</annotation></semantics></math>，则称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℱ</mi><annotation encoding="application/x-tex">\mathcal F</annotation></semantics></math>
+为正规族。</p>
+<p>“每个紧子集上一致”使我们能够使用 Cauchy 公式控制导数；允许趋于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∞</mi><annotation encoding="application/x-tex">\infty</annotation></semantics></math>
+则是因为在 Riemann 球面上无穷远点也是合法值。</p>
+<p><strong>Montel
+定理的一个基本形式</strong>：若解析函数族在每个紧子集上一致有界，则它是正规族。</p>
+<p>为什么局部有界能产生紧性？对一个稍大的圆盘应用 Cauchy
+估计，可得到内部较小圆盘上统一的导数界；导数界又给出等度连续。于是对每个紧集使用
+Ascoli
+型抽取，再用对角方法兼顾可数个逐渐扩大的紧集。这里的关键链条是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">局部一致有界</mtext><mover><mo>⇒</mo><mtext mathvariant="normal">Cauchy 估计</mtext></mover><mtext mathvariant="normal">局部等度连续</mtext><mover><mo>⇒</mo><mtext mathvariant="normal">Ascoli</mtext></mover><mtext mathvariant="normal">紧开收敛子列</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{局部一致有界}
+\overset{\text{Cauchy 估计}}{\Longrightarrow}
+\text{局部等度连续}
+\overset{\text{Ascoli}}{\Longrightarrow}
+\text{紧开收敛子列}.
+</annotation></semantics></math></p>
+<p>这与泛函分析中的紧性思想相通，但对象变成解析函数族，Cauchy
+估计自动提供了所需的正则性。</p>
+<h3 id="riemann-映射定理究竟说什么">7.2 Riemann
+映射定理究竟说什么？</h3>
+<p><strong>定理 7.2（Riemann 映射定理）</strong> 若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mo>⊊</mo><mi>ℂ</mi></mrow><annotation encoding="application/x-tex">D\subsetneq\mathbb C</annotation></semantics></math>
+是非空单连通域，则存在双射解析函数</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><mi>D</mi><mo>→</mo><mi>𝔻</mi></mrow><annotation encoding="application/x-tex">
+f:D\to\mathbb D
+</annotation></semantics></math></p>
+<p>且其逆映射也解析。选定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mn>0</mn></msub><mo>∈</mo><mi>D</mi></mrow><annotation encoding="application/x-tex">z_0\in D</annotation></semantics></math>
+并要求</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="2.0em"></mspace><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>0</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+f(z_0)=0,\qquad f&#39;(z_0)&gt;0,
+</annotation></semantics></math></p>
+<p>则这样的映射唯一。</p>
+<p>定理不是说所有单连通平面区域在欧氏几何下相同，而是说它们在复解析的保形几何下都等价于单位圆盘。形状极其不同的区域，可以通过角度保持但长度可变的坐标变换标准化。</p>
+<p>证明思想体现本章存在的必要性。固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>z</mi><mn>0</mn></msub><annotation encoding="application/x-tex">z_0</annotation></semantics></math>，考虑所有把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+单射解析地映入
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝔻</mi><annotation encoding="application/x-tex">\mathbb D</annotation></semantics></math>
+且把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>z</mi><mn>0</mn></msub><annotation encoding="application/x-tex">z_0</annotation></semantics></math>
+送到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+的函数，试图最大化
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">|f&#39;(z_0)|</annotation></semantics></math>。选取极值序列
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mi>n</mi></msub><annotation encoding="application/x-tex">f_n</annotation></semantics></math>
+后：</p>
+<ol type="1">
+<li>因
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>f</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">|f_n|&lt;1</annotation></semantics></math>，Montel
+定理给出紧开收敛子列；</li>
+<li>极限函数仍解析，并在适当论证下保持单射；</li>
+<li>若像没有填满
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝔻</mi><annotation encoding="application/x-tex">\mathbb D</annotation></semantics></math>，可借助圆盘自同构和开平方构造导数更大的候选，违背极值性；</li>
+<li>因而极限映射满射，得到所需双全纯映射。</li>
+</ol>
+<p>所以 Riemann 映射定理不是凭空出现的几何奇迹，而是“正规族紧性 + 极值法
++ 单值解析构造”的结果。</p>
+<p>Koebe
+定理进一步定量控制单叶函数的像；本篇只需识别它为“从局部归一化推出全局覆盖范围”的失真估计工具。</p>
+<h3 id="picard-定理把本性奇点的混乱推进到什么程度">7.3 Picard
+定理把本性奇点的混乱推进到什么程度？</h3>
+<p><strong>Picard
+小定理</strong>：非常数整函数的值域至多漏掉一个复数。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mi>z</mi></msup><annotation encoding="application/x-tex">e^z</annotation></semantics></math>
+漏掉
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>，说明“至多一个”确实可能发生。</p>
+<p><strong>Picard
+大定理</strong>：在本性奇点的任意穿孔邻域内，函数取遍所有复值，至多有一个例外，而且每个非例外值取无穷多次。</p>
+<p>与较早的 Casorati–Weierstrass
+定理相比，“像在复平面中稠密”只说可以任意接近每个值；Picard
+大定理则几乎要求真正取到每个值且无穷多次。教材用正规族与模函数证明这些结论。本篇不追证明，只把它挂在课程树上：<strong>正规族不仅用于构造映射，也能把“若某类值被遗漏”转化为函数族过度紧致，最终与本性奇点行为矛盾。</strong></p>
+<hr />
+<h2 id="chapter-8">8. 第 8
+章：调和函数——解析函数为什么能解决边值问题？</h2>
+<h3 id="从-cauchyriemann-条件推出-laplace-方程">8.1 从 Cauchy–Riemann
+条件推出 Laplace 方程</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mi>u</mi><mo>+</mo><mi>i</mi><mi>v</mi></mrow><annotation encoding="application/x-tex">f=u+iv</annotation></semantics></math>
+解析。Cauchy–Riemann 条件给出</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>u</mi><mi>x</mi></msub><mo>=</mo><msub><mi>v</mi><mi>y</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>u</mi><mi>y</mi></msub><mo>=</mo><mo>−</mo><msub><mi>v</mi><mi>x</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+u_x=v_y,\qquad u_y=-v_x.
+</annotation></semantics></math></p>
+<p>由于解析函数自动光滑，可以继续求偏导。于是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>+</mo><msub><mi>u</mi><mrow><mi>y</mi><mi>y</mi></mrow></msub><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>x</mi></msub><mo>+</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><msub><mi>v</mi><mi>x</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>y</mi></msub><mo>=</mo><msub><mi>v</mi><mrow><mi>y</mi><mi>x</mi></mrow></msub><mo>−</mo><msub><mi>v</mi><mrow><mi>x</mi><mi>y</mi></mrow></msub><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+u_{xx}+u_{yy}
+=(v_y)_x+(-v_x)_y
+=v_{yx}-v_{xy}=0.
+</annotation></semantics></math></p>
+<p>同理
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>+</mo><msub><mi>v</mi><mrow><mi>y</mi><mi>y</mi></mrow></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">v_{xx}+v_{yy}=0</annotation></semantics></math>。定义
+Laplace 算子</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>u</mi><mo>=</mo><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>+</mo><msub><mi>u</mi><mrow><mi>y</mi><mi>y</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\Delta u=u_{xx}+u_{yy}.
+</annotation></semantics></math></p>
+<p>满足
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>u</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta u=0</annotation></semantics></math>
+的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>C</mi><mn>2</mn></msup><annotation encoding="application/x-tex">C^2</annotation></semantics></math>
+实函数称为
+<strong>调和函数</strong>。所以解析函数的实部和虚部都是调和函数，并彼此称为调和共轭。</p>
+<p>反过来，在单连通域上，每个调和函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>
+都局部乃至全局存在调和共轭
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>，使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>+</mo><mi>i</mi><mi>v</mi></mrow><annotation encoding="application/x-tex">u+iv</annotation></semantics></math>
+解析。这里单连通再次负责消除积分绕孔洞的障碍。</p>
+<h3 id="poisson-公式怎样从边界值恢复圆盘内部">8.2 Poisson
+公式怎样从边界值恢复圆盘内部？</h3>
+<p>Dirichlet 问题要求：给定区域边界上的连续函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>，寻找内部调和函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>，使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>
+连续延伸到边界且
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><msub><mo stretchy="false" form="prefix">|</mo><mrow><mi>∂</mi><mi>D</mi></mrow></msub><mo>=</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">u|_{\partial D}=g</annotation></semantics></math>。物理上，它描述稳态温度或静电势：边界温度固定后，内部平衡状态是什么？</p>
+<p>对单位圆盘，答案由 Poisson 公式给出。写
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mi>r</mi><msup><mi>e</mi><mrow><mi>i</mi><mi>θ</mi></mrow></msup></mrow><annotation encoding="application/x-tex">z=re^{i\theta}</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>r</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0\le r&lt;1</annotation></semantics></math>，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>r</mi><msup><mi>e</mi><mrow><mi>i</mi><mi>θ</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>π</mi></mrow></mfrac><msubsup><mo>∫</mo><mn>0</mn><mrow><mn>2</mn><mi>π</mi></mrow></msubsup><msub><mi>P</mi><mi>r</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo>−</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>e</mi><mrow><mi>i</mi><mi>t</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>t</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+u(re^{i\theta})
+=\frac1{2\pi}\int_0^{2\pi}
+P_r(\theta-t)g(e^{it})\,\mathrm dt,
+</annotation></semantics></math></p>
+<p>其中</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>r</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ϕ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mi>r</mi><mn>2</mn></msup></mrow><mrow><mn>1</mn><mo>−</mo><mn>2</mn><mi>r</mi><mo>cos</mo><mi>ϕ</mi><mo>+</mo><msup><mi>r</mi><mn>2</mn></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+P_r(\phi)=\frac{1-r^2}{1-2r\cos\phi+r^2}
+</annotation></semantics></math></p>
+<p>称为 Poisson 核。公式整体表示：内部值是边界数据的加权平均。Poisson
+核满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>r</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ϕ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>0</mn><mo>,</mo><mspace width="2.0em"></mspace><mfrac><mn>1</mn><mrow><mn>2</mn><mi>π</mi></mrow></mfrac><msubsup><mo>∫</mo><mn>0</mn><mrow><mn>2</mn><mi>π</mi></mrow></msubsup><msub><mi>P</mi><mi>r</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ϕ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>ϕ</mi><mo>=</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+P_r(\phi)&gt;0,
+\qquad
+\frac1{2\pi}\int_0^{2\pi}P_r(\phi)\,\mathrm d\phi=1.
+</annotation></semantics></math></p>
+<p>当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
+接近
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+时，权重集中在与内部点方向相同的边界点附近；因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>r</mi><msup><mi>e</mi><mrow><mi>i</mi><mi>θ</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">u(re^{i\theta})</annotation></semantics></math>
+会趋近边界值
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>e</mi><mrow><mi>i</mi><mi>θ</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">g(e^{i\theta})</annotation></semantics></math>。正性和总质量为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+还立刻给出</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>min</mo><mrow><mi>∂</mi><mi>𝔻</mi></mrow></munder><mi>g</mi><mo>≤</mo><mi>u</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><munder><mo>max</mo><mrow><mi>∂</mi><mi>𝔻</mi></mrow></munder><mi>g</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\min_{\partial\mathbb D}g
+\le u(z)\le
+\max_{\partial\mathbb D}g.
+</annotation></semantics></math></p>
+<p>这就是调和最大最小值原理在圆盘上的直观来源。</p>
+<h3 id="平均值性质最大值原理与唯一性">8.3
+平均值性质、最大值原理与唯一性</h3>
+<p>调和函数满足平均值性质：对闭圆盘
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mrow><mi>B</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>r</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mo accent="true">¯</mo></mover><mo>⊂</mo><mi>D</mi></mrow><annotation encoding="application/x-tex">\overline{B(a,r)}\subset D</annotation></semantics></math>，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>π</mi></mrow></mfrac><msubsup><mo>∫</mo><mn>0</mn><mrow><mn>2</mn><mi>π</mi></mrow></msubsup><mi>u</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>r</mi><msup><mi>e</mi><mrow><mi>i</mi><mi>t</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>t</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+u(a)=\frac1{2\pi}
+\int_0^{2\pi}u(a+re^{it})\,\mathrm dt.
+</annotation></semantics></math></p>
+<p>中心值等于任意小圆周上的平均值。因此若非常数调和函数在内部取得最大值，周围平均值不可能等于这个严格最大值；由此得到最大值原理。</p>
+<p>它又保证 Dirichlet 问题解的唯一性。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>u</mi><mn>1</mn></msub><mo>,</mo><msub><mi>u</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">u_1,u_2</annotation></semantics></math>
+有相同边界值，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><msub><mi>u</mi><mn>1</mn></msub><mo>−</mo><msub><mi>u</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">w=u_1-u_2</annotation></semantics></math>
+调和且边界为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>。最大值原理给
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w\le0</annotation></semantics></math>，对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">-w</annotation></semantics></math>
+再用一次得
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w\ge0</annotation></semantics></math>，所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w=0</annotation></semantics></math>。</p>
+<p>注意存在性与唯一性是两件事：最大值原理给唯一性，Poisson
+公式在圆盘上给存在性。对一般区域，边界是否足够规则、怎样构造解，会把我们带入势论。</p>
+<h3 id="调和测度和次调和函数只需识别什么">8.4
+调和测度和次调和函数只需识别什么？</h3>
+<p>Poisson
+公式把边界集合对内部点的影响写成权重。更一般地，<strong>调和测度</strong>描述从区域内部某点看，边界各部分对调和解贡献多少；在概率论中，它也可解释为
+Brown 运动首次离开区域时落在某段边界的概率。</p>
+<p>若上半连续函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math>
+满足“中心值不超过周围平均值”，就称为
+<strong>次调和函数</strong>。解析函数的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mo stretchy="true" form="postfix">|</mo></mrow></mrow><annotation encoding="application/x-tex">\log|f|</annotation></semantics></math>
+在适当意义下是次调和的。它把最大值原理扩展到不必处处二次可微的函数，并成为现代复分析与势论的基本工具。本篇只要求识别它们的功能，不承担完整定义的测度论细节。</p>
+<h3 id="分段自检四第-78-章">分段自检四：第 7—8 章</h3>
+<ol type="1">
+<li>Montel 定理中，为什么局部一致有界能够带来等度连续？</li>
+<li>Riemann 映射定理的“唯一”为什么需要再规定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(z_0)=0</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>z</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f&#39;(z_0)&gt;0</annotation></semantics></math>？</li>
+<li>Poisson 公式为什么自动推出圆盘内的最大最小值估计？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>在稍大的圆上用 Cauchy
+估计，可统一控制较小圆内的导数；导数统一有界就给出等度连续。</li>
+<li>圆盘有许多自同构；不归一化时，可在一个 Riemann
+映射后复合圆盘自同构得到无穷多个映射。两条条件固定像点和旋转自由度。</li>
+<li>Poisson 核处处为正且积分为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>，所以内部值是边界值的凸平均，必在边界最小值与最大值之间。</li>
+</ol>
+</details>
+<hr />
+<h2 id="把八章压缩成可复述的课程树">9. 把八章压缩成可复述的课程树</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>教材分支</th>
+<th>旧工具的缺陷</th>
+<th>本章核心对象</th>
+<th>向后交付的边</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>第 1 章 复数与函数</td>
+<td>二维坐标未利用复乘法；无穷远点在平面外</td>
+<td>辐角、复极限、Riemann 球面</td>
+<td>旋转—伸缩几何，多值性与无穷远点局部坐标</td>
+</tr>
+<tr class="even">
+<td>第 2 章 解析与保形</td>
+<td>实可微允许任意线性变形</td>
+<td>复导数、Cauchy–Riemann、Möbius 变换</td>
+<td>方向一致性与局部保角</td>
+</tr>
+<tr class="odd">
+<td>第 3 章 复积分</td>
+<td>局部导数没有直接给出全局约束</td>
+<td>Cauchy 定理与积分公式、最大模</td>
+<td>边界重构内部，导数估计</td>
+</tr>
+<tr class="even">
+<td>第 4 章 级数</td>
+<td>实
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>C</mi><mi>∞</mi></msup><annotation encoding="application/x-tex">C^\infty</annotation></semantics></math>
+不保证 Taylor 还原</td>
+<td>幂级数、Laurent 级数、奇点</td>
+<td>局部代数表示、唯一性与奇点分类</td>
+</tr>
+<tr class="odd">
+<td>第 5 章 残数与辐角</td>
+<td>奇点使闭路积分不再为零</td>
+<td>残数、辐角原理、Rouché 定理</td>
+<td>把积分与零点计数局部化</td>
+</tr>
+<tr class="even">
+<td>第 6 章 解析开拓</td>
+<td>单个幂级数受收敛圆限制</td>
+<td>函数元素、开拓、单值性、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+函数</td>
+<td>从局部公式构造最大定义域</td>
+</tr>
+<tr class="odd">
+<td>第 7 章 正规族与映射</td>
+<td>极值函数序列未必有好极限</td>
+<td>正规族、Montel、Riemann 映射、Picard</td>
+<td>用紧性证明存在并控制值分布</td>
+</tr>
+<tr class="even">
+<td>第 8 章 调和函数</td>
+<td>解析理论需要连接实值边值问题</td>
+<td>Laplace 方程、Poisson 核、最大值原理</td>
+<td>势论、Dirichlet 问题与保形不变量</td>
+</tr>
+</tbody>
+</table>
+<p>再记住六条跨章边：</p>
+<ol type="1">
+<li><strong>第 1 章复乘法几何 → 第 2 章复导数局部保角</strong>；</li>
+<li><strong>第 2 章解析性 → 第 3 章 Cauchy 积分公式 → 第 4
+章幂级数刚性</strong>；</li>
+<li><strong>第 4 章 Laurent 系数 → 第 5 章残数与零点计数</strong>；</li>
+<li><strong>第 4 章唯一性 → 第 6 章解析开拓唯一，但第 1
+章拓扑决定是否单值</strong>；</li>
+<li><strong>第 3 章 Cauchy 估计 → 第 7 章正规族紧性 → Riemann
+映射存在性</strong>；</li>
+<li><strong>第 2 章 Cauchy–Riemann → 第 8 章调和性 →
+边值问题与保形几何</strong>。</li>
+</ol>
+<p>如果只记一条总链，可以记成：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mtext mathvariant="normal">复导数的方向无关</mtext><mo>⇒</mo><mtext mathvariant="normal">积分约束</mtext><mo>⇒</mo><mtext mathvariant="normal">幂级数刚性</mtext><mo>⇒</mo><mtext mathvariant="normal">奇点可编码</mtext><mo>⇒</mo><mtext mathvariant="normal">局部信息可延伸且函数族可紧化</mtext><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\text{复导数的方向无关}
+\Rightarrow
+\text{积分约束}
+\Rightarrow
+\text{幂级数刚性}
+\Rightarrow
+\text{奇点可编码}
+\Rightarrow
+\text{局部信息可延伸且函数族可紧化}.}
+</annotation></semantics></math></p>
+<hr />
+<h2 id="结论与下一步">10. 结论与下一步</h2>
+<ol type="1">
+<li>复分析不是把实分析的变量机械换成复数；关键变化是差商必须沿平面内所有方向一致。</li>
+<li>Cauchy–Riemann 条件把一阶导数限制成旋转—伸缩，而 Cauchy
+积分公式进一步让边界值控制内部。</li>
+<li>解析函数因此自动无穷可微并等于局部幂级数；唯一性定理使局部一致传播到整个连通域。</li>
+<li>Laurent 级数把奇点编码成系数，残数抽取其中唯一对闭路积分有贡献的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">c_{-1}</annotation></semantics></math>；对数导数再把残数转成零点减极点的计数。</li>
+<li>解析开拓研究局部公式的最大生命范围；正规族把解析函数序列的局部有界转化成可提取极限的紧性，从而支撑
+Riemann 映射和 Picard 理论。</li>
+<li>调和函数是解析函数的实值影子；Poisson
+核把边界数据恢复为内部解，使复分析连接稳态势场与 Dirichlet 问题。</li>
+</ol>
+<p>若按教材继续深入，下一篇最合适的主题是：</p>
+<blockquote>
+<p><strong>复分析（二）：从复可微到 Cauchy
+积分公式——局部方向一致性如何产生全局约束？</strong></p>
+</blockquote>
+<p>它将集中处理第 1—3 章：严格证明 Cauchy–Riemann 条件的充分性，比较
+Goursat 证明与 Green
+公式路线，解释单连通、原函数与闭路积分之间的等价关系，并完整推导 Cauchy
+公式及最大模原理。</p>
+<hr />
+<h2 id="参考资料">参考资料</h2>
+<ol type="1">
+<li>庞学诚、梁金荣：《复变函数》，科学出版社。本文一级结构依照用户提供的第
+1—8 章目录。</li>
+<li>A.-L. Cauchy, <em>Mémoire sur les intégrales définies, prises entre
+des limites imaginaires</em>, 1825. <a
+href="https://archive.org/details/mmoiresurlesin00cauc">原著扫描件</a>。</li>
+<li>B. Riemann, <em>Grundlagen für eine allgemeine Theorie der
+Functionen einer veränderlichen complexen Grösse</em>, 1851. <a
+href="https://www.maths.tcd.ie/pub/HistMath/People/Riemann/Grund/">原文转录</a>。</li>
+<li>P. Montel, “Sur les familles normales de fonctions analytiques,”
+1916. <a
+href="https://www.numdam.org/item/?id=ASENS_1916_3_33__223_0">Numdam
+原文</a>。</li>
+<li>É. Picard, “Mémoire sur les fonctions entières,” 1880. <a
+href="https://eudml.org/doc/80854">EuDML 原文记录</a>。</li>
+<li>NIST Digital Library of Mathematical Functions, Chapter 5: Gamma
+Function. <a href="https://dlmf.nist.gov/5">在线参考</a>。</li>
+<li>L. V. Ahlfors, <em>Complex Analysis</em>, 3rd ed., McGraw–Hill,
+1979。用于 Cauchy 理论、Möbius 变换、解析开拓与调和函数的交叉核验。</li>
+</ol>
+<hr />
+<section id="reader-feedback" data-feedback-status="addressed">
+<h2>
+读后反馈与修订记录
+</h2>
+<article class="feedback-entry" data-status="pending">
+<h3>
+2026-07-18 · 初版发布
+</h3>
+<p>
+<strong>初版设计：</strong>以教材第 1—8
+章为一级知识树；在每章内分别放置旧理论缺口、严格定义、关键公式或代表性推导以及流向下一章的连接。全文以“复可微为何产生全局刚性”为贯穿问题，设置四处分段自检。
+</p>
+<p>
+<strong>等待反馈：</strong>首次阅读后，请分别评价新信息量、章节树是否易记、关键推导是否足够清楚，以及后半篇是否出现跨章符号负担。
+</p>
+<p>
+<strong>状态：</strong>等待首次阅读反馈。
+</p>
+</article>
+<article class="feedback-entry" data-status="addressed">
+<h3>
+2026-07-19 · 第 1 轮读后反馈
+</h3>
+<p>
+<strong>原始反馈（整理）：</strong>第一，数学小节应先像教科书一样给出严格定义和严格定理表述，再放置直觉、历史、作用和其他解释性内容；读者希望先从定义与定理本身看出数学家的思想，再借助解释加深理解。第二，以“教材章节”为记忆单位并不准确：教材目录只适合提供外层位置，真正进入长期记忆的应是一节中的核心结论或定理簇。例如实分析中的 Carathéodory 可测性判据，Littlewood 三原理与 Egorov、Lusin 定理，以及从有限支撑、可测、有界函数逐步扩张到一般 Lebesgue 积分并配套极限交换定理的构造链。
+</p>
+<p>
+<strong>问题分类：</strong>结构 / 定义 / 定理 / 记忆骨架。
+</p>
+<p>
+<strong>处理：</strong>本文标记为已读并保留为初版样本，不在未获要求时整篇重写。通用数学语料规则已调整为：教材章次只充当一级导航；各章的二级记忆节点必须是少量核心结论或定理簇。数学内容小节默认采用“严格定义与约定 → 严格核心定理/命题 → 陈述解释与历史动机 → 推导或证明机制 → 例子、反例与跨节连接”的顺序。原有“公式先解释再推导”改为“正式陈述先行；陈述之后解释公式，再开始推导”。
+</p>
+<p>
+<strong>状态：</strong>已记录并用于后续语料；当前正文未追溯重写。
+</p>
+</article>
+</section>
+</body>
+</html>

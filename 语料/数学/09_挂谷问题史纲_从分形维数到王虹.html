@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>挂谷问题史纲：从面积为零到三维满维——分形维数、调和分析与王虹</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <meta name="corpus-id" content="09">
+  <meta name="domain" content="mathematics">
+  <meta name="series" content="history-of-kakeya-and-fractal-geometry">
+  <meta name="production-status" content="draft-ready">
+  <meta name="reading-status" content="unread">
+  <meta name="expected-reading-time" content="45-55-minutes">
+  <meta name="generated-date" content="2026-07-21">
+  <meta name="revision-round" content="0">
+  <meta name="fact-checked-at" content="2026-07-21">
+  <style>
+  :root{color-scheme:light;--ink:#172033;--muted:#5f6878;--line:#d9e0eb;--soft:#f5f7fb;--blue:#145f82;--blue-soft:#eaf5fb;--teal:#176b67;--teal-soft:#e9f6f3;--violet:#65439a;--violet-soft:#f2eef9;--warm:#fff7e6;--danger:#8a3d36;--danger-soft:#fff0ee}
+  *{box-sizing:border-box}html{scroll-behavior:smooth;background:#fff}body{margin:0 auto;padding:2.2rem 1.35rem 5rem;max-width:960px;color:var(--ink);background:#fff;font:17px/1.84 system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-wrap:break-word;text-rendering:optimizeLegibility}header{text-align:center;margin-bottom:2rem}h1{font-size:2rem;line-height:1.35;margin:0 0 1rem}h2{margin-top:3.15rem;padding-top:.55rem;border-top:1px solid var(--line);font-size:1.52rem}h3{margin-top:2.05rem;font-size:1.18rem}h4{margin-top:1.5rem;font-size:1.03rem}p,li{text-align:justify}a{color:#175f91;text-underline-offset:3px;overflow-wrap:anywhere}blockquote{margin:1.2rem 0;padding:.9rem 1.05rem;border-left:4px solid var(--violet);background:var(--violet-soft);color:#493270}nav#TOC{margin:1.4rem 0 2.5rem;padding:1rem 1.2rem;background:var(--soft);border:1px solid var(--line);border-radius:12px}nav#TOC::before{content:"目录";display:block;font-weight:800;margin-bottom:.45rem}nav#TOC ul{margin:.22rem 0;padding-left:1.35rem}nav#TOC>ul{padding-left:0}nav#TOC li{list-style:none}nav#TOC a:not(:hover){text-decoration:none}.lead{padding:1rem 1.15rem;border:1px solid #c9dbea;border-radius:12px;background:linear-gradient(145deg,#fff,#edf7fc)}.correction{padding:.9rem 1.05rem;border:1px solid #efb8b1;border-left:5px solid var(--danger);border-radius:10px;background:var(--danger-soft)}.formal{margin:1.2rem 0;padding:1rem 1.1rem;border:1px solid #b9d4e2;border-radius:12px;background:var(--blue-soft)}.formal h4:first-child{margin-top:0;color:#104f6d}.theorem{margin:1.2rem 0;padding:1rem 1.1rem;border:1px solid #b9d9cf;border-radius:12px;background:var(--teal-soft)}.theorem h4:first-child{margin-top:0;color:#105b56}.boundary{margin:1.1rem 0;padding:.85rem 1rem;border:1px dashed #c9a65c;border-radius:10px;background:var(--warm)}.memory-tree{padding:1rem 1.15rem;background:var(--soft);border:1px solid var(--line);border-radius:12px}.memory-tree>ol{margin:.4rem 0}.memory-tree strong{color:#25496c}.timeline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin:1.3rem 0}.timeline section{padding:.85rem .95rem;border:1px solid #d1dbea;border-radius:11px;background:linear-gradient(145deg,#fff,#f5f8fc)}.timeline strong,.timeline span{display:block}.timeline span{margin-top:.3rem;color:var(--muted);font-size:.92rem;line-height:1.62}.lanes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.68rem;margin:1.2rem 0}.lanes section{padding:.8rem .85rem;border-radius:10px;border:1px solid #d3cae7;background:linear-gradient(145deg,#fff,#f5f1fa);min-height:138px}.lanes strong,.lanes span{display:block}.lanes span{margin-top:.35rem;color:var(--muted);font-size:.9rem;line-height:1.55}.arrow-chain{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.65rem;margin:1.3rem 0}.arrow-chain section{position:relative;padding:.78rem .82rem;border:1px solid #c9d8e7;border-radius:10px;background:#f8fbfe;min-height:125px}.arrow-chain section:not(:last-child)::after{content:"→";position:absolute;right:-.56rem;top:42%;z-index:2;color:var(--blue);font-weight:900}.arrow-chain strong,.arrow-chain span{display:block}.arrow-chain span{margin-top:.3rem;color:var(--muted);font-size:.88rem;line-height:1.5}table{width:100%;border-collapse:collapse;display:block;overflow-x:auto;margin:1.2rem 0}th,td{min-width:145px;border:1px solid var(--line);padding:.65rem .75rem;vertical-align:top}th{background:var(--soft)}math[display="block"]{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:.45rem 0}details{margin:1rem 0 1.5rem;padding:.78rem 1rem;border:1px solid var(--line);border-radius:10px;background:#f0f7fb}summary{cursor:pointer;font-weight:800;color:#155f78}.sources li{margin:.55rem 0}#reader-feedback{margin-top:3.5rem;padding:1rem 1.2rem;background:var(--warm);border:1px solid #e8d29f;border-radius:12px}.feedback-entry{padding:.4rem 0 .8rem}code{overflow-wrap:anywhere}
+  @media(max-width:860px){.lanes{grid-template-columns:repeat(2,minmax(0,1fr))}.arrow-chain{grid-template-columns:1fr}.arrow-chain section{min-height:auto}.arrow-chain section:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-1.05rem}}
+  @media(max-width:650px){body{padding:1.2rem .92rem 4rem;font-size:16px;line-height:1.79}h1{font-size:1.62rem}h2{font-size:1.31rem;margin-top:2.6rem}h3{font-size:1.08rem}p,li{text-align:left}.timeline,.lanes{grid-template-columns:1fr}.lead,.formal,.theorem,.boundary,.memory-tree,#reader-feedback{padding:.78rem .86rem}th,td{min-width:132px}}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">挂谷问题史纲：从面积为零到三维满维——分形维数、调和分析与王虹</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#先给答案它属于分形问题吗"
+id="toc-先给答案它属于分形问题吗">0. 先给答案：它属于“分形问题”吗？</a>
+<ul>
+<li><a href="#本文的五个核心结论"
+id="toc-本文的五个核心结论">本文的五个核心结论</a></li>
+</ul></li>
+<li><a href="#为什么维数必须脱离整数" id="toc-为什么维数必须脱离整数">1.
+1870—1919：为什么“维数”必须脱离整数？</a>
+<ul>
+<li><a href="#hausdorff-测度与-hausdorff-维数"
+id="toc-hausdorff-测度与-hausdorff-维数">1.1 Hausdorff 测度与 Hausdorff
+维数</a></li>
+<li><a href="#minkowski-维数直接数小盒子"
+id="toc-minkowski-维数直接数小盒子">1.2 Minkowski
+维数：直接数小盒子</a></li>
+</ul></li>
+<li><a href="#年代雪花分形究竟代表哪一类理论"
+id="toc-年代雪花分形究竟代表哪一类理论">2. 1904—1970
+年代：雪花分形究竟代表哪一类理论？</a>
+<ul>
+<li><a href="#自相似集的严格骨架" id="toc-自相似集的严格骨架">2.1
+自相似集的严格骨架</a></li>
+<li><a href="#分形一词比理论本身晚得多"
+id="toc-分形一词比理论本身晚得多">2.2
+“分形”一词比理论本身晚得多</a></li>
+</ul></li>
+<li><a href="#一根针怎样迫使面积和维数分家"
+id="toc-一根针怎样迫使面积和维数分家">3.
+1917—1971：一根针怎样迫使“面积”和“维数”分家？</a>
+<ul>
+<li><a href="#两个容易混淆的挂谷问题"
+id="toc-两个容易混淆的挂谷问题">3.1 两个容易混淆的挂谷问题</a></li>
+<li><a href="#besicovitch-构造与现代猜想"
+id="toc-besicovitch-构造与现代猜想">3.2 Besicovitch
+构造与现代猜想</a></li>
+</ul></li>
+<li><a href="#年代为什么-fourier-分析会遇见针"
+id="toc-年代为什么-fourier-分析会遇见针">4. 1971—1990 年代：为什么
+Fourier 分析会遇见“针”？</a>
+<ul>
+<li><a href="#fourier-变换与球乘子" id="toc-fourier-变换与球乘子">4.1
+Fourier 变换与球乘子</a></li>
+<li><a href="#限制问题弯曲频率面产生定向波包"
+id="toc-限制问题弯曲频率面产生定向波包">4.2
+限制问题：弯曲频率面产生定向波包</a></li>
+<li><a href="#挂谷极大函数把几何升级为算子不等式"
+id="toc-挂谷极大函数把几何升级为算子不等式">4.3
+挂谷极大函数：把几何升级为算子不等式</a></li>
+</ul></li>
+<li><a href="#从数两根管相交到多尺度结构"
+id="toc-从数两根管相交到多尺度结构">5.
+1990—2022：从“数两根管相交”到多尺度结构</a>
+<ul>
+<li><a href="#细管版挂谷猜想" id="toc-细管版挂谷猜想">5.1
+细管版挂谷猜想</a></li>
+<li><a href="#三种不断升级的结构思想"
+id="toc-三种不断升级的结构思想">5.2 三种不断升级的结构思想</a></li>
+<li><a href="#多项式方法为什么出现" id="toc-多项式方法为什么出现">5.3
+多项式方法为什么出现？</a></li>
+</ul></li>
+<li><a href="#王虹与-zahl-怎样封闭三维缺口"
+id="toc-王虹与-zahl-怎样封闭三维缺口">6. 2022—2025：王虹与 Zahl
+怎样封闭三维缺口？</a>
+<ul>
+<li><a href="#最终定理先放在最前面" id="toc-最终定理先放在最前面">6.1
+最终定理先放在最前面</a></li>
+<li><a href="#证明架构不是一个神奇技巧而是封闭所有结构分支"
+id="toc-证明架构不是一个神奇技巧而是封闭所有结构分支">6.2
+证明架构：不是一个神奇技巧，而是封闭所有结构分支</a></li>
+<li><a href="#这项结果没有证明什么" id="toc-这项结果没有证明什么">6.3
+这项结果没有证明什么</a></li>
+</ul></li>
+<li><a href="#王虹为什么她的研究路线正好走到这里"
+id="toc-王虹为什么她的研究路线正好走到这里">7.
+王虹：为什么她的研究路线正好走到这里？</a>
+<ul>
+<li><a href="#研究对象先于个人履历" id="toc-研究对象先于个人履历">7.1
+研究对象先于个人履历</a></li>
+<li><a href="#从限制问题到挂谷问题的时间线"
+id="toc-从限制问题到挂谷问题的时间线">7.2
+从限制问题到挂谷问题的时间线</a></li>
+<li><a href="#关于菲尔兹奖的最后辨误"
+id="toc-关于菲尔兹奖的最后辨误">7.3 关于菲尔兹奖的最后辨误</a></li>
+</ul></li>
+<li><a href="#把全文压缩成一棵可复述的树"
+id="toc-把全文压缩成一棵可复述的树">8. 把全文压缩成一棵可复述的树</a>
+<ul>
+<li><a href="#第一枝分形维数" id="toc-第一枝分形维数">8.1
+第一枝：分形维数</a></li>
+<li><a href="#第二枝挂谷集合" id="toc-第二枝挂谷集合">8.2
+第二枝：挂谷集合</a></li>
+<li><a href="#第三枝调和分析接口" id="toc-第三枝调和分析接口">8.3
+第三枝：调和分析接口</a></li>
+<li><a href="#第四枝证明方法" id="toc-第四枝证明方法">8.4
+第四枝：证明方法</a></li>
+</ul></li>
+<li><a href="#综合自检" id="toc-综合自检">9. 综合自检</a></li>
+<li><a href="#史料与延伸阅读" id="toc-史料与延伸阅读">10.
+史料与延伸阅读</a></li>
+</ul>
+</nav>
+<div class="lead">
+<p><strong>预计阅读时间</strong>：45—55 分钟<br />
+<strong>阅读状态</strong>：未读<br />
+<strong>先修</strong>：Lebesgue
+测度与积分、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+空间、多元微积分；Fourier 变换只要求见过名称，正文会重新定义。<br />
+<strong>本文目标</strong>：回答“挂谷问题是不是分形问题”，把雪花分形、Hausdorff
+维数、几何测度论、Fourier
+分析与三维挂谷猜想放回同一条历史链；最后准确说明王虹与 Joshua Zahl
+完成了什么、没有完成什么。</p>
+</div>
+<div class="correction">
+<p><strong>先纠正奖项信息（截至 2026 年 7 月 21
+日）</strong>：王虹目前不是已经正式公布的“最近一届菲尔兹奖得主”。2026
+年国际数学家大会将于 7 月 23
+日开幕，奖项发布尚未发生。已经正式确认的近期荣誉包括 2026 年 New
+Horizons in Mathematics Prize 与 2026 年 Clay Research
+Award。本文会以她解决三维挂谷猜想的数学工作收尾，不把尚未发生的奖项公告写成事实。</p>
+</div>
+<h1 id="先给答案它属于分形问题吗">0. 先给答案：它属于“分形问题”吗？</h1>
+<p>可以说“属于”，但只说这一句会把它放进过窄的抽屉。</p>
+<p>挂谷问题的现代集合版本研究一个集合怎样在 <strong>Lebesgue
+测度可以为零</strong>
+的同时，仍然容纳每一个方向的单位线段。为了量化这种“测度看不见、方向结构却极丰富”的现象，必须使用
+Hausdorff 维数和 Minkowski
+维数，所以它当然属于分形几何关心的范围。然而，研究者通常更愿意把它的核心归入
+<strong>几何测度论</strong>；它的主要动力、方法和后果又深入
+<strong>调和分析、偏微分方程、组合与入射几何</strong>。</p>
+<p>换句话说：雪花分形教你“怎样给非整数复杂度赋予维数”；挂谷集则逼问“一个集合拥有所有方向时，维数至少有多大”。二者共享维数语言，却不是同一种结构。</p>
+<h2 id="本文的五个核心结论">本文的五个核心结论</h2>
+<div class="memory-tree">
+<ol type="1">
+<li><strong>测度与维数分工不同</strong>：测度回答“有多少”，维数回答“细化尺度时复杂度怎样增长”；测度为零的集合仍可具有环境空间的满维数。</li>
+<li><strong>雪花不是分形的定义</strong>：自相似只是容易计算维数的一类模型；挂谷集不必有精确自相似，核心约束是“每个方向都有一条线段”。</li>
+<li><strong>现代挂谷猜想是满维结论</strong>：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>a</mi><mi>t</mi><mi>h</mi><mi>b</mi><mi>b</mi><msup><mi>R</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">mathbb R^n</annotation></semantics></math>
+中的挂谷集应当具有 Hausdorff 维数和 Minkowski 维数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>，而不声称它必须具有正的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+维体积。</li>
+<li><strong>Fourier
+分析会制造细管</strong>：把弯曲频率曲面切成小块后，每块的逆 Fourier
+变换在物理空间近似集中于一根细管；估计波的叠加于是变成估计细管怎样重叠。</li>
+<li><strong>王虹—Zahl 的边界必须记清</strong>：他们证明了三维挂谷集的
+Hausdorff 与 Minkowski 维数都是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>；更强的挂谷极大函数猜想以及
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>≥</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">n\ge 4</annotation></semantics></math>
+的集合猜想仍未解决。</li>
+</ol>
+</div>
+<p>这五条是本文的记忆主干。下面的年代、人物与技巧都挂到它们之下。</p>
+<h1 id="为什么维数必须脱离整数">1.
+1870—1919：为什么“维数”必须脱离整数？</h1>
+<p>十九世纪后半叶，分析学不断制造欧氏直觉无法安置的对象：处处连续却处处不可导的函数、删去无数区间后仍剩下不可数多个点的
+Cantor 集、由一条连续曲线填满一个正方形的 Peano
+曲线。旧的“点是零维、曲线是一维、曲面二维”仍然有拓扑意义，却不足以比较这些集合在不同尺度上的大小。</p>
+<h2 id="hausdorff-测度与-hausdorff-维数">1.1 Hausdorff 测度与 Hausdorff
+维数</h2>
+<section id="定义-1hausdorff-外测度" class="formal">
+<h4>定义 1（Hausdorff 外测度）</h4>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(X,d)</annotation></semantics></math>
+是度量空间，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>⊂</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">E\subset X</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">s\ge 0</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\delta&gt;0</annotation></semantics></math>。定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ℋ</mi><mi>δ</mi><mi>s</mi></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>inf</mo><mrow><mo stretchy="true" form="prefix">{</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mo accent="false">∞</mo></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><mo>diam</mo><msub><mi>U</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>s</mi></msup><mo>:</mo><mi>E</mi><mo>⊂</mo><munderover><mo>⋃</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mo accent="false">∞</mo></munderover><msub><mi>U</mi><mi>i</mi></msub><mo>,</mo><mspace width="0.222em"></mspace><mo>diam</mo><msub><mi>U</mi><mi>i</mi></msub><mo>≤</mo><mi>δ</mi><mo stretchy="true" form="postfix">}</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathcal H^s_\delta(E)
+=\inf\left\{\sum_{i=1}^{\infty}(\operatorname{diam}U_i)^s:
+E\subset\bigcup_{i=1}^{\infty}U_i,\ \operatorname{diam}U_i\le\delta\right\}.
+</annotation></semantics></math></p>
+<p>令</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ℋ</mi><mi>s</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>lim</mo><mrow><mi>δ</mi><mo>↓</mo><mn>0</mn></mrow></munder><msubsup><mi>ℋ</mi><mi>δ</mi><mi>s</mi></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathcal H^s(E)=\lim_{\delta\downarrow0}\mathcal H^s_\delta(E).
+</annotation></semantics></math></p>
+<p>这里的极限存在，因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+越小，允许的覆盖越少，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>ℋ</mi><mi>δ</mi><mi>s</mi></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal H^s_\delta(E)</annotation></semantics></math>
+单调不减。不同教材可能在定义前乘一个只依赖
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+的正规化常数；这不改变维数。</p>
+</section>
+<section id="定义-2hausdorff-维数" class="formal">
+<h4>定义 2（Hausdorff 维数）</h4>
+<p>集合
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+的 Hausdorff 维数定义为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>dim</mo><mi mathvariant="normal">H</mi></msub><mi>E</mi><mo>=</mo><mo>inf</mo><mo stretchy="false" form="prefix">{</mo><mi>s</mi><mo>≥</mo><mn>0</mn><mo>:</mo><msup><mi>ℋ</mi><mi>s</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn><mo stretchy="false" form="postfix">}</mo><mo>=</mo><mo>sup</mo><mo stretchy="false" form="prefix">{</mo><mi>s</mi><mo>≥</mo><mn>0</mn><mo>:</mo><msup><mi>ℋ</mi><mi>s</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>∞</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\dim_{\mathrm H}E
+=\inf\{s\ge0:\mathcal H^s(E)=0\}
+=\sup\{s\ge0:\mathcal H^s(E)=\infty\}.
+</annotation></semantics></math></p>
+</section>
+<section id="核心结论-1临界指数现象" class="theorem">
+<h4>核心结论 1（临界指数现象）</h4>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>s</mi><mo>&lt;</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">0\le s&lt;t</annotation></semantics></math>，则：</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ℋ</mi><mi>s</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">\mathcal H^s(E)&lt;\infty</annotation></semantics></math>
+推出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ℋ</mi><mi>t</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mathcal H^t(E)=0</annotation></semantics></math>；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ℋ</mi><mi>t</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mathcal H^t(E)&gt;0</annotation></semantics></math>
+推出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ℋ</mi><mi>s</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">\mathcal H^s(E)=\infty</annotation></semantics></math>。</li>
+</ul>
+<p>因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>↦</mo><msup><mi>ℋ</mi><mi>s</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">s\mapsto\mathcal H^s(E)</annotation></semantics></math>
+在某个临界指数附近从“无穷大”跃迁到“零”，这个临界指数就是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>dim</mo><mi mathvariant="normal">H</mi></msub><mi>E</mi></mrow><annotation encoding="application/x-tex">\dim_{\mathrm H}E</annotation></semantics></math>。</p>
+</section>
+<p>定义中的思想不是“给集合贴一个小数标签”，而是观察覆盖成本如何随尺度改变。若用直径约为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+的小块覆盖
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>，每块支付
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>δ</mi><mi>s</mi></msup><annotation encoding="application/x-tex">\delta^s</annotation></semantics></math>；当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+太小时，小块并没有便宜得足够快，总成本趋向无穷；当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+太大时，小块价格迅速下降，总成本可压到零。</p>
+<p>这一步来自 Carathéodory 外测度构造的推广。Felix Hausdorff 在 1919
+年发表的《Dimension und äußeres
+Maß》中把这种连续参数的测量系统发展成维数理论，并计算了三分 Cantor
+集的非整数维数。它解决的不是“图形看起来是否破碎”，而是“任意度量空间中的集合，怎样拥有非整数的尺度复杂度”。</p>
+<h2 id="minkowski-维数直接数小盒子">1.2 Minkowski
+维数：直接数小盒子</h2>
+<section id="定义-3上下-minkowski-维数" class="formal">
+<h4>定义 3（上、下 Minkowski 维数）</h4>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>⊂</mo><msup><mi>ℝ</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">E\subset\mathbb R^n</annotation></semantics></math>
+有界，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>δ</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N_\delta(E)</annotation></semantics></math>
+表示覆盖
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+所需的半径为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+的球的最少个数。定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mo>dim</mo><mo accent="true">¯</mo></mover><mi mathvariant="normal">M</mi></msub><mi>E</mi><mo>=</mo><munder><mo>limsup</mo><mrow><mi>δ</mi><mo>↓</mo><mn>0</mn></mrow></munder><mfrac><mrow><mo>log</mo><msub><mi>N</mi><mi>δ</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mo>−</mo><mo>log</mo><mi>δ</mi></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><msub><munder><mo>dim</mo><mo accent="true">_</mo></munder><mi mathvariant="normal">M</mi></msub><mi>E</mi><mo>=</mo><munder><mo>liminf</mo><mrow><mi>δ</mi><mo>↓</mo><mn>0</mn></mrow></munder><mfrac><mrow><mo>log</mo><msub><mi>N</mi><mi>δ</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mo>−</mo><mo>log</mo><mi>δ</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\overline{\dim}_{\mathrm M}E
+=\limsup_{\delta\downarrow0}
+\frac{\log N_\delta(E)}{-\log\delta},
+\qquad
+\underline{\dim}_{\mathrm M}E
+=\liminf_{\delta\downarrow0}
+\frac{\log N_\delta(E)}{-\log\delta}.
+</annotation></semantics></math></p>
+<p>二者相等时，公共值记为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>dim</mo><mi mathvariant="normal">M</mi></msub><mi>E</mi></mrow><annotation encoding="application/x-tex">\dim_{\mathrm M}E</annotation></semantics></math>。</p>
+</section>
+<section id="核心结论-2两种维数的基本比较" class="theorem">
+<h4>核心结论 2（两种维数的基本比较）</h4>
+<p>对任意有界集合
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>⊂</mo><msup><mi>ℝ</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">E\subset\mathbb R^n</annotation></semantics></math>，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>dim</mo><mi mathvariant="normal">H</mi></msub><mi>E</mi><mo>≤</mo><msub><munder><mo>dim</mo><mo accent="true">_</mo></munder><mi mathvariant="normal">M</mi></msub><mi>E</mi><mo>≤</mo><msub><mover><mo>dim</mo><mo accent="true">¯</mo></mover><mi mathvariant="normal">M</mi></msub><mi>E</mi><mo>≤</mo><mi>n</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\dim_{\mathrm H}E
+\le \underline{\dim}_{\mathrm M}E
+\le \overline{\dim}_{\mathrm M}E
+\le n.
+</annotation></semantics></math></p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>δ</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>x</mi><mo>:</mo><mo>dist</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><mi>δ</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">E_\delta=\{x:\operatorname{dist}(x,E)&lt;\delta\}</annotation></semantics></math>，则在指数意义上</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>E</mi><mi>δ</mi></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo>≍</mo><msub><mi>N</mi><mi>δ</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><msup><mi>δ</mi><mi>n</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|E_\delta|\asymp N_\delta(E)\,\delta^n.
+</annotation></semantics></math></p>
+<p>因此若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>E</mi><mi>δ</mi></msub><mo stretchy="true" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">|E_\delta|</annotation></semantics></math>
+大致按
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>δ</mi><mrow><mi>n</mi><mo>−</mo><mi>d</mi></mrow></msup><annotation encoding="application/x-tex">\delta^{n-d}</annotation></semantics></math>
+衰减，就应把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+看作它的 Minkowski 维数。</p>
+</section>
+<p>Hausdorff
+维数允许覆盖块有不同大小，并在所有覆盖中取最优，因而更精细、更稳定；Minkowski
+维数固定一个统一尺度，只数需要多少盒子，因而更接近计算和挂谷问题中的“把线膨胀成细管”。两者可能不相等，也不是所有集合都有单一的
+Minkowski 维数。</p>
+<h3 id="分段自检一">分段自检一</h3>
+<ol type="1">
+<li>为什么 Lebesgue 测度为零不能推出 Hausdorff 维数小于环境维数？</li>
+<li>Hausdorff 维数与 Minkowski
+维数中，哪一种允许覆盖块使用不同直径？</li>
+</ol>
+<details>
+<summary>
+参考答案
+</summary>
+<ol type="1">
+<li>Lebesgue 测度只对应环境维数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+的测量。一个集合的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+维测度可以为零，但其覆盖数仍可接近
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>δ</mi><mrow><mo>−</mo><mi>n</mi></mrow></msup><annotation encoding="application/x-tex">\delta^{-n}</annotation></semantics></math>，于是维数仍为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>。维数记录的是跨尺度增长率，不是某一维测度的数值。</li>
+<li>Hausdorff 维数允许每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>U</mi><mi>i</mi></msub><annotation encoding="application/x-tex">U_i</annotation></semantics></math>
+使用不同直径；Minkowski 维数固定尺度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+后计数。</li>
+</ol>
+</details>
+<h1 id="年代雪花分形究竟代表哪一类理论">2. 1904—1970
+年代：雪花分形究竟代表哪一类理论？</h1>
+<h2 id="自相似集的严格骨架">2.1 自相似集的严格骨架</h2>
+<section id="定义-4相似迭代系统与自相似集" class="formal">
+<h4>定义 4（相似迭代系统与自相似集）</h4>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>S</mi><mi>m</mi></msub><mo>:</mo><msup><mi>ℝ</mi><mi>n</mi></msup><mo>→</mo><msup><mi>ℝ</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">S_1,\dots,S_m:\mathbb R^n\to\mathbb R^n</annotation></semantics></math>
+是压缩相似映射，满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><msub><mi>r</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">|</mo><mi>x</mi><mo>−</mo><mi>y</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>&lt;</mo><msub><mi>r</mi><mi>i</mi></msub><mo>&lt;</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|S_i(x)-S_i(y)|=r_i|x-y|,\qquad 0&lt;r_i&lt;1.
+</annotation></semantics></math></p>
+<p>存在唯一非空紧集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><munderover><mo>⋃</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+K=\bigcup_{i=1}^m S_i(K),
+</annotation></semantics></math></p>
+<p>称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+为该迭代系统的自相似集。</p>
+</section>
+<section id="核心结论-3moranhutchinson-维数公式" class="theorem">
+<h4>核心结论 3（Moran–Hutchinson 维数公式）</h4>
+<p>若这些相似映射满足开集条件，即存在非空有界开集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>O</mi><annotation encoding="application/x-tex">O</annotation></semantics></math>
+使得
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>O</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⊂</mo><mi>O</mi></mrow><annotation encoding="application/x-tex">S_i(O)\subset O</annotation></semantics></math>
+且各
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>O</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S_i(O)</annotation></semantics></math>
+两两不交，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+的 Hausdorff 维数与 Minkowski 维数都等于唯一满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><msubsup><mi>r</mi><mi>i</mi><mi>s</mi></msubsup><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">
+\sum_{i=1}^m r_i^s=1
+</annotation></semantics></math></p>
+<p>的数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>。</p>
+</section>
+<p>Koch 在 1904
+年构造的曲线，每一步把一条线段换成四条长度为原来三分之一的线段。因此</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mn>1</mn><mn>3</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>s</mi></msup><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="2.0em"></mspace><mi>s</mi><mo>=</mo><mfrac><mrow><mo>log</mo><mn>4</mn></mrow><mrow><mo>log</mo><mn>3</mn></mrow></mfrac><mo>≈</mo><mn>1.262</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+4\left(\frac13\right)^s=1,
+\qquad
+s=\frac{\log4}{\log3}\approx1.262.
+</annotation></semantics></math></p>
+<p>它的维数严格介于曲线的拓扑维数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+与平面的维数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+之间。第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+步的总长度为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>4</mn><mi>/</mi><mn>3</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>k</mi></msup><annotation encoding="application/x-tex">(4/3)^k</annotation></semantics></math>
+倍，趋于无穷；但三条 Koch
+曲线围成的雪花面积却收敛到有限值。这里不存在矛盾：边界长度、所围面积与边界的维数是三种不同的量。</p>
+<h2 id="分形一词比理论本身晚得多">2.2 “分形”一词比理论本身晚得多</h2>
+<p>从 Cantor、Weierstrass、Peano 到
+Koch，十九世纪末和二十世纪初的数学家主要把这些对象当作反例：连续不必光滑，曲线不必有有限长度，拓扑维数不必描述尺度复杂度。Hausdorff
+的工作提供了严格测量语言；Besicovitch、Federer
+等人的几何测度论进一步研究测度、切线、可求长性与投影。Mandelbrot 到 1970
+年代才推广“fractal”一词，把许多早已存在的对象组织到统一的自然形态与尺度思想中。</p>
+<p>因此，“雪花分形”代表的是最整齐的一类分形：它有精确自相似和一行可解的维数方程。但以下性质都
+<strong>不是分形的一般定义</strong>：</p>
+<ul>
+<li>每个局部都与整体完全相同；</li>
+<li>维数一定是非整数；</li>
+<li>图形一定像破碎的雪花；</li>
+<li>一定由递归绘图生成。</li>
+</ul>
+<p>挂谷集可能没有任何精确自相似。它甚至可以拥有整数的满维数，却仍然具有极端细碎、强烈多尺度的结构。把它叫作分形问题，依据是其测度—维数反常和多尺度几何，而不是因为它像
+Koch 雪花。</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>对象</th>
+<th>主要约束</th>
+<th>测度现象</th>
+<th>维数现象</th>
+<th>研究重心</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>三分 Cantor 集</td>
+<td>每步保留两个三分之一副本</td>
+<td>一维测度为零</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mn>2</mn><mi>/</mi><mo>log</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\log2/\log3</annotation></semantics></math></td>
+<td>自相似、维数</td>
+</tr>
+<tr class="even">
+<td>Koch 曲线</td>
+<td>每步保留四个三分之一副本</td>
+<td>平面面积为零，长度无穷</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mn>4</mn><mi>/</mi><mo>log</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\log4/\log3</annotation></semantics></math></td>
+<td>自相似、不可求长性</td>
+</tr>
+<tr class="odd">
+<td>平面挂谷集</td>
+<td>每个方向含单位线段</td>
+<td>可为面积零</td>
+<td>必须为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></td>
+<td>方向集合、线段重叠</td>
+</tr>
+<tr class="even">
+<td>三维挂谷集</td>
+<td>每个方向含单位线段</td>
+<td>可为体积零</td>
+<td>必须为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math></td>
+<td>细管重叠、多尺度结构</td>
+</tr>
+</tbody>
+</table>
+<h1 id="一根针怎样迫使面积和维数分家">3.
+1917—1971：一根针怎样迫使“面积”和“维数”分家？</h1>
+<h2 id="两个容易混淆的挂谷问题">3.1 两个容易混淆的挂谷问题</h2>
+<section id="定义-5挂谷集" class="formal">
+<h4>定义 5（挂谷集）</h4>
+<p>有界集合
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>⊂</mo><msup><mi>ℝ</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">K\subset\mathbb R^n</annotation></semantics></math>
+称为挂谷集，如果对每个方向
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mo>∈</mo><msup><mi>S</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">e\in S^{n-1}</annotation></semantics></math>，存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>e</mi></msub><mo>∈</mo><msup><mi>ℝ</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">a_e\in\mathbb R^n</annotation></semantics></math>
+使得</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>a</mi><mi>e</mi></msub><mo>+</mo><mi>t</mi><mi>e</mi><mo>:</mo><mn>0</mn><mo>≤</mo><mi>t</mi><mo>≤</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo><mo>⊂</mo><mi>K</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\{a_e+te:0\le t\le1\}\subset K.
+</annotation></semantics></math></p>
+<p>也就是说，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+同时包含每个方向的一条单位线段。若还要求
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+的 Lebesgue 测度为零，常称其为 Besicovitch 集。</p>
+</section>
+<section id="定义-6挂谷针运动问题" class="formal">
+<h4>定义 6（挂谷针运动问题）</h4>
+<p>原始针问题要求一条单位线段在某个平面区域内通过连续的平移和转动改变方向，并询问完成半周或整周转动所需区域的最小面积。</p>
+</section>
+<div class="boundary">
+<p><strong>概念边界</strong>：一个挂谷集只保证“每个方向的某个位置上有一条线段”，不自动给出这些位置之间的连续运动路径。现代集合问题与原始运动问题由同一几何现象产生，但不是逐字等价的同一道题。</p>
+</div>
+<p>1917
+年，日本数学家挂谷宗一研究单位线段转动所需的最小区域。他最初在凸集背景下思考，之后
+Pál 证明最优凸区域是高为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+的等边三角形，面积为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><msqrt><mn>3</mn></msqrt></mrow><annotation encoding="application/x-tex">1/\sqrt3</annotation></semantics></math>。真正改变问题性质的是
+Besicovitch：一旦允许极不规则、非凸的区域，面积可以任意小；进一步能构造面积为零却含有每个方向单位线段的集合。</p>
+<h2 id="besicovitch-构造与现代猜想">3.2 Besicovitch 构造与现代猜想</h2>
+<section id="核心结论-4besicovitch1919-年工作1928-年完整发表"
+class="theorem">
+<h4>核心结论 4（Besicovitch，1919 年工作；1928 年完整发表）</h4>
+<p>平面中存在 Lebesgue 测度为零的挂谷集。</p>
+</section>
+<section id="核心结论-5现代挂谷集合猜想" class="theorem">
+<h4>核心结论 5（现代挂谷集合猜想）</h4>
+<p>对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">n\ge2</annotation></semantics></math>，任意挂谷集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>⊂</mo><msup><mi>ℝ</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">K\subset\mathbb R^n</annotation></semantics></math>
+都应满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>dim</mo><mi mathvariant="normal">H</mi></msub><mi>K</mi><mo>=</mo><mi>n</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mo>dim</mo><mi mathvariant="normal">M</mi></msub><mi>K</mi><mo>=</mo><mi>n</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\dim_{\mathrm H}K=n,
+\qquad
+\dim_{\mathrm M}K=n.
+</annotation></semantics></math></p>
+</section>
+<p>Besicovitch 的基本压缩动作常用“Perron
+树”来说明：先用一个三角形承载某个角度区间内的一族线段；把三角形切成许多细长小三角形，平移它们，使底部大量重叠，同时保留各自代表的方向；反复细分，方向范围没有丢失，面积却被压缩。线段本身面积为零，所以不同方向的线段可以发生极端重叠而不违反简单的面积加法直觉。</p>
+<p>这推翻了“含有所有方向就必有正面积”的猜测，却留下更细的问题：这些集合能否连维数也一起压低？现代挂谷猜想的回答是不能。它不要求正体积，而只要求满维；“体积为零但维数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>”恰好是测度与维数分工的典型案例。</p>
+<section id="核心结论-6davies1971" class="theorem">
+<h4>核心结论 6（Davies，1971）</h4>
+<p>每个平面挂谷集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>⊂</mo><msup><mi>ℝ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">K\subset\mathbb R^2</annotation></semantics></math>
+都满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>dim</mo><mi mathvariant="normal">H</mi></msub><mi>K</mi><mo>=</mo><mn>2</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\dim_{\mathrm H}K=2.
+</annotation></semantics></math></p>
+</section>
+<p>于是二维情形形成一个看似悖论却完全严格的组合：集合可以面积为零，但不可能在
+Hausdorff 维数意义下低于二维。Davies
+的结果把原始面积问题正式转成了分形维数问题；“挂谷集合猜想”这一统一术语则在
+Bourgain 等人 1990 年代的工作中逐渐固定下来。</p>
+<h3 id="分段自检二">分段自检二</h3>
+<ol type="1">
+<li>“存在面积为零的平面挂谷集”为什么不反驳 Davies 定理？</li>
+<li>原始针运动问题比挂谷集定义多了哪项要求？</li>
+</ol>
+<details>
+<summary>
+参考答案
+</summary>
+<ol type="1">
+<li>Davies 断言的是 Hausdorff 维数等于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>，不是二维
+Lebesgue 测度为正。满维集合仍可具有零测度。</li>
+<li>它要求线段的位置随时间连续变化，即存在实际的连续运动；集合定义只要求每个方向分别出现。</li>
+</ol>
+</details>
+<h1 id="年代为什么-fourier-分析会遇见针">4. 1971—1990 年代：为什么
+Fourier 分析会遇见“针”？</h1>
+<p>挂谷问题原本像一道极端的平面几何题。它成为现代分析中心问题，关键转折不是有人更喜欢分形图形，而是
+Fourier 变换把频率方向转成了物理空间中的细长波包。</p>
+<h2 id="fourier-变换与球乘子">4.1 Fourier 变换与球乘子</h2>
+<section id="定义-7fourier-变换与乘子算子" class="formal">
+<h4>定义 7（Fourier 变换与乘子算子）</h4>
+<p>对足够好的函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><msup><mi>ℝ</mi><mi>n</mi></msup><mo>→</mo><mi>ℂ</mi></mrow><annotation encoding="application/x-tex">f:\mathbb R^n\to\mathbb C</annotation></semantics></math>，定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>f</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>ξ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mo>∫</mo><msup><mi>ℝ</mi><mi>n</mi></msup></msub><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><msup><mi>e</mi><mrow><mo>−</mo><mn>2</mn><mi>π</mi><mi>i</mi><mi>x</mi><mo>⋅</mo><mi>ξ</mi></mrow></msup><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\widehat f(\xi)=\int_{\mathbb R^n}f(x)e^{-2\pi i x\cdot\xi}\,dx.
+</annotation></semantics></math></p>
+<p>给定有界函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ξ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">m(\xi)</annotation></semantics></math>，Fourier
+乘子算子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>m</mi></msub><annotation encoding="application/x-tex">T_m</annotation></semantics></math>
+定义为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mrow><msub><mi>T</mi><mi>m</mi></msub><mi>f</mi></mrow><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>ξ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>m</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ξ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mover><mi>f</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>ξ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\widehat{T_mf}(\xi)=m(\xi)\widehat f(\xi).
+</annotation></semantics></math></p>
+</section>
+<section id="核心结论-7fefferman-球乘子定理1971" class="theorem">
+<h4>核心结论 7（Fefferman 球乘子定理，1971）</h4>
+<p>当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">n\ge2</annotation></semantics></math>
+且
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>&lt;</mo><mi>p</mi><mo>&lt;</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">1&lt;p&lt;\infty</annotation></semantics></math>
+时，取单位球指标函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ξ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mn>𝟏</mn><mrow><mi>B</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>ξ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">m(\xi)=\mathbf1_{B(0,1)}(\xi)</annotation></semantics></math>。相应算子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>m</mi></msub><annotation encoding="application/x-tex">T_m</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>L</mi><mi>p</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>ℝ</mi><mi>n</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">L^p(\mathbb R^n)</annotation></semantics></math>
+上有界，当且仅当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">p=2</annotation></semantics></math>。</p>
+</section>
+<p>在一维中，区间频率截断与 Hilbert
+变换理论相容；人们曾期待高维球形截断也有良好
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+性质。Fefferman
+的反例说明球面曲率与方向族会制造完全不同的现象。他把球面切成许多小帽，每个帽的法向对应物理空间的一根细长管；再把这些管按
+Besicovitch
+型方式高度重叠。输入在很小的空间区域内叠加，输出却可在重新排列的管上变得很大，破坏假设的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+有界性。</p>
+<p>这项工作第一次清楚表明：挂谷几何不是调和分析的外部比喻，而能直接决定
+Fourier 算子的成败。</p>
+<h2 id="限制问题弯曲频率面产生定向波包">4.2
+限制问题：弯曲频率面产生定向波包</h2>
+<section id="定义-8球面的-fourier-延拓算子" class="formal">
+<h4>定义 8（球面的 Fourier 延拓算子）</h4>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>S</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">S^{n-1}</annotation></semantics></math>
+带曲面测度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>σ</mi></mrow><annotation encoding="application/x-tex">d\sigma</annotation></semantics></math>。对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>:</mo><msup><mi>S</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup><mo>→</mo><mi>ℂ</mi></mrow><annotation encoding="application/x-tex">g:S^{n-1}\to\mathbb C</annotation></semantics></math>，定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mo>∫</mo><msup><mi>S</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup></msub><msup><mi>e</mi><mrow><mn>2</mn><mi>π</mi><mi>i</mi><mi>x</mi><mo>⋅</mo><mi>ω</mi></mrow></msup><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><mi>σ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+Eg(x)=\int_{S^{n-1}}e^{2\pi i x\cdot\omega}g(\omega)\,d\sigma(\omega).
+</annotation></semantics></math></p>
+<p>Fourier 限制问题询问：曲率是否能带来形如</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>E</mi><mi>g</mi><msub><mo stretchy="false" form="postfix">∥</mo><mrow><msup><mi>L</mi><mi>q</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>ℝ</mi><mi>n</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub><mo>≤</mo><mi>C</mi><mo stretchy="false" form="postfix">∥</mo><mi>g</mi><msub><mo stretchy="false" form="postfix">∥</mo><mrow><msup><mi>L</mi><mi>p</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>S</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub></mrow><annotation encoding="application/x-tex">
+\|Eg\|_{L^q(\mathbb R^n)}\le C\|g\|_{L^p(S^{n-1})}
+</annotation></semantics></math></p>
+<p>的估计，以及哪些指数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo>,</mo><mi>q</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(p,q)</annotation></semantics></math>
+可行。</p>
+</section>
+<section id="核心结论-8steintomas-定理的一种对偶表述" class="theorem">
+<h4>核心结论 8（Stein–Tomas 定理的一种对偶表述）</h4>
+<p>对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">n\ge2</annotation></semantics></math>，存在常数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>n</mi></msub><annotation encoding="application/x-tex">C_n</annotation></semantics></math>
+使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>E</mi><mi>g</mi><msub><mo stretchy="false" form="postfix">∥</mo><mrow><msup><mi>L</mi><mfrac><mrow><mn>2</mn><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></mfrac></msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>ℝ</mi><mi>n</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub><mo>≤</mo><msub><mi>C</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">∥</mo><mi>g</mi><msub><mo stretchy="false" form="postfix">∥</mo><mrow><msup><mi>L</mi><mn>2</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>S</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|Eg\|_{L^{\frac{2(n+1)}{n-1}}(\mathbb R^n)}
+\le C_n\|g\|_{L^2(S^{n-1})}.
+</annotation></semantics></math></p>
+</section>
+<p>Stein–Tomas
+给出一块严格可行的指数范围，但完整限制猜想要求更强的估计。为什么挂谷问题会成为障碍？在半径约为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+的空间区域里，把频率曲面切成角宽约
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>R</mi><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><annotation encoding="application/x-tex">R^{-1/2}</annotation></semantics></math>
+的小帽；每个小帽对应的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>g</mi></mrow><annotation encoding="application/x-tex">Eg</annotation></semantics></math>
+可以分解为长度约
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>、横截面半径约
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>R</mi><mrow><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><annotation encoding="application/x-tex">R^{1/2}</annotation></semantics></math>
+的波包。帽的位置决定细管方向，帽内的 Fourier 数据决定细管中的振幅。</p>
+<p>于是问题变成：许多方向不同的波包能否集中在一个异常小的区域？挂谷集恰好展示了“所有方向的细管可以极度重叠”。若不知道这种重叠的极限，就很难得到最佳限制估计、Bochner–Riesz
+求和估计和若干色散偏微分方程估计。</p>
+<h2 id="挂谷极大函数把几何升级为算子不等式">4.3
+挂谷极大函数：把几何升级为算子不等式</h2>
+<section id="定义-9挂谷极大算子" class="formal">
+<h4>定义 9（挂谷极大算子）</h4>
+<p>令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>T</mi><mrow><mi>e</mi><mo>,</mo><mi>a</mi></mrow><mi>δ</mi></msubsup><annotation encoding="application/x-tex">T_{e,a}^{\delta}</annotation></semantics></math>
+表示以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mo>∈</mo><msup><mi>S</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">e\in S^{n-1}</annotation></semantics></math>
+为轴向、长度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>、横截面半径
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>、位置由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+决定的细管。定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>δ</mi></msub><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>e</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>sup</mo><mi>a</mi></munder><mfrac><mn>1</mn><mrow><mo stretchy="true" form="prefix">|</mo><msubsup><mi>T</mi><mrow><mi>e</mi><mo>,</mo><mi>a</mi></mrow><mi>δ</mi></msubsup><mo stretchy="true" form="postfix">|</mo></mrow></mfrac><msub><mo>∫</mo><msubsup><mi>T</mi><mrow><mi>e</mi><mo>,</mo><mi>a</mi></mrow><mi>δ</mi></msubsup></msub><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><mi>x</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+K_\delta f(e)=
+\sup_a\frac{1}{|T_{e,a}^{\delta}|}
+\int_{T_{e,a}^{\delta}}|f(x)|\,dx.
+</annotation></semantics></math></p>
+</section>
+<section id="核心猜想-9挂谷极大函数猜想端点形式" class="theorem">
+<h4>核心猜想 9（挂谷极大函数猜想，端点形式）</h4>
+<p>对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\varepsilon&gt;0</annotation></semantics></math>，应存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>ε</mi></msub><annotation encoding="application/x-tex">C_\varepsilon</annotation></semantics></math>
+使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>K</mi><mi>δ</mi></msub><mi>f</mi><msub><mo stretchy="false" form="postfix">∥</mo><mrow><msup><mi>L</mi><mi>n</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>S</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub><mo>≤</mo><msub><mi>C</mi><mi>ε</mi></msub><msup><mi>δ</mi><mrow><mo>−</mo><mi>ε</mi></mrow></msup><mo stretchy="false" form="postfix">∥</mo><mi>f</mi><msub><mo stretchy="false" form="postfix">∥</mo><mrow><msup><mi>L</mi><mi>n</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>ℝ</mi><mi>n</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|K_\delta f\|_{L^n(S^{n-1})}
+\le C_\varepsilon\delta^{-\varepsilon}
+\|f\|_{L^n(\mathbb R^n)}.
+</annotation></semantics></math></p>
+</section>
+<p>这条不等式不只问“一个挂谷集有多大”，还要对任意函数统一控制所有方向细管上的平均值。因此它严格强于单纯的集合维数结论。Córdoba
+在 1977 年从实变量角度系统研究挂谷极大函数，并用二维的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mn>2</mn></msup><annotation encoding="application/x-tex">L^2</annotation></semantics></math>
+细管相交估计连接球面求和与挂谷几何。</p>
+<div class="boundary">
+<p><strong>必须保存的边界</strong>：三维集合猜想已经解决，不等于三维挂谷极大函数猜想已经解决。后者仍然开放，也正因为如此，三维限制猜想并没有随集合定理自动全部解决。</p>
+</div>
+<h1 id="从数两根管相交到多尺度结构">5.
+1990—2022：从“数两根管相交”到多尺度结构</h1>
+<h2 id="细管版挂谷猜想">5.1 细管版挂谷猜想</h2>
+<section id="定义-10方向分离的-delta-细管族" class="formal">
+<h4>定义 10（方向分离的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>-细管族）</h4>
+<p>在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mi>n</mi></msup><annotation encoding="application/x-tex">\mathbb R^n</annotation></semantics></math>
+中，取约
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>δ</mi><mrow><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup><annotation encoding="application/x-tex">\delta^{-(n-1)}</annotation></semantics></math>
+根长度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>、半径
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+的管，使其轴向在球面上两两至少相隔常数倍的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>。记该管族为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝕋</mi><annotation encoding="application/x-tex">\mathbb T</annotation></semantics></math>，并令</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝕋</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>⋃</mo><mrow><mi>T</mi><mo>∈</mo><mi>𝕋</mi></mrow></munder><mi>T</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+U(\mathbb T)=\bigcup_{T\in\mathbb T}T.
+</annotation></semantics></math></p>
+</section>
+<section id="核心猜想-10离散挂谷集合估计" class="theorem">
+<h4>核心猜想 10（离散挂谷集合估计）</h4>
+<p>对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\varepsilon&gt;0</annotation></semantics></math>，应有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝕋</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>≥</mo><msub><mi>c</mi><mrow><mi>n</mi><mo>,</mo><mi>ε</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>δ</mi><mi>ε</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|U(\mathbb T)|\ge c_{n,\varepsilon}\,\delta^{\varepsilon}.
+</annotation></semantics></math></p>
+<p>这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mrow><mi>n</mi><mo>,</mo><mi>ε</mi></mrow></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c_{n,\varepsilon}&gt;0</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+及具体管族无关。允许
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>δ</mi><mi>ε</mi></msup><annotation encoding="application/x-tex">\delta^\varepsilon</annotation></semantics></math>
+损失，是因为维数只关心幂指数而忽略任意小的指数损失。</p>
+</section>
+<p>每根管体积约为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>δ</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\delta^{n-1}</annotation></semantics></math>，管数约为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>δ</mi><mrow><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup><annotation encoding="application/x-tex">\delta^{-(n-1)}</annotation></semantics></math>，若完全不重叠，总体积约为常数；若全部近乎重合，又无法拥有分离的方向。猜想断言：方向约束足以阻止“有效体积”按某个固定幂次塌缩。</p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+是挂谷集，则其
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>-邻域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mi>δ</mi></msub><annotation encoding="application/x-tex">K_\delta</annotation></semantics></math>
+包含这样一族细管。因此离散估计给出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>K</mi><mi>δ</mi></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo>≥</mo><msub><mi>c</mi><mi>ε</mi></msub><msup><mi>δ</mi><mi>ε</mi></msup></mrow><annotation encoding="application/x-tex">|K_\delta|\ge c_\varepsilon\delta^\varepsilon</annotation></semantics></math>。与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>K</mi><mi>δ</mi></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo>≍</mo><msup><mi>δ</mi><mrow><mi>n</mi><mo>−</mo><mi>d</mi></mrow></msup></mrow><annotation encoding="application/x-tex">|K_\delta|\asymp\delta^{n-d}</annotation></semantics></math>
+的维数关系比较，并令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ε</mi><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math>
+任意小，就得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">d=n</annotation></semantics></math>。这就是“细管体积估计推出
+Minkowski 满维”的完整逻辑。</p>
+<h2 id="三种不断升级的结构思想">5.2 三种不断升级的结构思想</h2>
+<section id="核心结论-11若干历史里程碑只陈述三维维数效果"
+class="theorem">
+<h4>核心结论 11（若干历史里程碑，只陈述三维维数效果）</h4>
+<ul>
+<li>Córdoba 的二次型方法给出基础下界
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>dim</mo><mi mathvariant="normal">H</mi></msub><mi>K</mi><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\dim_{\mathrm H} K\ge2</annotation></semantics></math>；</li>
+<li>Wolff 在 1995 年用“发刷”方法把三维下界推进到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>dim</mo><mi mathvariant="normal">H</mi></msub><mi>K</mi><mo>≥</mo><mn>5</mn><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\dim_{\mathrm H} K\ge5/2</annotation></semantics></math>；</li>
+<li>Katz、Łaba、Tao
+等人的多尺度与加法组合方法进一步排除部分接近极值的结构；</li>
+<li>Wang 与 Zahl 在 2022 年证明三维“黏性挂谷集”必为满维。</li>
+</ul>
+</section>
+<p><strong>发刷（hairbrush）</strong>：固定一根“刷柄”管，收集所有与它相交的管。不同角度的管在离开刷柄后必须张开，因而不能永久挤在同一小体积内。它把单纯的“两管相交体积”升级为“一整族管围绕一根管的组织方式”。</p>
+<p><strong>平面性与颗粒性（planiness /
+graininess）</strong>：接近极端压缩的三维管族在局部往往不像真正三维的乱麻，而像沿薄平板成束排列；放大到中间尺度，又出现许多长方体“颗粒”。困难在于这种结构可能随位置和尺度变化，不能只在一个固定尺度上分类。</p>
+<p><strong>黏性（stickiness）</strong>：若两根
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>-管在最细尺度接近，那么把视野放大到更粗尺度时，它们仍倾向于聚在同一根粗管或同一颗粒中。它是一种近似的多尺度自相似：不是
+Koch
+曲线那种精确复制，而是“细尺度的邻近关系能沿尺度树持续”。这也说明挂谷理论和分形理论的真正共同点是多尺度结构，而不是外观。</p>
+<h2 id="多项式方法为什么出现">5.3 多项式方法为什么出现？</h2>
+<section id="核心结论-12dvir-的有限域挂谷定理2008" class="theorem">
+<h4>核心结论 12（Dvir 的有限域挂谷定理，2008）</h4>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>⊂</mo><msubsup><mi>𝔽</mi><mi>q</mi><mi>n</mi></msubsup></mrow><annotation encoding="application/x-tex">K\subset\mathbb F_q^n</annotation></semantics></math>
+在有限域向量空间中含有每个方向的一条完整仿射直线，则存在只依赖
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+的常数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mi>n</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c_n&gt;0</annotation></semantics></math>
+使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>K</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>≥</mo><msub><mi>c</mi><mi>n</mi></msub><msup><mi>q</mi><mi>n</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|K|\ge c_n q^n.
+</annotation></semantics></math></p>
+</section>
+<p>Dvir 的证明选择一个次数不高、在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+上消失的非零多项式。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+太小，这样的多项式由维数计数必然存在；但多项式沿每个方向的一条线上有太多零点，于是在线上恒为零，最高次齐次部分最终被迫在所有方向消失，产生矛盾。</p>
+<p>有限域没有距离和“细管厚度”，所以这个证明不能直接搬回
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mi>n</mi></msup><annotation encoding="application/x-tex">\mathbb R^n</annotation></semantics></math>。它带来的关键改变是：不要逐管追踪，而让代数曲面一次性组织空间。Guth
+等人随后发展实空间的多项式分割：一个低次多项式的零集把空间切成许多胞腔，细管要么横穿有限多个胞腔，要么长时间贴近零集；两种情形分别用归纳与切向几何处理。王虹的博士工作正处在这条
+Fourier 限制—波包—多项式分割的技术线上。</p>
+<h3 id="分段自检三">分段自检三</h3>
+<ol type="1">
+<li>为什么离散挂谷估计允许右端出现
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>δ</mi><mi>ε</mi></msup><annotation encoding="application/x-tex">\delta^\varepsilon</annotation></semantics></math>，仍足以推出满维？</li>
+<li>“黏性”与 Koch 曲线的精确自相似有什么区别？</li>
+<li>Dvir 定理为何没有直接解决欧氏空间挂谷猜想？</li>
+</ol>
+<details>
+<summary>
+参考答案
+</summary>
+<ol type="1">
+<li>满维只要求排除固定的维数亏损。若维数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>−</mo><mi>η</mi></mrow><annotation encoding="application/x-tex">n-\eta</annotation></semantics></math>，邻域体积会按
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>δ</mi><mi>η</mi></msup><annotation encoding="application/x-tex">\delta^\eta</annotation></semantics></math>
+衰减；取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi><mo>&lt;</mo><mi>η</mi></mrow><annotation encoding="application/x-tex">\varepsilon&lt;\eta</annotation></semantics></math>
+就与下界冲突。</li>
+<li>黏性只要求管的聚类关系在多个尺度上相容，是近似的、统计性的结构；Koch
+曲线由固定相似映射精确复制。</li>
+<li>有限域没有连续尺度、角度、管厚和极限过程；实空间中的管还可能贴近低次代数簇，产生有限域计数中没有的几何困难。</li>
+</ol>
+</details>
+<h1 id="王虹与-zahl-怎样封闭三维缺口">6. 2022—2025：王虹与 Zahl
+怎样封闭三维缺口？</h1>
+<h2 id="最终定理先放在最前面">6.1 最终定理先放在最前面</h2>
+<section id="核心结论-13wangzahl2025" class="theorem">
+<h4>核心结论 13（Wang–Zahl，2025）</h4>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>⊂</mo><msup><mi>ℝ</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">K\subset\mathbb R^3</annotation></semantics></math>
+是挂谷集，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>dim</mo><mi mathvariant="normal">H</mi></msub><mi>K</mi><mo>=</mo><msub><mo>dim</mo><mi mathvariant="normal">M</mi></msub><mi>K</mi><mo>=</mo><mn>3</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\dim_{\mathrm H}K
+=\dim_{\mathrm M}K
+=3.
+</annotation></semantics></math></p>
+<p>等价的离散后果是：对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\varepsilon&gt;0</annotation></semantics></math>，三维中方向分离的长度
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>、半径
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+的挂谷管族满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><munder><mo>⋃</mo><mrow><mi>T</mi><mo>∈</mo><mi>𝕋</mi></mrow></munder><mi>T</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>≥</mo><msub><mi>c</mi><mi>ε</mi></msub><msup><mi>δ</mi><mi>ε</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\left|\bigcup_{T\in\mathbb T}T\right|
+\ge c_\varepsilon\delta^\varepsilon.
+</annotation></semantics></math></p>
+</section>
+<p>他们实际证明了带有“凸 Wolff 公理”的更一般细管体积估计：任何凸集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+都不能容纳远超其体积比例的细管。方向分离的挂谷管族自动满足所需的非集中性质，所以一般定理推出挂谷结论。Hausdorff
+维数版本还需要处理每根管中只保留大子集的“着色（shading）”，以便归纳过程中删去坏部分而不丢失结论。</p>
+<h2 id="证明架构不是一个神奇技巧而是封闭所有结构分支">6.2
+证明架构：不是一个神奇技巧，而是封闭所有结构分支</h2>
+<div class="arrow-chain">
+<section>
+<strong>离散化</strong><span>把每个方向的线段膨胀为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>-管，问题变为管并集体积。</span>
+</section>
+<section>
+<strong>多尺度分组</strong><span>在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&lt;</mo><mi>ρ</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\delta&lt;\rho&lt;1</annotation></semantics></math>
+的尺度上，把细管组织成粗管与长方体颗粒。</span>
+</section>
+<section>
+<strong>结构二分</strong><span>若管分散，Frostman
+型非集中直接给体积；若集中，则逼出黏性结构。</span>
+</section>
+<section>
+<strong>黏性定理</strong><span>调用 2022
+年证明：三维黏性挂谷配置已经不能低维压缩。</span>
+</section>
+<section>
+<strong>尺度归纳闭合</strong><span>对粗颗粒、薄颗粒等剩余情形分别重标度，最终排除固定维数亏损。</span>
+</section>
+</div>
+<p>最难的新步骤是从任意配置中提取足以使用黏性定理的多尺度结构。此前人们已经知道“如果最坏反例很黏，就有希望”；真正遥不可及的是证明一个任意的近极值反例要么已经足够大，要么必然在某些尺度上表现得黏。Wang–Zahl
+用凸集非集中、Frostman 条件、颗粒结构、X-ray
+型估计和细致的尺度归纳把所有可能分支封闭起来。</p>
+<p>这也是为什么“127
+页只是繁琐分类”是错误理解。分类本身承担定理的逻辑核心：一个反例可以在不同位置表现得平面化、在不同尺度改变聚类方式，还能把质量集中到每根管的不同小段。证明必须保证无论坏结构怎样换装，总有一个量在重标度后改善，或者直接触犯非集中条件。</p>
+<h2 id="这项结果没有证明什么">6.3 这项结果没有证明什么</h2>
+<div class="boundary">
+<ol type="1">
+<li>它没有证明三维挂谷集具有正体积；Besicovitch
+型零体积集合仍然存在。证明的是它们仍有三维的 Hausdorff 与 Minkowski
+维数。</li>
+<li>它没有证明挂谷极大函数猜想。集合版只控制特定细管并集，极大函数版要求对任意函数给统一算子估计。</li>
+<li>它没有自动证明完整 Fourier 限制猜想、Bochner–Riesz
+猜想或所有相关偏微分方程估计。</li>
+<li>它没有解决
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>≥</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">n\ge4</annotation></semantics></math>
+的欧氏挂谷集合猜想。高维中细管可以贴近更复杂的低维代数簇，三维退化到二维后可用
+Córdoba 方法收尾的优势不再存在。</li>
+</ol>
+</div>
+<h1 id="王虹为什么她的研究路线正好走到这里">7.
+王虹：为什么她的研究路线正好走到这里？</h1>
+<h2 id="研究对象先于个人履历">7.1 研究对象先于个人履历</h2>
+<section id="定义-11王虹研究方向的准确交叉" class="formal">
+<h4>定义 11（王虹研究方向的准确交叉）</h4>
+<p>王虹的工作核心可表述为：研究 Fourier
+变换集中在球面、抛物面等弯曲频率集附近时，物理空间函数可以怎样集中；通过波包分解把这种集中转译成细管、投影、距离集与入射问题，再使用多项式分割和多尺度几何控制它们。</p>
+</section>
+<p>这一定义同时落在四个方向中：</p>
+<div class="lanes">
+<section>
+<strong>调和分析</strong><span>Fourier
+限制、局部平滑、振荡积分与不同频率波的叠加。</span>
+</section>
+<section>
+<strong>几何测度论</strong><span>Hausdorff
+维数、投影、距离集、Furstenberg 集与挂谷集。</span>
+</section>
+<section>
+<strong>偏微分方程</strong><span>波方程等色散方程的解如何随时间传播与获得平均平滑。</span>
+</section>
+<section>
+<strong>入射与组合几何</strong><span>点、线、管、代数曲面之间的相交数量及多尺度组织。</span>
+</section>
+</div>
+<p>这比“她研究分形”更准确，也比“她研究 Fourier
+分析”更完整：她的特色正是让分析估计与几何结构来回翻译。</p>
+<h2 id="从限制问题到挂谷问题的时间线">7.2
+从限制问题到挂谷问题的时间线</h2>
+<div class="timeline">
+<section>
+<strong>2019 · MIT 博士论文</strong><span>在 Larry Guth 指导下完成《A
+restriction estimate in
+R³》，用多项式分割和“扫帚”结构改进三维抛物面限制估计。</span>
+</section>
+<section>
+<strong>2019—2021 · IAS</strong><span>继续发展 Fourier
+分析、几何测度论与入射几何的接口；其后任教 UCLA、NYU，并于 2025 年成为
+IHÉS 常任教授。</span>
+</section>
+<section>
+<strong>2022 · 黏性挂谷</strong><span>与 Joshua Zahl 提出并证明三维
+sticky Kakeya 猜想：具有近似多尺度自相似的挂谷集必为满维。</span>
+</section>
+<section>
+<strong>2022—2025 · 投影与 Furstenberg 集</strong><span>与
+Orponen、Shmerkin 等合作推进投影、距离集与 Furstenberg
+集问题；这些工作训练并反哺了多尺度分解技术。</span>
+</section>
+<section>
+<strong>2025 · 三维挂谷猜想</strong><span>与 Zahl
+证明凸集非集中下的细管并集体积估计，从一般配置归约到黏性结构，得到
+Hausdorff 与 Minkowski 满维。</span>
+</section>
+<section>
+<strong>2026 · 正式认可</strong><span>获得 New Horizons in Mathematics
+Prize 与 Clay Research Award；后者明确表彰平面 Furstenberg
+集猜想和三维挂谷猜想等几何调和分析成果。</span>
+</section>
+</div>
+<p>王虹的路线并不是“先研究分形，后来偶然解决一根针的问题”。她从 Fourier
+限制出发时，波包本来就是管；多项式分割本来就在研究管怎样穿过空间；限制问题需要分辨横截相交与切向聚集；挂谷问题则把这些困难剥离成纯几何核心。她与
+Zahl
+的合作进一步把局部几何推进为多尺度结构定理，最终封闭了三维集合猜想。</p>
+<h2 id="关于菲尔兹奖的最后辨误">7.3 关于菲尔兹奖的最后辨误</h2>
+<p>截至本文核验日期 2026 年 7 月 21 日，国际数学联盟公布的 ICM 2026
+会期是 7 月 23—30 日，开幕式和奖项发布尚未举行，因此不能写“王虹已经获得
+2026
+年菲尔兹奖”。中文网络上“提前锁定”“有望获得”一类标题是预测，不是奖项事实。</p>
+<p>可以确定并且已经足够重要的事实是：王虹与 Joshua Zahl
+证明了三维挂谷集合猜想；国际数学联盟转载的 2026 年奖项信息确认她获得 New
+Horizons in Mathematics Prize；Clay Mathematics Institute 确认她与
+Orponen、Shmerkin、Zahl 因相关工作获得 Clay Research
+Award。评价数学工作应从定理及其边界出发，而不是让尚未公布的奖项替代定理本身。</p>
+<h1 id="把全文压缩成一棵可复述的树">8. 把全文压缩成一棵可复述的树</h1>
+<h2 id="第一枝分形维数">8.1 第一枝：分形维数</h2>
+<ul>
+<li><strong>定义锚点</strong>：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℋ</mi><mi>s</mi></msup><annotation encoding="application/x-tex">\mathcal H^s</annotation></semantics></math>
+用可变尺度覆盖的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+次成本测量集合；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mo>dim</mo><mi mathvariant="normal">H</mi></msub><annotation encoding="application/x-tex">\dim_{\mathrm H}</annotation></semantics></math>
+是从无穷到零的临界指数。</li>
+<li><strong>计算锚点</strong>：满足开集条件的自相似集由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∑</mo><msubsup><mi>r</mi><mi>i</mi><mi>s</mi></msubsup><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\sum r_i^s=1</annotation></semantics></math>
+决定维数；Koch 曲线为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mn>4</mn><mi>/</mi><mo>log</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\log4/\log3</annotation></semantics></math>。</li>
+<li><strong>边界锚点</strong>：分形不等于精确自相似，也不要求维数非整数。</li>
+</ul>
+<h2 id="第二枝挂谷集合">8.2 第二枝：挂谷集合</h2>
+<ul>
+<li><strong>定义锚点</strong>：每个方向含一条单位线段。</li>
+<li><strong>反常锚点</strong>：Besicovitch 构造允许 Lebesgue
+测度为零。</li>
+<li><strong>核心猜想</strong>：即便测度为零，Hausdorff 与 Minkowski
+维数仍应等于环境维数。</li>
+<li><strong>已解决范围</strong>：二维由 Davies 解决；三维由 Wang–Zahl
+解决；四维以上开放。</li>
+</ul>
+<h2 id="第三枝调和分析接口">8.3 第三枝：调和分析接口</h2>
+<ul>
+<li><strong>翻译锚点</strong>：频率曲面小帽
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↔</mo><annotation encoding="application/x-tex">\longleftrightarrow</annotation></semantics></math>
+物理空间定向波包细管。</li>
+<li><strong>历史锚点</strong>：Fefferman 球乘子反例证明挂谷重叠能破坏
+Fourier 算子估计；Córdoba 建立极大函数框架。</li>
+<li><strong>边界锚点</strong>：集合满维弱于极大函数估计，不能自动推出完整限制猜想。</li>
+</ul>
+<h2 id="第四枝证明方法">8.4 第四枝：证明方法</h2>
+<ul>
+<li><strong>局部计数</strong>：两管相交与 Córdoba 的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mn>2</mn></msup><annotation encoding="application/x-tex">L^2</annotation></semantics></math>
+方法。</li>
+<li><strong>整体组织</strong>：Wolff 发刷、平面性、颗粒性。</li>
+<li><strong>代数组织</strong>：Dvir 有限域多项式法、Guth
+实空间多项式分割。</li>
+<li><strong>多尺度闭合</strong>：黏性结构、凸集非集中、尺度归纳；王虹—Zahl
+排除一般三维反例。</li>
+</ul>
+<h1 id="综合自检">9. 综合自检</h1>
+<ol type="1">
+<li>一个平面集合的面积为零、Hausdorff 维数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+是否矛盾？请用定义中的“临界指数”解释。</li>
+<li>为什么 Koch 曲线的维数公式不能直接用于一般挂谷集？</li>
+<li>写出挂谷集合猜想与挂谷极大函数猜想的对象差异：一个估计集合的什么，另一个控制什么？</li>
+<li>用三句话说明 Fourier
+限制问题怎样产生细管、细管怎样产生挂谷障碍。</li>
+<li>王虹—Zahl 的 2025
+年结果解决了哪两个维数版本？还有哪两个重要边界仍开放？</li>
+</ol>
+<details>
+<summary>
+参考答案
+</summary>
+<ol type="1">
+<li>不矛盾。二维 Lebesgue 测度为零只说明
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℋ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\mathcal H^2</annotation></semantics></math>
+在相应正规化下为零；维数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+说明对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>&lt;</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">s&lt;2</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℋ</mi><mi>s</mi></msup><annotation encoding="application/x-tex">\mathcal H^s</annotation></semantics></math>
+仍为无穷或至少不能降到零，临界指数仍是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>。</li>
+<li>Koch
+曲线由有限个固定相似映射精确生成并满足开集条件；一般挂谷集只有方向线段约束，没有固定相似比和精确自相似分解。</li>
+<li>集合猜想控制挂谷集或方向分离细管并集的维数/体积；极大函数猜想控制任意函数在所有定向细管上的最大平均值的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>n</mi></msup><annotation encoding="application/x-tex">L^n</annotation></semantics></math>
+范数。</li>
+<li>将弯曲频率面切成小帽；每个小帽的逆 Fourier
+成分在物理空间形成沿法向传播的波包细管；不同方向细管可以按挂谷方式高度重叠，造成波的集中并阻碍最优估计。</li>
+<li>他们证明三维挂谷集的 Hausdorff 维数和 Minkowski 维数都是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>。三维极大函数版仍开放，四维及以上的欧氏集合猜想也仍开放。</li>
+</ol>
+</details>
+<h1 id="史料与延伸阅读">10. 史料与延伸阅读</h1>
+<div class="sources">
+<ol type="1">
+<li>Helge von Koch, <em>Sur une courbe continue sans tangente, obtenue
+par une construction géométrique élémentaire</em> (1904)：Koch
+曲线原始来源。</li>
+<li>Felix Hausdorff, <a
+href="https://eudml.org/doc/158784"><em>Dimension und äußeres
+Maß</em></a>, <em>Mathematische Annalen</em> 79 (1919),
+157–179：Hausdorff 维数的奠基论文。</li>
+<li>Sōichi Kakeya, <em>Some Problems on Maximum and Minimum Regarding
+Ovals</em>, <em>Tohoku Science Reports</em> 6 (1917),
+71–88：原始针问题。</li>
+<li>A. S. Besicovitch, <a href="https://eudml.org/doc/167980"><em>On
+Kakeya’s Problem and a Similar One</em></a>, <em>Mathematische
+Zeitschrift</em> 27 (1928), 312–320：零面积构造的经典论文。</li>
+<li>R. O. Davies, <em>Some Remarks on the Kakeya Problem</em>,
+<em>Proceedings of the Cambridge Philosophical Society</em> 69 (1971),
+417–421：二维 Hausdorff 满维。</li>
+<li>Charles Fefferman, <em>The Multiplier Problem for the Ball</em>,
+<em>Annals of Mathematics</em> 94 (1971), 330–336：挂谷几何进入 Fourier
+乘子理论的关键节点。</li>
+<li>Antonio Córdoba, <a
+href="https://www.jstor.org/stable/2374006"><em>The Kakeya Maximal
+Function and the Spherical Summation Multipliers</em></a>, <em>American
+Journal of Mathematics</em> 99 (1977), 1–22。</li>
+<li>Thomas Wolff, <a href="https://eudml.org/doc/39495"><em>An Improved
+Bound for Kakeya Type Maximal Functions</em></a>, <em>Revista Matemática
+Iberoamericana</em> 11 (1995), 651–674：发刷方法与维数推进。</li>
+<li>Hong Wang, <a
+href="https://dspace.mit.edu/entities/publication/191c62a5-caa0-42e0-8a92-a4374ababeef"><em>A
+Restriction Estimate in R³</em></a> (MIT PhD thesis, 2019)。</li>
+<li>Hong Wang and Joshua Zahl, <a
+href="https://arxiv.org/abs/2210.09581"><em>Sticky Kakeya Sets and the
+Sticky Kakeya Conjecture</em></a> (2022; 后发表于
+JAMS)：三维黏性情形。</li>
+<li>Hong Wang and Joshua Zahl, <a
+href="https://arxiv.org/abs/2502.17655"><em>Volume Estimates for Unions
+of Convex Sets, and the Kakeya Set Conjecture in Three
+Dimensions</em></a> (2025)：三维最终定理的原始论文。</li>
+<li>Larry Guth, <a href="https://arxiv.org/pdf/2604.03416"><em>The
+Kakeya Conjecture, after Wang and Zahl</em></a>
+(2026)：当前最适合继续深入证明架构的综述。</li>
+<li>Institute for Advanced Study, <a
+href="https://www.ias.edu/ideas/three-dimensional-breakthrough"><em>A
+Three-Dimensional Breakthrough</em></a>
+(2025)：数学背景与历史脉络的权威概述。</li>
+<li>International Mathematical Union, <a
+href="https://www.mathunion.org/icm/icm-2026">ICM 2026</a> 与 <a
+href="https://www.mathunion.org/imu-news/archive/2026/imu-news-137-may-2026">IMU
+News 137</a>：大会日期与王虹近期奖项信息的正式核验来源。</li>
+<li>Clay Mathematics Institute, <a
+href="https://www.claymath.org/news/2026-clay-research-awards/">2026
+Clay Research Awards</a>，以及 Breakthrough Prize, <a
+href="https://breakthroughprize.org/Laureates/3/L4008">Hong Wang — 2026
+New Horizons in Mathematics
+Prize</a>：两项已正式公布荣誉的原始来源。</li>
+</ol>
+</div>
+<section id="reader-feedback" data-feedback-status="pending">
+<h2>
+读后反馈与修订记录
+</h2>
+<article class="feedback-entry">
+<h3>
+2026-07-21 · 第 0 轮
+</h3>
+<p>
+<strong>生产说明：</strong>初稿生成。按“历史节点 → 严格定义与核心结论 →
+思想、旧理论缺陷与后续连接”的顺序组织；文章开头纠正尚未正式公布的菲尔兹奖信息。
+</p>
+<p>
+<strong>状态：</strong>待阅读反馈。
+</p>
+</article>
+</section>
+</body>
+</html>

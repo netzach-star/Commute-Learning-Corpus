@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>泛函分析导论（一）：沿教材七章建立知识树</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <meta name="corpus-id" content="02">
+  <meta name="domain" content="mathematics">
+  <meta name="production-status" content="ready">
+  <meta name="expected-reading-time" content="35-40-minutes">
+  <meta name="generated-date" content="2026-07-18">
+  <meta name="revision-round" content="3">
+  <meta name="reading-status" content="read">
+  <style>
+    :root { color-scheme: light; --ink:#172033; --muted:#5b6475; --line:#dce2ea; --soft:#f5f7fb; --accent:#3858a6; --accent-soft:#eaf0ff; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin:0 auto; padding:2.2rem 1.35rem 5rem; max-width:900px; color:var(--ink); background:#fff; font:17px/1.82 system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; }
+    h1 { font-size:2rem; line-height:1.3; margin:0 0 1.2rem; }
+    h2 { margin-top:3rem; padding-top:.4rem; border-top:1px solid var(--line); font-size:1.55rem; }
+    h3 { margin-top:2rem; font-size:1.18rem; }
+    p, li { text-align:justify; }
+    blockquote { margin:1.2rem 0; padding:.8rem 1rem; border-left:4px solid var(--accent); background:var(--accent-soft); color:#24345f; }
+    nav#TOC { margin:1.4rem 0 2.4rem; padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; }
+    nav#TOC::before { content:"目录"; display:block; font-weight:700; margin-bottom:.45rem; }
+    nav#TOC ul { margin:.25rem 0; padding-left:1.4rem; }
+    a { color:var(--accent); text-underline-offset:3px; }
+    .course-tree { padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; overflow-x:auto; }
+    .course-tree ul { margin:.3rem 0; }
+    table { width:100%; border-collapse:collapse; display:block; overflow-x:auto; margin:1.2rem 0; }
+    th, td { min-width:135px; border:1px solid var(--line); padding:.65rem .75rem; vertical-align:top; }
+    th { background:var(--soft); }
+    math[display="block"] { display:block; overflow-x:auto; overflow-y:hidden; padding:.4rem 0; }
+    details { margin:1rem 0 1.5rem; padding:.75rem 1rem; border:1px solid var(--line); border-radius:10px; background:var(--soft); }
+    summary { cursor:pointer; font-weight:700; }
+    #reader-feedback { margin-top:3.5rem; padding:1rem 1.2rem; background:#fffaf0; border:1px solid #ead7ae; border-radius:12px; }
+    .feedback-entry { padding:.5rem 0 1rem; border-bottom:1px dashed #d8c69f; }
+    .feedback-entry:last-child { border-bottom:0; }
+    code { overflow-wrap:anywhere; }
+    @media (max-width:600px) {
+      body { padding:1.2rem .92rem 4rem; font-size:16px; line-height:1.78; }
+      h1 { font-size:1.65rem; }
+      h2 { font-size:1.34rem; margin-top:2.5rem; }
+      h3 { font-size:1.1rem; }
+      p, li { text-align:left; }
+      blockquote, .course-tree, #reader-feedback { margin-left:0; margin-right:0; padding:.75rem .85rem; }
+    }
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">泛函分析导论（一）：沿教材七章建立知识树</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#先建立教材树以后所有知识挂在哪里"
+id="toc-先建立教材树以后所有知识挂在哪里">0.
+先建立教材树：以后所有知识挂在哪里？</a></li>
+<li><a href="#chapter-1" id="toc-chapter-1">1. 第 1
+章：拓扑空间——先规定“什么叫接近”</a></li>
+<li><a href="#chapter-2" id="toc-chapter-2">2. 第 2
+章：完备度量空间——近似过程会不会掉出空间？</a></li>
+<li><a href="#chapter-3" id="toc-chapter-3">3. 第 3
+章：赋范空间与连续线性映射——无穷维线性代数的主舞台</a></li>
+<li><a href="#chapter-4" id="toc-chapter-4">4. 第 4 章：Hilbert
+空间——把正交几何搬到无穷维</a></li>
+<li><a href="#chapter-5" id="toc-chapter-5">5. 第 5
+章：连续函数空间——紧性与稠密性是两种不同的“逼近”</a></li>
+<li><a href="#chapter-6" id="toc-chapter-6">6. 第 6 章：Baire
+定理及其应用——从逐点控制到统一控制</a></li>
+<li><a href="#chapter-11" id="toc-chapter-11">7. 第 11
+章：紧算子——在无限维中恢复部分矩阵谱论</a></li>
+<li><a href="#把七章压缩成可复述的知识树"
+id="toc-把七章压缩成可复述的知识树">8.
+把七章压缩成可复述的知识树</a></li>
+<li><a href="#本文结论与下一篇" id="toc-本文结论与下一篇">9.
+本文结论与下一篇</a></li>
+<li><a href="#参考资料" id="toc-参考资料">参考资料</a></li>
+</ul>
+</nav>
+<blockquote>
+<p><strong>教材主线</strong>：许全华、马涛、尹智《泛函分析讲义》，第
+1—6、11 章<br />
+<strong>预计阅读时间</strong>：35—40 分钟<br />
+<strong>阅读状态</strong>：已读<br />
+<strong>本篇需要掌握</strong>：七章各自解决的问题及其依赖关系；完备性、Banach
+空间、有界线性算子、Hilbert 投影、等度连续、Baire
+方法和紧算子的核心定义；文中加框的定理陈述<br />
+<strong>本篇只需识别</strong>：乘积拓扑的一般技术、Baire
+定理的完整证明、紧算子谱定理与紧自伴谱定理的证明<br />
+<strong>已知基础</strong>：点集拓扑、有限维线性代数、Lebesgue
+积分、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+空间、Hölder 与 Minkowski
+不等式、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+的完备性</p>
+</blockquote>
+<hr />
+<h2 id="先建立教材树以后所有知识挂在哪里">0.
+先建立教材树：以后所有知识挂在哪里？</h2>
+<p>泛函分析的研究对象可以用一句话概括：</p>
+<blockquote>
+<p>把函数、序列等无限维对象组成空间，再研究空间中的极限、几何和作用在空间上的算子。</p>
+</blockquote>
+<p>但这句话太宽，不能直接充当记忆结构。本文改用教材目录作为一级分支：</p>
+<div class="course-tree" aria-label="泛函分析教材知识树">
+<ul>
+<li>
+<strong>泛函分析：无限维空间与算子</strong>
+<ul>
+<li>
+<a href="#chapter-1">第 1 章　拓扑空间</a>：先规定“接近、连续、紧致”
+</li>
+<li>
+<a href="#chapter-2">第 2 章　完备度量空间</a>：保证逼近过程真的产生极限
+</li>
+<li>
+<a href="#chapter-3">第 3
+章　赋范空间与连续线性映射</a>：同时量化向量和算子的大小
+</li>
+<li>
+<a href="#chapter-4">第 4 章　Hilbert 空间</a>：在无穷维中恢复正交几何
+</li>
+<li>
+<a href="#chapter-5">第 5
+章　连续函数空间</a>：判断函数族何时紧、简单函数何时稠密
+</li>
+<li>
+<a href="#chapter-6">第 6 章　Baire
+定理及其应用</a>：把逐点控制升级为统一控制
+</li>
+<li>
+<a href="#chapter-11">第 11 章　紧算子</a>：在无限维中恢复部分矩阵谱论
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p>这七个分支不是七组并排的名词，而是一条因果链：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">怎样收敛</mtext><mo>→</mo><mtext mathvariant="normal">极限是否存在</mtext><mo>→</mo><mtext mathvariant="normal">线性算子是否稳定</mtext><mo>→</mo><mtext mathvariant="normal">能否使用几何</mtext><mo>→</mo><mtext mathvariant="normal">能否提取收敛子列</mtext><mo>→</mo><mtext mathvariant="normal">能否得到统一估计</mtext><mo>→</mo><mtext mathvariant="normal">能否研究谱与方程</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{怎样收敛}
+\to
+\text{极限是否存在}
+\to
+\text{线性算子是否稳定}
+\to
+\text{能否使用几何}
+\to
+\text{能否提取收敛子列}
+\to
+\text{能否得到统一估计}
+\to
+\text{能否研究谱与方程}.
+</annotation></semantics></math></p>
+<p>本文仍从积分方程取得统一动机，但不单列一大段历史。考虑</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>λ</mi><msubsup><mo>∫</mo><mi>a</mi><mi>b</mi></msubsup><mi>K</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>y</mi><mo>=</mo><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f(x)-\lambda\int_a^b K(x,y)f(y)\,\mathrm dy=g(x).
+</annotation></semantics></math></p>
+<p>定义积分算子</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mi>a</mi><mi>b</mi></msubsup><mi>K</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>y</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+(Tf)(x)=\int_a^bK(x,y)f(y)\,\mathrm dy,
+</annotation></semantics></math></p>
+<p>方程就成为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo>−</mo><mi>λ</mi><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>f</mi><mo>=</mo><mi>g</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(I-\lambda T)f=g.
+</annotation></semantics></math></p>
+<p>有限维线性代数会立刻问矩阵是否可逆；泛函分析还要先问：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+属于什么空间？空间怎样收敛？<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+是否连续？<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+是否紧？这些问题恰好依次落入上面的教材分支。</p>
+<hr />
+<h2 id="chapter-1">1. 第 1 章：拓扑空间——先规定“什么叫接近”</h2>
+<h3 id="旧理论缺什么不同函数收敛不能混为一谈">1.1
+旧理论缺什么：不同函数收敛不能混为一谈</h3>
+<p>十九世纪的函数列理论已经大量使用逐点收敛、一致收敛、积分意义收敛，却缺少一种语言说明：这些收敛为什么不同，又有哪些论证只依赖它们共同的结构。Fréchet
+在 1906
+年关于“泛函演算”的论文中，把距离和抽象空间作为统一研究对象；拓扑抽象则进一步保留连续性所需的最小结构。</p>
+<p>你已经学过开集公理，所以本章不重复证明，只把它放回课程树：</p>
+<blockquote>
+<p>拓扑不是给集合增加“形状”，而是规定哪些集合可以作为邻域，从而规定连续、收敛和紧致。</p>
+</blockquote>
+<p>例如在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C([0,1])</annotation></semantics></math>
+中取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>x</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">f_n(x)=x^n</annotation></semantics></math>。同一个函数列有三种行为：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mn>0</mn><mo>≤</mo><mi>x</mi><mo>&lt;</mo><mn>1</mn><mo>,</mo></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mi>x</mi><mo>=</mo><mn>1</mn><mo>,</mo></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+f_n(x)\to
+\begin{cases}
+0,&amp;0\le x&lt;1,\\
+1,&amp;x=1,
+\end{cases}
+</annotation></semantics></math></p>
+<p>但</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>f</mi><mi>n</mi></msub><msub><mo stretchy="false" form="postfix">∥</mo><mi>∞</mi></msub><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="2.0em"></mspace><mo stretchy="false" form="postfix">∥</mo><msub><mi>f</mi><mi>n</mi></msub><msub><mo stretchy="false" form="postfix">∥</mo><mn>1</mn></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mfrac><mo>→</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|f_n\|_\infty=1,
+\qquad
+\|f_n\|_1=\frac1{n+1}\to0.
+</annotation></semantics></math></p>
+<p>逐点拓扑、一致范数拓扑和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mn>1</mn></msup><annotation encoding="application/x-tex">L^1</annotation></semantics></math>
+范数拓扑保存的信息不同。泛函分析中的第一条习惯因此是：说“<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>n</mi></msub><mo>→</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">f_n\to f</annotation></semantics></math>”以前，先说在哪个空间、哪种拓扑中收敛。</p>
+<h3 id="紧性解决什么把无限对象压缩为有限信息">1.2
+紧性解决什么：把无限对象压缩为有限信息</h3>
+<p><strong>定义 1.1（紧空间）</strong><br />
+拓扑空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+称为紧的，如果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+的每个开覆盖都有有限子覆盖。</p>
+<p>这个定义整体在说：虽然
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+可能含有无限多个点，但任何用局部信息覆盖全空间的方案，都能从中抽取有限部分完成覆盖。</p>
+<p>在度量空间中，紧性等价于序列紧性：每个序列都有收敛子列。你熟悉的闭区间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0,1]</annotation></semantics></math>
+因而有 Bolzano–Weierstrass
+性质。但在无限维空间中，闭且有界不再推出紧。以后第 5 章和第 11
+章都在寻找额外条件，试图重新获得“可抽取收敛子列”。</p>
+<h3 id="为什么教材还要讲乘积拓扑">1.3 为什么教材还要讲乘积拓扑？</h3>
+<p>给一族拓扑空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>X</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>i</mi><mo>∈</mo><mi>I</mi></mrow></msub><annotation encoding="application/x-tex">(X_i)_{i\in I}</annotation></semantics></math>，乘积集合</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><munder><mo>∏</mo><mrow><mi>i</mi><mo>∈</mo><mi>I</mi></mrow></munder><msub><mi>X</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">
+X=\prod_{i\in I}X_i
+</annotation></semantics></math></p>
+<p>的元素是坐标族
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>i</mi><mo>∈</mo><mi>I</mi></mrow></msub></mrow><annotation encoding="application/x-tex">x=(x_i)_{i\in I}</annotation></semantics></math>。<strong>乘积拓扑</strong>定义为使所有坐标投影</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>i</mi></msub><mo>:</mo><mi>X</mi><mo>→</mo><msub><mi>X</mi><mi>i</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>π</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>x</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">
+\pi_i:X\to X_i,
+\qquad
+\pi_i(x)=x_i
+</annotation></semantics></math></p>
+<p>连续的最弱拓扑。</p>
+<p>“最弱”意味着我们只加入保证坐标投影连续所必需的开集，不额外制造收敛条件。它带来一个非常实用的判别：映射</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>:</mo><mi>Y</mi><mo>→</mo><munder><mo>∏</mo><mrow><mi>i</mi><mo>∈</mo><mi>I</mi></mrow></munder><msub><mi>X</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">
+F:Y\to\prod_{i\in I}X_i
+</annotation></semantics></math></p>
+<p>连续，当且仅当每个坐标映射
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>i</mi></msub><mo>∘</mo><mi>F</mi><mo>:</mo><mi>Y</mi><mo>→</mo><msub><mi>X</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\pi_i\circ F:Y\to X_i</annotation></semantics></math>
+都连续。</p>
+<p>在可数乘积中，序列按乘积拓扑收敛恰好意味着逐坐标收敛。于是“函数按每个点收敛”可以理解为函数嵌入一个巨大乘积空间后按坐标收敛。乘积拓扑把看似特殊的逐点收敛重新解释成普通拓扑收敛。</p>
+<h3 id="本章向下一章交付什么">1.4 本章向下一章交付什么？</h3>
+<p>拓扑告诉我们“是否收敛”，却通常不能告诉我们“还差多远”。方程迭代需要误差估计，所以第
+2 章加入度量；而一旦加入度量，又出现新的问题：Cauchy
+列一定有极限吗？</p>
+<h3 id="分段自检一第-1-章的三个节点">分段自检一：第 1 章的三个节点</h3>
+<ol type="1">
+<li>同一个函数列为什么可以在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mn>1</mn></msup><annotation encoding="application/x-tex">L^1</annotation></semantics></math>
+中收敛，却不一致收敛？</li>
+<li>乘积拓扑为什么适合表达逐坐标收敛？</li>
+<li>紧性将在后续哪两个分支重新出现？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>两种范数产生不同拓扑；对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mi>n</mi></msup><annotation encoding="application/x-tex">x^n</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mn>1</mn></msup><annotation encoding="application/x-tex">L^1</annotation></semantics></math>
+误差趋于零，而一致范数始终为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>。</li>
+<li>乘积拓扑被定义为使所有坐标投影连续的最弱拓扑，因此其中的收敛由各坐标的收敛控制。</li>
+<li>第 5 章用 Ascoli 定理判断连续函数族的紧性；第 11
+章研究把有界集送入相对紧集的紧算子。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-2">2. 第 2
+章：完备度量空间——近似过程会不会掉出空间？</h2>
+<h3 id="旧理论缺什么误差越来越小不等于极限存在">2.1
+旧理论缺什么：误差越来越小不等于极限存在</h3>
+<p>度量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">d(x,y)</annotation></semantics></math>
+把接近程度量化。序列
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x_n)</annotation></semantics></math>
+是 Cauchy 列，指</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>ε</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>∃</mo><mi>N</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>m</mi><mo>,</mo><mi>n</mi><mo>≥</mo><mi>N</mi><mo>⇒</mo><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>m</mi></msub><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><mi>ε</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\forall\varepsilon&gt;0,
+\ \exists N,
+\ m,n\ge N
+\Longrightarrow
+d(x_m,x_n)&lt;\varepsilon.
+</annotation></semantics></math></p>
+<p>它只利用序列内部的距离，不预先知道极限。若每个 Cauchy
+列都在空间内收敛，就称度量空间完备。</p>
+<p>从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>
+到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb R</annotation></semantics></math>
+的完备化已经展示了问题：一列有理数可以内部越来越接近，极限却不是有理数。在函数空间中同样可能发生。给
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C([0,1])</annotation></semantics></math>
+配备
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mn>1</mn></msup><annotation encoding="application/x-tex">L^1</annotation></semantics></math>
+范数，连续函数可以逼近阶跃函数；逼近列在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C([0,1])</annotation></semantics></math>
+内是 Cauchy 的，极限却不再连续。</p>
+<p>所以完备性的功能不是“让收敛更快”，而是：</p>
+<blockquote>
+<p>只要已经证明近似列内部相容，空间就保证提供一个合法极限。</p>
+</blockquote>
+<h3 id="完备化在补什么">2.2 完备化在补什么？</h3>
+<p>任意度量空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+都可以嵌入某个完备空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>X</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\widehat X</annotation></semantics></math>，使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>X</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\widehat X</annotation></semantics></math>
+中稠密。构造思想与实数完备化相同：</p>
+<ol type="1">
+<li>把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+中所有 Cauchy 列作为候选“广义点”；</li>
+<li>若两列的逐项距离趋于零，就把它们视为同一点；</li>
+<li>用列之间的极限距离定义新度量。</li>
+</ol>
+<p>完备化并不是随意添加元素，而是只补入原空间中的 Cauchy
+过程强迫我们承认的极限。</p>
+<h3 id="banach-不动点定理完备性怎样直接产生解">2.3 Banach
+不动点定理：完备性怎样直接产生解？</h3>
+<p>Picard 对微分方程的逐次逼近、积分方程迭代和后来的 Banach
+空间理论共享同一结构：把方程改写成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+x=T(x),
+</annotation></semantics></math></p>
+<p>然后反复计算
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">x_{n+1}=T(x_n)</annotation></semantics></math>。</p>
+<p><strong>定义 2.1（压缩映射）</strong><br />
+设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(X,d)</annotation></semantics></math>
+是度量空间。若存在常数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">q\in[0,1)</annotation></semantics></math>，使任意
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>,</mo><mi>y</mi><mo>∈</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">x,y\in X</annotation></semantics></math>
+都满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mi>x</mi><mo>,</mo><mi>T</mi><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>q</mi><mo>,</mo><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+d(Tx,Ty)\le q,d(x,y),
+</annotation></semantics></math></p>
+<p>则称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>:</mo><mi>X</mi><mo>→</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">T:X\to X</annotation></semantics></math>
+是压缩映射。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>
+是统一收缩率。</p>
+<p><strong>定理 2.2（Banach 不动点定理）</strong><br />
+若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(X,d)</annotation></semantics></math>
+非空且完备，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>:</mo><mi>X</mi><mo>→</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">T:X\to X</annotation></semantics></math>
+是压缩映射，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+有唯一不动点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mo>*</mo></msup><annotation encoding="application/x-tex">x^*</annotation></semantics></math>；并且任取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>0</mn></msub><mo>∈</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">x_0\in X</annotation></semantics></math>，迭代</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+x_{n+1}=T(x_n)
+</annotation></semantics></math></p>
+<p>都收敛到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mo>*</mo></msup><annotation encoding="application/x-tex">x^*</annotation></semantics></math>。</p>
+<p>先解释证明目标。我们不知道
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mo>*</mo></msup><annotation encoding="application/x-tex">x^*</annotation></semantics></math>，所以不能直接估计
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo>,</mo><msup><mi>x</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">d(x_n,x^*)</annotation></semantics></math>；先证明迭代列内部是
+Cauchy 的，再由完备性产生
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mo>*</mo></msup><annotation encoding="application/x-tex">x^*</annotation></semantics></math>。</p>
+<p>由压缩性，连续使用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+次得到</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><msub><mi>x</mi><mi>n</mi></msub><mo>,</mo><mi>T</mi><msub><mi>x</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><msup><mi>q</mi><mi>n</mi></msup><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+d(x_{n+1},x_n)
+=d(Tx_n,Tx_{n-1})
+\le q^n d(x_1,x_0).
+</annotation></semantics></math></p>
+<p>对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>&gt;</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m&gt;n</annotation></semantics></math>，三角不等式给出</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>m</mi></msub><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>≤</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mi>n</mi></mrow><mrow><mi>m</mi><mo>−</mo><mn>1</mn></mrow></munderover><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><msub><mi>x</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>≤</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mi>n</mi></mrow><mrow><mi>m</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mi>q</mi><mi>k</mi></msup><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>≤</mo><mfrac><msup><mi>q</mi><mi>n</mi></msup><mrow><mn>1</mn><mo>−</mo><mi>q</mi></mrow></mfrac><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+d(x_m,x_n)
+&amp;\le \sum_{k=n}^{m-1}d(x_{k+1},x_k)\\
+&amp;\le \sum_{k=n}^{m-1}q^k d(x_1,x_0)\\
+&amp;\le \frac{q^n}{1-q}d(x_1,x_0).
+\end{aligned}
+</annotation></semantics></math></p>
+<p>这里最后一步使用几何级数。因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>q</mi><mi>n</mi></msup><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">q^n\to0</annotation></semantics></math>，右端与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+无关地趋于零，所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x_n)</annotation></semantics></math>
+是 Cauchy 列。完备性提供
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mo>*</mo></msup><mo>∈</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">x^*\in X</annotation></semantics></math>，使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>n</mi></msub><mo>→</mo><msup><mi>x</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">x_n\to x^*</annotation></semantics></math>。</p>
+<p>压缩映射是 Lipschitz 连续的，因此</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><msup><mi>x</mi><mo>*</mo></msup><mo>=</mo><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><munder><mo>lim</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>lim</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><mi>T</mi><msub><mi>x</mi><mi>n</mi></msub><mo>=</mo><munder><mo>lim</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msup><mi>x</mi><mo>*</mo></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+Tx^*=T\left(\lim_{n\to\infty}x_n\right)
+=\lim_{n\to\infty}Tx_n
+=\lim_{n\to\infty}x_{n+1}
+=x^*.
+</annotation></semantics></math></p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>y</mi><mo>*</mo></msup><annotation encoding="application/x-tex">y^*</annotation></semantics></math>
+也是不动点，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>x</mi><mo>*</mo></msup><mo>,</mo><msup><mi>y</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><msup><mi>x</mi><mo>*</mo></msup><mo>,</mo><mi>T</mi><msup><mi>y</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>q</mi><mo>,</mo><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>x</mi><mo>*</mo></msup><mo>,</mo><msup><mi>y</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+d(x^*,y^*)
+=d(Tx^*,Ty^*)
+\le q,d(x^*,y^*).
+</annotation></semantics></math></p>
+<p>由于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">q&lt;1</annotation></semantics></math>，只能有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>x</mi><mo>*</mo></msup><mo>,</mo><msup><mi>y</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">d(x^*,y^*)=0</annotation></semantics></math>，即
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mo>*</mo></msup><mo>=</mo><msup><mi>y</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">x^*=y^*</annotation></semantics></math>。存在性、唯一性和算法收敛由同一估计同时得到。</p>
+<h3 id="紧度量空间为什么等于完备-全有界">2.4 紧度量空间为什么等于“完备 +
+全有界”？</h3>
+<p><strong>定义 2.3（全有界）</strong><br />
+度量空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+称为全有界的，如果对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\varepsilon&gt;0</annotation></semantics></math>，存在有限多个点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>l</mi><mi>d</mi><mi>o</mi><mi>t</mi><mi>s</mi><mo>,</mo><msub><mi>x</mi><mi>N</mi></msub></mrow><annotation encoding="application/x-tex">x_1,ldots,x_N</annotation></semantics></math>，使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>⊆</mo><munderover><mo>⋃</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mi>B</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>j</mi></msub><mo>,</mo><mi>ε</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X\subseteq\bigcup_{j=1}^N B(x_j,\varepsilon).
+</annotation></semantics></math></p>
+<p>普通有界只要求一个大球容纳全空间；全有界要求在每个精度上都能用有限多个小球近似全空间，因此强得多。</p>
+<p><strong>定理 2.4</strong><br />
+度量空间紧，当且仅当它完备且全有界。</p>
+<p>这一定理把紧性拆成两种失败模式：</p>
+<ul>
+<li>不完备：候选收敛子列的极限掉出空间；</li>
+<li>不全有界：在某个固定尺度上存在无限多个彼此分离的点，根本无法选出
+Cauchy 子列。</li>
+</ul>
+<p>在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mo>ℓ</mo><mn>2</mn></msup><annotation encoding="application/x-tex">\ell^2</annotation></semantics></math>
+的单位球中，标准基
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>e</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(e_n)</annotation></semantics></math>
+满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>e</mi><mi>n</mi></msub><mo>−</mo><msub><mi>e</mi><mi>m</mi></msub><msub><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msub><mo>=</mo><msqrt><mn>2</mn></msqrt><mspace width="2.0em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo>≠</mo><mi>m</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\|e_n-e_m\|_2=\sqrt2
+\qquad(n\ne m),
+</annotation></semantics></math></p>
+<p>所以单位球不是全有界的，也就不紧。这比只记住“无限维闭有界不紧”更有解释力：失败的具体原因是存在无限多个固定距离分离的方向。</p>
+<h3 id="本章向下一章交付什么-1">2.5 本章向下一章交付什么？</h3>
+<p>第 2 章只要求度量，不要求线性。第 3
+章把度量改成由范数产生，使“逼近误差”与向量加法、数乘兼容，于是方程可以同时使用分析与线性代数。</p>
+<h3
+id="分段自检二完备性是否真正进入了证明">分段自检二：完备性是否真正进入了证明？</h3>
+<ol type="1">
+<li>Banach 不动点定理的证明在哪一步使用完备性？</li>
+<li>压缩性中的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">q&lt;1</annotation></semantics></math>
+同时提供了哪三类结论？</li>
+<li>为什么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mo>ℓ</mo><mn>2</mn></msup><annotation encoding="application/x-tex">\ell^2</annotation></semantics></math>
+单位球不是全有界的？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>先由压缩估计证明
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x_n)</annotation></semantics></math>
+是 Cauchy 列，再用完备性断言它在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+内有极限。</li>
+<li>它使迭代误差按几何级数衰减，进而给出极限存在、迭代收敛和不动点唯一。</li>
+<li>标准基向量都在单位球内，任意两项距离固定为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mn>2</mn></msqrt><annotation encoding="application/x-tex">\sqrt2</annotation></semantics></math>；取小于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mn>2</mn></msqrt><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\sqrt2/2</annotation></semantics></math>
+的半径时，有限多个小球不能覆盖全部基向量。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-3">3. 第 3
+章：赋范空间与连续线性映射——无穷维线性代数的主舞台</h2>
+<h3 id="为什么这一章与你的实分析高度重合">3.1
+为什么这一章与你的实分析高度重合？</h3>
+<p>你已经掌握
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>、Hölder、Minkowski
+和 Riesz–Fischer，因此第 3
+章的一部分确实是在给熟悉的实分析结果重新命名：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">Minkowski</mtext><mo>⇒</mo><mo stretchy="false" form="postfix">∥</mo><mi>f</mi><mo>+</mo><mi>g</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>p</mi></msub><mo>≤</mo><mo stretchy="false" form="postfix">∥</mo><mi>f</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>p</mi></msub><mo>+</mo><mo stretchy="false" form="postfix">∥</mo><mi>g</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>p</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\text{Minkowski}
+\Rightarrow
+\|f+g\|_p\le\|f\|_p+\|g\|_p,
+</annotation></semantics></math></p>
+<p>所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mo>⋅</mo><msub><mo stretchy="false" form="postfix">∥</mo><mi>p</mi></msub></mrow><annotation encoding="application/x-tex">\|\cdot\|_p</annotation></semantics></math>
+是范数；Riesz–Fischer 说明
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+完备，所以它是 Banach 空间。</p>
+<p>新信息不在于再证明一次积分不等式，而在于：以后定理只读取“Banach
+空间”这一结构，不再读取函数的具体公式。因此同一结论可以同时作用于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mo>ℓ</mo><mi>p</mi></msup><annotation encoding="application/x-tex">\ell^p</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C(K)</annotation></semantics></math>
+和许多解空间。</p>
+<p>Banach 1932
+年的《线性算子理论》完成了这种组织方式：研究重点从某个特殊函数方程，转向完备赋范空间及其上的线性算子。</p>
+<h3 id="范数与-banach-空间">3.2 范数与 Banach 空间</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+是实或复线性空间。范数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mo>⋅</mo><mo stretchy="false" form="postfix">∥</mo><mo>:</mo><mi>X</mi><mo>→</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\|\cdot\|:X\to[0,\infty)</annotation></semantics></math>
+满足正定性、绝对齐次性与三角不等式。由</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><mi>y</mi><mo stretchy="false" form="postfix">∥</mo></mrow><annotation encoding="application/x-tex">
+d(x,y)=\|x-y\|
+</annotation></semantics></math></p>
+<p>得到与线性结构相容的度量。完备赋范空间称为 <strong>Banach
+空间</strong>。</p>
+<p>这里每个空间都要按三项记录：</p>
+<table>
+<thead>
+<tr class="header">
+<th>空间</th>
+<th>元素与相等关系</th>
+<th>范数</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mo>ℓ</mo><mi>p</mi></msup><annotation encoding="application/x-tex">\ell^p</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+次可和序列</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mo>∑</mo><msup><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">|</mo></mrow><mi>p</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mn>1</mn><mi>/</mi><mi>p</mi></mrow></msup><annotation encoding="application/x-tex">(\sum|x_n|^p)^{1/p}</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>L</mi><mi>p</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>E</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">L^p(E)</annotation></semantics></math></td>
+<td>可测函数的几乎处处等价类</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mo>∫</mo><mi>E</mi></msub><msup><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mo stretchy="true" form="postfix">|</mo></mrow><mi>p</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mn>1</mn><mi>/</mi><mi>p</mi></mrow></msup><annotation encoding="application/x-tex">(\int_E|f|^p)^{1/p}</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C(K)</annotation></semantics></math></td>
+<td>紧空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+上的连续函数</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>f</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>∞</mi></msub><mo>=</mo><msub><mo>max</mo><mi>K</mi></msub><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mo stretchy="true" form="postfix">|</mo></mrow></mrow><annotation encoding="application/x-tex">\|f\|_\infty=\max_K|f|</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<p>“元素—相等关系—范数”不能省略。若把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+的元素误写成逐点函数，范数的正定性就会被零测集上的差异破坏。</p>
+<h3 id="有界线性算子可控制的无穷维矩阵">3.3
+有界线性算子：可控制的无穷维矩阵</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X,Y</annotation></semantics></math>
+是赋范空间，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>:</mo><mi>X</mi><mo>→</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">T:X\to Y</annotation></semantics></math>
+线性。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+称为有界，如果存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">C\ge0</annotation></semantics></math>，使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>Y</mi></msub><mo>≤</mo><mi>C</mi><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>X</mi></msub><mspace width="2.0em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>∈</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|Tx\|_Y\le C\|x\|_X
+\qquad(x\in X).
+</annotation></semantics></math></p>
+<p>这不是说整个像集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">T(X)</annotation></semantics></math>
+有界，而是说输出至多按固定比例放大输入。它等价于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+连续。</p>
+<p>有界推出连续只需写成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>x</mi><mo>−</mo><mi>T</mi><mi>y</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>Y</mi></msub><mo>=</mo><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>−</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><msub><mo stretchy="false" form="postfix">∥</mo><mi>Y</mi></msub><mo>≤</mo><mi>C</mi><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><mi>y</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>X</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|Tx-Ty\|_Y
+=\|T(x-y)\|_Y
+\le C\|x-y\|_X.
+</annotation></semantics></math></p>
+<p>反过来，若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+连续，存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\delta&gt;0</annotation></semantics></math>
+使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>u</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>X</mi></msub><mo>&lt;</mo><mi>δ</mi><mo>⇒</mo><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>u</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>Y</mi></msub><mo>&lt;</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|u\|_X&lt;\delta
+\Longrightarrow
+\|Tu\|_Y&lt;1.
+</annotation></semantics></math></p>
+<p>对非零
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mi>δ</mi><mi>x</mi><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>X</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">u=\delta x/(2\|x\|_X)</annotation></semantics></math>，就得到</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>Y</mi></msub><mo>&lt;</mo><mfrac><mn>2</mn><mi>δ</mi></mfrac><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>X</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|Tx\|_Y&lt;\frac2\delta\|x\|_X.
+</annotation></semantics></math></p>
+<p>线性把原点附近的局部连续性放大成全空间统一估计，这是后续所有算子定理的基本机制。</p>
+<p><strong>定义 3.1（算子范数）</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mo stretchy="false" form="postfix">∥</mo><mo>=</mo><munder><mo>sup</mo><mrow><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>X</mi></msub><mo>≤</mo><mn>1</mn></mrow></munder><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>Y</mi></msub><mo>=</mo><munder><mo>sup</mo><mrow><mi>x</mi><mo>≠</mo><mn>0</mn></mrow></munder><mfrac><mrow><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>Y</mi></msub></mrow><mrow><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>X</mi></msub></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|T\|
+=\sup_{\|x\|_X\le1}\|Tx\|_Y
+=\sup_{x\ne0}\frac{\|Tx\|_Y}{\|x\|_X}.
+</annotation></semantics></math></p>
+<p>算子范数是最大相对放大率。所有从
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+的有界线性算子组成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℬ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal B(X,Y)</annotation></semantics></math>。</p>
+<h3 id="一个新的完备性结论值域完备则算子空间完备">3.4
+一个新的完备性结论：值域完备则算子空间完备</h3>
+<p><strong>定理 3.2</strong><br />
+若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+是 Banach 空间，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℬ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal B(X,Y)</annotation></semantics></math>
+在算子范数下也是 Banach 空间；这里不要求
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+完备。</p>
+<p>证明思路值得掌握。设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>T</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(T_n)</annotation></semantics></math>
+在算子范数下是 Cauchy 列。固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>∈</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">x\in X</annotation></semantics></math>，有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>T</mi><mi>n</mi></msub><mi>x</mi><mo>−</mo><msub><mi>T</mi><mi>m</mi></msub><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>Y</mi></msub><mo>≤</mo><mo stretchy="false" form="postfix">∥</mo><msub><mi>T</mi><mi>n</mi></msub><mo>−</mo><msub><mi>T</mi><mi>m</mi></msub><mo stretchy="false" form="postfix">∥</mo><mspace width="0.167em"></mspace><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>X</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\|T_nx-T_mx\|_Y
+\le\|T_n-T_m\|\,\|x\|_X,
+</annotation></semantics></math></p>
+<p>所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>T</mi><mi>n</mi></msub><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(T_nx)</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+中是 Cauchy 列。由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+完备，可以逐点定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>x</mi><mo>=</mo><munder><mo>lim</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>T</mi><mi>n</mi></msub><mi>x</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+Tx=\lim_{n\to\infty}T_nx.
+</annotation></semantics></math></p>
+<p>极限保持线性。又因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>T</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(T_n)</annotation></semantics></math>
+是算子范数 Cauchy 列，所以它的范数一致有界：存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>T</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">∥</mo><mo>≤</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">\|T_n\|\le M</annotation></semantics></math>。令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">n\to\infty</annotation></semantics></math>
+得</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>Y</mi></msub><mo>≤</mo><mi>M</mi><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>X</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\|Tx\|_Y\le M\|x\|_X,
+</annotation></semantics></math></p>
+<p>故
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+有界。最后把</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>T</mi><mi>n</mi></msub><mo>−</mo><msub><mi>T</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>Y</mi></msub><mo>≤</mo><mo stretchy="false" form="postfix">∥</mo><msub><mi>T</mi><mi>n</mi></msub><mo>−</mo><msub><mi>T</mi><mi>m</mi></msub><mo stretchy="false" form="postfix">∥</mo><mspace width="0.167em"></mspace><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>X</mi></msub></mrow><annotation encoding="application/x-tex">
+\|(T_n-T_m)x\|_Y
+\le\|T_n-T_m\|\,\|x\|_X
+</annotation></semantics></math></p>
+<p>中的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+送到无穷，就得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><msub><mi>T</mi><mi>n</mi></msub><mo>−</mo><mi>T</mi><mo stretchy="false" form="postfix">∥</mo><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\|T_n-T\|\to0</annotation></semantics></math>。这个定理把“逐点取极限”升级成“算子范数取极限”，而关键完备性位于值域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>。</p>
+<h3 id="本章向后续交付什么">3.5 本章向后续交付什么？</h3>
+<p>第 3 章建立了主语法：空间是 Banach 空间，合法的线性变换属于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℬ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal B(X,Y)</annotation></semantics></math>。但一般
+Banach 空间只有长度，没有角度；一般有界算子也没有矩阵那样清晰的谱。第 4
+章先恢复几何，第 11 章再对特殊算子恢复谱论。</p>
+<h3 id="分段自检三第-3-章的新抽象">分段自检三：第 3 章的新抽象</h3>
+<ol type="1">
+<li>为什么说第 3 章不是简单重复
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+理论？</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℬ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal B(X,Y)</annotation></semantics></math>
+完备时，为什么只要求
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+完备？</li>
+<li>算子范数 Cauchy 比逐点 Cauchy 强在哪里？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+被提炼为 Banach
+空间实例，之后只依赖完备赋范结构的定理能同时用于许多不同空间。</li>
+<li>对每个固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>，极限
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>x</mi><mo>=</mo><mo>lim</mo><msub><mi>T</mi><mi>n</mi></msub><mi>x</mi></mrow><annotation encoding="application/x-tex">Tx=\lim T_nx</annotation></semantics></math>
+是在值域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+中取得的；定义域只负责提供输入和范数估计。</li>
+<li>算子范数 Cauchy 给出对单位球中所有输入一致的误差控制，而逐点 Cauchy
+的收敛速度可以随
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+改变。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-4">4. 第 4 章：Hilbert 空间——把正交几何搬到无穷维</h2>
+<h3 id="旧理论缺什么banach-空间只有长度没有角度">4.1
+旧理论缺什么：Banach 空间只有长度，没有角度</h3>
+<p>Hilbert
+对积分方程和正交展开的研究表明，函数可以像无穷维向量那样具有内积。设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+是实或复线性空间，内积记为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">\langle x,y\rangle</annotation></semantics></math>；本文约定它对第一个变量线性。由内积定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo stretchy="false" form="postfix">∥</mo><mo>=</mo><msqrt><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>x</mi><mo>,</mo><mi>x</mi><mo stretchy="false" form="postfix">⟩</mo></mrow></msqrt><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|x\|=\sqrt{\langle x,x\rangle}.
+</annotation></semantics></math></p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+对该范数完备，就称为 <strong>Hilbert 空间</strong>。</p>
+<p>每个 Hilbert 空间都是 Banach
+空间，但反之不成立。内积范数必须满足平行四边形恒等式</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>+</mo><mi>y</mi><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo>+</mo><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><mi>y</mi><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo>=</mo><mn>2</mn><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo>+</mo><mn>2</mn><mo stretchy="false" form="postfix">∥</mo><mi>y</mi><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|x+y\|^2+\|x-y\|^2
+=2\|x\|^2+2\|y\|^2.
+</annotation></semantics></math></p>
+<p>例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mn>2</mn></msup><annotation encoding="application/x-tex">L^2</annotation></semantics></math>
+由内积</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>f</mi><mo>,</mo><mi>g</mi><mo stretchy="false" form="postfix">⟩</mo><mo>=</mo><mo>∫</mo><mi>f</mi><mover><mi>g</mi><mo accent="true">¯</mo></mover></mrow><annotation encoding="application/x-tex">
+\langle f,g\rangle=\int f\overline g
+</annotation></semantics></math></p>
+<p>产生 Hilbert 结构；一般
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≠</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">p\ne2</annotation></semantics></math>
+时不满足平行四边形恒等式，所以通常只是 Banach 空间。</p>
+<h3 id="投影定理最佳逼近为什么存在且唯一">4.2
+投影定理：最佳逼近为什么存在且唯一？</h3>
+<p><strong>定理 4.1（Hilbert 空间投影定理）</strong><br />
+设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+是 Hilbert 空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+的非空闭凸子集。对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>∈</mo><mi>H</mi></mrow><annotation encoding="application/x-tex">x\in H</annotation></semantics></math>，存在唯一
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>∈</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">y\in M</annotation></semantics></math>，使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><mi>y</mi><mo stretchy="false" form="postfix">∥</mo><mo>=</mo><munder><mo>inf</mo><mrow><mi>z</mi><mo>∈</mo><mi>M</mi></mrow></munder><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><mi>z</mi><mo stretchy="false" form="postfix">∥</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|x-y\|=\inf_{z\in M}\|x-z\|.
+</annotation></semantics></math></p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+还是闭线性子空间，则最佳逼近
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>−</mo><mi>y</mi><mo>⊥</mo><mi>M</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+x-y\perp M.
+</annotation></semantics></math></p>
+<p>这一定理整体在说：闭凸性排除几何裂缝，完备性保证极小化列有极限，内积几何保证极限唯一。</p>
+<p>设距离下确界为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>，取极小化列
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⊂</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">(y_n)\subset M</annotation></semantics></math>，使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><msub><mi>y</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">∥</mo><mo>→</mo><mi>d</mi></mrow><annotation encoding="application/x-tex">\|x-y_n\|\to d</annotation></semantics></math>。因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+凸，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>n</mi></msub><mo>+</mo><msub><mi>y</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mn>2</mn><mo>∈</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">(y_n+y_m)/2\in M</annotation></semantics></math>。平行四边形恒等式给出</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mo stretchy="false" form="postfix">∥</mo><msub><mi>y</mi><mi>n</mi></msub><mo>−</mo><msub><mi>y</mi><mi>m</mi></msub><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>2</mn><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><msub><mi>y</mi><mi>n</mi></msub><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo>+</mo><mn>2</mn><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><msub><mi>y</mi><mi>m</mi></msub><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo>−</mo><mn>4</mn><msup><mrow><mo stretchy="true" form="prefix">∥</mo><mi>x</mi><mo>−</mo><mfrac><mrow><msub><mi>y</mi><mi>n</mi></msub><mo>+</mo><msub><mi>y</mi><mi>m</mi></msub></mrow><mn>2</mn></mfrac><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn></msup></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>≤</mo><mn>2</mn><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><msub><mi>y</mi><mi>n</mi></msub><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo>+</mo><mn>2</mn><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><msub><mi>y</mi><mi>m</mi></msub><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mo>−</mo><mn>4</mn><msup><mi>d</mi><mn>2</mn></msup><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\|y_n-y_m\|^2
+&amp;=2\|x-y_n\|^2+2\|x-y_m\|^2
+-4\left\|x-\frac{y_n+y_m}{2}\right\|^2\\
+&amp;\le2\|x-y_n\|^2+2\|x-y_m\|^2-4d^2.
+\end{aligned}
+</annotation></semantics></math></p>
+<p>右端趋于零，所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(y_n)</annotation></semantics></math>
+是 Cauchy
+列。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+完备且
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+闭，故
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mi>n</mi></msub><mo>→</mo><mi>y</mi><mo>∈</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">y_n\to y\in M</annotation></semantics></math>，连续性给出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><mi>y</mi><mo stretchy="false" form="postfix">∥</mo><mo>=</mo><mi>d</mi></mrow><annotation encoding="application/x-tex">\|x-y\|=d</annotation></semantics></math>。</p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>,</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">y,z</annotation></semantics></math>
+都是最佳逼近，同一恒等式作用于二者可得
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>y</mi><mo>−</mo><mi>z</mi><mo stretchy="false" form="postfix">∥</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\|y-z\|=0</annotation></semantics></math>，所以唯一。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+是线性子空间，对任意
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>∈</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">m\in M</annotation></semantics></math>
+考察</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo>−</mo><mi>y</mi><mo>−</mo><mi>t</mi><mi>m</mi><msup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\phi(t)=\|x-y-tm\|^2.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>
+是极小点。展开并令一次项为零，实空间中直接得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>x</mi><mo>−</mo><mi>y</mi><mo>,</mo><mi>m</mi><mo stretchy="false" form="postfix">⟩</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\langle x-y,m\rangle=0</annotation></semantics></math>；复空间中再分别对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">im</annotation></semantics></math>
+使用同一论证，就能同时消去实部和虚部。于是误差与整个子空间正交。</p>
+<p>这正是最小二乘、Fourier 展开和条件期望在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mn>2</mn></msup><annotation encoding="application/x-tex">L^2</annotation></semantics></math>
+中的共同几何核心。</p>
+<h3 id="riesz-表示连续线性泛函其实是内积">4.3 Riesz
+表示：连续线性泛函其实是内积</h3>
+<p>Hilbert 空间的连续对偶
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>H</mi><mo>*</mo></msup><annotation encoding="application/x-tex">H^*</annotation></semantics></math>
+由所有连续线性泛函
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mo>:</mo><mi>H</mi><mo>→</mo><mi>𝕂</mi></mrow><annotation encoding="application/x-tex">\varphi:H\to\mathbb K</annotation></semantics></math>
+组成。</p>
+<p><strong>定理 4.2（Riesz 表示定理）</strong><br />
+对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mo>∈</mo><msup><mi>H</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">\varphi\in H^*</annotation></semantics></math>，存在唯一
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>∈</mo><mi>H</mi></mrow><annotation encoding="application/x-tex">y\in H</annotation></semantics></math>，使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">⟩</mo><mspace width="2.0em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>∈</mo><mi>H</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\varphi(x)=\langle x,y\rangle
+\qquad(x\in H),
+</annotation></semantics></math></p>
+<p>并且
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>φ</mi><mo stretchy="false" form="postfix">∥</mo><mo>=</mo><mo stretchy="false" form="postfix">∥</mo><mi>y</mi><mo stretchy="false" form="postfix">∥</mo></mrow><annotation encoding="application/x-tex">\|\varphi\|=\|y\|</annotation></semantics></math>。</p>
+<p>这说明 Hilbert
+空间的对偶不是另一个陌生空间：每个连续线性测量都由与某个向量取内积实现。有限维中的行向量与列向量对应，在这里被推广到无穷维。</p>
+<h3 id="伴随算子与正交基">4.4 伴随算子与正交基</h3>
+<p>对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>∈</mo><mi>ℬ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>H</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">T\in\mathcal B(H)</annotation></semantics></math>，Riesz
+表示定理保证存在唯一算子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>T</mi><mo>*</mo></msup><annotation encoding="application/x-tex">T^*</annotation></semantics></math>，使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>T</mi><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">⟩</mo><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>x</mi><mo>,</mo><msup><mi>T</mi><mo>*</mo></msup><mi>y</mi><mo stretchy="false" form="postfix">⟩</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\langle Tx,y\rangle=\langle x,T^*y\rangle.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>T</mi><mo>*</mo></msup><annotation encoding="application/x-tex">T^*</annotation></semantics></math>
+称为伴随算子。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><msup><mi>T</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">T=T^*</annotation></semantics></math>，称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+自伴。有限维中它对应共轭转置矩阵；第 11
+章的紧自伴算子将拥有接近实对称矩阵的谱结构。</p>
+<p>一族向量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>e</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(e_i)</annotation></semantics></math>
+是标准正交系，若</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><msub><mi>e</mi><mi>i</mi></msub><mo>,</mo><msub><mi>e</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">⟩</mo><mo>=</mo><msub><mi>δ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\langle e_i,e_j\rangle=\delta_{ij}.
+</annotation></semantics></math></p>
+<p>若其线性张成稠密，则称为标准正交基。此时向量可由 Fourier 系数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>x</mi><mo>,</mo><msub><mi>e</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">\langle x,e_i\rangle</annotation></semantics></math>
+重建，Parseval 等式把几何长度转成坐标平方和。</p>
+<h3 id="本章向下一章交付什么-2">4.5 本章向下一章交付什么？</h3>
+<p>投影定理回答“给定一个闭子空间，怎样找最近点”；但实际分析常先要证明某族函数的闭包足够大，或某序列确实存在收敛子列。第
+5 章分别用稠密性和紧性解决这两类问题。</p>
+<h3 id="分段自检四hilbert-分支的几何骨架">分段自检四：Hilbert
+分支的几何骨架</h3>
+<ol type="1">
+<li>投影定理的存在性证明分别在哪里使用凸性、完备性和闭性？</li>
+<li>为什么一般
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+不能直接使用正交投影？</li>
+<li>Riesz 表示定理怎样把连续泛函变成向量？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>凸性保证中点仍在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>；平行四边形恒等式使极小化列成为
+Cauchy 列；完备性给出空间内极限；闭性保证极限仍在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>。</li>
+<li>当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≠</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">p\ne2</annotation></semantics></math>
+时，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+范数通常不来自内积，没有正交关系和平行四边形恒等式。</li>
+<li>每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mo>∈</mo><msup><mi>H</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">\varphi\in H^*</annotation></semantics></math>
+都唯一写成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">\varphi(x)=\langle x,y\rangle</annotation></semantics></math>，因此泛函由表示向量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+完全确定。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-5">5. 第 5
+章：连续函数空间——紧性与稠密性是两种不同的“逼近”</h2>
+<h3 id="旧理论缺什么逐个函数有界函数族仍可能剧烈振荡">5.1
+旧理论缺什么：逐个函数有界，函数族仍可能剧烈振荡</h3>
+<p>在有限维中，有界序列总能提取收敛子列；在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C([0,1])</annotation></semantics></math>
+的一致范数下却不行。函数族</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>sin</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+f_n(x)=\sin(nx)
+</annotation></semantics></math></p>
+<p>一致有界，却随
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+越来越快振荡，不能期待一致收敛子列。</p>
+<p>因此函数族的紧性需要同时控制“高度”和“振荡”。十九世纪末 Arzelà、Ascoli
+等人的工作把这种控制提炼为等度连续性。</p>
+<h3 id="ascoli-定理怎样识别相对紧函数族">5.2 Ascoli
+定理：怎样识别相对紧函数族？</h3>
+<p><strong>定义 5.1（等度连续）</strong><br />
+设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+是紧度量空间，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℱ</mi><mo>⊂</mo><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal F\subset C(K)</annotation></semantics></math>。若对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\varepsilon&gt;0</annotation></semantics></math>，存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\delta&gt;0</annotation></semantics></math>，使所有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>∈</mo><mi>ℱ</mi></mrow><annotation encoding="application/x-tex">f\in\mathcal F</annotation></semantics></math>
+和所有满足
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><mi>δ</mi></mrow><annotation encoding="application/x-tex">d(x,y)&lt;\delta</annotation></semantics></math>
+的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>,</mo><mi>y</mi><mo>∈</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">x,y\in K</annotation></semantics></math>
+都有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mi>ε</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+|f(x)-f(y)|&lt;\varepsilon,
+</annotation></semantics></math></p>
+<p>则称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℱ</mi><annotation encoding="application/x-tex">\mathcal F</annotation></semantics></math>
+等度连续。关键是同一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+同时适用于整族函数。</p>
+<p><strong>定理 5.2（Ascoli 定理，度量紧空间版本）</strong><br />
+若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+紧，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℱ</mi><mo>⊂</mo><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal F\subset C(K)</annotation></semantics></math>
+在一致范数下相对紧，当且仅当它等度连续并且对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>∈</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">x\in K</annotation></semantics></math>，数集</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>:</mo><mi>f</mi><mo>∈</mo><mi>ℱ</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">
+\{f(x):f\in\mathcal F\}
+</annotation></semantics></math></p>
+<p>相对紧。对实值函数，后一条件可用逐点有界表达。</p>
+<p>“相对紧”指闭包紧。Ascoli 定理的证明思想是：先在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+的可数稠密点上用对角线法选子列，再用等度连续把稠密点上的收敛扩展为全空间一致收敛。</p>
+<p>它立即解释了第 11
+章中许多积分算子为什么紧：积分会把输入的局部尖峰平均掉，使输出函数族获得统一的连续性控制。</p>
+<h3 id="stoneweierstrass何时简单函数足以逼近全部连续函数">5.3
+Stone–Weierstrass：何时简单函数足以逼近全部连续函数？</h3>
+<p>Weierstrass 1885
+年的逼近定理说明闭区间上的连续函数可以被多项式一致逼近。Stone
+后来把“多项式的具体公式”替换为“函数代数的结构”。</p>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+是紧 Hausdorff
+空间，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>⊂</mo><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><mi>ℝ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">A\subset C(K,\mathbb R)</annotation></semantics></math>
+是子代数，即对加法、数乘和乘法封闭。</p>
+<p><strong>定义 5.3（分离点）</strong><br />
+若任意不同的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>,</mo><mi>y</mi><mo>∈</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">x,y\in K</annotation></semantics></math>，都存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>∈</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">f\in A</annotation></semantics></math>
+使
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≠</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(x)\ne f(y)</annotation></semantics></math>，就称
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+分离
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+中的点。</p>
+<p><strong>定理 5.4（实 Stone–Weierstrass 定理）</strong><br />
+若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+含常数函数并分离点，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><mi>ℝ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C(K,\mathbb R)</annotation></semantics></math>
+的一致范数下稠密：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mover><mi>A</mi><mo accent="true">¯</mo></mover><mrow><mo stretchy="false" form="postfix">∥</mo><mo>⋅</mo><msub><mo stretchy="false" form="postfix">∥</mo><mi>∞</mi></msub></mrow></msup><mo>=</mo><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>,</mo><mi>ℝ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\overline A^{\|\cdot\|_\infty}=C(K,\mathbb R).
+</annotation></semantics></math></p>
+<p>条件的含义很结构化：</p>
+<ul>
+<li>含常数，使整体竖直平移可实现；</li>
+<li>分离点，使代数能区分空间中不同位置；</li>
+<li>乘法封闭，使简单函数可以组合成更精细的形状。</li>
+</ul>
+<p>Ascoli 与 Stone–Weierstrass 都谈逼近，但方向相反：</p>
+<table>
+<thead>
+<tr class="header">
+<th>定理</th>
+<th>已知对象</th>
+<th>要得到什么</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ascoli</td>
+<td>一族可能很大的函数</td>
+<td>从任意序列中抽取收敛子列</td>
+</tr>
+<tr class="even">
+<td>Stone–Weierstrass</td>
+<td>一族结构简单的函数</td>
+<td>逼近整个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C(K)</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<h3 id="本章向下一章交付什么-3">5.4 本章向下一章交付什么？</h3>
+<p>Ascoli 给出某个具体函数族的紧性判据，Stone–Weierstrass
+给出某个具体子代数的稠密性判据。但第 6
+章面对的是另一类问题：如果每个输入点都分别受到控制，能否推出一个对所有输入同时有效的统一常数？</p>
+<h3 id="分段自检五两种逼近不要混淆">分段自检五：两种逼近不要混淆</h3>
+<ol type="1">
+<li>一致有界为什么不足以推出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C([0,1])</annotation></semantics></math>
+中的相对紧性？</li>
+<li>Ascoli 定理中的等度连续比每个函数分别连续强在哪里？</li>
+<li>Stone–Weierstrass 的结论是紧性还是稠密性？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>函数可能以越来越高频率振荡；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>sin</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\sin(nx)</annotation></semantics></math>
+就是一致有界但缺乏统一连续性控制的例子。</li>
+<li>等度连续要求给定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ε</mi><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math>
+后，同一个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+对整族函数都有效。</li>
+<li>是稠密性：满足条件的函数代数可以一致逼近任意连续函数。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-6">6. 第 6 章：Baire
+定理及其应用——从逐点控制到统一控制</h2>
+<h3 id="旧理论缺什么每个点都有界不代表界与点无关">6.1
+旧理论缺什么：每个点都有界，不代表界与点无关</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X,Y</annotation></semantics></math>
+是 Banach
+空间，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>T</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⊂</mo><mi>ℬ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">(T_n)\subset\mathcal B(X,Y)</annotation></semantics></math>。假设对每个固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>∈</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">x\in X</annotation></semantics></math>，数列
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="postfix">∥</mo><msub><mi>T</mi><mi>n</mi></msub><mi>x</mi><mo stretchy="false" form="postfix">∥</mo><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\|T_nx\|)</annotation></semantics></math>
+有界：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>x</mi><mo>∈</mo><mi>X</mi><mo>,</mo><mspace width="1.0em"></mspace><munder><mo>sup</mo><mi>n</mi></munder><mo stretchy="false" form="postfix">∥</mo><msub><mi>T</mi><mi>n</mi></msub><mi>x</mi><mo stretchy="false" form="postfix">∥</mo><mo>&lt;</mo><mi>∞</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\forall x\in X,
+\quad
+\sup_n\|T_nx\|&lt;\infty.
+</annotation></semantics></math></p>
+<p>这里允许界依赖
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>。我们真正想要的是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>sup</mo><mi>n</mi></munder><mo stretchy="false" form="postfix">∥</mo><msub><mi>T</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">∥</mo><mo>&lt;</mo><mi>∞</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\sup_n\|T_n\|&lt;\infty,
+</annotation></semantics></math></p>
+<p>即存在一个常数同时控制所有单位向量和所有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>。从“每个点各有一个界”到“全空间共享一个界”不能靠交换两个上确界直接完成；Baire
+方法正是完成量词升级的工具。</p>
+<h3 id="baire-类定理的拓扑内容">6.2 Baire 类定理的拓扑内容</h3>
+<p><strong>定义 6.1（无处稠密）</strong><br />
+集合
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>⊂</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">A\subset X</annotation></semantics></math>
+称为无处稠密，如果其闭包的内部为空：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>int</mo><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>A</mi><mo accent="true">¯</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>⌀</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{int}(\overline A)=\varnothing.
+</annotation></semantics></math></p>
+<p>它表示
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+在任何开区域中都无法占据一块完整区域。</p>
+<p><strong>定理 6.2（Baire 类定理）</strong><br />
+非空完备度量空间不能表示为可数个闭无内点集合的并。</p>
+<p>Baire 在 1899
+年关于实函数的研究中发展了这类思想。到泛函分析中，“完备性”不再只用来保证某个
+Cauchy
+列收敛，还产生一种整体厚度：可数多个稀薄坏集不可能覆盖整个空间。</p>
+<h3 id="banachsteinhaus-定理看一次-baire-方法怎样工作">6.3
+Banach–Steinhaus 定理：看一次 Baire 方法怎样工作</h3>
+<p><strong>定理 6.3（一致有界原理）</strong><br />
+设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+是 Banach
+空间，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+是赋范空间，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒯</mi><mo>⊂</mo><mi>ℬ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal T\subset\mathcal B(X,Y)</annotation></semantics></math>。若</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∀</mo><mi>x</mi><mo>∈</mo><mi>X</mi><mo>,</mo><mspace width="1.0em"></mspace><munder><mo>sup</mo><mrow><mi>T</mi><mo>∈</mo><mi>𝒯</mi></mrow></munder><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>x</mi><mo stretchy="false" form="postfix">∥</mo><mo>&lt;</mo><mi>∞</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\forall x\in X,
+\quad
+\sup_{T\in\mathcal T}\|Tx\|&lt;\infty,
+</annotation></semantics></math></p>
+<p>则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>sup</mo><mrow><mi>T</mi><mo>∈</mo><mi>𝒯</mi></mrow></munder><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mo stretchy="false" form="postfix">∥</mo><mo>&lt;</mo><mi>∞</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\sup_{T\in\mathcal T}\|T\|&lt;\infty.
+</annotation></semantics></math></p>
+<p>证明先把逐点界按整数大小分层。定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>m</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mi>x</mi><mo>∈</mo><mi>X</mi><mo>:</mo><munder><mo>sup</mo><mrow><mi>T</mi><mo>∈</mo><mi>𝒯</mi></mrow></munder><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>x</mi><mo stretchy="false" form="postfix">∥</mo><mo>≤</mo><mi>m</mi><mo stretchy="true" form="postfix">}</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+E_m=
+\left\{
+x\in X:
+\sup_{T\in\mathcal T}\|Tx\|\le m
+\right\}.
+</annotation></semantics></math></p>
+<p>每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>m</mi></msub><annotation encoding="application/x-tex">E_m</annotation></semantics></math>
+是闭集；逐点有界假设说明</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><munderover><mo>⋃</mo><mrow><mi>m</mi><mo>=</mo><mn>1</mn></mrow><mo accent="false">∞</mo></munderover><msub><mi>E</mi><mi>m</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+X=\bigcup_{m=1}^{\infty}E_m.
+</annotation></semantics></math></p>
+<p>因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+完备，Baire 定理保证某个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><msub><mi>m</mi><mn>0</mn></msub></msub><annotation encoding="application/x-tex">E_{m_0}</annotation></semantics></math>
+有非空内部。因此存在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>0</mn></msub><mo>∈</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">x_0\in X</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">r&gt;0</annotation></semantics></math>，使</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>,</mo><mi>r</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⊂</mo><msub><mi>E</mi><msub><mi>m</mi><mn>0</mn></msub></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+B(x_0,r)\subset E_{m_0}.
+</annotation></semantics></math></p>
+<p>现在把局部控制移到原点。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>h</mi><mo stretchy="false" form="postfix">∥</mo><mo>&lt;</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">\|h\|&lt;r</annotation></semantics></math>，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>0</mn></msub><mo>+</mo><mi>h</mi></mrow><annotation encoding="application/x-tex">x_0+h</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math>
+都在相关受控集合中，所以对任意
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>∈</mo><mi>𝒯</mi></mrow><annotation encoding="application/x-tex">T\in\mathcal T</annotation></semantics></math>，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>h</mi><mo stretchy="false" form="postfix">∥</mo><mo>=</mo><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>+</mo><mi>h</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>T</mi><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">∥</mo><mo>≤</mo><mn>2</mn><msub><mi>m</mi><mn>0</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|Th\|
+=\|T(x_0+h)-Tx_0\|
+\le2m_0.
+</annotation></semantics></math></p>
+<p>对任意单位向量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>，取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>r</mi><mi>/</mi><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">h=(r/2)x</annotation></semantics></math>，得到</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>x</mi><mo stretchy="false" form="postfix">∥</mo><mo>=</mo><mfrac><mn>2</mn><mi>r</mi></mfrac><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>h</mi><mo stretchy="false" form="postfix">∥</mo><mo>≤</mo><mfrac><mrow><mn>4</mn><msub><mi>m</mi><mn>0</mn></msub></mrow><mi>r</mi></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\|Tx\|
+=\frac2r\|Th\|
+\le\frac{4m_0}{r}.
+</annotation></semantics></math></p>
+<p>这个常数与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+都无关，所以</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>sup</mo><mrow><mi>T</mi><mo>∈</mo><mi>𝒯</mi></mrow></munder><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mo stretchy="false" form="postfix">∥</mo><mo>≤</mo><mfrac><mrow><mn>4</mn><msub><mi>m</mi><mn>0</mn></msub></mrow><mi>r</mi></mfrac><mo>&lt;</mo><mi>∞</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\sup_{T\in\mathcal T}\|T\|
+\le\frac{4m_0}{r}&lt;\infty.
+</annotation></semantics></math></p>
+<p>证明最关键的不是最后的缩放，而是 Baire
+定理把“闭集覆盖全空间”强迫成“其中一个闭集包含一个开球”。统一常数就藏在这个开球里。</p>
+<h3 id="开映射与闭图像定理分别解决什么">6.4
+开映射与闭图像定理分别解决什么？</h3>
+<p><strong>开映射定理</strong>：若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X,Y</annotation></semantics></math>
+是 Banach
+空间，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>∈</mo><mi>ℬ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">T\in\mathcal B(X,Y)</annotation></semantics></math>
+且满射，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+把开集映成开集。特别地，若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+双射，则逆映射
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>T</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">T^{-1}</annotation></semantics></math>
+自动连续。</p>
+<p>它解决的是线性方程的稳定性：代数上存在唯一解还不够，逆算子连续才意味着右端小扰动只造成解的小扰动。</p>
+<p><strong>闭图像定理</strong>：若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X,Y</annotation></semantics></math>
+是 Banach 空间，线性算子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>:</mo><mi>X</mi><mo>→</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">T:X\to Y</annotation></semantics></math>
+的图像</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>T</mi><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>:</mo><mi>x</mi><mo>∈</mo><mi>X</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">
+G(T)=\{(x,Tx):x\in X\}
+</annotation></semantics></math></p>
+<p>在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>×</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X\times Y</annotation></semantics></math>
+中闭，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+连续。</p>
+<p>它提供另一种连续性判据：有时很难直接估计
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>x</mi><mo stretchy="false" form="postfix">∥</mo><mo>≤</mo><mi>C</mi><mo stretchy="false" form="postfix">∥</mo><mi>x</mi><mo stretchy="false" form="postfix">∥</mo></mrow><annotation encoding="application/x-tex">\|Tx\|\le C\|x\|</annotation></semantics></math>，但容易证明只要
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>n</mi></msub><mo>→</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">x_n\to x</annotation></semantics></math>
+且
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><msub><mi>x</mi><mi>n</mi></msub><mo>→</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">Tx_n\to y</annotation></semantics></math>，就必有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>T</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">y=Tx</annotation></semantics></math>；这正是图像闭的序列形式。</p>
+<p>三个定理的功能可以分开记：</p>
+<table>
+<thead>
+<tr class="header">
+<th>定理</th>
+<th>输入信息</th>
+<th>输出信息</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>一致有界原理</td>
+<td>每个点分别受控</td>
+<td>算子范数统一受控</td>
+</tr>
+<tr class="even">
+<td>开映射定理</td>
+<td>连续线性满射</td>
+<td>逆问题稳定</td>
+</tr>
+<tr class="odd">
+<td>闭图像定理</td>
+<td>极限与算子关系相容</td>
+<td>算子自动连续</td>
+</tr>
+</tbody>
+</table>
+<h3 id="本章向第-11-章交付什么">6.5 本章向第 11 章交付什么？</h3>
+<p>第 6
+章保证许多抽象算子结论不必逐个估计，但仍不能使一般有界算子像矩阵。第 11
+章要加一个真正的“有限维化”条件：紧性。</p>
+<h3 id="分段自检六baire-方法的量词升级">分段自检六：Baire
+方法的量词升级</h3>
+<ol type="1">
+<li>一致有界原理的假设与结论分别是哪两个上确界？</li>
+<li>证明在哪一步必须使用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+的完备性？</li>
+<li>开映射定理为什么与方程稳定性有关？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>假设是对每个固定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>sup</mo><mi>T</mi></msub><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mi>x</mi><mo stretchy="false" form="postfix">∥</mo><mo>&lt;</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">\sup_T\|Tx\|&lt;\infty</annotation></semantics></math>；结论是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>sup</mo><mi>T</mi></msub><mo stretchy="false" form="postfix">∥</mo><mi>T</mi><mo stretchy="false" form="postfix">∥</mo><mo>&lt;</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">\sup_T\|T\|&lt;\infty</annotation></semantics></math>。</li>
+<li>对闭集覆盖
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mo>⋃</mo><msub><mi>E</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">X=\bigcup E_m</annotation></semantics></math>
+使用 Baire 定理，推出某个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>m</mi></msub><annotation encoding="application/x-tex">E_m</annotation></semantics></math>
+含开球。</li>
+<li>双射有界线性算子的逆若连续，则右端的小误差不会被逆映射无限放大，解连续依赖于数据。</li>
+</ol>
+</details>
+<hr />
+<h2 id="chapter-11">7. 第 11 章：紧算子——在无限维中恢复部分矩阵谱论</h2>
+<h3 id="旧理论缺什么一般有界算子的谱可能过于复杂">7.1
+旧理论缺什么：一般有界算子的谱可能过于复杂</h3>
+<p>有限维矩阵把有界集送到相对紧集，因为有限维中闭有界集紧；矩阵的非零谱由特征值组成。无限维中单位球不紧，一般有界算子的谱还可能包含并非特征值的点，不能期待有一组特征向量完成对角化。</p>
+<p>Fredholm 对积分方程的研究和 Riesz
+对线性泛函运算的研究逐渐发现：某些积分算子虽然作用在无限维空间，却保留了有限维矩阵的许多性质。共同原因被抽象成紧算子。</p>
+<h3 id="紧算子的严格定义">7.2 紧算子的严格定义</h3>
+<p><strong>定义 7.1（紧算子）</strong><br />
+设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X,Y</annotation></semantics></math>
+是赋范空间。有界线性算子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>:</mo><mi>X</mi><mo>→</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">T:X\to Y</annotation></semantics></math>
+称为紧的，如果它把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+中的有界集送到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+中的相对紧集。</p>
+<p>在度量空间中，这等价于：对任意有界序列
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>⊂</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">(x_n)\subset X</annotation></semantics></math>，像序列
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(Tx_n)</annotation></semantics></math>
+都存在收敛子列。</p>
+<p>注意紧算子通常不把整个无限维单位球变成紧球；它把单位球压进某个相对紧、因而“有效自由度有限”的集合。</p>
+<p>有限秩算子一定紧。若</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>x</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msub><mi>φ</mi><mi>j</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>y</mi><mi>j</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+Tx=\sum_{j=1}^N\varphi_j(x)y_j,
+</annotation></semantics></math></p>
+<p>则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+的像落在有限维空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>span</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>y</mi><mn>1</mn></msub><mo>,</mo><mi>l</mi><mi>d</mi><mi>o</mi><mi>t</mi><mi>s</mi><mo>,</mo><msub><mi>y</mi><mi>N</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\operatorname{span}\{y_1,ldots,y_N\}</annotation></semantics></math>
+中；有界序列的像因此可提取收敛子列。</p>
+<h3 id="为什么连续核积分算子是紧的">7.3
+为什么连续核积分算子是紧的？</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>∈</mo><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>×</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">K\in C([a,b]\times[a,b])</annotation></semantics></math>，定义</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mi>a</mi><mi>b</mi></msubsup><mi>K</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>y</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>T</mi><mo>:</mo><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><mi>C</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(Tf)(x)=\int_a^bK(x,y)f(y)\,\mathrm dy,
+\qquad
+T:C([a,b])\to C([a,b]).
+</annotation></semantics></math></p>
+<p>我们要说明单位球</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>f</mi><mo>:</mo><mo stretchy="false" form="postfix">∥</mo><mi>f</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>∞</mi></msub><mo>≤</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">
+B=\{f:\|f\|_\infty\le1\}
+</annotation></semantics></math></p>
+<p>的像
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">T(B)</annotation></semantics></math>
+相对紧。按第 5 章 Ascoli 定理，只需验证一致有界和等度连续。</p>
+<p>首先，对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>∈</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">f\in B</annotation></semantics></math>，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><msubsup><mo>∫</mo><mi>a</mi><mi>b</mi></msubsup><mrow><mo stretchy="true" form="prefix">|</mo><mi>K</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>y</mi><mo>≤</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>b</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">∥</mo><mi>K</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>∞</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|(Tf)(x)|
+\le\int_a^b|K(x,y)|\,|f(y)|\,\mathrm dy
+\le(b-a)\|K\|_\infty.
+</annotation></semantics></math></p>
+<p>这个界与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+无关，所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">T(B)</annotation></semantics></math>
+一致有界。</p>
+<p>其次，对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>,</mo><mi>x</mi><mi>′</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">x,x&#39;\in[a,b]</annotation></semantics></math>，</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mrow><mo stretchy="true" form="prefix">|</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mi>′</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>≤</mo><msubsup><mo>∫</mo><mi>a</mi><mi>b</mi></msubsup><mrow><mo stretchy="true" form="prefix">|</mo><mi>K</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>K</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mi>′</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mspace width="0.167em"></mspace><mi mathvariant="normal">d</mi><mi>y</mi></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>≤</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>b</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><munder><mo>sup</mo><mrow><mi>y</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">]</mo></mrow></mrow></munder><mrow><mo stretchy="true" form="prefix">|</mo><mi>K</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>K</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mi>′</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+|(Tf)(x)-(Tf)(x&#39;)|
+&amp;\le\int_a^b|K(x,y)-K(x&#39;,y)|\,|f(y)|\,\mathrm dy\\
+&amp;\le(b-a)\sup_{y\in[a,b]}|K(x,y)-K(x&#39;,y)|.
+\end{aligned}
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+在紧集上连续，所以一致连续；当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mi>′</mi></mrow><annotation encoding="application/x-tex">x&#39;</annotation></semantics></math>
+接近
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+时，最后的上确界一致趋于零，而且估计不依赖
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>∈</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">f\in B</annotation></semantics></math>。因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">T(B)</annotation></semantics></math>
+等度连续。Ascoli 定理推出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>B</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">T(B)</annotation></semantics></math>
+相对紧，故
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+紧。</p>
+<p>这段推导把教材树中的两条枝连接起来：第 5 章提供函数族紧性判据，第 11
+章用它证明积分算子紧。</p>
+<h3 id="紧算子的谱为什么像矩阵">7.4 紧算子的谱为什么像矩阵？</h3>
+<p>对复 Banach 空间上的有界算子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>，谱定义为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>λ</mi><mo>∈</mo><mi>ℂ</mi><mo>:</mo><mi>λ</mi><mi>I</mi><mo>−</mo><mi>T</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 不可逆于 </mtext><mspace width="0.333em"></mspace></mrow><mi>ℬ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\sigma(T)
+=\{\lambda\in\mathbb C:
+\lambda I-T\text{ 不可逆于 }\mathcal B(X)\}.
+</annotation></semantics></math></p>
+<p><strong>紧算子谱定理的核心结论</strong>：若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+无限维且
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+紧，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\sigma(T)</annotation></semantics></math>
+中每个非零元素都是特征值；每个非零特征值对应的特征空间都是有限维的，并且若有无限多个非零特征值，它们唯一可能的聚点是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>。</p>
+<p>因此非零谱重新变成离散的点列，接近有限维矩阵。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+的特殊地位来自无限维：若紧算子可逆，则单位算子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo>=</mo><msup><mi>T</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>T</mi></mrow><annotation encoding="application/x-tex">I=T^{-1}T</annotation></semantics></math>
+也会紧，但无限维空间的单位算子不紧，矛盾。</p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+是 Hilbert
+空间，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+还满足
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><msup><mi>T</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">T=T^*</annotation></semantics></math>，则有更强的紧自伴谱定理：不同特征值对应的特征向量正交，并可用一族标准正交特征向量展开
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mrow><mo>Ran</mo><mi>T</mi></mrow><mo accent="true">¯</mo></mover><annotation encoding="application/x-tex">\overline{\operatorname{Ran}T}</annotation></semantics></math>。这就是实对称矩阵正交对角化在无限维中的主要对应物。</p>
+<h3 id="回到开头的积分方程">7.5 回到开头的积分方程</h3>
+<p>对紧算子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>，方程</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo>−</mo><mi>λ</mi><mi>T</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>f</mi><mo>=</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">
+(I-\lambda T)f=g
+</annotation></semantics></math></p>
+<p>的障碍与特征值紧密相关。Fredholm
+理论表明，在适当条件下会出现类似有限维线性代数的二择：齐次方程只有零解时，非齐次方程对每个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+有唯一解；若齐次方程有非零解，可解性由对偶齐次方程给出的有限维条件控制。在
+Hilbert 空间中，这些条件可以写成右端与伴随算子的齐次解空间正交。</p>
+<p>所以第 11
+章不是另一个孤立专题，而是整门课对最初积分方程问题的回答。</p>
+<h3 id="分段自检七课程闭环是否形成">分段自检七：课程闭环是否形成？</h3>
+<ol type="1">
+<li>紧算子定义中的“相对紧”怎样用序列语言表达？</li>
+<li>连续核积分算子的紧性证明调用了第 5 章哪两个条件？</li>
+<li>为什么无限维空间上的紧算子不可能有有界逆？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>任意有界序列
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x_n)</annotation></semantics></math>
+的像序列
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(Tx_n)</annotation></semantics></math>
+都能提取收敛子列。</li>
+<li>证明单位球的像一致有界且等度连续，再由 Ascoli 定理得到相对紧。</li>
+<li>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>T</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">T^{-1}</annotation></semantics></math>
+有界，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo>=</mo><msup><mi>T</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>T</mi></mrow><annotation encoding="application/x-tex">I=T^{-1}T</annotation></semantics></math>
+是有界算子与紧算子的复合，因而紧；但无限维单位球不相对紧，所以单位算子不紧。</li>
+</ol>
+</details>
+<hr />
+<h2 id="把七章压缩成可复述的知识树">8. 把七章压缩成可复述的知识树</h2>
+<p>读完后不必一次背下全部证明，但应能沿教材目录复述下表：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>一级分支</th>
+<th>旧工具的缺陷</th>
+<th>本章新增的核心结构</th>
+<th>向后提供什么</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>第 1 章 拓扑</td>
+<td>各种函数收敛各说各话</td>
+<td>开集、连续、紧性、乘积拓扑</td>
+<td>极限与紧性的共同语言</td>
+</tr>
+<tr class="even">
+<td>第 2 章 完备度量</td>
+<td>近似列可能没有空间内极限</td>
+<td>Cauchy、完备化、压缩、全有界</td>
+<td>存在性与迭代收敛</td>
+</tr>
+<tr class="odd">
+<td>第 3 章 赋范与算子</td>
+<td>线性不控制误差</td>
+<td>Banach 空间、算子范数</td>
+<td>稳定的无穷维线性代数</td>
+</tr>
+<tr class="even">
+<td>第 4 章 Hilbert</td>
+<td>一般范数没有角度</td>
+<td>投影、Riesz 表示、伴随、正交基</td>
+<td>最佳逼近与谱几何</td>
+</tr>
+<tr class="odd">
+<td>第 5 章 连续函数</td>
+<td>有界函数族仍可剧烈振荡</td>
+<td>等度连续、Ascoli、Stone–Weierstrass</td>
+<td>紧性判据与稠密逼近</td>
+</tr>
+<tr class="even">
+<td>第 6 章 Baire</td>
+<td>逐点界未必显出统一常数</td>
+<td>Baire、统一有界、开映射、闭图像</td>
+<td>自动连续与稳定逆</td>
+</tr>
+<tr class="odd">
+<td>第 11 章 紧算子</td>
+<td>一般算子的谱不像矩阵</td>
+<td>紧性、离散非零谱、紧自伴谱</td>
+<td>积分方程与部分对角化</td>
+</tr>
+</tbody>
+</table>
+<p>还可以把跨章节的边记成四条：</p>
+<ol type="1">
+<li><strong>第 1 章紧性 → 第 2 章全有界 → 第 5 章 Ascoli → 第 11
+章紧算子</strong>；</li>
+<li><strong>第 2 章完备性 → 第 3 章 Banach 空间 → 第 6 章 Baire
+三大定理</strong>；</li>
+<li><strong>第 3 章有界算子 → 第 4 章伴随 → 第 11
+章紧自伴谱定理</strong>；</li>
+<li><strong>第 5 章函数族控制 → 第 11 章连续核积分算子紧</strong>。</li>
+</ol>
+<p>这四条边比“泛函分析研究函数空间”更接近整门课真正的结构。</p>
+<hr />
+<h2 id="本文结论与下一篇">9. 本文结论与下一篇</h2>
+<ol type="1">
+<li>教材七章形成从拓扑、完备性到算子谱论的因果链，不是并排的名词表。</li>
+<li>你的实分析基础已经覆盖
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math>
+与完备性实例；泛函分析的新内容是把这些实例抽象为可迁移的空间—算子定理。</li>
+<li>第 2 章的 Banach
+不动点定理展示完备性怎样产生方程的存在、唯一与算法收敛。</li>
+<li>第 4 章通过投影与 Riesz 表示恢复无穷维几何；第 6 章通过 Baire
+方法把逐点信息升级为统一估计。</li>
+<li>第 5 章的 Ascoli 定理与第 11
+章的紧算子直接连接，使积分算子重新获得接近有限维矩阵的谱结构。</li>
+</ol>
+<p>下一篇按教材顺序深入第 1—2 章：</p>
+<blockquote>
+<p><strong>泛函分析（二）：从拓扑、完备化到 Banach
+不动点定理——为什么逐次逼近会收敛？</strong></p>
+</blockquote>
+<p>下一篇将补充完备化的严格构造、紧度量空间的等价刻画，并用一个具体积分方程计算压缩常数与误差界。</p>
+<hr />
+<h2 id="参考资料">参考资料</h2>
+<ol type="1">
+<li>许全华、马涛、尹智：《泛函分析讲义》，高等教育出版社。本文一级结构依照用户提供的第
+1—6、11 章目录。</li>
+<li>M. Fréchet, “Sur quelques points du calcul fonctionnel,” 1906. <a
+href="https://zenodo.org/records/1428464">原文记录与扫描件</a>。</li>
+<li>D. Hilbert, <em>Grundzüge einer allgemeinen Theorie der linearen
+Integralgleichungen</em>, 1912. <a
+href="https://books.google.com/books/about/Grundz%C3%BCge_einer_allgemeinen_Theorie_der.html?id=r9FRFUQjA9oC">原著数字版</a>。</li>
+<li>S. Banach, <em>Théorie des opérations linéaires</em>, 1932. <a
+href="https://eudml.org/doc/urn%3Aeudml%3Adoc%3A268537">European Digital
+Mathematics Library</a>。</li>
+<li>R.-L. Baire, <em>Sur les fonctions de variables réelles</em>, 1899.
+<a
+href="https://patrimoine.sorbonne-universite.fr/idurl/1/3287">Sorbonne
+Université 数字馆藏</a>。</li>
+<li>M. H. Stone, “The Generalized Weierstrass Approximation Theorem,”
+1948. <a href="https://doi.org/10.2307/3029750">DOI 记录</a>。</li>
+<li>F. Riesz, “Démonstration nouvelle d’un théorème concernant les
+opérations fonctionnelles linéaires,” 1914. <a
+href="https://www.numdam.org/articles/10.24033/asens.669/">Numdam
+原文</a>。</li>
+<li>H. Lebesgue, “Sur la méthode de M. Goursat pour la résolution de
+l’équation de Fredholm,” 1908. <a
+href="https://eudml.org/doc/86210">EuDML 原文</a>。</li>
+</ol>
+<hr />
+<section id="reader-feedback" data-feedback-status="addressed">
+<h2>
+读后反馈与修订记录
+</h2>
+<article class="feedback-entry" data-status="superseded">
+<h3>
+2026-07-17 · 初版发布
+</h3>
+<p>
+<strong>初版设计：</strong>前半篇集中介绍理论动机、范数、完备性和连续线性算子；后半篇以低难度方式速览第
+1—6、11 章，并设置四处分段自检。
+</p>
+<p>
+<strong>状态：</strong>已由 2026-07-18 第一轮修订取代。
+</p>
+</article>
+<article class="feedback-entry" data-status="addressed">
+<h3>
+2026-07-18 · 第 1 轮反馈
+</h3>
+<p>
+<strong>原始反馈（整理）：</strong>（1）全文接受到的新信息太少，可能是因为实分析与泛函分析联系紧密，也可能是新内容覆盖不足；希望适当增加内容与难度。（2）用户按教材目录的树形结构记忆课程。初版把历史、旧理论缺陷和新理论目标集中在前半篇，又没有按教材章节划分，导致内容不多却难以形成记忆；希望按教材目录划分文章，并在每个分支中填入更多相关知识。
+</p>
+<p>
+<strong>问题分类：</strong>长度 / 难度 / 结构 / 历史组织。
+</p>
+<p>
+<strong>处理：</strong>全文改为以第 1、2、3、4、5、6、11
+章为一级分支；历史背景和旧理论缺陷分别嵌入对应章节；新增 Banach
+不动点定理完整证明、算子空间完备性、Hilbert 投影定理推导、Riesz
+表示、Ascoli 与 Stone–Weierstrass、Baire
+方法下的一致有界原理证明、紧积分算子与紧算子谱；保留分布式自检，并在文末给出章节节点与跨章边。
+</p>
+<p>
+<strong>状态：</strong>已处理。
+</p>
+</article>
+<article class="feedback-entry" data-status="superseded">
+<h3>
+2026-07-18 · 第 2 轮阅读标记
+</h3>
+<p>
+<strong>原始记录：</strong>曾根据输入把本篇标为“易读”。
+</p>
+<p>
+<strong>状态：</strong>输入有误，已由下一条更正取代；该难易度标签不再保留。
+</p>
+</article>
+<article class="feedback-entry" data-status="addressed" data-reading-status="read">
+<h3>
+2026-07-18 · 阅读状态更正
+</h3>
+<p>
+<strong>原始反馈：</strong>上一个请求打错了，是标记为“已读”；标签里不需要难易度这一项。
+</p>
+<p>
+<strong>问题分类：</strong>阅读状态 / 标签规则。
+</p>
+<p>
+<strong>处理：</strong>文章顶部和机器元数据均改为“已读”；删除难易度标签。历史误记录仅在反馈修订记录中保留为已被取代的条目。
+</p>
+<p>
+<strong>状态：</strong>已处理。
+</p>
+</article>
+</section>
+</body>
+</html>

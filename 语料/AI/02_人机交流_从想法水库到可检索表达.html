@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>从“想法水库”到“可检索表达”：纯文字与大模型高效交流</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <meta name="corpus-id" content="ai-002">
+  <meta name="corpus-category" content="AI">
+  <meta name="corpus-status" content="read">
+  <meta name="estimated-reading-time" content="30-35 minutes">
+  <meta name="generated-date" content="2026-07-18">
+  <meta name="revision-date" content="2026-07-19">
+  <meta name="corpus-revision" content="2">
+  <style>
+    :root{--ink:#172033;--muted:#5d687b;--paper:#fbfcff;--panel:#f1f5fb;--line:#d9e1ec;--blue:#2457a7;--teal:#087f78;--amber:#a35f00;--purple:#7153a4;--code:#111827;--shadow:0 10px 30px rgba(31,50,81,.08)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:#eef2f7}
+    body{max-width:920px;margin:0 auto;padding:42px 64px 80px;background:var(--paper);color:var(--ink);font:17px/1.78 system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;box-shadow:var(--shadow)}
+    h1,h2,h3{line-height:1.32;scroll-margin-top:1rem;color:#10254a}
+    h1{margin:2.6em 0 .8em;padding-bottom:.35em;border-bottom:2px solid var(--line);font-size:2rem}
+    h2{margin:2.1em 0 .6em;font-size:1.5rem}
+    h3{margin:1.55em 0 .4em;font-size:1.17rem}
+    p{margin:.75em 0} a{color:var(--blue);text-underline-offset:3px}
+    blockquote{margin:1.4em 0;padding:.7em 1.1em;border-left:4px solid var(--blue);background:#edf4ff;color:#243756}
+    code{padding:.12em .32em;border-radius:4px;background:#e9eef5;font:.9em/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,"Noto Sans SC","Microsoft YaHei",monospace}
+    pre{overflow:auto;padding:1.05em 1.2em;border-radius:10px;background:var(--code);color:#e5edf8;line-height:1.62;white-space:pre-wrap}
+    pre code{padding:0;background:none;color:inherit}
+    table{display:table;width:100%;margin:1.3em 0;border-collapse:collapse;font-size:.94em}
+    th,td{padding:.68em .72em;border:1px solid var(--line);vertical-align:top} th{background:#eaf0f8;text-align:left;color:#183661} tbody tr:nth-child(even){background:#f8fafc}
+    nav#TOC{margin:1.5em 0 2.3em;padding:1.1em 1.4em;border:1px solid var(--line);border-radius:12px;background:#f7f9fc}
+    nav#TOC:before{content:"文章目录";display:block;margin-bottom:.6em;font-weight:700;color:#183661} nav#TOC ul{margin:.25em 0;padding-left:1.35em} nav#TOC a{text-decoration:none}
+    .hero{margin:-.2em 0 1.7em;padding:1.25em 1.4em;border-radius:14px;background:linear-gradient(135deg,#eaf2ff,#eefaf8);border:1px solid #cfdaea}
+    .hero p:last-child{margin-bottom:0}
+    .core-map{margin:1.5em 0 2.2em;padding:1.2em;border:1px solid #cad7e8;border-radius:16px;background:linear-gradient(145deg,#f7faff,#f2faf8)}
+    .core-map h2{margin:.1em 0 .7em}
+    .map-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:.55em;align-items:center}
+    .map-node{min-height:132px;padding:.9em 1em;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 4px 14px rgba(20,40,70,.06)}
+    .map-node b{display:block;margin-bottom:.3em;color:#143c72}.map-node p{margin:0;color:#45546a;font-size:.92em}.arrow{color:var(--blue);font-weight:800}
+    .support-node{max-width:680px;margin:.8em auto 0;padding:.75em 1em;border:1px solid #cbbde0;border-radius:10px;background:#f5f0fb;color:#44315e;text-align:center}
+    .support-arrow{text-align:center;color:var(--purple);font-weight:800}
+    .reading-tip,.term-box,.warning,.answer{margin:1.25em 0;padding:.85em 1em;border-radius:10px;background:#fff8e8;border:1px solid #edd59e}
+    .term-box{background:#eef8f6;border-color:#b9ddd6}.warning{background:#fff0ef;border-color:#e7b8b3}.answer{background:#f2f6fc;border-color:#ced9e9}
+    .reading-tip strong,.term-box strong,.warning strong{color:#173d69}
+    .mode-grid,.layer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.9em;margin:1.3em 0}
+    .mode-card,.layer-card{padding:1em;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 4px 14px rgba(20,40,70,.05)}
+    .mode-card h3,.layer-card h3{margin:.05em 0 .5em}.mode-card p,.layer-card p{margin:.35em 0}.mode-card:nth-child(1){border-top:5px solid var(--amber)}.mode-card:nth-child(2){border-top:5px solid var(--purple)}.mode-card:nth-child(3){border-top:5px solid var(--teal)}
+    .example{margin:1.4em 0;padding:1em 1.15em;border:1px solid #b8cce8;border-left:5px solid var(--blue);border-radius:10px;background:#f5f9ff}
+    .example h3{margin:.05em 0 .5em}
+    .tag{display:inline-block;margin-right:.35em;padding:.08em .5em;border-radius:999px;background:#e7eef9;color:#244f87;font-size:.84em;font-weight:700}
+    .flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.48em;margin:1.4em 0;padding:1.1em;border:1px solid var(--line);border-radius:12px;background:#f6fafc}
+    .flow span{padding:.42em .65em;border-radius:8px;background:#dff4ef;border:1px solid #addbd2;font-weight:650}.flow b{color:var(--teal)}
+    details{margin:1.2em 0;padding:.8em 1em;border:1px solid var(--line);border-radius:10px;background:#f7f9fc} summary{cursor:pointer;font-weight:700;color:#183661}
+    #reader-feedback{margin-top:3.5em;padding:1.2em 1.35em;border:2px dashed #9caabd;border-radius:12px;background:#f8fafc} #reader-feedback h1{margin-top:.3em}.feedback-entry{padding:.3em .8em .6em;border-left:4px solid #8da2be}
+    @media(max-width:760px){body{padding:24px 20px 56px;font-size:16px;box-shadow:none}h1{font-size:1.72rem}.map-row,.mode-grid,.layer-grid{grid-template-columns:1fr}.arrow{text-align:center;transform:rotate(90deg)}.map-node{min-height:0}.core-map{padding:.85em}table{display:block;overflow-x:auto;white-space:normal}.flow{align-items:stretch;flex-direction:column;text-align:center}.flow b{transform:rotate(90deg)}pre{margin-left:-6px;margin-right:-6px;font-size:.84em}}
+    @media print{html{background:#fff}body{max-width:none;padding:0;box-shadow:none}a{color:inherit}.hero,.mode-card,.layer-card,details,#reader-feedback{break-inside:avoid}nav#TOC{break-after:page}}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">从“想法水库”到“可检索表达”：纯文字与大模型高效交流</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#一你缺少的未必是表达能力而是把并行想法串行化的协议"
+id="toc-一你缺少的未必是表达能力而是把并行想法串行化的协议">一、你缺少的未必是表达能力，而是“把并行想法串行化”的协议</a></li>
+<li><a href="#二开口前先选模式探索检索还是执行"
+id="toc-二开口前先选模式探索检索还是执行">二、开口前先选模式：探索、检索还是执行</a></li>
+<li><a href="#三短期方法用六个槽位把一团想法变成可工作的消息"
+id="toc-三短期方法用六个槽位把一团想法变成可工作的消息">三、短期方法：用六个槽位把一团想法变成可工作的消息</a></li>
+<li><a href="#四怎样检索过往信息从凭印象记得到按证据取回"
+id="toc-四怎样检索过往信息从凭印象记得到按证据取回">四、怎样检索过往信息：从“凭印象记得”到“按证据取回”</a></li>
+<li><a href="#五长期调整建立一个可更新可追溯不过度维护的外部记忆"
+id="toc-五长期调整建立一个可更新可追溯不过度维护的外部记忆">五、长期调整：建立一个“可更新、可追溯、不过度维护”的外部记忆</a></li>
+<li><a href="#六短期与长期行动计划你具体应该怎样调整"
+id="toc-六短期与长期行动计划你具体应该怎样调整">六、短期与长期行动计划：你具体应该怎样调整</a></li>
+<li><a href="#七可直接复制的四张小卡片"
+id="toc-七可直接复制的四张小卡片">七、可直接复制的四张小卡片</a></li>
+<li><a href="#八结论压缩真正要扩大的不是水龙头而是可恢复性"
+id="toc-八结论压缩真正要扩大的不是水龙头而是可恢复性">八、结论压缩：真正要扩大的不是水龙头，而是可恢复性</a></li>
+<li><a href="#参考资料与产品边界"
+id="toc-参考资料与产品边界">参考资料与产品边界</a></li>
+<li><a href="#读后反馈与修订记录"
+id="toc-读后反馈与修订记录">读后反馈与修订记录</a></li>
+</ul>
+</nav>
+<div class="hero">
+<p>
+<strong>所属领域：</strong>AI /
+人机交流与个人信息管理　<strong>预计阅读：</strong>30—35 分钟
+</p>
+<p>
+<strong>本篇目标：</strong>把“怎样一次说清楚”改造成一个可重复的交流过程，并建立一套让过往信息能被找到、核对和更新的长期结构。
+</p>
+<p>
+<strong>先修：</strong>只需有日常使用大模型的经验。本文不会假设你熟悉提示工程、知识库或检索系统；这些名称只有在确实有用时才出现，并会当场解释。
+</p>
+</div>
+<p>你把自己的状态形容成：想法像一个水库，表达能力却只有一个水龙头。这个比喻非常准确，但它容易让人得出一个过分苛刻的结论——仿佛问题在于水龙头不够粗，所以必须训练自己一次倾倒出更多文字。</p>
+<p>本文的判断不同：<strong>真正需要改造的不是水龙头的口径，而是水库到接收者之间的输水系统。</strong>人的想法可以同时包含目的、情绪、例子、担忧、过去经历和尚未成形的联系；文字却只能一个字接一个字出现。大模型看到的不是你头脑中的整张图，而只是已经流出来的那一段水。要求自己一次写出完美指令，等于要求一条线性管道瞬间复制一张立体地图。</p>
+<p>因此，高效表达不是“把所有东西一次说完”，而是完成三个动作：先选出<strong>本轮真正要处理的部分</strong>，再把它编码成模型容易还原的结构，最后通过复述和校正验证模型是否接对了管道。涉及过往信息时，还要再加一层：告诉模型应该去哪里找、用什么线索找、找到以后怎样证明它没有找错。</p>
+<div class="core-map">
+<h2>
+正式阅读前：只记住这五个核心概念
+</h2>
+<div class="map-row">
+<div class="map-node">
+<b>① 想法水库</b>
+<p>
+头脑里并行存在的事实、偏好、目标、疑问和联想。它可以混乱，不必先整理好。
+</p>
+</div>
+<div class="arrow">
+→
+</div>
+<div class="map-node">
+<b>② 本轮工作集</b>
+<p>
+这一次对话真正需要取出的少量内容：现在要解决什么，暂时不解决什么。
+</p>
+</div>
+<div class="arrow">
+→
+</div>
+<div class="map-node">
+<b>③ 结构化消息</b>
+<p>
+把工作集写成目标、背景、约束、未知点和下一步动作，让模型能够还原任务。
+</p>
+</div>
+</div>
+<div class="support-arrow">
+↓ 需要历史时，从长期记录中检索；完成后再校正 ↓
+</div>
+<div class="map-row">
+<div class="map-node">
+<b>④ 可核对的检索</b>
+<p>
+规定资料范围、搜索线索、目标信息和证据要求，而不是只问“你记得吗”。
+</p>
+</div>
+<div class="arrow">
+→
+</div>
+<div class="map-node">
+<b>⑤ 复述—校正回路</b>
+<p>
+先让模型说明它理解了什么；有偏差就局部修正，确认后再执行高成本任务。
+</p>
+</div>
+<div class="arrow">
+↺
+</div>
+<div class="map-node">
+<b>进入下一轮</b>
+<p>
+模型产物和你的反馈成为新记录，本轮结论不必永久塞在同一段对话里。
+</p>
+</div>
+</div>
+<div class="support-node">
+<strong>长期外部记忆：</strong>稳定个人信息 + 项目现状 + 决策与反馈记录
++ 原始材料。它支撑检索，但不替代你的判断。
+</div>
+</div>
+<p>箭头的含义是处理顺序，不是说你必须一次完成全部步骤。全文会一直使用同一个例子：</p>
+<blockquote>
+<p>你想让大模型为“通勤学习项目”生成下一篇文章。它需要继承你过去对文章长度、难度、关系图、例子和
+HTML 格式的反馈，但你此刻还没有把新主题完全想清楚。</p>
+</blockquote>
+<p>这个例子恰好同时包含三个困难：想法很多但未成形；过往要求分散在不同记录里；生成一篇长文章成本较高，一旦模型理解偏了，返工很重。</p>
+<h1
+id="一你缺少的未必是表达能力而是把并行想法串行化的协议">一、你缺少的未必是表达能力，而是“把并行想法串行化”的协议</h1>
+<h2 id="头脑中的想法不是句子而是一张同时亮起的网">1.
+头脑中的想法不是句子，而是一张同时亮起的网</h2>
+<p>设想你产生“写第三篇文章”这个念头时，脑中可能同时亮起以下节点：上一篇太难、不要术语堆叠、开头要关系图、最好联系我自己的使用习惯、文件要放到项目目录、这一次更关心长期检索、又不想文章变成产品说明书。这些内容在你心里彼此相连，所以你只说“按照之前的要求写第三篇”，自己仍然觉得意思完整。</p>
+<p>但模型拿到的只有“按照之前”这四个字。它需要解决至少三个不确定问题：</p>
+<ol type="1">
+<li>“之前”指哪一段时间、哪个项目、哪几次反馈？</li>
+<li>那些要求中哪些仍有效，哪些只针对上一篇？</li>
+<li>如果两条旧信息冲突，以哪一条为准？</li>
+</ol>
+<p>这不是词汇量问题。即使换成文采更好的人，只要共享背景不完整，同样会产生歧义。你的长期改进目标也不应只是“写得更多”，而应是：<strong>让重要关系在文字中留下可恢复的线索。</strong></p>
+<div class="term-box">
+<strong>本轮工作集：</strong>这是本文为方便理解使用的说法，指当前一次对话真正需要模型同时考虑的信息。它不是你的全部想法，也不是全部历史，只是完成当前动作所需的最小集合。
+</div>
+<p>工作集过小，模型只能猜；工作集过大，真正重要的信息会被淹没。高效表达的关键是“够用”，而非“完整”。例如，生成第三篇文章时，你的童年阅读经历可能与长期表达训练有关，但未必需要在第一条消息里展开；“正式语料必须是
+HTML 文件”却会直接改变产物，必须进入工作集。</p>
+<h2 id="一条消息失败通常有三种不同原因">2.
+一条消息失败，通常有三种不同原因</h2>
+<p>把所有失败都归为“我没表达好”，会让你不知道该练什么。更有用的区分是：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>失败类型</th>
+<th>实际缺了什么</th>
+<th>常见表现</th>
+<th>应对动作</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>任务未定形</td>
+<td>你自己还没有决定要什么</td>
+<td>写了很多感受，却无法给出明确交付物</td>
+<td>先进入探索模式，让模型帮你整理问题</td>
+</tr>
+<tr class="even">
+<td>上下文未取回</td>
+<td>关键要求存在于过去，但本轮没有找到</td>
+<td>模型重复犯已经纠正过的错误</td>
+<td>先检索和核对，再执行</td>
+</tr>
+<tr class="odd">
+<td>接口未说明</td>
+<td>你知道目标，却没说验收条件</td>
+<td>方向对了，格式、深度或范围不对</td>
+<td>补充约束、输出形式和停止条件</td>
+</tr>
+</tbody>
+</table>
+<p>这三种情况需要不同的消息。若把它们混成一个万能“好提示词模板”，模板会越来越长，最后你每次都懒得填。</p>
+<h2 id="大模型交流不是考试不要求第一句话就是标准答案">3.
+大模型交流不是考试，不要求第一句话就是标准答案</h2>
+<p>与人写申请书不同，对话模型允许追问、复述和局部修正。一次高质量交流更像下面这条闭环：</p>
+<div class="flow">
+<span>倾倒原始想法</span><b>→</b><span>模型整理</span><b>→</b><span>你纠正重点</span><b>→</b><span>检索历史</span><b>→</b><span>确认后执行</span>
+</div>
+<p>如果你在第一步就强迫自己完成最后一步，脑中会同时承担“想清楚问题、回忆历史、组织语言、预测误解、设计输出”五项工作，水龙头当然会堵。分轮交流不是表达能力不足的补救，而是这个媒介本来就适合的工作方式。</p>
+<details>
+<summary>
+局部自检 1：先判断问题属于哪一类
+</summary>
+<p>
+你输入“继续做我们以前讨论过的个人知识库，给我一个方案”，模型给出一个完整但不符合你原先分层设计的方案。最可能的首要问题是什么？
+</p>
+<div class="answer">
+<strong>答案：</strong>首先是“上下文未取回”，不一定是方案能力不足。下一步应让模型限定范围检索旧设计并列出证据，而不是立刻把新方案越写越长。
+</div>
+</details>
+<h1
+id="二开口前先选模式探索检索还是执行">二、开口前先选模式：探索、检索还是执行</h1>
+<p>你不必背诵复杂提示词。发送消息前只问自己一个问题：<strong>我现在是还没想清楚、需要找回旧信息，还是已经可以让模型动手？</strong>这对应三种模式。</p>
+<div class="mode-grid">
+<div class="mode-card">
+<h3>
+探索模式
+</h3>
+<p>
+<span class="tag">想法未定形</span>
+</p>
+<p>
+允许碎片化倾倒；模型的任务是分类、复述、指出冲突和提出少量关键问题。
+</p>
+</div>
+<div class="mode-card">
+<h3>
+检索模式
+</h3>
+<p>
+<span class="tag">历史决定当前任务</span>
+</p>
+<p>
+先规定去哪里找、找什么、怎样报告来源；此时不要急着生成最终产物。
+</p>
+</div>
+<div class="mode-card">
+<h3>
+执行模式
+</h3>
+<p>
+<span class="tag">任务已经确认</span>
+</p>
+<p>
+明确交付物、必须满足的条件、可自由决定的部分和完成标准，然后让模型行动。
+</p>
+</div>
+</div>
+<h2 id="探索模式水库可以直接放水但要说明先别施工">1.
+探索模式：水库可以直接放水，但要说明“先别施工”</h2>
+<p>当想法还没成形时，最糟糕的做法不是写得乱，而是让模型误以为每一句碎片都是最终要求。模型往往会过早收敛：看到几个关键词就立刻给方案，使你的注意力从“我真正想解决什么”转向“修改它已经写出来的东西”。</p>
+<p>更有效的开场是先声明材料性质和本轮动作：</p>
+<pre class="text"><code>我还没有形成完整问题。下面是原始想法，不代表最终要求：
+
+- 我在纯文字交流时经常遗漏脑中的关系；
+- 我希望模型能利用过往信息，但又担心它记错；
+- 我既想马上改善，也想建立长期系统；
+- 不希望文章变成提示词术语清单。
+
+这一轮先不要写文章。请只做四件事：
+1. 把这些想法分成 3—5 组；
+2. 复述你认为我真正想解决的核心问题；
+3. 指出其中可能冲突的要求；
+4. 最多问 3 个会改变文章结构的问题。</code></pre>
+<p>这段话并不比普通表达“更高级”。它只做了一个关键区分：<strong>原始材料</strong>和<strong>当前动作</strong>不是同一件事。你可以很混乱地提供前者，只要清楚地规定后者。</p>
+<p>如果连列点都很费力，可以直接写连续文字，再加一句：“不要评价文笔，请先替我切分主题；切分后保留我的原意，不要擅自补成一个确定结论。”水库里的水不需要先变成瓶装水才能进入系统。</p>
+<h2 id="检索模式把你还记得吗改成一张查找委托单">2.
+检索模式：把“你还记得吗”改成一张查找委托单</h2>
+<p>“你还记得我以前说过什么吗？”把决定权几乎全部交给模型：它自行猜测范围、自行选择重要性、自行决定是否需要证据。即使回答流畅，你也难以判断它究竟找到了原话、提取了某个记忆，还是根据当前语境做了合理猜测。</p>
+<p>一个合格的检索请求至少说明四件事：</p>
+<ol type="1">
+<li><strong>范围</strong>：去哪些项目、文件、对话或日期内找；</li>
+<li><strong>锚点</strong>：你记得的独特词语、主题、人物、时间或决策；</li>
+<li><strong>目标</strong>：究竟要找偏好、事实、决定、失败经验还是原文；</li>
+<li><strong>证据规则</strong>：报告来源和日期，冲突时并列，找不到就明确说找不到。</li>
+</ol>
+<p>贯穿例子可以这样写：</p>
+<pre class="text"><code>先不要生成第三篇文章。请先检索“通勤学习项目”内与
+“计算机或 AI 文章的难度、术语、关系图、例子、HTML 交付”有关的信息。
+
+范围：项目说明、当前 SKILL.md、已收录文章末尾的读后反馈、相关历史对话。
+目标：整理仍然有效的写作要求，而不是总结文章主题。
+
+输出分三栏：
+1. 已确认要求：每条附来源或可定位线索；
+2. 可能冲突或已经过时的信息；
+3. 没有证据、需要我确认的推断。
+
+完成检索后停止，不要开始写文章。</code></pre>
+<p>这里的“停止”很重要。检索与执行混在同一轮时，模型可能一边找到新信息，一边已经按照旧理解写了半篇。把它们分开，相当于在施工前先验收材料清单。</p>
+<h2 id="执行模式不是把背景重讲一遍而是交代验收接口">3.
+执行模式：不是把背景重讲一遍，而是交代验收接口</h2>
+<p>在检索结果得到确认后，执行消息可以很短：</p>
+<pre class="text"><code>使用刚才经我确认的要求生成第三篇正式语料。
+
+主题：纯文字与大模型高效交流，重点是过往信息检索；
+读者：数学经验强，但不默认熟悉计算机与信息管理术语；
+必须回答：短期下一次对话怎么改，长期个人信息系统怎么建；
+贯穿例子：依据历史反馈生成通勤学习项目的下一篇文章；
+交付：约 30—35 分钟的完整 HTML，保存到 AI 目录；
+完成标准：正文前有 3—7 个核心概念关系图，新术语就地解释，
+文章末尾有读后反馈区。
+
+除这些条件外，章节安排由你决定。完成后检查移动端阅读和文件结构。</code></pre>
+<p>这段消息包含“必须满足”和“可以自行决定”两部分。只给约束不留空间，模型会机械；只给主题不说验收条件，模型会漂移。高效表达不是控制每一句话，而是控制真正影响结果的接口。</p>
+<details>
+<summary>
+局部自检 2：下面哪一句最适合在想法混乱时发送？
+</summary>
+<p>
+A. “给我最完整、最专业的个人知识管理方案。”<br>B.
+“我先倾倒一些碎片；请只分类和复述，最多问三个关键问题，暂时不要给方案。”<br>C.
+“你应该懂我以前说过的需求，直接开始。”
+</p>
+<div class="answer">
+<strong>答案：</strong>B。它没有要求你先把内容整理好，却明确了模型这一轮应该做什么。
+</div>
+</details>
+<h1
+id="三短期方法用六个槽位把一团想法变成可工作的消息">三、短期方法：用六个槽位把一团想法变成可工作的消息</h1>
+<p>三种模式解决“这一轮做什么”。当任务已经稍微清楚时，可以用六个槽位检查有没有关键缺口。槽位不是每次都必须逐项写标题；它更像发送前的体检表。</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>槽位</th>
+<th>它回答的问题</th>
+<th>一句示例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>当前任务</td>
+<td>这一轮只做什么？</td>
+<td>“先整理历史要求，不写正文。”</td>
+</tr>
+<tr class="even">
+<td>动机</td>
+<td>为什么现在做？什么问题促成它？</td>
+<td>“过去文章反复因难度过高返工。”</td>
+</tr>
+<tr class="odd">
+<td>必要背景</td>
+<td>哪些已知信息会改变结果？</td>
+<td>“数学能力强，但不熟悉软件术语。”</td>
+</tr>
+<tr class="even">
+<td>硬约束</td>
+<td>违反哪条就算失败？</td>
+<td>“正式交付必须是项目内 HTML。”</td>
+</tr>
+<tr class="odd">
+<td>未决点</td>
+<td>哪些地方我自己还不确定？</td>
+<td>“长期系统要多复杂，我还没决定。”</td>
+</tr>
+<tr class="even">
+<td>下一动作</td>
+<td>模型回复后我能做什么？</td>
+<td>“给我三种结构，我选择后再展开。”</td>
+</tr>
+</tbody>
+</table>
+<h2 id="先说当前任务防止模型替你完成错误的下一步">1.
+先说“当前任务”，防止模型替你完成错误的下一步</h2>
+<p>很多长消息真正缺少的不是信息，而是动作。你讲了十段背景，最后问“你怎么看”，模型只能自行猜测：是安慰、分析、写方案，还是提问？</p>
+<p>把动作放在开头或结尾都可以，但要让它可观察。例如：</p>
+<ul>
+<li>模糊：“帮我处理一下这些想法。”</li>
+<li>可观察：“把想法分组，给每组一个不超过十字的标题；不要删掉相互矛盾的部分。”</li>
+</ul>
+<p>“可观察”意味着回复出来后，你能判断它有没有完成。它不要求你掌握专业术语，只要求动词具体：比较、分类、复述、找出处、列冲突、提出问题、生成文件、检查错误。</p>
+<h2 id="背景只放会改变答案的部分">2. 背景只放“会改变答案”的部分</h2>
+<p>背景不是自传。判断一条信息是否应进入本轮消息，可以问：“如果删除它，模型会不会合理地给出另一种答案？”如果会，就保留；如果不会，暂时省略。</p>
+<p>例如，“我是数学专业学生”会使模型倾向于抽象和严格；但在软件文章里，这条信息若没有配上“不能据此推断我的计算机术语经验”，反而会造成错误难度。更精确的背景是：</p>
+<blockquote>
+<p>我能处理数学抽象，但计算机领域请从具体行为和例子引入，不要把两种能力视为同一水平。</p>
+</blockquote>
+<p>这也是你过往反馈中已经非常清楚的一条区分。你并非不会表达复杂需求；相反，你经常能准确指出“术语密度”“关系缺失”“公式未解释”等失败原因。短板主要出现在这些判断还留在脑中、尚未变成模型可检索的稳定记录时。</p>
+<h2 id="把事实偏好猜测和决定分开">3. 把事实、偏好、猜测和决定分开</h2>
+<p>四类句子混在一起，会让模型把暂时想法固化成永久要求。</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>类型</th>
+<th>含义</th>
+<th>例子</th>
+<th>应怎样处理</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>事实</td>
+<td>当前可核对的状态</td>
+<td>“我已有 Agent 开发经验。”</td>
+<td>发生变化时更新</td>
+</tr>
+<tr class="even">
+<td>偏好</td>
+<td>通常喜欢怎样的结果</td>
+<td>“概念密集文章先给关系图。”</td>
+<td>可跨文章复用，但允许例外</td>
+</tr>
+<tr class="odd">
+<td>猜测</td>
+<td>尚未证实的解释</td>
+<td>“我可能是表达能力不足。”</td>
+<td>要求模型检验，不要直接固化</td>
+</tr>
+<tr class="even">
+<td>决定</td>
+<td>某次选择及其适用范围</td>
+<td>“第一篇失败稿不收录。”</td>
+<td>记录日期、范围和理由</td>
+</tr>
+</tbody>
+</table>
+<p>你可以直接给句子加标签：<code>[事实]</code>、<code>[偏好]</code>、<code>[假设]</code>、<code>[本次决定]</code>。这看似多写几个字，实际上减少了后续大量澄清。</p>
+<h2 id="高成本任务先让模型复述低成本任务直接迭代">4.
+高成本任务先让模型复述，低成本任务直接迭代</h2>
+<p>如果输出只是一段可随手删除的提纲，不必每次都确认。但若要生成一万多字文章、改动项目文件、发送消息或执行难以撤销的动作，就值得增加一个复述关口：</p>
+<pre class="text"><code>在执行前，请用不超过 8 条复述：
+- 你理解的目标；
+- 必须满足的条件；
+- 你准备忽略的非本次事项；
+- 仍需我确认的假设。
+不要只是复制我的原话，要说明你将怎样据此行动。</code></pre>
+<p>复述的价值不在于让模型“显得懂了”，而在于暴露它的内部任务模型。若它把“长期改善表达”理解成“背诵提示词模板”，你可以只修正这一点，不必重写全部背景。</p>
+<h2 id="使用逐层展开不要同时打开水库所有闸门">5.
+使用“逐层展开”，不要同时打开水库所有闸门</h2>
+<p>逐层展开的意思是：先给足以决定结构的信息，再只对不清楚的分支补充细节。一个实用顺序是：</p>
+<ol type="1">
+<li>一句话说明主题和当前模式；</li>
+<li>倾倒原始材料或限定检索范围；</li>
+<li>让模型给出结构并复述；</li>
+<li>只修正偏差最大的两三点；</li>
+<li>确认后生成；</li>
+<li>用反馈说明“哪里不对、为什么、如何验收”。</li>
+</ol>
+<p>你的水龙头不需要一次变成消防栓。只要每一轮都知道“这一小股水要去哪里”，几轮之后同样可以传完一座水库，而且错误更早暴露。</p>
+<div class="example">
+<h3>
+贯穿例子：从一句模糊请求到可执行任务
+</h3>
+<p>
+<strong>原句：</strong>“按照以前的要求写一篇关于怎么和大模型交流的文章。”
+</p>
+<p>
+<strong>第一轮（探索）：</strong>倾倒“水库—水龙头”的感受，请模型区分表达、检索和长期积累三类问题。
+</p>
+<p>
+<strong>第二轮（检索）：</strong>限定通勤学习项目，查找难度、例子、关系图和
+HTML 交付要求，要求给出处与冲突。
+</p>
+<p>
+<strong>第三轮（确认）：</strong>纠正“不要把数学能力外推为计算机能力”，确认一个贯穿案例和文章长度。
+</p>
+<p>
+<strong>第四轮（执行）：</strong>只引用已确认清单，规定交付路径和检查标准。四轮文字总量可能不小，但每轮认知负担都很低。
+</p>
+</div>
+<h1
+id="四怎样检索过往信息从凭印象记得到按证据取回">四、怎样检索过往信息：从“凭印象记得”到“按证据取回”</h1>
+<p>这是你问题中最值得单独处理的部分。表达当前想法只受水龙头限制；检索过去还受记录位置、命名方式、时间变化和产品能力限制。</p>
+<h2 id="先区分三件常被混为一谈的事">1. 先区分三件常被混为一谈的事</h2>
+<h3
+id="第一件模型根据上下文可能知道">第一件：模型根据上下文“可能知道”</h3>
+<p>当前对话、项目中的对话和文件、个性化记忆，都可能影响回复。但“可能被考虑”不等于“每次完整取回”。信息会因相关性、产品设置、项目边界和当前任务而有不同可见性。</p>
+<h3
+id="第二件你能够主动搜索到原记录">第二件：你能够主动搜索到原记录</h3>
+<p>搜索强调的是定位：用关键词找到某个聊天、文件或段落，再打开原文。它不等于模型已经理解这条记录现在是否仍有效。</p>
+<h3
+id="第三件你有一个当前可信的事实来源">第三件：你有一个当前可信的事实来源</h3>
+<p>例如最新的 <code>SKILL.md</code>
+明确写着“计算机文章不得沿用数学文章的抽象密度”，它比一年前某次对话中的随口偏好更适合作为当前规则。原聊天仍有历史价值，但不应与现行规则平级。</p>
+<div class="warning">
+<strong>重要边界：</strong>“记得”“搜到”“当前有效”是三种不同判断。任何长期系统若只保存摘要而丢掉来源，或只保存原文却没有当前状态，都会在未来产生混乱。
+</div>
+<h2 id="一次检索请求的六个零件">2. 一次检索请求的六个零件</h2>
+<p>为了容易记，可以把检索想成你委托别人去档案室找材料。你至少要给出：</p>
+<ol type="1">
+<li><strong>档案室</strong>：项目、文件夹、聊天范围或外部资料源；</li>
+<li><strong>线索</strong>：独特关键词、近似日期、相关主题、当时的任务；</li>
+<li><strong>目标对象</strong>：一句原话、一项偏好、一个决定、某次失败原因；</li>
+<li><strong>时间规则</strong>：要最新结论，还是要追踪变化过程；</li>
+<li><strong>证据格式</strong>：来源名、日期、原意摘要，必要时短引文；</li>
+<li><strong>异常处理</strong>：冲突并列、低置信度标注、找不到就停止询问。</li>
+</ol>
+<p>例如你想找“为什么第二篇软件文章太难”，不要只输入“第二篇文章反馈”。更稳定的检索语句是：</p>
+<pre class="text"><code>范围：通勤学习项目中第二篇软件开发文章、其文末反馈、项目 SKILL。
+线索：术语太多、缺少例子、反复向前翻、核心关系图。
+目标：找出已经确认的失败原因，以及后来写入全局规则的部分。
+时间规则：以最新 SKILL 为当前规则，旧反馈用于说明由来。
+证据：每条标注来自文章反馈还是 SKILL；不能定位的内容标为推断。
+冲突：不要自行合并，分别列出并请我确认。</code></pre>
+<p>这比一句“检索我过往的信息”长，但它只在真正需要历史时使用。更重要的是，这段结构可以被系统自动填充，而不必每次手写。</p>
+<h2 id="搜索词要使用当时真的出现过的锚点">3.
+搜索词要使用“当时真的出现过的锚点”</h2>
+<p>聊天搜索常依赖标题或正文中的词语。抽象词“表达”“项目”“以前要求”出现频率很高，不适合定位；“水库”“水龙头”“关系图”“第一篇失败不收录”更独特，适合作为锚点。</p>
+<p>因此，在日常对话中主动创造稳定词汇会显著改善未来检索。例如：</p>
+<ul>
+<li>给项目使用固定名称：<code>通勤学习项目</code>；</li>
+<li>给反复出现的规则使用固定标签：<code>难度分域校准</code>；</li>
+<li>给一次决定写明确标题：<code>决定：正式语料改为 HTML</code>；</li>
+<li>给关键反馈保留原始措辞：<code>反复向前翻看破坏阅读体验</code>。</li>
+</ul>
+<p>这不是为了把生活变成数据库，而是让未来的你有几枚可以抓住的把手。若每次都用不同近义词，搜索就只能猜。</p>
+<h2 id="要求模型报告知道的层级而不是只给一个流畅答案">4.
+要求模型报告“知道的层级”，而不是只给一个流畅答案</h2>
+<p>你可以要求检索结果按置信层级输出：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>层级</th>
+<th>含义</th>
+<th>模型应该怎样说</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>已定位</td>
+<td>找到明确来源，且适用范围清楚</td>
+<td>“当前 SKILL 第 3.3 节规定……”</td>
+</tr>
+<tr class="even">
+<td>可推断</td>
+<td>多条记录支持，但没有直接结论</td>
+<td>“结合两次反馈，我推断……请确认。”</td>
+</tr>
+<tr class="odd">
+<td>有冲突</td>
+<td>不同时间或来源说法不一致</td>
+<td>“旧文章要求 A，最新规则改为 B。”</td>
+</tr>
+<tr class="even">
+<td>未找到</td>
+<td>在给定范围内没有证据</td>
+<td>“未找到，不用常识补写成你的偏好。”</td>
+</tr>
+</tbody>
+</table>
+<p>这一步能抑制一个常见问题：模型很擅长生成“像你的偏好”的内容，却不一定真的检索到了你的偏好。流畅度不能替代出处。</p>
+<h2 id="当前-chatgpt-能力怎样使用边界在哪里">5. 当前 ChatGPT
+能力怎样使用，边界在哪里</h2>
+<p>根据 OpenAI 当前官方说明，ChatGPT
+的个人记忆可以综合聊天、文件和连接的应用来帮助个性化；记忆摘要是高层概览，并不保证显示全部相关内容。项目可以把长期工作的聊天、文件和项目指令集中在一起，并在项目范围内引用上下文；项目记忆的边界会受项目设置与账户类型影响。聊天历史搜索则依据标题和正文中的关键词或短语进行匹配，官方说明目前更适合使用具体词语进行精确匹配。</p>
+<p>对你的实际含义是：</p>
+<ul>
+<li><strong>个人记忆</strong>适合放稳定、跨项目的信息，例如“数学基础强，但计算机术语要单独校准”；不适合当作完整版本库。</li>
+<li><strong>项目</strong>适合放一项长期工作的现行说明、正式文件和相关对话，使模型优先围绕同一上下文工作。</li>
+<li><strong>聊天搜索</strong>适合找回你记得关键词的原始讨论；找到后仍要判断它是否过时。</li>
+<li><strong>明确文件</strong>适合成为“当前有效”的依据。项目指令、<code>SKILL.md</code>、决策记录都比模糊记忆更容易核对。</li>
+</ul>
+<p>所以，最稳妥的顺序不是“让记忆自动替我处理一切”，而是：<strong>记忆帮助召回方向，搜索帮助找到原文，现行文件决定当前规则。</strong></p>
+<details>
+<summary>
+局部自检 3：为什么“你记得我喜欢什么样的文章，照做”风险较高？
+</summary>
+<div class="answer">
+<strong>答案：</strong>它没有说明检索范围、时间和证据，也没有区分稳定偏好与某篇文章的一次性要求。模型即使回答流畅，你也无法判断它依据了当前规则、旧聊天还是现场推断。
+</div>
+</details>
+<h1
+id="五长期调整建立一个可更新可追溯不过度维护的外部记忆">五、长期调整：建立一个“可更新、可追溯、不过度维护”的外部记忆</h1>
+<p>长期方案的目标不是记录全部人生，而是让未来一次重要任务能迅速回答四个问题：</p>
+<ol type="1">
+<li>我是谁，哪些稳定特点会改变回答方式？</li>
+<li>这个项目现在在做什么，现行规则是什么？</li>
+<li>某个决定为何形成，后来是否被修改？</li>
+<li>如果摘要有误，原始证据在哪里？</li>
+</ol>
+<p>你过去已经形成了很好的雏形：学习者画像、项目
+Wiki、跨对话历史，加上项目内的规划文件、生成 Skill
+和文章末尾反馈。需要做的不是另起炉灶，而是明确每一层只承担一种责任。</p>
+<h2 id="四层结构从稳定信息到原始档案">1.
+四层结构：从稳定信息到原始档案</h2>
+<div class="layer-grid">
+<div class="layer-card">
+<h3>
+L1 稳定画像
+</h3>
+<p>
+跨项目、变化慢的信息：知识基础、解释偏好、长期目标和重要禁忌。
+</p>
+<p>
+<strong>例：</strong>数学能力不能外推为软件术语经验。
+</p>
+</div>
+<div class="layer-card">
+<h3>
+L2 项目现状
+</h3>
+<p>
+当前目标、目录、现行规则、正在推进的任务和下一步。
+</p>
+<p>
+<strong>例：</strong>通勤语料以 HTML 交付，目标阅读约 30 分钟。
+</p>
+</div>
+<div class="layer-card">
+<h3>
+L3 决策与反馈
+</h3>
+<p>
+带日期记录“做了什么决定、为何决定、适用范围、是否已取代”。
+</p>
+<p>
+<strong>例：</strong>因第二篇过难，加入关系图和贯穿例子规则。
+</p>
+</div>
+</div>
+<div class="support-node">
+<strong>L4
+原始档案：</strong>完整聊天、旧稿、参考资料和失败样本。平时不必全部塞进模型上下文；只有需要追溯时再取回。
+</div>
+<p>这四层不是四份重复摘要。它们之间的关系是：L1 告诉系统怎样适应你，L2
+告诉系统当前要完成什么，L3 解释规则为何变化，L4
+在发生争议时提供证据。</p>
+<h2 id="结合你现有项目每类信息应该放在哪里">2.
+结合你现有项目，每类信息应该放在哪里</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>信息</th>
+<th>最合适位置</th>
+<th>不宜放在哪里</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>已学数学课程、计算机经验</td>
+<td>L1 学习者画像</td>
+<td>每篇文章重复一遍</td>
+<td>稳定且跨主题复用</td>
+</tr>
+<tr class="even">
+<td>正式语料格式、目录、质检流程</td>
+<td>项目 <code>SKILL.md</code></td>
+<td>只留在某次聊天</td>
+<td>它是现行生产规则</td>
+</tr>
+<tr class="odd">
+<td>本阶段选题和下一篇计划</td>
+<td>L2 项目规划</td>
+<td>永久个人记忆</td>
+<td>会频繁变化</td>
+</tr>
+<tr class="even">
+<td>“第二篇太难”的原始意见</td>
+<td>对应文章反馈区 + L3 索引</td>
+<td>只改 Skill 后删除</td>
+<td>原始反馈解释规则来源</td>
+</tr>
+<tr class="odd">
+<td>一次失败且不收录的草稿</td>
+<td>L4 档案或明确弃用</td>
+<td>当前正式目录</td>
+<td>可追溯，但不应被误当成现行语料</td>
+</tr>
+<tr class="even">
+<td>跨文章可复用的改进</td>
+<td><code>SKILL.md</code></td>
+<td>每篇手工复制</td>
+<td>统一修改，避免版本漂移</td>
+</tr>
+</tbody>
+</table>
+<p>一个特别重要的原则是：<strong>同一条现行规则只指定一个“权威位置”。</strong>其他文件可以链接到它，但不要复制三份后分别修改。否则模型检索到多个版本时，只会把你的维护成本重新变成表达成本。</p>
+<h2 id="让每条长期记录自带未来检索标签">3.
+让每条长期记录自带“未来检索标签”</h2>
+<p>长期记录不必写成长文。一条决策记录可以只有六行：</p>
+<pre class="text"><code>日期：2026-07-18
+类型：全局写作规则
+项目：通勤学习项目
+决定：概念密集文章在正文前提供 3—7 个核心概念关系图。
+原因：读者反馈新概念多且关系不清，需要反复前翻。
+状态：有效；现行依据为语料Skill/SKILL.md。</code></pre>
+<p>这六行提供了检索最需要的字段：时间、类别、范围、内容、理由和当前状态。未来你搜索“关系图
++ 通勤学习项目”，系统更容易找到；找到后也知道它是不是仍有效。</p>
+<p>对偏好同样要写适用范围。“我喜欢严格定义”若没有范围，模型可能在日常闲聊里也写成教科书。更好的记录是：“在数学核心概念中要求严格定义；计算机入门文章先用具体例子，再命名抽象概念。”</p>
+<h2 id="用升格而不是全量保存控制维护成本">4.
+用“升格”而不是“全量保存”控制维护成本</h2>
+<p>每次对话产生大量内容，绝大多数不值得进入长期系统。可以设一条升格路线：</p>
+<div class="flow">
+<span>聊天中的临时想法</span><b>→</b><span>反复出现或被确认</span><b>→</b><span>写入决策/反馈</span><b>→</b><span>跨任务有效</span><b>→</b><span>升格为画像或
+Skill</span>
+</div>
+<p>例如，“这篇文章用蓝色主题”只影响单个产物，不升格；“计算机文章要用贯穿例子”在多次反馈中成立，才升格为全局规则。这样既保留证据，又不会让个人记忆堆满一次性细节。</p>
+<h2 id="设置一个很轻的整理节奏">5. 设置一个很轻的整理节奏</h2>
+<p>复杂系统若要求每天维护半小时，很快会被放弃。建议只保留三种时机：</p>
+<ul>
+<li><strong>每次重要对话结束，用 2
+分钟：</strong>让模型输出“本轮决定、未决问题、应更新的文件”，你只确认，不自动把所有内容永久化。</li>
+<li><strong>每个里程碑结束，用 10
+分钟：</strong>更新项目现状，标记过时决定，把可泛化反馈升格到
+Skill。</li>
+<li><strong>每月或规则冲突时，用 20
+分钟：</strong>去重、标注被取代项、检查链接是否仍指向权威位置。</li>
+</ul>
+<p>整理不是为了获得整洁感，而是降低下一次检索的歧义。如果一条记录从未影响未来任务，就没必要精心分类。</p>
+<h2 id="用四个问题测试长期系统而不是数文件数量">6.
+用四个问题测试长期系统，而不是数文件数量</h2>
+<p>每隔一段时间，用模型回答一个真实测试题，例如：“生成一篇计算机入门语料时，我的难度偏好是什么？请给出处。”然后检查：</p>
+<ol type="1">
+<li>它能否找到来源？</li>
+<li>它能否说出记录日期或版本先后？</li>
+<li>它能否区分当前有效和已被取代？</li>
+<li>它找不到时，能否明确承认，而不是编出一个像你的答案？</li>
+</ol>
+<p>如果四项都能做到，系统即使只有几个文件也很强；如果做不到，再多笔记也只是更大的水库，没有输水管道。</p>
+<h1
+id="六短期与长期行动计划你具体应该怎样调整">六、短期与长期行动计划：你具体应该怎样调整</h1>
+<h2 id="从下一次对话开始只改变三个动作">1.
+从下一次对话开始：只改变三个动作</h2>
+<p>第一，开头标注模式：<code>我现在是在探索 / 检索 / 执行</code>。不需要任何术语解释，模型立刻知道这一轮能不能直接动手。</p>
+<p>第二，想法混乱时允许原样倾倒，但附上处理动作：<code>先分类和复述，不要给最终方案</code>。</p>
+<p>第三，涉及高成本交付或历史要求时，加入一个确认关口：<code>先列出你找到的依据和未确认假设，我确认后再执行</code>。</p>
+<p>如果只能记一句话，就记：</p>
+<blockquote>
+<p><strong>先告诉模型这轮处于什么阶段，再告诉它这一轮做到哪里就停。</strong></p>
+</blockquote>
+<h2 id="接下来两周练习三种分辨率的表达">2.
+接下来两周：练习三种分辨率的表达</h2>
+<p>每天不必专门写作文。选一个真实问题，依次写：</p>
+<ul>
+<li>一句话：我现在真正要解决什么？</li>
+<li>五个要点：哪些背景和约束会改变答案？</li>
+<li>一段原始倾倒：还有哪些联系未被前两层容纳？</li>
+</ul>
+<p>然后让模型复述，比较它遗漏了哪一种关系。你的训练目标不是遣词造句，而是观察“哪些脑中默认连接没有写出来”。两周后，你会积累一份个人常见遗漏清单，例如：容易忘记说适用范围、容易把假设写成事实、容易省略停止条件。这份清单比通用提示词模板更贴合你。</p>
+<h2 id="一到三个月把现有项目整理成可追溯结构">3.
+一到三个月：把现有项目整理成可追溯结构</h2>
+<p>不必新建庞大知识库。先在现有体系完成四件事：</p>
+<ol type="1">
+<li>检查 L1 学习者画像，只保留稳定、跨项目的信息；</li>
+<li>让每个项目有一个“当前状态与下一步”的入口；</li>
+<li>给重要决定加日期、原因、适用范围和状态；</li>
+<li>保留原始反馈，但把跨文章规则升格到 Skill，并链接回来源。</li>
+</ol>
+<p>完成后，用上一节的四个问题做真实检索测试。如果模型总在某类问题上找错，再改索引或命名；不要预先设计十层分类。</p>
+<h2 id="长期目标从我必须说清一切转向系统能与我共同澄清">4.
+长期目标：从“我必须说清一切”转向“系统能与我共同澄清”</h2>
+<p>最终成熟的能力不是在三百字内装下全部水库，而是能控制以下过程：</p>
+<ul>
+<li>我知道哪些是原始感受，哪些是已经确认的要求；</li>
+<li>我知道当前只需要处理哪一部分；</li>
+<li>我能让模型复述并暴露误解；</li>
+<li>我能从记录中找回过去的依据；</li>
+<li>我能把新反馈写回正确层级，而不是下一次再凭记忆重讲。</li>
+</ul>
+<p>这时，表达能力仍然重要，但它不再独自承担全部压力。清楚的外部结构、可靠的检索和多轮校正会共同放大水龙头的有效流量。</p>
+<details>
+<summary>
+局部自检 4：把以下想法改成三轮交流
+</summary>
+<p>
+原始想法：“我想做一个长期帮助我学习的
+Agent。以前讨论过很多记忆、Wiki、反馈和语料规则，我现在也说不清要改哪一块，你根据过去内容直接给我完整架构。”
+</p>
+<div class="answer">
+<strong>参考答案：</strong><br>第一轮探索：贴出这段原始想法，让模型只区分“当前痛点、已有资产、未决选择”，最多问三个问题。<br>第二轮检索：限定相关项目文件与历史对话，检索已有的
+L1/L2/L3 设计、反馈闭环和现行
+Skill，逐条给出处与冲突。<br>第三轮执行：你确认检索摘要后，只要求它修改当前最痛的一层，并规定交付物；不要在同一轮重建全部系统。
+</div>
+</details>
+<h1 id="七可直接复制的四张小卡片">七、可直接复制的四张小卡片</h1>
+<p>这些卡片不是必须逐字填写的“标准提示词”。它们只在对应情境下提供最小骨架。</p>
+<h2 id="卡片-a我脑子很乱先帮我澄清">卡片 A：我脑子很乱，先帮我澄清</h2>
+<pre class="text"><code>我现在处于探索阶段。下面是原始想法，可能重复或冲突。
+请先不要给方案，也不要替我补成确定结论。
+
+[直接倾倒]
+
+请：
+1. 分组；
+2. 复述核心问题；
+3. 标出事实、偏好、猜测和决定；
+4. 最多问 3 个会改变下一步的问题。</code></pre>
+<h2 id="卡片-b先找回过去的信息">卡片 B：先找回过去的信息</h2>
+<pre class="text"><code>我现在处于检索阶段，暂不执行最终任务。
+范围：[项目 / 文件 / 对话 / 日期]
+锚点：[独特词语、主题、当时任务]
+目标：[要找的事实、偏好、决定或原话]
+时间规则：[最新结论 / 变化过程]
+
+请按“已定位 / 可推断 / 有冲突 / 未找到”输出，
+每条给来源或定位线索。找不到就停止并问我，不要补写。</code></pre>
+<h2 id="卡片-c确认后执行">卡片 C：确认后执行</h2>
+<pre class="text"><code>我现在处于执行阶段，使用刚才确认的上下文。
+交付物：[要产生什么]
+必须满足：[违反即失败的条件]
+可自行决定：[允许模型判断的部分]
+完成标准：[我如何判断已完成]
+停止条件：[做到哪里结束，不扩展什么]
+
+若仍有会改变结果的假设，先列出；否则直接执行并检查。</code></pre>
+<h2 id="卡片-d把本轮结果留给未来">卡片 D：把本轮结果留给未来</h2>
+<pre class="text"><code>请在结束前生成一份不超过 10 行的会话结算：
+- 本轮确认的事实；
+- 本轮作出的决定及适用范围；
+- 尚未解决的问题；
+- 哪些内容只对本次有效；
+- 建议更新到哪个现有文件，为什么。
+
+不要自动把所有内容都写成长期偏好。</code></pre>
+<h1
+id="八结论压缩真正要扩大的不是水龙头而是可恢复性">八、结论压缩：真正要扩大的不是水龙头，而是可恢复性</h1>
+<p>本文的五个核心概念可以压缩成一条链：</p>
+<blockquote>
+<p>想法水库不必先整理完；每轮只取出一个工作集，按当前模式写成结构化消息。需要历史时，用范围、锚点、目标和证据规则进行检索。高成本执行前让模型复述，完成后把新决定写回有来源、有日期、有状态的长期记录。</p>
+</blockquote>
+<p>对你而言，短期最重要的不是学习更多提示词技巧，而是把“探索、检索、执行”分轮，并在执行前增加复述确认。长期最重要的不是保存更多聊天，而是让稳定画像、项目现状、决策反馈和原始档案各司其职。</p>
+<p>你的反馈历史已经显示，你能够辨认复杂内容为什么失败：你能指出术语堆叠、难度外推、例子不足、关系图缺失和阅读时反复回翻等具体问题。下一步不是证明自己会不会表达，而是把这种辨别能力变成可复用的记录与对话协议。这样，每次从水库流出的只需是一小股“足以决定下一步”的水。</p>
+<h2 id="下一篇建议">下一篇建议</h2>
+<p>如果继续这一主题，下一篇可以实践性地构建“个人信息的四层记录模板与检索测试”，直接以你现有的通勤学习项目为对象：整理一份稳定画像、一份项目当前状态、一份决策日志，并设计五个检索测试题。它会从本文的交流原则进入可执行的信息架构。</p>
+<h1 id="参考资料与产品边界">参考资料与产品边界</h1>
+<ul>
+<li>OpenAI Help Center, <a
+href="https://help.openai.com/en/articles/8590148-memory-faq">Memory
+FAQ</a>：用于核对个人记忆、记忆摘要、来源与控制边界。本文据此强调记忆摘要不是完整档案。</li>
+<li>OpenAI Help Center, <a
+href="https://help.openai.com/en/articles/10169521-projects-in-chatgpt">Projects
+in
+ChatGPT</a>：用于核对项目文件、项目指令、项目记忆及不同设置下的上下文边界。</li>
+<li>OpenAI Help Center, <a
+href="https://help.openai.com/en/articles/10056348-how-do-i-search-my-chat-history-in-chatgpt">How
+do I search my chat history in
+ChatGPT?</a>：用于核对聊天历史搜索目前依赖标题和内容中的具体关键词或短语。</li>
+</ul>
+<p>本文关于“工作集、三种模式、四层外部记忆和升格路线”的结构，是针对你的使用场景所做的方法设计，不是对某个产品功能的官方命名。产品能力与界面会变化；使用时应以最新官方说明和你账户中的实际设置为准。</p>
+<section id="reader-feedback">
+<h1 id="读后反馈与修订记录">读后反馈与修订记录</h1>
+<div class="feedback-entry">
+<p>
+<strong>第 0 轮｜2026-07-18｜状态：已完成阅读</strong>
+</p>
+<p>
+<strong>本轮设计：</strong>在正文前给出五个核心概念关系图；以“依据历史反馈生成下一篇通勤语料”为贯穿例子；按探索、检索、执行三种模式讲短期表达；结合现有学习者画像、项目
+Wiki、Skill 和文章反馈设计长期四层外部记忆。
+</p>
+<p>
+<strong>请优先反馈：</strong>① 哪个章节仍然抽象或需要回翻；②
+三种模式是否能直接用于下一次对话；③
+长期四层结构是否过重或遗漏了你真实使用的资料；④
+哪张模板最有用、哪张显得多余。
+</p>
+</div>
+<div class="feedback-entry">
+<p>
+<strong>第 1 轮｜2026-07-19｜状态：已读，无正文修订</strong>
+</p>
+<p>
+<strong>原始反馈：</strong>“看完了没什么想法，但是给了我几个启发的点，第三篇标记为已读吧。”
+</p>
+<p>
+<strong>问题分类：</strong>未报告明确的内容、难度或版式问题；文章提供了若干可继续思考的启发点。
+</p>
+<p>
+<strong>处理：</strong>将本文状态标记为“已读”。由于本轮没有可定位的修改意见，不猜测启发点的具体含义，也不修改正文或升格为全局语料规则。
+</p>
+</div>
+</section>
+</body>
+</html>

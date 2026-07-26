@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-id" content="marxism-002">
+  <meta name="corpus-category" content="马列">
+  <meta name="corpus-status" content="awaiting_review">
+  <meta name="estimated-reading-time" content="45-55 minutes">
+  <meta name="corpus-integrated-date" content="2026-07-20">
+  <meta name="series-position" content="2 of 7">
+  <meta name="reading-status" content="未读">
+  <title>马克思主义思想史（二）：马克思与恩格斯怎样把批判连接成理论</title>
+  <style>
+    :root{
+      color-scheme:light;
+      --ink:#202124;--muted:#5f6368;--paper:#fff;--soft:#f6f8f7;--line:#d9dfdc;
+      --red:#9f2d2d;--red-dark:#6d1d1d;--red-soft:#fbefed;
+      --gold:#8d651f;--gold-soft:#fbf6e9;--green:#276749;--green-soft:#edf7f1;
+      --blue:#315b7d;--blue-soft:#edf4f9;--purple:#66507d;--purple-soft:#f4f0f8;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;font-size:17px;background:var(--paper)}
+    body{max-width:920px;margin:0 auto;padding:36px 42px 84px;color:var(--ink);background:var(--paper);
+      font-family:"Noto Serif CJK SC","Source Han Serif SC","Songti SC","STSong","SimSun",serif;
+      line-height:1.88;overflow-wrap:anywhere}
+    h1,h2,h3,h4,nav,.sans,.label,.chip,table,summary,.map-node,.formula,.source-tag{
+      font-family:"Noto Sans CJK SC","Source Han Sans SC","PingFang SC","Microsoft YaHei","Heiti SC",sans-serif}
+    h1,h2,h3,h4{color:#161717;line-height:1.38}
+    h1{margin:.55rem 0 1.15rem;font-size:clamp(2rem,6vw,3.05rem);letter-spacing:-.035em}
+    h2{margin:3.45rem 0 1.1rem;padding-bottom:.42rem;border-bottom:1px solid var(--line);font-size:1.55rem}
+    h3{margin:2.25rem 0 .72rem;font-size:1.24rem}
+    h4{margin:1.7rem 0 .5rem;font-size:1.07rem}
+    p{margin:.86rem 0} ul,ol{padding-left:1.55rem} li{margin:.4rem 0} strong{color:#111}
+    a{color:var(--blue);text-underline-offset:.16em}a:hover{color:var(--red)}
+    .hero{margin:0 -12px 2rem;padding:34px 32px 30px;border:1px solid var(--line);border-top:6px solid var(--red);
+      border-radius:18px;background:radial-gradient(circle at 100% 0,rgba(159,45,45,.1),transparent 32%),linear-gradient(145deg,#fff 0%,#faf8f4 100%)}
+    .eyebrow{margin:0;color:var(--red-dark);font-family:"Noto Sans CJK SC","PingFang SC",sans-serif;font-size:.84rem;font-weight:750;letter-spacing:.09em;text-transform:uppercase}
+    .deck{max-width:44rem;color:#3f4442;font-size:1.08rem}.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.35rem}
+    .chip{display:inline-flex;align-items:center;padding:.28rem .68rem;border:1px solid #dec9c6;border-radius:999px;color:var(--red-dark);background:rgba(255,255,255,.78);font-size:.82rem;font-weight:650}
+    .note,.warning,.definition,.method,.takeaway,.debate,.primary-box{margin:1.35rem 0;padding:.98rem 1.12rem;border-radius:10px}
+    .note{border-left:4px solid var(--gold);background:var(--gold-soft)}
+    .warning{border-left:4px solid var(--red);background:var(--red-soft)}
+    .definition{border-left:4px solid var(--blue);background:var(--blue-soft)}
+    .method{border-left:4px solid var(--green);background:var(--green-soft)}
+    .debate{border-left:4px solid var(--purple);background:var(--purple-soft)}
+    .primary-box{border:1px solid #d4c4b3;background:#fffaf3}
+    .takeaway{border:1px solid #dec9c6;background:#fffaf8}
+    .note>:first-child,.warning>:first-child,.definition>:first-child,.method>:first-child,.takeaway>:first-child,.debate>:first-child,.primary-box>:first-child{margin-top:0}
+    .note>:last-child,.warning>:last-child,.definition>:last-child,.method>:last-child,.takeaway>:last-child,.debate>:last-child,.primary-box>:last-child{margin-bottom:0}
+    .label{display:block;margin-bottom:.24rem;color:var(--muted);font-size:.78rem;font-weight:760;letter-spacing:.06em}
+    nav#toc{margin:1.7rem 0 2.7rem;padding:1rem 1.15rem;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+    nav#toc h2{margin:0 0 .6rem;padding:0;border:0;font-size:1.1rem}nav#toc ol{columns:2;column-gap:2.6rem;margin:0;padding-left:1.35rem}
+    nav#toc li{break-inside:avoid;margin:.3rem 0}nav#toc a{color:#34413b;text-decoration:none}nav#toc a:hover{color:var(--red);text-decoration:underline}
+    .core-map{margin:1.4rem 0;padding:1rem;border:1px solid var(--line);border-radius:14px;background:#fbfcfb}
+    .map-flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem;align-items:stretch}
+    .map-node{padding:.8rem .72rem;border:1px solid var(--line);border-top:4px solid var(--red);border-radius:10px;background:#fff;text-align:center}
+    .map-node strong{display:block;margin-bottom:.25rem;font-size:.94rem}.map-node span{display:block;color:var(--muted);font-size:.78rem;line-height:1.5}
+    .map-arrows{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));align-items:center;margin:.4rem 0;color:var(--muted);text-align:center;font-family:sans-serif}
+    .map-arrows span:nth-child(even){font-weight:800}.map-caption{margin:.7rem .15rem 0;color:var(--muted);font-size:.88rem}
+    .grid-2,.grid-3{display:grid;gap:.86rem;margin:1rem 0}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .card{padding:.95rem 1rem;border:1px solid var(--line);border-radius:11px;background:#fff}.card h3,.card h4{margin-top:0}.card p:last-child{margin-bottom:0}
+    .term{margin:1rem 0;padding:.88rem 1rem;border-left:4px solid #9bb2a6;background:#f7faf8}.term dt{font-family:"Noto Sans CJK SC","PingFang SC",sans-serif;font-weight:800}.term dd{margin:.25rem 0 0}
+    .table-wrap{width:100%;margin:1.15rem 0;overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+    table{width:100%;min-width:720px;border-collapse:collapse;font-size:.89rem;line-height:1.58}th,td{padding:.72rem .76rem;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+    th{color:#2d3833;background:#f0f3f1;font-weight:750}tr:last-child td{border-bottom:0}tbody tr:nth-child(even) td{background:#fcfdfc}
+    .timeline{position:relative;margin:1.4rem 0 1.4rem .35rem;padding-left:1.45rem;border-left:2px solid #c8d0cc}
+    .time-item{position:relative;margin:0 0 1.45rem}.time-item::before{content:"";position:absolute;left:-1.88rem;top:.52rem;width:.72rem;height:.72rem;border:2px solid #fff;border-radius:50%;background:var(--red);box-shadow:0 0 0 1px var(--red)}
+    .time-item h3{margin:0 0 .3rem}.time-item p{margin:.36rem 0}.time{color:var(--red-dark);font-family:"Noto Sans CJK SC",sans-serif;font-size:.82rem;font-weight:800}
+    .formula{display:block;margin:1rem auto;padding:.82rem 1rem;max-width:720px;border:1px solid var(--line);border-radius:9px;background:#fafafa;text-align:center;font-size:1.05rem;font-weight:700;letter-spacing:.02em;overflow-x:auto;white-space:nowrap}
+    .source-tag{display:inline-block;margin-right:.35rem;padding:.06rem .43rem;border-radius:999px;color:#fff;background:var(--muted);font-size:.71rem;font-weight:760;vertical-align:.08rem}
+    .source-tag.primary{background:var(--red-dark)}.source-tag.scholar{background:var(--blue)}.source-tag.analysis{background:var(--green)}
+    details{margin:.78rem 0;padding:.7rem .88rem;border:1px solid var(--line);border-radius:9px;background:#fff}summary{cursor:pointer;font-weight:720}details p:last-child{margin-bottom:0}
+    .check-point{margin:1.6rem 0;padding:1rem 1.05rem;border:1px solid #c5d5cc;border-radius:12px;background:#f8fbf9}.check-point h3{margin-top:0;color:#24513a}
+    .references li{margin-bottom:.68rem}.references small{display:block;color:var(--muted)}
+    #reader-feedback{margin-top:4rem;padding:1.12rem 1.22rem;border:2px dashed #c7cfcb;border-radius:12px;background:#fafbfa}#reader-feedback h2{margin-top:0}
+    footer{margin-top:2.5rem;color:var(--muted);font-size:.8rem;text-align:center}
+    @media(max-width:780px){body{padding:20px 17px 64px;font-size:.98rem}.hero{margin:0 0 1.5rem;padding:24px 20px 22px;border-radius:13px}nav#toc ol{columns:1}.map-flow,.grid-2,.grid-3{grid-template-columns:1fr}.map-arrows{display:none}.map-node{min-height:auto}.table-wrap{margin-left:-4px;width:calc(100% + 8px)}h2{margin-top:2.8rem}.formula{font-size:.94rem;white-space:normal;overflow-x:visible}}
+    @media print{body{max-width:none;padding:18mm;font-size:11pt}.hero,.card,.term,.check-point,details{break-inside:avoid}a{color:inherit}h2,h3,h4{break-after:avoid}nav#toc{break-after:page}}
+  </style>
+</head>
+<body>
+<header class="hero">
+  <p class="eyebrow">马列学习规划 · 思想史系列 2 / 7</p>
+  <h1>马克思与恩格斯怎样把批判连接成理论</h1>
+  <p class="deck">从实践、历史唯物主义、资本批判到阶级政治与共产主义目标：这篇不把马克思主义讲成几条口号，而是重建各模块之间怎样互相提供解释。最后正面回答一个长期争议：恩格斯是在忠实展开马克思，还是把开放的研究变成了过度封闭的体系？</p>
+  <div class="chips" aria-label="文章信息">
+    <span class="chip">预计 45—55 分钟</span>
+    <span class="chip">阅读状态：未读</span>
+    <span class="chip">核心任务：建立理论骨架</span>
+    <span class="chip">系列位置：2 / 7</span>
+  </div>
+</header>
+
+<aside class="note">
+  <span class="label">与第一篇的关系</span>
+  <p>第一篇提供了思想史全景，本篇开始拆开“马克思与恩格斯”这一中心节点。你不需要记住全部书名，只需抓住五个模块及其连接：<strong>实践 → 历史关系 → 资本运动 → 阶级政治 → 解放目标</strong>。辩证法不是排在这五项旁边的第六个名词，而是研究这些关系怎样形成、冲突和转化的方法。</p>
+</aside>
+
+<aside class="warning">
+  <span class="label">阅读纪律</span>
+  <p>本文不会把“经典作者说过”当作结论的充分证明。经典文本首先告诉我们一套理论原本怎样论证；它能否解释后来的现实，还要看概念是否清楚、机制是否成立、证据是否支持。反过来，一次政治实践的失败也不能自动证明理论中的每个命题都错。必须把<strong>文本命题、解释机制、历史条件和实践结果</strong>分开。</p>
+</aside>
+
+<nav id="toc" aria-label="目录">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#map">先看理论骨架</a></li>
+    <li><a href="#not-system">为什么没有一本“马克思主义原理”</a></li>
+    <li><a href="#practice">实践的唯物主义</a></li>
+    <li><a href="#history">历史唯物主义</a></li>
+    <li><a href="#capital">商品、劳动力与资本</a></li>
+    <li><a href="#alienation">异化与商品拜物教</a></li>
+    <li><a href="#politics">阶级、国家与革命</a></li>
+    <li><a href="#communism">共产主义的开放目标</a></li>
+    <li><a href="#engels">恩格斯的体系化</a></li>
+    <li><a href="#debate">“恩格斯问题”的三种回答</a></li>
+    <li><a href="#method-card">把理论变成分析程序</a></li>
+    <li><a href="#memory">结论压缩与下一篇</a></li>
+    <li><a href="#references">参考资料</a></li>
+    <li><a href="#reader-feedback">读后反馈与修订记录</a></li>
+  </ol>
+</nav>
+
+<main>
+<section id="map">
+  <h2>一、先看理论骨架：五个模块不是五门互不相干的课</h2>
+  <div class="definition">
+    <span class="label">本篇核心结论</span>
+    <p><strong>马克思主义的理论骨架，是一条从人的现实活动出发，解释社会关系怎样形成、资本怎样支配劳动、阶级力量怎样进入政治，并由此讨论解放可能性的链条。</strong>任何一个模块被单独抽走，都会产生变形：只讲哲学容易变成抽象世界观；只讲经济容易变成价格理论；只讲阶级斗争容易变成阵营口号；只讲未来目标容易变成道德愿望。</p>
+  </div>
+
+  <div class="core-map" role="img" aria-label="马克思与恩格斯理论骨架关系图">
+    <div class="map-flow">
+      <div class="map-node"><strong>实践</strong><span>人在既有条件中生产生活并改造关系</span></div>
+      <div class="map-node"><strong>历史关系</strong><span>生产、分工、财产、家庭、国家形成特定结构</span></div>
+      <div class="map-node"><strong>资本运动</strong><span>劳动产品与劳动力进入商品和增殖关系</span></div>
+      <div class="map-node"><strong>阶级政治</strong><span>结构位置经组织、国家和意识形态变成行动</span></div>
+      <div class="map-node"><strong>解放目标</strong><span>生产者共同控制社会生产并克服阶级支配</span></div>
+    </div>
+    <p class="map-caption">箭头表示解释依赖，而非不可逆的单向决定：政治斗争会改变财产关系，意识形态会重塑行动者，技术与组织也会反过来改变生产过程。辩证分析要研究这种相互作用中的主导机制和历史阶段。</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>模块</th><th>核心问题</th><th>脱离其他模块后的常见变形</th></tr></thead>
+      <tbody>
+        <tr><td>实践</td><td>人怎样在既定条件中认识并改变世界？</td><td>变成“只要行动就是真理”的行动主义，忽略证据与结构约束。</td></tr>
+        <tr><td>历史唯物主义</td><td>社会关系为何在特定时期形成并变化？</td><td>变成“经济自动决定一切”的机械决定论。</td></tr>
+        <tr><td>政治经济学批判</td><td>平等交换为何仍能再生产支配和剩余占有？</td><td>变成只争论某个价格公式，不再解释资本主义社会关系。</td></tr>
+        <tr><td>阶级与国家</td><td>结构位置怎样经过组织和制度成为政治力量？</td><td>变成按收入或道德给人贴阶级标签，或把国家当作一只可随意夺取的工具。</td></tr>
+        <tr><td>共产主义</td><td>怎样克服资本和阶级统治，同时避免新的支配？</td><td>变成没有制度机制的美好愿望，或把国有化直接等同于劳动者解放。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="not-system">
+  <h2>二、为什么马克思没有留下一本完整的《马克思主义原理》？</h2>
+  <p>今天接触一种理论，常期待先找到权威教材：第一章世界观，第二章历史观，第三章经济学，最后给出政治路线。但马克思的著作并不是按这种顺序写成的。他一生不断改变研究对象，也不断重写自己的概念。</p>
+
+  <div class="timeline">
+    <article class="time-item">
+      <span class="time">1843—1844｜从国家批判转向市民社会和劳动</span>
+      <h3>问题：法律宣布人自由平等，现实中的依附为何仍存在？</h3>
+      <p>青年马克思从黑格尔法哲学和宗教批判出发，很快转向财产、劳动与国家的关系。《1844年经济学哲学手稿》用“异化劳动”描述劳动者怎样失去对产品、生产活动、共同生活和自身能力的控制。此时政治经济学概念仍不成熟，但“人的解放不能停留在法律形式”已成为主线。</p>
+    </article>
+    <article class="time-item">
+      <span class="time">1845—1846｜《关于费尔巴哈的提纲》与《德意志意识形态》</span>
+      <h3>问题：不能只用观念解释观念，那么应从哪里进入历史？</h3>
+      <p>马克思、恩格斯把出发点放在“现实的个人”、他们维持生活的活动、分工和交往关系上。这里形成实践唯物主义和历史唯物主义的早期框架。但《德意志意识形态》当时并未完整出版，后世看到的“成熟体系”很大程度上是后来整理出来的。</p>
+    </article>
+    <article class="time-item">
+      <span class="time">1848—1852｜革命、失败与具体政治分析</span>
+      <h3>问题：阶级矛盾存在，为什么革命仍会失败，甚至出现独裁统治？</h3>
+      <p>《共产党宣言》给出资本主义和阶级斗争的宏观图景；《路易·波拿巴的雾月十八日》则进入政党、农民、官僚机器、政治象征和偶然事件。后者提醒我们：结构不是自动执行的剧本，行动者会在继承来的条件中作选择。</p>
+    </article>
+    <article class="time-item">
+      <span class="time">1857—1883｜政治经济学批判与未完成工程</span>
+      <h3>问题：资本主义支配如何通过看似自由平等的交换不断再生产？</h3>
+      <p>马克思用二十多年研究商品、货币、劳动力、剩余价值、积累和危机。《资本论》第一卷由他生前出版；第二、三卷由恩格斯依据手稿整理。计划中的国家、世界市场等部分并未按原设想完成。</p>
+    </article>
+  </div>
+
+  <div class="takeaway">
+    <span class="label">由此得到的方法论提醒</span>
+    <p>“马克思说过什么”不能只靠一本后来的教材概括。至少要区分：某个概念出现在哪一时期、它要解决什么问题、后来是否被修改、未完成手稿由谁编辑。与此同时，也不能因为文本分散就断言不存在稳定主线；实践、社会关系、资本和解放确实反复贯穿其研究。</p>
+  </div>
+</section>
+
+<section id="practice">
+  <h2>三、实践的唯物主义：不是“物质第一”四个字</h2>
+  <dl class="term">
+    <dt>实践</dt>
+    <dd>人在一定自然和社会条件中进行的、能够改变对象并同时改变行动者自身的现实活动。劳动、政治组织、科学实验和日常再生产都可能属于实践，但它们的目标、权力关系和认识价值并不相同。</dd>
+  </dl>
+  <dl class="term">
+    <dt>唯物主义</dt>
+    <dd>在本文中，不是把世界缩成“只有物理粒子”，而是要求解释观念时回到现实的人、身体需要、生产活动、制度关系和可检验条件。思想有真实作用，但思想的形成、传播和效力也需要物质与社会机制。</dd>
+  </dl>
+  <dl class="term">
+    <dt>辩证法</dt>
+    <dd>研究对象作为历史关系怎样形成、内部各方面怎样互相依存又发生冲突、数量与结构怎样变化、行动怎样在既有限制中产生新条件的方法。它不是看到任何事物都有优缺点，更不是用“否定之否定”替代具体因果分析。</dd>
+  </dl>
+
+  <div class="primary-box">
+    <span class="label">一手文本事实</span>
+    <p>1845年的《关于费尔巴哈的提纲》批评旧唯物主义把对象主要当作被观察的东西，也批评唯心主义把能动性留在抽象精神中。马克思要求把感性世界理解为人的现实活动和社会关系。该文由恩格斯在1888年编辑发表，现代读者常见的版本带有恩格斯的文字整理；马克思原稿到二十世纪才刊出。</p>
+  </div>
+
+  <h3>1. 实践不是“做了就对”</h3>
+  <p>“实践是检验真理的标准”若被理解为“成功者必然正确”，就会变成结果崇拜。实践之所以具有认识意义，是因为行动让判断与对象发生可观察的碰撞：预期会不会实现？副作用是什么？条件改变后结果能否重复？失败是否来自理论错误，还是资源和环境不同？</p>
+  <p>例如工人组织要求缩短工作日。行动能够检验资本家声称“任何限制都会使生产崩溃”的判断，但一次罢工胜负不能直接裁决整个劳动价值理论。实践提供证据，同时还需要概念区分和因果解释。</p>
+
+  <h3>2. 人既受条件制约，也生产新的条件</h3>
+  <p>如果只强调人由环境塑造，就难以解释环境怎样改变；如果只强调意志，就会把结构性失败解释成“不够勇敢”。实践观点要求同时保留两端：人不能自由选择出生的阶级、既有技术和国家制度，却能通过联合行动改变工作规则、产权形式和政治组织。改变后的制度又成为下一代行动者的新起点。</p>
+
+  <div class="method">
+    <span class="label">第一条分析原则</span>
+    <p>研究任何政治主体时，不要先问“他思想先进吗”，而要问：他处在什么关系中？可以使用哪些资源？通过什么组织行动？行动改变了哪些条件？结果怎样反过来塑造他的认识和利益？</p>
+  </div>
+
+  <div class="check-point">
+    <h3>局部自检 1</h3>
+    <details><summary>为什么“实践”不能被等同于任何现实行动？</summary><p>因为现实行动可能受错误信息、强制和短期激励支配。实践的认识意义来自行动与对象发生可检验关系，并通过比较预期、结果、条件和反例修正判断，而不是来自“行动”这个名义本身。</p></details>
+    <details><summary>实践观点怎样同时反对宿命论与唯意志论？</summary><p>它承认行动受继承来的物质与制度条件限制，因此反对“想做就能做到”；又强调人通过组织和活动会产生新的条件，因此反对“结构决定一切、主体无能为力”。</p></details>
+  </div>
+</section>
+
+<section id="history">
+  <h2>四、历史唯物主义：从社会的生产与再生产解释历史</h2>
+  <div class="definition">
+    <span class="label">工作定义</span>
+    <p><strong>历史唯物主义</strong>是一套研究程序：从人们怎样生产生活资料、怎样组织劳动与社会再生产、怎样占有生产条件和剩余产品出发，分析阶级、国家、法律和意识形态如何形成并相互作用。它主张物质生产关系具有基础性，但不主张经济因素在每个事件中都直接、唯一和自动决定结果。</p>
+  </div>
+
+  <h3>1. 五个必须分开的概念</h3>
+  <div class="grid-2">
+    <article class="card"><h4>生产力</h4><p>人改造自然和生产使用价值的现实能力，包括劳动者的知识与技能、工具技术、协作形式、基础设施和自然条件。把生产力只理解为机器，会漏掉组织能力与劳动者本身。</p></article>
+    <article class="card"><h4>生产关系</h4><p>人们在生产过程中形成的社会关系：谁占有生产资料，谁决定劳动过程，谁承担风险，产品和剩余由谁支配。它不是人际态度，而是可由制度稳定再生产的位置关系。</p></article>
+    <article class="card"><h4>生产方式</h4><p>生产力与生产关系在一个社会中的历史结合。资本主义不是“有机器”或“有市场”，而是劳动力普遍商品化、资本支配生产并以增殖为目的的一套关系。</p></article>
+    <article class="card"><h4>社会再生产</h4><p>让社会关系能够延续的全过程：不仅生产商品，也要再生产劳动力、家庭生活、知识技能、纪律、法律和下一代。后来的女性主义马克思主义特别扩展了这一维度。</p></article>
+    <article class="card"><h4>上层建筑与意识形态</h4><p>国家、法律、政治组织和观念体系不是经济的无意义影子。它们把关系制度化、合法化和组织化，也可能反过来改变积累条件与阶级力量。</p></article>
+    <article class="card"><h4>阶级斗争</h4><p>不同关系位置围绕劳动控制、剩余分配、财产权和政治权力发生的冲突。结构位置不会自动产生统一行动，必须经过经验、组织、文化和联盟形成政治主体。</p></article>
+  </div>
+
+  <h3>2. 1859年《〈政治经济学批判〉序言》说了什么？</h3>
+  <p>这篇序言给出历史唯物主义最著名的压缩表述：人们在社会生产中形成一定的、并非任意选择的生产关系；这些关系同生产力发展阶段相联系，并构成法律政治制度和社会意识形式的现实基础。当生产力与现存关系发生冲突时，可能进入社会革命时代。</p>
+  <p>这段话非常有力，也最容易被误读成一条机械公式：</p>
+  <span class="formula" aria-label="机械决定论的错误公式">技术进步 → 生产关系自动崩溃 → 新制度必然到来</span>
+  <p>马克思自己的历史著作并不这样工作。《雾月十八日》分析了阶级分化、法国农民的分散状态、政党代表、国家官僚机器、历史象征和路易·波拿巴的策略。著名句子“人们自己创造历史，但不是随心所欲地创造”正是对结构与能动性的双重限定。</p>
+
+  <h3>3. 为什么“经济最终决定”不等于“经济唯一决定”？</h3>
+  <div class="primary-box">
+    <span class="label">一手文本事实</span>
+    <p>恩格斯在1890年致约瑟夫·布洛赫的信中明确反对把历史唯物主义扭曲为“经济因素是唯一决定因素”。他把生产和现实生活的再生产称为历史中的最终决定因素，同时强调政治形式、法律、理论和传统会参与历史斗争，并在许多情况下决定斗争的具体形式。</p>
+  </div>
+  <p>“最终”可以理解为长期再生产的边界条件，而不是每个短期事件的最近原因。一次选举可能由候选人失言、战争、媒体议程和选制共同影响；但若要解释某些利益集团为何长期拥有更大组织资源，就必须进入财产、劳动和国家财政等物质关系。</p>
+
+  <h3>4. 一个贯穿例子：英国工厂工作日为何会被限制？</h3>
+  <p>资本竞争推动企业延长或强化劳动，因为单个资本家若主动缩短工时，可能在成本上处于不利位置。劳动者的身体却有生理边界，并需要时间再生产自身。由此产生内在冲突：资本要求尽可能使用劳动力，劳动力所有者要求保存自身。</p>
+  <p>但这项矛盾不会自动生成十小时法案。它必须经过工人抵抗、公共卫生调查、议会联盟、工厂监察和执法能力，才转化为法律。法律又反过来改变竞争条件：当所有企业都受统一限制时，个别资本不再因守法而单独受损，并可能转向提高劳动生产率。这个例子说明，经济关系提供冲突来源，阶级组织和国家制度决定其政治形式，法律结果又反馈到生产方式。</p>
+
+  <div class="takeaway">
+    <span class="label">历史唯物主义的最低合格用法</span>
+    <p>不要只说“背后都是经济利益”。必须指出：哪种生产或再生产关系产生了什么利益和能力差异；这些差异经过哪些组织、法律和观念中介；为什么在此阶段某个因素成为主要方面；反趋势和失败条件是什么。</p>
+  </div>
+
+  <div class="check-point">
+    <h3>局部自检 2</h3>
+    <details><summary>生产力与技术是不是同义词？</summary><p>不是。技术是生产力的重要组成，但劳动者的技能、协作组织、基础设施、科学知识和自然条件也属于现实生产能力。技术在不同生产关系中还可能产生不同用途和分配后果。</p></details>
+    <details><summary>为什么工时立法是“经济—政治相互作用”的例子？</summary><p>冲突源于资本使用劳动力与劳动者维持生命的结构矛盾；但冲突必须经过组织、调查、议会和执法才成为法律。法律实施后又统一竞争条件并推动生产过程调整，因此政治制度不是经济的被动影子。</p></details>
+  </div>
+</section>
+
+<section id="capital">
+  <h2>五、商品、劳动力与资本：平等交换怎样产生阶级支配？</h2>
+  <p>马克思的政治经济学批判不只是证明“老板拿走了工人创造的一部分”。更深的问题是：为什么在双方作为法律上自由平等的商品所有者进行交换时，资本仍能稳定增殖，劳动者仍需反复出售劳动力？</p>
+
+  <h3>1. 商品：使用价值与价值形式</h3>
+  <dl class="term">
+    <dt>商品</dt>
+    <dd>为了交换而生产的有用物。它既有满足需要的具体属性，即使用价值；又在交换中同其他商品取得可比较的社会形式。马克思用“价值”分析私人劳动怎样通过市场被承认为社会劳动。</dd>
+  </dl>
+  <p>这不是说物品内部藏着一种肉眼不可见的“价值物质”。价值是特定社会关系的表现：彼此独立的生产者先私人生产，再通过交换事后确认自己的劳动是否为社会所需要。市场价格会受供求、竞争、垄断和信用影响；价值理论试图解释这些波动背后的生产关系和约束，而不是给每件商品提供即时价格计算器。</p>
+
+  <h3>2. 劳动力为什么是关键商品？</h3>
+  <dl class="term">
+    <dt>劳动力</dt>
+    <dd>劳动者在一定时间内进行劳动的身体和智力能力。劳动者出售的不是“劳动产品的一部分”，而是在资本控制的生产过程中使用这种能力的权利。</dd>
+  </dl>
+  <p>劳动力能够成为普遍商品，需要两个历史条件同时成立：</p>
+  <ol>
+    <li>劳动者在法律上是自由人，可以处分自己的劳动力，而不是农奴或奴隶；</li>
+    <li>劳动者又与足以独立生产生活资料的土地、工具和资本相分离，因而必须进入劳动力市场。</li>
+  </ol>
+  <p>这就是资本主义自由的双重性：劳动者摆脱了人身依附，也“自由得一无所有”，不得不通过出售劳动力维持生活。这里不是否认法律自由的进步，而是说明法律平等并未消除生产条件上的权力不对称。</p>
+
+  <h3>3. 剩余价值：剥削不是“交换作弊”</h3>
+  <dl class="term">
+    <dt>剩余价值</dt>
+    <dd>劳动力在生产过程中创造的新价值超过维持和再生产劳动力所需价值的部分。资本家购买劳动力并控制其使用时间，因此即使工资按既定市场条件支付，仍可占有这一差额。</dd>
+  </dl>
+  <p>逻辑可以压缩为：</p>
+  <span class="formula" aria-label="资本循环公式">货币 M → 购买劳动力与生产资料 C → 生产过程 P → 更多价值的商品 C′ → 更多货币 M′</span>
+  <p>关键不在普通商品交换环节，而在生产过程：机器和原料把已有价值转移到新产品，活劳动则创造新价值。若工人在一天中用四小时生产相当于工资的价值，却工作八小时，后四小时形成剩余劳动。资本家个人是否仁慈，不改变他作为资本人格化承担的竞争压力：必须追求增殖、积累和成本控制，否则可能被竞争淘汰。</p>
+
+  <h3>4. 绝对剩余价值与相对剩余价值</h3>
+  <div class="grid-2">
+    <article class="card"><h4>绝对剩余价值</h4><p>通过延长工作日、压缩休息或提高劳动强度，使剩余劳动时间增加。它直接受到身体极限、劳动抵抗和法律限制。</p></article>
+    <article class="card"><h4>相对剩余价值</h4><p>通过提高生产率，降低再生产劳动力所需生活资料的价值，使必要劳动时间缩短，即使工作日不延长，剩余劳动占比也会上升。</p></article>
+  </div>
+  <p>这解释了资本主义为何同时具有强大技术动力与支配性。竞争推动技术创新，但创新的直接标准通常不是减少全社会必要劳动，而是降低企业成本和扩大剩余价值。技术可能减轻劳动，也可能导致裁员、节奏加快和控制强化；结果取决于所有权、组织力量和制度安排。</p>
+
+  <h3>5. 资本不是一堆机器，而是自我增殖的社会关系</h3>
+  <p>一台机器放在合作社、家庭作坊或资本主义工厂中，物理属性相同，社会功能却不同。资本的特征不在“规模大”，而在货币和生产资料被用于购买劳动力、组织生产并以增殖为目的。因而“发展生产力”与“扩大资本权力”可能在一段时期同时发生，不能把技术增长自动等同于人的自由发展。</p>
+
+  <div class="debate">
+    <span class="label">后世争议</span>
+    <p>马克思价值理论的精确形式、价值与价格怎样转化、利润率趋势和危机理论，一直存在激烈争论。成熟学习不应假装这些技术问题已经完全解决。但即使拒绝某种劳动价值论公式，仍需单独回答马克思提出的关系问题：为何生产资料所有权使一方能够控制劳动过程和剩余？市场依赖怎样塑造企业与劳动者的行为？不能用一个技术争议把整个社会关系批判一并取消。</p>
+  </div>
+</section>
+
+<section id="alienation">
+  <h2>六、从异化到商品拜物教：支配为什么看起来像物的自然属性？</h2>
+  <h3>1. 异化不是单纯的“不喜欢工作”</h3>
+  <p>在1844年手稿中，异化劳动至少涉及四个方面：劳动者不能支配产品；劳动活动成为外在强迫；人的多方面能力被缩成谋生手段；人与人之间的关系被竞争和财产分隔。它表达的是对劳动条件和共同生活失去控制，而不只是主观厌倦。</p>
+
+  <h3>2. 商品拜物教不是“爱买名牌”</h3>
+  <dl class="term">
+    <dt>商品拜物教</dt>
+    <dd>生产者之间的社会关系，在商品交换中表现为物与物之间仿佛天然具有的关系。价格、工资、利息和利润看起来像物自身会产生的属性，从而遮蔽了背后的劳动组织和社会权力。</dd>
+  </dl>
+  <p>例如利息看起来像货币“自然生钱”，工资看起来像支付了工人全部劳动，利润看起来像机器或企业家才能自身的产物。马克思并不是说参与者受到简单骗局欺骗；这些表象由现实交换形式不断产生。个人即使理解机制，也必须按价格、工资和利润行事，否则无法在市场中生存。</p>
+
+  <h3>3. 青年马克思与成熟马克思：断裂还是连续？</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>解释路线</th><th>主要依据</th><th>贡献</th><th>风险</th></tr></thead>
+      <tbody>
+        <tr><td>连续论</td><td>异化、人的能力和自主活动在后期仍以新形式出现；商品拜物教延续了“人的关系反过来统治人”的问题。</td><td>保留马克思理论中的解放目标，避免把《资本论》读成无价值立场的经济模型。</td><td>可能把青年时期的人本主义词汇直接套到成熟经济范畴，忽略概念重建。</td></tr>
+        <tr><td>断裂论</td><td>马克思从抽象“人本质”转向生产方式、阶级和具体社会关系，成熟理论不再以哲学异化为中心。</td><td>提醒读者不要用道德哲学替代政治经济学机制。</td><td>若断裂过强，会切断资本批判与自由、人的发展之间的规范联系。</td></tr>
+        <tr><td>本文判断</td><td>问题意识存在连续性，分析语言和因果机制发生重大变化。</td><td>既承认理论发展，也避免把马克思分成两个互不相干的人。</td><td>需要逐篇文本核验，不能靠折中口号解决所有争议。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="check-point">
+    <h3>局部自检 3</h3>
+    <details><summary>商品拜物教为什么不是一种可以靠“提高觉悟”完全消失的心理偏见？</summary><p>因为它由现实社会形式产生。生产者必须通过商品和货币关系互相联系，价格与利润就会作为客观约束支配行动。批判意识能帮助理解，但若生产关系不变，个人仍需按这些形式行事。</p></details>
+    <details><summary>连续论和断裂论各看守了什么风险？</summary><p>连续论防止把成熟马克思读成没有解放目标的纯经济学；断裂论防止用抽象人性和道德不满替代成熟的社会关系与资本机制分析。</p></details>
+  </div>
+</section>
+
+<section id="politics">
+  <h2>七、阶级、国家与革命：结构怎样变成政治力量？</h2>
+  <h3>1. 阶级首先是关系位置，不是收入档位</h3>
+  <p>资本家与雇佣劳动者的区别，首先在于对生产资料和劳动过程的关系。高收入经理可能仍依赖工资，却代表资本执行控制；小业主拥有少量生产资料，也可能受大资本和信贷挤压。现实阶级结构因此包含中间层、矛盾位置和行业差异。</p>
+  <p>结构位置也不会自动产生统一意识。同样是雇佣劳动者，可能因职业、性别、户籍、民族、技能和组织传统形成不同利益。阶级从“自在位置”变成能够集体行动的政治主体，需要共同经验、组织、叙事、领导和联盟。</p>
+
+  <h3>2. 《雾月十八日》为什么是反机械决定论的经典？</h3>
+  <p>马克思分析1851年路易·波拿巴政变时，没有简单写成“资产阶级命令国家镇压工人”。他区分金融资产阶级、工业资产阶级、小资产阶级、无产阶级和小农，研究它们的政党代表、恐惧和联盟；又分析法国官僚军事国家机器怎样取得相对独立性。分散的小农具有相似经济处境，却缺少横向联系和自主组织，因而容易由外部权力代表。</p>
+  <p>这说明阶级分析不是先给每个人贴标签，再从标签推出行为。必须解释阶级结构如何经过组织形式、政治代表和国家机制转化为具体行动。</p>
+
+  <h3>3. 国家是阶级统治工具吗？</h3>
+  <p>“国家是阶级统治的工具”能指出法律和强制不是中立真空，但若把国家想成资产阶级手里的一把锤子，就解释不了官僚机构的自身利益、不同资本集团之间的冲突、普选制度、社会政策和国家对资本的约束。</p>
+  <p>更准确的工作定义是：<strong>国家是集中组织公共权力、制定并执行规则、征税和使用合法强制的制度复合体；在阶级社会中，它的结构通常维持占主导地位的生产与财产关系，但具体机构具有相对自主性，并成为阶级与社会力量斗争的场域。</strong></p>
+
+  <h3>4. 巴黎公社给马克思带来了什么变化？</h3>
+  <p>1871年巴黎公社使“工人取得政权”从抽象口号变成制度问题。马克思和恩格斯强调，劳动者不能简单接管旧的官僚军事机器照常运转。公社采取代表可罢免、官员薪酬限制、立法与执行结合等措施，试图让公共权力受生产者控制。</p>
+  <div class="primary-box">
+    <span class="label">一手文本事实</span>
+    <p>恩格斯1891年为《法兰西内战》作序时，把公社的经验概括为：工人阶级一方面要废除旧的镇压机器，另一方面要防止自己的代表和官员转化为新的主人，因此需要随时罢免等制度保障。</p>
+  </div>
+  <p>这里产生一条此后整个马克思主义都没解决好的难题：为了对抗旧统治和外部战争，革命政权需要集中能力；但集中能力又可能形成脱离社会监督的官僚层。只说“政权属于无产阶级”不能解决这个问题，必须考察选举、罢免、信息公开、组织多元性、司法保障和经济参与的实际制度。</p>
+
+  <h3>5. 改革与革命不是简单二选一</h3>
+  <p>马克思、恩格斯并不反对争取工时、选举权和工会权利。问题在于：改革是否改变劳动者的组织能力和权力关系，还是只在危机时维持既有秩序？革命也不是“越激烈越正确”，而是生产关系和国家权力发生根本改变。改革可以积累力量，也可能被吸收；革命可以打开制度可能，也可能产生新的专断。第三篇会把这一矛盾放进第二国际的修正主义争论中详细展开。</p>
+</section>
+
+<section id="communism">
+  <h2>八、共产主义的开放目标：马克思为何拒绝写完整蓝图？</h2>
+  <p>马克思很少详细描述未来社会，一部分原因是他反对从抽象正义原则推演出永恒制度。他认为未来形式必须由现实运动的能力、生产力和政治经验产生，而不能由理论家替群众预先设计。</p>
+
+  <h3>1. 可以从文本中确认的最低方向</h3>
+  <ol>
+    <li>主要生产资料不再作为少数人支配他人劳动的资本；</li>
+    <li>联合的生产者共同控制社会生产，而不是由市场竞争或独立官僚集团支配；</li>
+    <li>生产目的从资本增殖转向满足需要和人的自由发展；</li>
+    <li>必要劳动时间缩短，个人能够发展多方面能力；</li>
+    <li>随着阶级统治条件消失，国家的强制性统治功能逐步失去基础。</li>
+  </ol>
+
+  <h3>2. 《哥达纲领批判》的两个阶段</h3>
+  <p>马克思区分从资本主义脱胎而来的较低阶段与更高阶段。较低阶段仍带有旧社会痕迹，按劳动贡献分配会用同一尺度衡量能力和需要不同的人，因此形式平等仍产生实际不平等。只有生产力、合作习惯和人的发展达到更高程度，才可能走向“各尽所能，按需分配”。</p>
+  <p>这段论述并不等于后来所有“社会主义初级阶段”理论，也没有给出固定年限或党国制度模型。它只是指出：废除资本所有权不意味着稀缺、分工和旧习惯立即消失，过渡必须面对现实条件。</p>
+
+  <h3>3. 拒绝蓝图的优点与代价</h3>
+  <div class="grid-2">
+    <article class="card"><h4>优点</h4><p>避免少数理论家把自己的偏好宣布为历史必然；给群众实践和制度创新留下空间；提醒未来制度受生产能力与社会关系约束。</p></article>
+    <article class="card"><h4>代价</h4><p>经典文本对权力分立、少数权利、信息协调、激励、法治和官僚监督准备不足。后来的运动容易用“历史会解决”回避制度设计。</p></article>
+  </div>
+  <p>因此，忠于马克思的解放目标不等于拒绝制度研究。恰恰相反，二十世纪经验迫使马克思主义补上一个问题：怎样让“共同所有”成为可观察的社会控制，而不是由国家或组织替社会行使所有权后要求社会相信它代表自己？</p>
+</section>
+
+<section id="engels">
+  <h2>九、恩格斯做了什么：共同作者、整理者与体系传播者</h2>
+  <p>把马克思与恩格斯写成完全相同的“双人作者”不准确，把恩格斯写成歪曲马克思的外人也不准确。两人长期合作、互相批评并分工研究；但研究重点、表述风格和后世影响确有差异。</p>
+
+  <h3>1. 恩格斯不是仅仅资助马克思</h3>
+  <ul>
+    <li>他早期的《英国工人阶级状况》把工业城市、工厂劳动和阶级生活的经验材料带入共同研究；</li>
+    <li>两人共同撰写《神圣家族》《德意志意识形态》《共产党宣言》等文本；</li>
+    <li>恩格斯长期研究军事、自然科学、家庭与国家起源，并参与国际工人运动组织；</li>
+    <li>马克思逝世后，他整理《资本论》第二、三卷，使大量未完成手稿成为可阅读作品；</li>
+    <li>《反杜林论》和《社会主义从空想到科学的发展》把复杂理论压缩为工人运动可传播的共同语言。</li>
+  </ul>
+
+  <h3>2. 为什么工人运动需要体系化？</h3>
+  <p>十九世纪后期，社会主义从小团体讨论进入群众政党、工会、报刊和干部教育。分散的手稿和高难度经济学无法直接承担共同训练。杜林等竞争理论又试图提供覆盖哲学、自然、经济和社会主义的完整体系。恩格斯写《反杜林论》，既是反驳对手，也是第一次大规模展示“我们这套观点”如何连接多个领域。</p>
+  <div class="primary-box">
+    <span class="label">一手文本事实</span>
+    <p>《反杜林论》的编者说明和恩格斯通信把它描述为对哲学、自然科学和历史问题的百科式概览。马克思知晓并参与部分内容，还为其中政治经济学章节提供材料。这使“恩格斯完全背着马克思另造体系”的说法难以成立。</p>
+  </div>
+
+  <h3>3. 整理《资本论》意味着什么？</h3>
+  <p>第二、三卷并非恩格斯凭空续写，而是根据马克思大量手稿编辑。但编辑必然包括选择版本、排序、补标题和处理矛盾。今天的文献学研究能够区分马克思原稿与恩格斯出版文本，因此不应把每个句子都视为马克思最终定稿；也不能因此否认恩格斯在极端困难材料中完成了不可替代的保存工作。</p>
+
+  <h3>4. “自然辩证法”为什么成为争议中心？</h3>
+  <p>马克思主要在社会关系和政治经济学中使用辩证方法，恩格斯则更明确讨论自然界的变化、相互联系和规律，并用“量变质变、对立渗透、否定之否定”等方式作概括。支持者认为，这说明辩证法不是主观技巧，而是现实过程的普遍结构；批评者认为，把复杂科学压缩为几条普遍规律，容易让辩证法从具体批判方法变成先验世界公式。</p>
+  <p>这里必须区分两个层次：自然过程当然存在相变、反馈和非线性；但这些科学现象是否都应被归入一套哲学“三规律”，以及这套归纳能否产生可检验的新知识，是另一个问题。不能因为现代科学也研究复杂系统，就自动证明恩格斯的每个自然哲学表述正确。</p>
+</section>
+
+<section id="debate">
+  <h2>十、“恩格斯是否把马克思体系化过头？”三种回答</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>回答</th><th>主要论据</th><th>能够解释什么</th><th>容易忽略什么</th></tr></thead>
+      <tbody>
+        <tr><td><strong>连续性立场</strong><br>恩格斯基本忠实展开马克思</td><td>两人长期合作；马克思参与《反杜林论》；历史唯物主义、剩余价值和阶级政治由两人共同发展；恩格斯反对机械经济决定论。</td><td>说明马克思主义不是恩格斯单方面发明，维护共同理论工程的事实。</td><td>可能低估表述风格、研究对象和后世教科书化造成的变化。</td></tr>
+        <tr><td><strong>断裂性立场</strong><br>恩格斯把开放批判变成世界观体系</td><td>马克思的研究常保持未完成和具体历史性；恩格斯更爱概括普遍规律并扩展到自然；后来的正统把这些概括硬化为辩证唯物主义。</td><td>解释为什么二十世纪教材常把马克思主义变成物质观、三规律和五形态的封闭体系。</td><td>容易把后来苏联式标准化全部追溯给恩格斯，忽视马克思同意与共同参与的证据。</td></tr>
+        <tr><td><strong>历史中介立场</strong><br>体系化既必要又有风险</td><td>群众运动需要可教、可传播的共同理论；任何压缩都会牺牲文本开放性；恩格斯、第二国际和苏联教科书是三个不同的体系化阶段。</td><td>同时解释传播成功和教条化接口，不用“忠诚/背叛”二分法替代历史机制。</td><td>若只说“两面性”，可能回避具体判断，仍需逐项检查哪些概括可靠、哪些被硬化。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="takeaway">
+    <span class="label">本文判断</span>
+    <p><strong>说“恩格斯背叛马克思”证据不足；说“二人完全没有差异”同样不成立。</strong>恩格斯解决了一个真实问题：把分散、未完成而高难度的共同研究，转化为工人运动能掌握的理论语言。他的概括大体保持了实践、历史和资本批判的主线，但百科式表述、自然辩证法和规律化语言降低了具体分析的门槛，也降低了把概括误当成万能公式的门槛。后来的第二国际和苏联体系在新的组织与国家需求下进一步固定了这些表述，不能把全部责任倒给恩格斯一人。</p>
+  </div>
+
+  <h3>怎样避免“开放研究”与“可传播理论”之间的两难？</h3>
+  <ol>
+    <li><strong>把概括标为概括。</strong>说明它来自哪些文本、适用什么范围、有哪些争议。</li>
+    <li><strong>把规律还原为机制。</strong>不只说“生产力决定生产关系”，要说明具体技术、产权、组织和行动如何连接。</li>
+    <li><strong>保留反例与失败条件。</strong>理论若解释一切，就没有真正解释任何东西。</li>
+    <li><strong>区分教学层级。</strong>入门框架可以压缩，但专题学习必须回到原始文本和历史材料。</li>
+    <li><strong>让实践结果反向修订理论。</strong>经典地位不能使概念免于经验检验。</li>
+  </ol>
+
+  <div class="check-point">
+    <h3>局部自检 4</h3>
+    <details><summary>为什么不能把苏联后来的教科书体系直接等同于恩格斯本人？</summary><p>因为其间至少还有第二国际的理论普及、列宁主义争论、苏联国家与党校教育的标准化等历史中介。恩格斯提供了一些体系化语言，但后来的选择、删减和硬化有新的组织目的与政治条件。</p></details>
+    <details><summary>本文为何不接受“恩格斯完全背叛马克思”的结论？</summary><p>两人长期共同研究，马克思了解并参与《反杜林论》的部分工作，核心历史观与资本批判也确属共同工程。差异和风险存在，但“背叛”把复杂的传播、编辑和后世制度化过程缩成个人动机判断。</p></details>
+  </div>
+</section>
+
+<section id="method-card">
+  <h2>十一、把五个模块变成一套可执行的现实分析程序</h2>
+  <p>理论真正被掌握，不是能背出“物质决定意识”，而是面对一个问题时知道先后检查什么。下面用平台劳动作为低复杂度示范；它不是对现实的最终结论，只展示分析顺序。</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>步骤</th><th>要问的问题</th><th>平台劳动示例</th></tr></thead>
+      <tbody>
+        <tr><td>1. 界定对象与阶段</td><td>研究哪个行业、地区、时间段？</td><td>不要讨论抽象“互联网”，而讨论某城市某阶段的外卖配送体系。</td></tr>
+        <tr><td>2. 找生产与再生产关系</td><td>谁占有平台、数据和客户入口？劳动者怎样获得收入并维持生活？</td><td>骑手拥有交通工具，却依赖平台订单、计价规则和账号资格。</td></tr>
+        <tr><td>3. 分析资本运动</td><td>利润从哪里来？竞争怎样约束企业行为？</td><td>平台可能通过佣金、规模效应和劳动过程优化增殖；企业也受市场份额和资本回报压力约束。</td></tr>
+        <tr><td>4. 识别阶级与中间位置</td><td>劳动者是雇员、自雇者还是混合关系？控制权与风险如何分配？</td><td>合同名义可能是承揽，但算法决定接单和考核，风险则更多由劳动者承担。</td></tr>
+        <tr><td>5. 进入制度中介</td><td>劳动法、社保、地方监管和司法怎样塑造关系？</td><td>法律对劳动关系的认定会改变企业成本和劳动者组织权利。</td></tr>
+        <tr><td>6. 分析意识形态形式</td><td>关系怎样被表述为个人选择或技术中立？</td><td>“自由接单”可能表达真实灵活性，也可能遮蔽收入依赖和算法控制，两面需分别验证。</td></tr>
+        <tr><td>7. 寻找主体与组织</td><td>谁能行动？他们如何形成共同利益？</td><td>劳动者分散且流动，组织成本高；线上社群、互助网络和法规可能改变其集体能力。</td></tr>
+        <tr><td>8. 判断主要矛盾</td><td>在此阶段，哪个冲突最能解释结果？证据是什么？</td><td>可能是控制权与风险不对称，也可能在特定阶段转为平台间价格战；不能预先宣布。</td></tr>
+        <tr><td>9. 评估方案</td><td>改革是否改变权力关系？是否产生新问题？</td><td>最低报酬、社保、数据透明、合作平台等方案影响不同，需比较执行机制与副作用。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="method">
+    <span class="label">最短分析卡</span>
+    <p><strong>现实活动是什么 → 关系由谁控制 → 资本怎样增殖 → 阶级位置怎样形成 → 国家和观念怎样中介 → 谁能组织行动 → 哪个矛盾在此阶段居主导 → 什么证据可能推翻判断 → 方案怎样改变权力与再生产。</strong></p>
+  </div>
+
+  <p>这套程序也显示辩证法的真实含义：灵活就业既可能提供时间自主，又可能转移风险；技术既提高效率，又加强控制。成熟分析不是把两面各写一句，而是找出它们为何由同一制度关系共同产生、在什么条件下哪一面占主导，以及行动怎样改变条件。</p>
+</section>
+
+<section id="memory">
+  <h2>十二、结论压缩：本篇只需长期记住七句话</h2>
+  <ol>
+    <li><strong>马克思没有完成一本封闭体系；</strong>其理论要从不同时期、不同问题的文本中重建，但存在稳定主线。</li>
+    <li><strong>实践唯物主义</strong>要求从现实活动和社会关系解释观念，并把认识放进可检验的改造过程。</li>
+    <li><strong>历史唯物主义</strong>把生产和再生产关系视为基础性条件，却不把政治、法律和意识形态降为无作用的影子。</li>
+    <li><strong>资本批判</strong>解释了平等交换为何仍能通过劳动力商品化、劳动过程控制和剩余价值占有再生产阶级支配。</li>
+    <li><strong>商品拜物教</strong>不是消费心理，而是人的社会关系以物的客观属性形式统治人的现实机制。</li>
+    <li><strong>阶级结构不会自动变成政治行动；</strong>必须经过组织、代表、国家、联盟和历史象征。</li>
+    <li><strong>恩格斯的体系化既是传播条件，也是教条化风险；</strong>应区分恩格斯本人的概括、第二国际解释和苏联式标准化。</li>
+  </ol>
+
+  <div class="takeaway">
+    <span class="label">整篇中心句</span>
+    <p>马克思与恩格斯最重要的遗产，不是一套替人省去调查的答案，而是一种把<strong>现实活动、物质关系、制度中介、阶级力量和解放目标</strong>放在同一历史过程中考察的研究程序。</p>
+  </div>
+
+  <h3>下一篇：为什么改革与革命在第二国际时代分裂？</h3>
+  <p>第三篇将进入1883—1914年的欧洲工人运动：资本主义没有迅速崩溃，工会和议会却不断壮大。伯恩施坦为何主张修正理论？考茨基怎样把革命目标与日常议会实践并置？卢森堡为什么既支持改革，又反对把改革的积累等同于社会主义？这场争论会第一次系统回答：<strong>改善资本主义与超越资本主义究竟怎样连接。</strong></p>
+</section>
+
+<section id="references">
+  <h2>参考资料：按“一手文本—研究解释”分层</h2>
+  <ol class="references">
+    <li><span class="source-tag primary">一手</span><a href="https://www.marxists.org/archive/marx/works/1845/theses/theses.htm">Karl Marx, Theses on Feuerbach</a><small>实践、旧唯物主义与唯心主义批判；常见版本由恩格斯编辑。</small></li>
+    <li><span class="source-tag primary">一手</span><a href="https://www.marxists.org/archive/marx/works/1845/german-ideology/ch01a.htm">Marx and Engels, The German Ideology, Part I</a><small>现实个人、物质生活过程、分工和意识形态。</small></li>
+    <li><span class="source-tag primary">一手</span><a href="https://www.marxists.org/archive/marx/works/1852/18th-brumaire/ch01.htm">Karl Marx, The Eighteenth Brumaire of Louis Bonaparte</a><small>结构、能动性、阶级代表与国家机器的具体政治分析。</small></li>
+    <li><span class="source-tag primary">一手</span><a href="https://www.marxists.org/archive/marx/works/1859/critique-pol-economy/preface.htm">Karl Marx, Preface to A Contribution to the Critique of Political Economy</a><small>历史唯物主义最著名的压缩表述。</small></li>
+    <li><span class="source-tag primary">一手</span><a href="https://www.marxists.org/archive/marx/works/1867-c1/ch01.htm">Karl Marx, Capital, Volume I, Chapter 1</a><small>商品、价值形式与商品拜物教。</small></li>
+    <li><span class="source-tag primary">一手</span><a href="https://www.marxists.org/archive/marx/works/1871/civil-war-france/">Karl Marx, The Civil War in France</a><small>巴黎公社、国家机器与工人政权的制度经验。</small></li>
+    <li><span class="source-tag primary">一手</span><a href="https://www.marxists.org/archive/marx/works/1875/gotha/">Karl Marx, Critique of the Gotha Programme</a><small>过渡时期、共产主义阶段与分配原则。</small></li>
+    <li><span class="source-tag primary">一手</span><a href="https://www.marxists.org/archive/marx/works/1877/anti-duhring/index.htm">Friedrich Engels, Anti-Dühring</a><small>恩格斯对哲学、自然科学、政治经济学和社会主义的百科式体系化。</small></li>
+    <li><span class="source-tag primary">一手</span><a href="https://www.marxists.org/archive/marx/works/1880/soc-utop/index.htm">Friedrich Engels, Socialism: Utopian and Scientific</a><small>从《反杜林论》抽出的通俗理论概览。</small></li>
+    <li><span class="source-tag primary">一手</span><a href="https://www.marxists.org/archive/marx/works/1890/letters/90_09_21.htm">Engels to Joseph Bloch, 21–22 September 1890</a><small>明确反对把历史唯物主义歪曲为经济因素唯一决定论。</small></li>
+    <li><span class="source-tag scholar">研究</span><a href="https://plato.stanford.edu/entries/marx/">Stanford Encyclopedia of Philosophy: Karl Marx</a><small>马克思思想、异化、历史理论、经济学和政治的学术概览，并呈现主要解释争议。</small></li>
+    <li><span class="source-tag scholar">研究</span><a href="https://plato.stanford.edu/entries/alienation/">Stanford Encyclopedia of Philosophy: Alienation</a><small>异化概念的历史与哲学结构。</small></li>
+    <li><span class="source-tag scholar">研究</span><a href="https://plato.stanford.edu/entries/socialism/">Stanford Encyclopedia of Philosophy: Socialism</a><small>社会主义的制度定义、民主控制与市场/计划等争论。</small></li>
+  </ol>
+</section>
+</main>
+
+<section id="reader-feedback" data-feedback-status="pending">
+  <h2>读后反馈与修订记录</h2>
+  <article class="feedback-entry" data-status="pending">
+    <h3>2026-07-20 · 第 0 轮（生成记录）</h3>
+    <p><strong>原始需求：</strong>继续“马列学习规划”七篇系列的剩余六篇文章写作。读者理论基础薄弱，希望结合历史理解马列主义主要内容、相互关系和后续发展，并最终形成能够分析现实议题的辩证框架；难度不要过高。</p>
+    <p><strong>问题分类：</strong>系列续写 / 理论骨架 / 思想史 / 方法训练</p>
+    <p><strong>处理：</strong>本篇承接第一篇全景地图，以“实践—历史关系—资本运动—阶级政治—解放目标”为五模块骨架；分别解释历史唯物主义、劳动力商品与剩余价值、异化和商品拜物教、阶级与国家、共产主义目标；设置英国工时立法和平台劳动两个贯穿例子；以三种解释路线处理恩格斯体系化争议。</p>
+    <p><strong>是否更新 Skill：</strong>否。本轮没有新增可跨文章复用的写作反馈。</p>
+    <p><strong>状态：</strong>等待首次阅读反馈。</p>
+  </article>
+</section>
+
+<footer>通勤学习项目 · 马列语料 · marxism-002 · 2026-07-20</footer>
+</body>
+</html>

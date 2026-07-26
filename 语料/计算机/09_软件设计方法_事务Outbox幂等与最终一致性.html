@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>从需求到设计（三）：事务、Outbox、幂等与最终一致性——一次发布怎样穿过所有故障</title>
+  <meta name="corpus-id" content="computer-009">
+  <meta name="corpus-category" content="计算机">
+  <meta name="corpus-series" content="软件工程与系统设计">
+  <meta name="corpus-status" content="unread">
+  <meta name="estimated-reading-time" content="45—55 分钟">
+  <meta name="generated-date" content="2026-07-24">
+  <meta name="source-basis" content="用户提供的 D-03 通过标准；补充 PostgreSQL、Transactional Outbox、HTTP 条件更新与可观测性的一般机制">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #5d6878;
+      --line: #d9e0ea;
+      --soft: #f5f8fc;
+      --blue: #175cd3;
+      --blue-soft: #eaf2ff;
+      --green: #157f5b;
+      --green-soft: #eaf8f2;
+      --amber: #925400;
+      --amber-soft: #fff6e3;
+      --red: #b42318;
+      --red-soft: #fff0ee;
+      --violet: #6941c6;
+      --violet-soft: #f3efff;
+      --shadow: 0 10px 30px rgba(28,45,76,.07);
+    }
+    * { box-sizing: border-box; }
+    html { font-size: 17px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      max-width: 960px; margin: 0 auto; padding: 38px 42px 86px;
+      color: var(--ink); background: #fff;
+      font-family: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", STSong, serif;
+      line-height: 1.86; overflow-wrap: break-word;
+    }
+    h1,h2,h3,h4,nav,.sans,table { font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    h1 { margin:0; font-size:2.08rem; line-height:1.34; letter-spacing:-.025em; }
+    h2 { margin:3.35rem 0 1.15rem; padding-bottom:.42rem; border-bottom:1px solid var(--line); font-size:1.5rem; line-height:1.42; }
+    h3 { margin:2.2rem 0 .75rem; font-size:1.22rem; line-height:1.45; }
+    h4 { margin:1.55rem 0 .5rem; font-size:1.05rem; }
+    p { margin:.86rem 0; } li { margin:.38rem 0; }
+    a { color:var(--blue); text-decoration-thickness:1px; text-underline-offset:.16em; }
+    code,kbd { font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace; font-size:.9em; }
+    code { padding:.1em .32em; border-radius:4px; background:var(--soft); }
+    pre { margin:1.15rem 0; padding:1rem 1.1rem; overflow-x:auto; border:1px solid #cbd5e1; border-radius:10px; background:#101828; color:#eef4ff; line-height:1.62; }
+    pre code { padding:0; background:transparent; color:inherit; }
+    header.hero { margin-bottom:2.3rem; padding:1.8rem 0 1.35rem; }
+    .eyebrow { margin-bottom:.65rem; color:var(--blue); font-size:.88rem; font-weight:700; letter-spacing:.08em; }
+    .subtitle { margin:1rem 0 0; color:var(--muted); font-size:1.08rem; }
+    .meta { display:flex; gap:.55rem; flex-wrap:wrap; margin-top:1.15rem; }
+    .tag { padding:.28rem .62rem; border:1px solid var(--line); border-radius:999px; color:#40506a; background:var(--soft); font-family:"Noto Sans CJK SC","PingFang SC",sans-serif; font-size:.82rem; }
+    nav#toc { margin:1.8rem 0 3rem; padding:1.15rem 1.35rem; border:1px solid var(--line); border-radius:12px; background:var(--soft); }
+    nav#toc strong { display:block; margin-bottom:.5rem; }
+    nav#toc ol { columns:2; column-gap:2.6rem; margin:0; padding-left:1.25rem; }
+    nav#toc li { break-inside:avoid; margin:.25rem 0; }
+    .lead,.thesis,.definition,.warning,.example,.source-note,.comparison-note,.exercise {
+      margin:1.3rem 0; padding:1rem 1.15rem; border-radius:10px;
+    }
+    .lead { border-left:4px solid var(--blue); background:var(--blue-soft); }
+    .thesis { border:1px solid #b9cff4; background:linear-gradient(135deg,#f7faff,#eef5ff); box-shadow:var(--shadow); font-size:1.04rem; }
+    .definition { border:1px solid #b9cff4; background:var(--blue-soft); }
+    .warning { border:1px solid #f1c8c3; background:var(--red-soft); }
+    .example,.exercise { border:1px solid #f0d5a3; background:var(--amber-soft); }
+    .source-note { border:1px solid #d4c8f5; background:var(--violet-soft); }
+    .comparison-note { border:1px solid #a9dccb; background:var(--green-soft); }
+    .concept-map { margin:1.6rem 0 2.3rem; padding:1.2rem; border:1px solid var(--line); border-radius:14px; background:#fbfdff; box-shadow:var(--shadow); }
+    .grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:1.2rem 0; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.9rem; margin:1.2rem 0; }
+    .card { padding:1rem; border:1px solid var(--line); border-radius:10px; background:#fff; }
+    .card h3,.card h4 { margin-top:0; }
+    .pipeline { display:flex; flex-wrap:wrap; align-items:stretch; gap:.55rem; margin:1.25rem 0; }
+    .pipeline .node { flex:1 1 125px; min-width:115px; padding:.78rem .7rem; border:1px solid #c9d6e8; border-radius:9px; background:#fff; text-align:center; font-family:"Noto Sans CJK SC",sans-serif; font-size:.9rem; }
+    .pipeline .node strong { display:block; color:#173f78; }
+    .pipeline .sep { display:flex; align-items:center; color:#6b778b; }
+    .state-row { display:grid; grid-template-columns:150px 1fr; gap:.9rem; margin:.55rem 0; padding:.72rem .85rem; border:1px solid var(--line); border-radius:9px; background:#fff; }
+    .state-row strong { color:#173f78; font-family:"Noto Sans CJK SC",sans-serif; }
+    table { display:block; width:100%; margin:1.35rem 0; overflow-x:auto; border-collapse:collapse; font-size:.92rem; line-height:1.62; }
+    th,td { min-width:145px; padding:.72rem .76rem; border:1px solid var(--line); vertical-align:top; }
+    th { color:#27364f; background:var(--soft); text-align:left; }
+    .small { color:var(--muted); font-size:.9rem; }
+    .checklist { padding-left:0; list-style:none; }
+    .checklist li { position:relative; padding-left:1.7rem; }
+    .checklist li::before { position:absolute; left:.1rem; color:var(--green); content:"✓"; font-family:sans-serif; font-weight:700; }
+    .question { margin:1rem 0; padding:.8rem 1rem; border-left:4px solid #97a7bd; background:#f8fafc; }
+    details { margin:.8rem 0; padding:.75rem .95rem; border:1px solid var(--line); border-radius:9px; background:#fff; }
+    summary { cursor:pointer; color:#253858; font-family:"Noto Sans CJK SC",sans-serif; font-weight:700; }
+    .source-list li { margin:.65rem 0; }
+    #reader-feedback { margin-top:4rem; padding:1.2rem; border:1px dashed #aab7ca; border-radius:12px; background:#fafcff; }
+    #reader-feedback h2 { margin-top:0; }
+    @media (max-width:760px) {
+      body { padding:24px 20px 64px; line-height:1.8; }
+      h1 { font-size:1.72rem; } h2 { margin-top:2.75rem; font-size:1.34rem; }
+      nav#toc ol { columns:1; } .grid-2,.grid-3 { grid-template-columns:1fr; }
+      .pipeline { display:grid; grid-template-columns:1fr; }
+      .pipeline .sep { justify-content:center; transform:rotate(90deg); }
+      .state-row { grid-template-columns:1fr; gap:.22rem; }
+    }
+    @media print {
+      body { max-width:none; padding:0; color:#000; }
+      nav#toc { break-after:page; } h2,h3 { break-after:avoid; }
+      table,.card,.definition,.warning,.example,.source-note { break-inside:avoid; }
+      a { color:#000; text-decoration:none; }
+    }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="eyebrow">软件工程与系统设计 · 第三篇</div>
+  <h1>从需求到设计（三）：事务、Outbox、幂等与最终一致性——一次发布怎样穿过所有故障</h1>
+  <p class="subtitle">以“发布文档并重建投影”为完整案例，解释数据库提交、异步工作、重复消费、旧版本 serving 与故障恢复如何组成一个可靠闭环。</p>
+  <div class="meta">
+    <span class="tag">语料编号 computer-009</span>
+    <span class="tag">预计阅读 45—55 分钟</span>
+    <span class="tag">先修：读过本系列第一篇或具有小型项目经验</span>
+    <span class="tag">状态：待读</span>
+  </div>
+</header>
+<nav id="toc" aria-label="文章目录"><strong>目录</strong><ol>
+<li><a href="#scenario">从一次发布流程开始</a></li>
+<li><a href="#transaction">事务究竟保证什么</a></li>
+<li><a href="#dual-write">双写为什么必然留下故障窗口</a></li>
+<li><a href="#outbox">Transactional Outbox 的完整机制</a></li>
+<li><a href="#idempotency">幂等：为什么重复消费必须安全</a></li>
+<li><a href="#projection">不可变对象、current 与 projection</a></li>
+<li><a href="#failures">逐点故障演练</a></li>
+<li><a href="#concurrency">并发、唯一约束与死锁</a></li>
+<li><a href="#implementation">怎样分阶段实现与验收</a></li>
+<li><a href="#questions">自检题与参考答案</a></li>
+</ol></nav>
+
+<section class="lead" id="scenario">
+  <strong>本篇中心案例：</strong>用户发布一个文档新版本。系统既要更新数据库里的 current，又要异步重建 Bundle、Markdown、搜索索引等 serving projection。我们沿着进程在每一个可能崩溃的位置停下来，看系统是否仍能恢复。
+</section>
+
+<div class="source-note">
+  <strong>与项目材料的关系：</strong>本篇展开 D-03 的通用机制，并借用 D-02 的“双端投影”和 D-06 的“单一活跃版本”作为例子。项目中的具体表名、对象模型和部署方式未在片段中定义，因此文中模式不等于该项目唯一正确实现。
+</div>
+
+<h2>一、为什么“数据库保存成功，再发一个任务”不是可靠流程</h2>
+
+<p>先设想一个最朴素的发布函数：</p>
+<pre><code>publish(document, newContent):
+    newVersion = database.insert_version(newContent)
+    database.set_current(document.id, newVersion.id)
+    queue.send(RebuildProjection(document.id, newVersion.id))
+    return success</code></pre>
+
+<p>看起来顺序合理：先保存，再通知 worker。但计算机系统的每一步之间都可能发生进程崩溃、机器断电、网络超时或依赖服务不可用。</p>
+
+<table>
+<thead><tr><th>崩溃位置</th><th>数据库</th><th>队列</th><th>结果</th></tr></thead>
+<tbody>
+<tr><td>插入版本前</td><td>旧状态</td><td>无任务</td><td>请求失败，通常可重试</td></tr>
+<tr><td>插入版本后、更新 current 前</td><td>可能留下孤立版本</td><td>无任务</td><td>是否可接受取决于事务边界</td></tr>
+<tr><td>更新 current 后、发任务前</td><td>新版本已激活</td><td>无任务</td><td><strong>永久缺少投影重建</strong></td></tr>
+<tr><td>任务发送后、客户端收到成功前</td><td>新版本已激活</td><td>已有任务</td><td>客户端重试可能再次发送</td></tr>
+</tbody>
+</table>
+
+<p>第三行是最危险的缝隙：业务状态已经改变，但系统中没有任何持久记录告诉后台“还欠一次重建”。进程重启后无法仅从当前状态判断任务是否已经发过。</p>
+
+<div class="thesis"><strong>可靠系统的关键不是承诺“程序不会在那一行崩溃”，而是让任意一行崩溃后，仍然能从持久状态判断接下来该做什么。</strong></div>
+
+<section id="transaction">
+<h2>二、事务究竟保证什么：把一组数据库变化变成一个可见决定</h2>
+
+<h3>1. 原子性不是“所有系统一起成功”</h3>
+<p>数据库事务通常保证：事务内的数据库写入要么一起提交，要么一起回滚。以文档发布为例，可以把下面内容放在同一 PostgreSQL 事务中：</p>
+<ul>
+  <li>插入不可变的新 DocumentVersion；</li>
+  <li>更新 Document.current_version_id；</li>
+  <li>记录修订元数据；</li>
+  <li>插入一条 outbox 事件。</li>
+</ul>
+<p>若其中任何一步在提交前失败，事务回滚，外部读者仍看到旧 current。这对应 D-03 的“commit 前失败无 current 变化”。</p>
+
+<p>但数据库事务不能自动把外部消息队列、文件系统、搜索服务和远程 API 都纳入同一个本地原子提交。若你在事务内调用外部服务，会遇到：</p>
+<ul>
+  <li>远程服务成功，但本地事务随后回滚；</li>
+  <li>远程调用超时，实际可能已成功，调用者不知道；</li>
+  <li>长时间等待外部服务，数据库锁被长期持有；</li>
+  <li>不同系统没有共同事务协调协议。</li>
+</ul>
+
+<h3>2. 提交点是一条语义边界</h3>
+<div class="concept-map">
+  <div class="state-row"><strong>COMMIT 之前</strong><span>新版本、current 变化和 outbox 对其他事务不可视或尚未成立；失败可以整体撤销。</span></div>
+  <div class="state-row"><strong>COMMIT 成功</strong><span>系统正式承诺“这个业务变化存在”，同时也承诺“有一条持久化工作意图等待处理”。</span></div>
+  <div class="state-row"><strong>COMMIT 之后</strong><span>后台工作可以延迟、重试甚至换机器执行，但不应丢失。</span></div>
+</div>
+
+<p>因此，事务不负责完成所有派生工作，而负责把“业务事实”和“后续工作意图”一起可靠地写入。</p>
+</section>
+
+<section id="dual-write">
+<h2>三、双写问题：为什么两个看似可靠的写入合在一起就不可靠</h2>
+
+<p>所谓 dual write，不是指在数据库里更新两张表——同一数据库事务可以原子处理多张表。它通常指一次业务操作必须写入两个不能共享原子事务的系统，例如：</p>
+<ul>
+  <li>数据库 + 消息队列；</li>
+  <li>数据库 + 搜索索引；</li>
+  <li>数据库 + 对象存储；</li>
+  <li>数据库 + 外部 SaaS API。</li>
+</ul>
+
+<p>无论顺序怎样安排，都至少有一个故障窗口：</p>
+
+<div class="grid-2">
+  <div class="card"><h3>先写数据库，再发消息</h3><p>数据库成功后消息可能失败，导致下游永远不知道变化。</p></div>
+  <div class="card"><h3>先发消息，再写数据库</h3><p>消息成功后数据库可能失败，下游处理一个并不存在的业务事实。</p></div>
+</div>
+
+<p>“失败就重试”也不够，因为超时意味着结果未知：第一次可能已经成功，只是确认响应丢了。盲目重试会产生重复。这就是为什么 outbox 与幂等必须一起出现。</p>
+</section>
+
+<section id="outbox">
+<h2>四、Transactional Outbox：把外部发送改造成可恢复的内部状态机</h2>
+
+<h3>1. 核心结构</h3>
+<p>在业务数据库中增加一张 outbox 表或等价事件存储。一次发布事务大致做：</p>
+<pre><code>BEGIN;
+  INSERT INTO document_version (...);
+  UPDATE document SET current_version_id = :new_version;
+  INSERT INTO outbox (
+      event_id,
+      event_type,
+      aggregate_id,
+      aggregate_version,
+      payload,
+      status
+  ) VALUES (..., 'DocumentPublished', ..., 'pending');
+COMMIT;</code></pre>
+
+<p>之后由 relay/worker 独立执行：</p>
+<pre><code>读取已提交且 pending 的 outbox
+→ 投递消息或创建 projection job
+→ 记录已投递/已处理状态
+→ 失败则重试</code></pre>
+
+<p>由于业务变化和 outbox 行处于同一事务：</p>
+<ul>
+  <li>事务失败：两者都不存在；</li>
+  <li>事务成功：两者都存在；</li>
+  <li>worker 崩溃：outbox 仍在，其他 worker 可继续；</li>
+  <li>服务重启：扫描 pending/超时任务恢复。</li>
+</ul>
+
+<h3>2. Outbox 解决了什么，没有解决什么</h3>
+<table>
+<thead><tr><th>问题</th><th>Outbox 是否解决</th><th>还需要什么</th></tr></thead>
+<tbody>
+<tr><td>数据库成功但通知永久丢失</td><td>基本解决</td><td>可靠 relay、监控 backlog</td></tr>
+<tr><td>消息重复投递</td><td>不会自动消除</td><td>幂等消费者、去重键</td></tr>
+<tr><td>不同事件顺序</td><td>不会自动保证全部全局顺序</td><td>按 aggregate/version 排序与冲突策略</td></tr>
+<tr><td>下游处理永久失败</td><td>不会自动修复业务错误</td><td>重试预算、死信、人工修复</td></tr>
+<tr><td>所有系统瞬时一致</td><td>不保证</td><td>接受并设计最终一致窗口</td></tr>
+</tbody>
+</table>
+
+<p>AWS 对 Transactional Outbox 的官方说明同样强调：它用于解决数据库写入与事件通知的双写不一致，但消息可能重复，因此消费者仍应设计为幂等。</p>
+
+<h3>3. Relay 如何安全抢任务</h3>
+<p>多个 worker 并行时，需要避免大家长期处理同一行。常见方案包括：</p>
+<ul>
+  <li>事务内用行锁领取一批任务，并使用 <code>SKIP LOCKED</code> 跳过已被其他 worker 领取的行；</li>
+  <li>将状态从 pending 原子更新为 processing，并记录 lease 到期时间；</li>
+  <li>使用数据库变更流/CDC 读取已提交事件；</li>
+  <li>不在“读取后标记”之间留下无保护竞争。</li>
+</ul>
+<p>具体选择依赖数据库和吞吐要求，但必须回答：worker 在处理前、处理中、处理后崩溃，各自怎样恢复。</p>
+</section>
+
+<section id="idempotency">
+<h2>五、幂等：为什么“至少一次”交付要求重复也安全</h2>
+
+<h3>1. 为什么无法简单承诺只执行一次</h3>
+<p>考虑 worker 已经成功创建 projection job，但在把 outbox 标记为 done 前崩溃。恢复后，它看到 outbox 仍是 pending，于是再次处理。系统无法从“没有收到确认”判断第一次究竟失败还是已成功。</p>
+
+<p>实际工程中更稳健的承诺通常是：</p>
+<ul>
+  <li>任务不会静默丢失；</li>
+  <li>任务可能被处理多次；</li>
+  <li>多次处理的可观察结果等同于一次。</li>
+</ul>
+<p>最后一条就是幂等性。</p>
+
+<h3>2. 幂等不是“代码里先查一下”</h3>
+<p>若 projection job 的逻辑唯一键是：</p>
+<pre><code>(document_id, target_version, projection_type)</code></pre>
+<p>则数据库应建立唯一约束。消费者创建任务时使用原子插入/冲突处理：</p>
+<pre><code>INSERT projection_job (...)
+VALUES (...)
+ON CONFLICT (document_id, target_version, projection_type)
+DO NOTHING;</code></pre>
+<p>即使两个 worker 同时处理同一 outbox，数据库也只允许一个逻辑任务存在。应用层的“SELECT 后再 INSERT”无法独自防止并发竞争。</p>
+
+<h3>3. 三层幂等</h3>
+<table>
+<thead><tr><th>层次</th><th>幂等键示例</th><th>保护什么</th></tr></thead>
+<tbody>
+<tr><td>命令层</td><td>client_request_id</td><td>客户端超时重试不重复创建业务版本</td></tr>
+<tr><td>事件消费层</td><td>event_id</td><td>同一 outbox 事件重复交付不重复执行副作用</td></tr>
+<tr><td>投影构建层</td><td>document + version + projection type</td><td>同一版本的同一种派生物只有一个当前构建任务/结果</td></tr>
+</tbody>
+</table>
+
+<div class="warning"><strong>不要把幂等误解为“所有重复请求都返回完全相同的 HTTP 文本”。</strong>更重要的是业务效果不被重复叠加，例如不会多生成一个版本、不会多增加一次修订、不会多发一份发布记录。</div>
+</section>
+
+<section id="projection">
+<h2>六、不可变对象、current 指针与 projection：为什么旧 serving 应继续可读</h2>
+
+<h3>1. 区分源对象与派生对象</h3>
+<p>项目片段提到“不可变对象”“current”“projection job”“旧 serving”。可以用一个通用模型理解：</p>
+
+<div class="concept-map">
+  <div class="state-row"><strong>DocumentVersion</strong><span>不可变的源版本；一旦发布，其内容不原地改写。</span></div>
+  <div class="state-row"><strong>Current Pointer</strong><span>声明哪个源版本是当前业务版本。</span></div>
+  <div class="state-row"><strong>Projection</strong><span>根据某个源版本生成的 Bundle、Markdown、索引或页面数据。</span></div>
+  <div class="state-row"><strong>Serving Pointer</strong><span>声明当前对外提供哪一份已经完成且验证过的投影。</span></div>
+</div>
+
+<p>源版本 current 与 serving projection 不一定必须在同一瞬间切换。假如新版本已经被业务接受，但构建 Markdown 需要十秒，可以有两种策略：</p>
+<ul>
+  <li>强一致发布：所有投影先构建成功，再一次切换业务 current；</li>
+  <li>异步发布：业务 current 先提交，旧 serving 暂时继续提供，完成后再切换 serving pointer。</li>
+</ul>
+<p>D-03 的“旧 serving 继续可读”更接近第二种安全降级：不能因为新投影未完成，就让读者得到 404、空页面或半成品。</p>
+
+<h3>2. 为什么不可变版本有利于恢复</h3>
+<ul>
+  <li>worker 可以随时根据 version id 重新构建，不依赖不断变化的当前内容；</li>
+  <li>失败后知道目标输入究竟是哪一版；</li>
+  <li>回滚可以切回旧指针，而不是试图反向修改一大堆字段；</li>
+  <li>并发发布可通过版本号和前置条件检测冲突。</li>
+</ul>
+<p>代价是需要管理版本生命周期、存储增长、垃圾回收和“哪个指针代表哪种 current”。设计文档必须明确命名，避免 current 同时指源内容、投影和搜索索引的不同状态。</p>
+</section>
+
+<section id="failures">
+<h2>七、逐点故障演练：系统在每个崩溃位置应该留下什么</h2>
+
+<table>
+<thead><tr><th>故障点</th><th>允许留下的持久状态</th><th>恢复动作</th><th>用户可见行为</th></tr></thead>
+<tbody>
+<tr><td>事务开始前</td><td>无新状态</td><td>客户端可安全重试</td><td>仍读旧版本</td></tr>
+<tr><td>事务内任一步失败</td><td>全部回滚</td><td>修复错误或重试</td><td>current 不变化</td></tr>
+<tr><td>COMMIT 成功后 API 进程崩溃</td><td>新版本 + current + outbox</td><td>客户端重试通过 request id 去重；worker 继续</td><td>不会多生成版本</td></tr>
+<tr><td>worker 领取前崩溃</td><td>pending outbox</td><td>其他 worker 扫描</td><td>旧 serving 可读</td></tr>
+<tr><td>worker 构建中崩溃</td><td>processing/lease 或仍 pending</td><td>lease 过期后重试</td><td>旧 serving 可读</td></tr>
+<tr><td>投影已写入，完成标记前崩溃</td><td>可能已有同版本投影</td><td>幂等写入或覆盖同一确定键</td><td>不会出现两份活跃投影</td></tr>
+<tr><td>投影完成，切换 serving 前崩溃</td><td>新投影 ready、旧 serving active</td><td>恢复任务执行原子指针切换</td><td>短暂仍见旧内容</td></tr>
+<tr><td>切换成功，确认响应丢失</td><td>新 serving active</td><td>重复切换必须幂等</td><td>最终看到新内容</td></tr>
+</tbody>
+</table>
+
+<h3>故障注入不应只“杀进程一次”</h3>
+<p>一个可信实验应记录：</p>
+<ul>
+  <li>在哪个精确提交点注入失败；</li>
+  <li>重启后扫描到哪些 outbox/job；</li>
+  <li>重试次数与最终状态；</li>
+  <li>数据库唯一约束是否触发；</li>
+  <li>是否存在孤立 current、重复 projection 或不可读窗口；</li>
+  <li>日志、指标和 trace 是否能解释恢复过程。</li>
+</ul>
+</section>
+
+<section id="concurrency">
+<h2>八、并发、唯一约束与死锁：事务不是自动正确</h2>
+
+<h3>1. 事务内仍会有并发冲突</h3>
+<p>两个事务可以同时尝试发布同一文档，或同时从 A、B 两端修改同一关系。设计必须选择语义：</p>
+<ul>
+  <li>后提交者覆盖前者；</li>
+  <li>检测版本冲突并拒绝；</li>
+  <li>可以自动合并某些字段；</li>
+  <li>命令按文档串行化。</li>
+</ul>
+<p>这不是数据库隔离级别能替你决定的产品语义。数据库提供锁、版本和约束，设计者仍需定义什么算冲突。</p>
+
+<h3>2. 乐观并发控制</h3>
+<p>更新命令可以携带 <code>expected_revision</code>：</p>
+<pre><code>UPDATE document
+SET current_version_id = :new, revision = revision + 1
+WHERE id = :id AND revision = :expected;</code></pre>
+<p>若影响行数为零，说明文档已被其他事务修改，调用者应重新读取或进入冲突处理。HTTP 层可用 ETag/If-Match 表达类似语义。</p>
+
+<h3>3. 死锁与统一锁顺序</h3>
+<p>事务 T1 锁 A 等 B，事务 T2 锁 B 等 A，就形成死锁。PostgreSQL 文档建议所有事务以一致顺序获取同一组对象的锁。对于无向关联，可先 canonicalize 端点，再按稳定顺序锁定两端。</p>
+
+<p>数据库通常能检测死锁并中止一个事务，但“数据库会处理”不等于设计完成。应用需要：</p>
+<ul>
+  <li>尽量减少死锁概率；</li>
+  <li>把被中止事务视为可重试错误；</li>
+  <li>确保重试具有幂等键；</li>
+  <li>监控死锁频率，发现设计退化。</li>
+</ul>
+</section>
+
+<section id="implementation">
+<h2>九、怎样分阶段实现并证明 D-03 通过</h2>
+
+<h3>阶段 A：先固定不变量</h3>
+<ul class="checklist">
+  <li>commit 前失败时 current 不改变；</li>
+  <li>每个已提交、需要派生工作的版本都有至少一条持久工作意图；</li>
+  <li>同一逻辑 projection job 至多一条；</li>
+  <li>未 ready 的新投影不能替换稳定 serving；</li>
+  <li>所有重试不会重复增加业务修订。</li>
+</ul>
+
+<h3>阶段 B：单进程实现事务与 outbox</h3>
+<p>先不接真实消息队列，只让本地 worker 扫描 outbox。验证提交和回滚边界，避免同时调试太多系统。</p>
+
+<h3>阶段 C：实现幂等 worker</h3>
+<p>建立 projection 唯一键、状态机、lease/重试规则和确定性输出路径。对同一 event 连续消费十次，结果仍只产生一个逻辑 projection。</p>
+
+<h3>阶段 D：加入进程崩溃与并发</h3>
+<p>在事务前后、worker 各阶段注入崩溃；启动多个 worker；同时发布同一文档或反向修改 link；检查死锁与重复。</p>
+
+<h3>阶段 E：加入真实外部依赖与监控</h3>
+<p>接真实对象存储、索引或队列，记录：</p>
+<ul>
+  <li>outbox backlog；</li>
+  <li>事件从提交到投影 ready 的延迟；</li>
+  <li>重试和死信数量；</li>
+  <li>幂等冲突次数；</li>
+  <li>旧 serving 持续时间；</li>
+  <li>按 document/version 串联的 trace。</li>
+</ul>
+<p>OpenTelemetry 将 traces、metrics 与 logs 视为主要可观测信号；在这类异步链路中，事件 id、document id、version 和 job id 应能跨服务关联。</p>
+
+<div class="comparison-note"><strong>通过 D-03 的证据不应只有“测试绿了”。</strong>还应保存故障注入矩阵、数据库快照或查询、重复消费记录、恢复延迟，以及设计结论：采用何种事务边界、幂等键和 serving 切换语义。</div>
+</section>
+
+<section id="questions">
+<h2>十、自检题与参考答案</h2>
+<div class="question"><strong>问题 1：</strong>为什么数据库事务不能直接保证消息队列发送成功？</div>
+<details><summary>参考答案</summary><p>本地数据库事务只原子管理其参与的数据库状态。外部队列通常不与其共享同一提交协议；调用可能成功、失败或超时未知，因此会留下双写窗口。</p></details>
+<div class="question"><strong>问题 2：</strong>Outbox 的关键不是“多一张表”，而是什么？</div>
+<details><summary>参考答案</summary><p>把业务变化与后续工作意图放进同一原子提交，使事务成功后一定存在可恢复的待处理记录，事务失败时两者都不存在。</p></details>
+<div class="question"><strong>问题 3：</strong>为什么 outbox 之后仍需要幂等？</div>
+<details><summary>参考答案</summary><p>relay 或 worker 可能在副作用成功、确认状态写回前崩溃，因此恢复后会重复处理。可靠方案通常至少一次交付，消费者必须让重复具有同一业务效果。</p></details>
+<div class="question"><strong>问题 4：</strong>“旧 serving 继续可读”保护什么？</div>
+<details><summary>参考答案</summary><p>保护可用性和原子发布体验：新投影构建失败或延迟时，系统仍提供最后一个完整稳定版本，而不是空白或半成品。</p></details>
+<div class="question"><strong>问题 5：</strong>唯一约束能完全避免死锁吗？</div>
+<details><summary>参考答案</summary><p>不能。唯一约束保护重复记录；死锁来自多个事务以不同顺序等待彼此持有的锁。还要统一锁顺序、缩短事务并正确重试。</p></details>
+<div class="question"><strong>问题 6：</strong>“Exactly once”为什么常被称为一种端到端效果，而不是简单传输属性？</div>
+<details><summary>参考答案</summary><p>消息基础设施即便减少重复，也无法覆盖消费者在副作用完成与确认之间崩溃的所有情况。最终业务只生效一次通常依赖唯一键、幂等写和状态机的共同设计。</p></details>
+
+<h3>本篇结论</h3>
+<p>D-03 要证明的是一条端到端不变量链：提交前没有半状态；提交后工作意图不丢；重复处理不重复产生业务效果；新派生物未完成时旧 serving 仍稳定可读。事务、outbox、幂等和不可变版本不是四个独立名词，而是共同封闭一次异步发布的全部故障窗口。</p>
+
+<h3>参考资料</h3>
+<ul class="source-list small">
+  <li>AWS Prescriptive Guidance, Transactional Outbox Pattern：<a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html">AWS Transactional Outbox 指南</a></li>
+  <li>PostgreSQL Documentation, Transactions、Concurrency Control、Constraints、INSERT ON CONFLICT：<a href="https://www.postgresql.org/docs/current/">PostgreSQL 当前官方文档</a></li>
+  <li>RFC 9110, HTTP Semantics：条件更新与 If-Match。<a href="https://www.rfc-editor.org/rfc/rfc9110">RFC 9110 官方文本</a></li>
+  <li>OpenTelemetry Documentation：traces、metrics、logs 及跨组件关联。<a href="https://opentelemetry.io/docs/">OpenTelemetry 官方文档</a></li>
+</ul>
+</section>
+
+<section id="reader-feedback" data-feedback-status="pending">
+  <h2>读后反馈与修订记录</h2>
+  <article class="feedback-entry">
+    <h3>2026-07-24 · 第 0 轮</h3>
+    <p><strong>原始反馈：</strong>待读，尚未收到正文反馈。</p>
+    <p><strong>问题分类：</strong>待定</p>
+    <p><strong>处理：</strong>作为“从需求到设计”系列的第三篇生成，保持项目内部术语的材料边界，并补充可迁移的软件工程解释。</p>
+    <p><strong>状态：</strong>待处理</p>
+  </article>
+</section>
+</body>
+</html>

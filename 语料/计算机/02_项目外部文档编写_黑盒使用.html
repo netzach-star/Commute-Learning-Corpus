@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-07-18" />
+  <title>现代软件项目入门：如何看懂一个项目，如何写好它的文档</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <meta name="corpus-id" content="computer-002">
+  <meta name="corpus-category" content="计算机">
+  <meta name="corpus-status" content="awaiting_review">
+  <meta name="estimated-reading-time" content="30-40 minutes">
+  <meta name="generated-date" content="2026-07-17">
+  <meta name="revision-date" content="2026-07-18">
+  <meta name="corpus-revision" content="2">
+  <style>
+    :root{--ink:#172033;--muted:#5d687b;--paper:#fbfcff;--panel:#f1f5fb;--line:#d9e1ec;--blue:#2457a7;--teal:#087f78;--amber:#a35f00;--code:#111827;--shadow:0 10px 30px rgba(31,50,81,.08)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:#eef2f7}
+    body{max-width:920px;margin:0 auto;padding:42px 64px 80px;background:var(--paper);color:var(--ink);font:17px/1.78 system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;box-shadow:var(--shadow)}
+    h1,h2,h3{line-height:1.32;scroll-margin-top:1rem;color:#10254a}
+    h1{margin:2.6em 0 .8em;padding-bottom:.35em;border-bottom:2px solid var(--line);font-size:2rem}
+    h2{margin:2.1em 0 .6em;font-size:1.5rem}
+    h3{margin:1.55em 0 .4em;font-size:1.17rem}
+    p{margin:.75em 0}
+    a{color:var(--blue);text-underline-offset:3px}
+    blockquote{margin:1.4em 0;padding:.7em 1.1em;border-left:4px solid var(--blue);background:#edf4ff;color:#243756}
+    code{padding:.12em .32em;border-radius:4px;background:#e9eef5;font: .9em/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,"Noto Sans SC","Microsoft YaHei",monospace}
+    pre{overflow:auto;padding:1.05em 1.2em;border-radius:10px;background:var(--code);color:#e5edf8;line-height:1.55}
+    pre code{padding:0;background:none;color:inherit}
+    table{display:table;width:100%;margin:1.3em 0;border-collapse:collapse;font-size:.94em}
+    th,td{padding:.68em .72em;border:1px solid var(--line);vertical-align:top}
+    th{background:#eaf0f8;text-align:left;color:#183661}
+    tbody tr:nth-child(even){background:#f8fafc}
+    nav#TOC{margin:1.5em 0 2.3em;padding:1.1em 1.4em;border:1px solid var(--line);border-radius:12px;background:#f7f9fc}
+    nav#TOC:before{content:"文章目录";display:block;margin-bottom:.6em;font-weight:700;color:#183661}
+    nav#TOC ul{margin:.25em 0;padding-left:1.35em}
+    nav#TOC a{text-decoration:none}
+    .hero{margin:-.2em 0 1.7em;padding:1.25em 1.4em;border-radius:14px;background:linear-gradient(135deg,#eaf2ff,#eefaf8);border:1px solid #cfdaea}
+    .hero p:last-child{margin-bottom:0}
+    .core-map{margin:1.5em 0 2.2em;padding:1.2em;border:1px solid #cad7e8;border-radius:16px;background:linear-gradient(145deg,#f7faff,#f2faf8)}
+    .core-node{position:relative;padding:1em 1.2em;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 4px 14px rgba(20,40,70,.06)}
+    .core-node h2{margin:.1em 0 .35em;font-size:1.25rem}
+    .core-node p{margin:0;color:#3d4c62}
+    .node-number{position:absolute;right:.75em;top:.55em;display:grid;place-items:center;width:1.7em;height:1.7em;border-radius:50%;background:#e6eefb;color:#1d4f91;font-weight:800}
+    .goal-node{max-width:520px;margin:0 auto;border-top:5px solid var(--blue)}
+    .map-pair{display:grid;grid-template-columns:1fr auto 1fr;gap:.7em;align-items:center}
+    .runtime-node{border-top:5px solid var(--teal)}
+    .change-node{border-top:5px solid var(--amber)}
+    .docs-node{border-top:5px solid #7657a5}
+    .map-connector{text-align:center;color:#52647d;font-size:.92em;font-weight:650}
+    .map-connector.down{padding:.55em 0}
+    .map-connector.across{white-space:nowrap}
+    .reading-tip,.term-box{margin:1.25em 0;padding:.85em 1em;border-radius:10px;background:#fff8e8;border:1px solid #edd59e}
+    .term-box{background:#eef8f6;border-color:#b9ddd6}
+    .reading-tip strong,.term-box strong{color:#173d69}
+    .map-grid{display:grid;grid-template-columns:1fr 1fr;gap:1em;margin:1.5em 0}
+    .map-card{padding:1em 1.15em;border-radius:12px;border:1px solid var(--line);background:#fff;box-shadow:0 4px 14px rgba(20,40,70,.05)}
+    .map-card h3{margin:.1em 0 .55em}
+    .map-card.runtime{border-top:5px solid var(--teal)}
+    .map-card.change{border-top:5px solid var(--amber)}
+    .flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.48em;margin:1.4em 0 .5em;padding:1.1em;border:1px solid var(--line);border-radius:12px;background:#f6fafc}
+    .flow span{padding:.42em .65em;border-radius:8px;background:#dff4ef;border:1px solid #addbd2;font-weight:650}
+    .flow b{color:var(--teal)}
+    .change-flow span{background:#fff0d9;border-color:#ebc98f}
+    .change-flow b{color:var(--amber)}
+    .flow-note{text-align:center;color:var(--muted);font-size:.93em}
+    details{margin:1.2em 0;padding:.8em 1em;border:1px solid var(--line);border-radius:10px;background:#f7f9fc}
+    summary{cursor:pointer;font-weight:700;color:#183661}
+    .task-list-item{list-style:none;margin-left:-1.2em}
+    .task-list-item input{margin-right:.5em}
+    #reader-feedback{margin-top:3.5em;padding:1.2em 1.35em;border:2px dashed #9caabd;border-radius:12px;background:#f8fafc}
+    #reader-feedback h1{margin-top:.3em}
+    .feedback-entry{padding:.3em .8em .6em;border-left:4px solid #8da2be}
+    @media(max-width:720px){body{padding:24px 20px 56px;font-size:16px;box-shadow:none}h1{font-size:1.72rem}.map-grid{grid-template-columns:1fr}.map-pair{grid-template-columns:1fr}.map-connector.across{padding:.2em 0;white-space:normal;font-size:0}.map-connector.across::after{content:"↑ 由下面的变更路线修改";font-size:.92rem}.core-map{padding:.85em}.core-node{padding:.9em 1em}table{display:block;overflow-x:auto;white-space:normal}.flow{align-items:stretch;flex-direction:column;text-align:center}.flow b{transform:rotate(90deg)}pre{margin-left:-6px;margin-right:-6px;font-size:.84em}}
+    @media print{html{background:#fff}body{max-width:none;padding:0;box-shadow:none}a{color:inherit}.hero,.map-card,details,#reader-feedback{break-inside:avoid}nav#TOC{break-after:page}}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">现代软件项目入门：如何看懂一个项目，如何写好它的文档</h1>
+<p class="date">2026-07-18</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#阅读前先看这张图全文只有四个核心概念"
+id="toc-阅读前先看这张图全文只有四个核心概念">阅读前先看这张图：全文只有四个核心概念</a></li>
+<li><a href="#一现代软件项目究竟是什么"
+id="toc-一现代软件项目究竟是什么">一、现代软件项目究竟是什么</a></li>
+<li><a href="#二拿到陌生项目怎样快速熟悉"
+id="toc-二拿到陌生项目怎样快速熟悉">二、拿到陌生项目，怎样快速熟悉</a></li>
+<li><a href="#三一个项目需要哪些文档"
+id="toc-三一个项目需要哪些文档">三、一个项目需要哪些文档</a></li>
+<li><a href="#四合格的文档应该怎样写"
+id="toc-四合格的文档应该怎样写">四、合格的文档应该怎样写</a></li>
+<li><a href="#五把两道题合在一起接手过程就是文档体检"
+id="toc-五把两道题合在一起接手过程就是文档体检">五、把两道题合在一起：接手过程就是文档体检</a></li>
+<li><a href="#六最后压缩以后拿到项目按这张卡行动"
+id="toc-六最后压缩以后拿到项目按这张卡行动">六、最后压缩：以后拿到项目，按这张卡行动</a></li>
+<li><a href="#参考资料" id="toc-参考资料">参考资料</a></li>
+</ul>
+</nav>
+<section class="hero">
+<p><strong>语料编号：</strong> <code>computer-002</code>　
+<strong>领域：</strong> 计算机 / 软件工程　 <strong>版本：</strong> 第 2
+版<br />
+<strong>预计阅读时间：</strong> 30—40 分钟　 <strong>状态：</strong>
+待读后反馈</p>
+<blockquote>
+<p><strong>先修说明：</strong>本文按“计算机工程新手”来写。只假设你能看懂文件夹、函数调用和简单命令；不假设你知道
+Git、构建、测试、CI/CD、部署、架构或运行手册。遇到这些词时，本文会立即解释并给例子。</p>
+</blockquote>
+</section>
+<h1
+id="阅读前先看这张图全文只有四个核心概念">阅读前先看这张图：全文只有四个核心概念</h1>
+<p>上一版最大的问题，是在你还没有地图时就给出大量术语。这一版先把全文压缩成四个概念。读完文章后，你真正需要留下的也是这四个。</p>
+<div class="core-map" role="img"
+aria-label="项目目标决定运行路线；变更路线修改运行路线；文档记录目标，并为运行和变更提供地图">
+<section class="core-node goal-node">
+<span class="node-number">1</span>
+<h2>
+项目目标
+</h2>
+<p>
+这个软件替谁解决什么问题？
+</p>
+</section>
+<div class="map-connector down">
+决定下面的设计 ↓
+</div>
+<div class="map-pair">
+<section class="core-node runtime-node">
+<span class="node-number">2</span>
+<h2>
+运行路线
+</h2>
+<p>
+用户做一件事时，信息怎样进入、处理、保存并返回？
+</p>
+</section>
+<div class="map-connector across">
+← 被修改
+</div>
+<section class="core-node change-node">
+<span class="node-number">3</span>
+<h2>
+变更路线
+</h2>
+<p>
+新需求怎样变成代码，再经过检查，成为真正运行的新版本？
+</p>
+</section>
+</div>
+<div class="map-connector down">
+把前三者变成团队共同记忆 ↓
+</div>
+<section class="core-node docs-node">
+<span class="node-number">4</span>
+<h2>
+项目文档
+</h2>
+<p>
+记录项目为何存在、怎样运行、怎样修改，以及出错时怎么办。
+</p>
+</section>
+</div>
+<p>四者的关系可以用一句话记住：</p>
+<blockquote>
+<p><strong>目标</strong>规定软件应该做什么；<strong>运行路线</strong>说明它现在怎样做；<strong>变更路线</strong>说明团队怎样安全地改变它；<strong>文档</strong>让后来的人不必重新猜前三件事。</p>
+</blockquote>
+<p>本文始终使用同一个例子：一个非常小的“待办清单网站”。用户在网页中输入“周五交作业”，点击添加，任务就会出现在列表中。我们不关心它使用哪种编程语言，只关心一件具体动作怎样完成。</p>
+<aside class="reading-tip">
+<strong>阅读方法：</strong>第一次阅读只抓四个加粗词：目标、运行路线、变更路线、文档。其余英文缩写只当作行业中常见的名字；忘记它们不会妨碍理解主线。
+</aside>
+<h1 id="一现代软件项目究竟是什么">一、现代软件项目究竟是什么</h1>
+<h2 id="从待办清单的一次点击开始">1. 从待办清单的一次点击开始</h2>
+<p>你看到的表面行为非常简单：输入任务，点击“添加”，屏幕出现新任务。但为了完成这一步，项目内部至少要做四件事：</p>
+<ol type="1">
+<li>网页把“周五交作业”发送给程序；</li>
+<li>程序检查内容是否为空、是否过长；</li>
+<li>程序把任务保存下来，使关闭网页后它仍然存在；</li>
+<li>程序告诉网页“保存成功”，网页重新显示列表。</li>
+</ol>
+<p>这就是一条最小的<strong>运行路线</strong>：</p>
+<div class="flow simple-flow" role="img"
+aria-label="添加任务的运行路线">
+<span>用户输入</span><b>→</b><span>程序接收</span><b>→</b><span>检查规则</span><b>→</b><span>保存数据</span><b>→</b><span>显示结果</span>
+</div>
+<p>路线中的每一步可能由不同部分负责。网页负责接收点击，业务代码负责判断“空任务不能保存”，数据库负责长期保存。我们把一个有明确职责的部分叫作<strong>组件</strong>。</p>
+<aside class="term-box">
+<strong>组件是什么？</strong>组件就是“负责一类工作的部分”。它不一定是一个文件，也不一定是独立程序。待办项目中，“网页”“任务规则”“数据保存”都可以视为组件。先记住职责，不必急着记住技术实现。
+</aside>
+<p>组件之间必须传递信息。例如网页把任务文字交给程序，程序把任务交给数据库。两个部分约定怎样交接，这个约定叫作<strong>接口</strong>。</p>
+<aside class="term-box">
+<strong>接口是什么？</strong>接口是两个部分之间的交接规则。饭店菜单也是一种接口：顾客按菜单点菜，不必进入厨房研究厨师怎样做。软件接口同样规定“你可以给我什么，我会返回什么，失败时会怎样告诉你”。
+</aside>
+<p>现在不用区分 HTTP
+接口、函数接口或数据库接口。它们只是交接发生在不同位置。核心始终是：谁把什么交给谁。</p>
+<h2 id="为什么项目不等于源代码">2. 为什么“项目”不等于“源代码”</h2>
+<p>假设你拿到了待办项目的全部代码，但没有其他资料。你可能仍然不知道：</p>
+<ul>
+<li>它是课堂练习，还是已经有真实用户？</li>
+<li>支持哪些电脑和运行环境？</li>
+<li>怎样启动它？</li>
+<li>修改后应该运行哪些检查？</li>
+<li>数据保存在本机还是远程服务器？</li>
+<li>新版本怎样交给用户？</li>
+<li>出现故障时怎样恢复？</li>
+</ul>
+<p>所以，一个可长期维护的软件项目至少包含四类东西：</p>
+<table>
+<thead>
+<tr class="header">
+<th>部分</th>
+<th>它解决的问题</th>
+<th>待办项目中的例子</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>代码</td>
+<td>机器具体执行什么</td>
+<td>检查空任务、保存任务的程序</td>
+</tr>
+<tr class="even">
+<td>数据与配置</td>
+<td>运行时使用什么信息</td>
+<td>已保存任务、数据库地址</td>
+</tr>
+<tr class="odd">
+<td>变更机制</td>
+<td>怎样确认修改是安全的</td>
+<td>测试、代码评审、发布步骤</td>
+</tr>
+<tr class="even">
+<td>文档</td>
+<td>人怎样理解和操作前三者</td>
+<td>启动说明、结构图、故障处理</td>
+</tr>
+</tbody>
+</table>
+<p>这解释了为什么逐行读完代码仍可能不懂项目：你只看了四块中的一块。</p>
+<h2 id="第二条路线软件怎样被改变">3. 第二条路线：软件怎样被改变</h2>
+<p>现在用户提出需求：“给任务增加截止日期。”开发者不能只找到一个文件，写完代码就结束。一次完整改变通常经历：</p>
+<div class="flow simple-flow change-flow" role="img"
+aria-label="增加截止日期的变更路线">
+<span>说明需求</span><b>→</b><span>修改代码</span><b>→</b><span>检查结果</span><b>→</b><span>交给其他人看</span><b>→</b><span>发布新版本</span><b>→</b><span>观察是否正常</span>
+</div>
+<p>这就是<strong>变更路线</strong>。其中有三个常见词需要解释：</p>
+<ul>
+<li><strong>测试</strong>：准备一个输入，运行程序，检查结果是否符合预期。例如输入空任务，预期程序拒绝保存。测试不是证明“绝无错误”，而是把一些重要预期变成可以重复执行的检查。</li>
+<li><strong>构建</strong>：把开发者编辑的源文件整理成可以交付的成品。例如把网页文件打包，或把程序和依赖放进一个可运行的软件包。</li>
+<li><strong>部署</strong>：把已经准备好的成品放到目标环境并启动，使真实用户能够使用。可以把构建理解为“装箱”，部署理解为“把箱子送到商店并上架”。</li>
+</ul>
+<p>很多团队会用自动程序完成“每次修改都运行测试、通过后再准备发布”。这类自动流程经常被称为
+CI/CD。<strong>这个缩写不是本文核心</strong>；你只要知道它在变更路线中负责重复执行检查和交付步骤。</p>
+<h2 id="本节停一下只检查三个问题">本节停一下：只检查三个问题</h2>
+<details>
+<summary>
+<ol type="1">
+<li>用户添加任务时，什么是运行路线？
+</summary>
+<p>
+任务文字从网页进入程序，经过规则检查，被保存，然后结果返回网页。运行路线关注一次真实行为怎样从输入走到输出。
+</p>
+</details></li>
+</ol>
+<details>
+<summary>
+<ol start="2" type="1">
+<li>增加截止日期时，什么是变更路线？
+</summary>
+<p>
+需求被说明后，开发者修改代码，检查结果，接受评审，发布新版本，再观察实际运行。它关注软件怎样被安全改变。
+</p>
+</details></li>
+</ol>
+<details>
+<summary>
+<ol start="3" type="1">
+<li>组件和接口有什么区别？
+</summary>
+<p>
+组件是承担一类工作的部分；接口是两个组件之间怎样交接信息的约定。可以记成“谁负责”与“怎样交接”。
+</p>
+</details></li>
+</ol>
+<h1 id="二拿到陌生项目怎样快速熟悉">二、拿到陌生项目，怎样快速熟悉</h1>
+<p>现在正式回答第一个问题。目标不是尽快看完所有文件，而是尽快回答四句话：</p>
+<pre class="text"><code>这个项目为谁解决什么问题。
+一个核心动作怎样从输入走到结果。
+修改后用什么方法检查它没有被破坏。
+新版本怎样真正交给用户。</code></pre>
+<p>如果你能用证据回答这四句，就已经获得了开始工作的地图。下面按实际顺序展开。</p>
+<h2 id="第一步先问它为什么存在">1. 第一步：先问“它为什么存在”</h2>
+<p>先不要打开最大的代码文件。优先找项目根目录中的
+<code>README</code>。它通常是仓库的首页，用来告诉第一次到访的人：项目是什么、怎样开始、其他文档在哪里。</p>
+<p>对待办项目，你希望在几分钟内写出一张项目卡：</p>
+<pre class="text"><code>项目：团队待办清单
+使用者：一个小组的成员
+核心动作：添加、完成、删除任务
+不负责：日历排程、聊天、文件共享
+数据：任务文字、状态和截止日期
+当前未知：怎样发布；谁负责线上故障</code></pre>
+<p>注意最后一行。快速熟悉项目不要求你立即知道全部答案，而是要求你明确区分：</p>
+<ul>
+<li><strong>已经确认</strong>：README、代码、测试或实际运行能够证明；</li>
+<li><strong>暂时猜测</strong>：从文件名或局部代码推测，还没有验证；</li>
+<li><strong>完全未知</strong>：需要继续查资料或询问维护者。</li>
+</ul>
+<p>例如，看见 <code>database.py</code>
+只能让你猜测项目使用数据库；实际连接地址可能由另一个配置文件决定。不要把有根据的猜测写成事实。</p>
+<h2 id="第二步看目录但只找入口">2. 第二步：看目录，但只找“入口”</h2>
+<p>陌生项目的目录可能有上百个文件。第一次只找六类入口：</p>
+<pre class="text"><code>todo-project/
+├── README.md             # 项目首页：它是什么，怎样开始
+├── src/                  # 主要代码
+│   ├── web.py            # 用户请求从这里进入
+│   ├── task_service.py   # “空任务不能保存”等规则
+│   └── task_store.py     # 任务怎样保存和读取
+├── tests/                # 自动检查预期行为
+├── config.example        # 运行时需要哪些设置
+├── pyproject.toml        # 需要哪些外部软件包，常用命令是什么
+└── docs/                 # 更详细的项目文档</code></pre>
+<p>这只是示例，真实项目可能使用完全不同的名字。你寻找的不是固定文件名，而是六个问题：项目首页在哪、代码在哪、用户动作从哪进入、数据在哪处理、检查在哪、启动需要什么。</p>
+<p>可以用三个命令帮助观察：</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">rg</span> <span class="at">--files</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log <span class="at">--oneline</span> <span class="at">-n</span> 10</span></code></pre></div>
+<ul>
+<li><code>git status</code>
+告诉你当前文件夹是否有尚未保存进版本历史的修改，避免误伤别人的工作；</li>
+<li><code>rg --files</code> 快速列出项目文件，用来观察整体形状；</li>
+<li><code>git log</code>
+显示最近十次修改的简短记录，帮助判断当前活跃部分。</li>
+</ul>
+<aside class="term-box">
+<strong>Git 在这里做什么？</strong>Git
+是保存代码变化历史的工具。它让团队知道“谁基于哪个版本改了什么”，也允许比较修改前后。第一次接手时，不必先学完
+Git；先会确认工作区状态和查看历史即可。
+</aside>
+<p>不要一次打印十层目录。地图一旦比项目本身还难看懂，就失去了作用。</p>
+<h2 id="第三步在安全环境中让项目产生一个结果">3.
+第三步：在安全环境中让项目产生一个结果</h2>
+<p>只阅读会留下许多猜测。下一步是在本地或专门的测试环境中启动项目，并完成一个最小动作，例如打开待办网页，添加一条测试任务。</p>
+<p>每一步记录四项：</p>
+<table>
+<thead>
+<tr class="header">
+<th>要记录的内容</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>做了什么</td>
+<td>运行启动命令，打开本地网页</td>
+</tr>
+<tr class="even">
+<td>预期什么</td>
+<td>网页可以访问，添加按钮可用</td>
+</tr>
+<tr class="odd">
+<td>实际发生什么</td>
+<td>页面打开；添加任务后出现新行</td>
+</tr>
+<tr class="even">
+<td>哪里不同</td>
+<td>文档漏写了需要先建立测试数据库</td>
+</tr>
+</tbody>
+</table>
+<p>启动失败并不意味着“还没有开始理解”。它通常暴露了项目没有写明的前提。例如缺少软件版本、配置值或外部服务。把这些差异补进文档，就是第一个有价值的小贡献。</p>
+<p>不过，不要对陌生项目盲目执行所有命令。看到“清空数据库”“执行迁移”“发布”“创建云资源”等操作时，先确认它指向测试环境，并理解会改变什么。</p>
+<h2 id="第四步追踪一个完整动作">4. 第四步：追踪一个完整动作</h2>
+<p>选择最重要、最容易观察的一个动作。待办项目就选“添加任务”。从用户点击开始，连续问：</p>
+<ol type="1">
+<li>点击后，任务文字交给哪段代码？</li>
+<li>哪段代码检查任务能否保存？</li>
+<li>哪段代码把任务交给数据存储部分？</li>
+<li>保存成功或失败怎样返回网页？</li>
+<li>哪个测试检查这条路线？</li>
+</ol>
+<p>把答案画成最简单的路线：</p>
+<div class="flow vertical-example" role="img"
+aria-label="添加任务的代码追踪路线">
+<span>网页按钮<br><small>收集任务文字</small></span><b>→</b><span>请求入口<br><small>接收并检查格式</small></span><b>→</b><span>任务规则<br><small>判断能否添加</small></span><b>→</b><span>数据存储<br><small>保存任务</small></span><b>→</b><span>网页结果<br><small>显示成功或错误</small></span>
+</div>
+<p>这叫追踪一条“完整路径”。有些工程师称它为纵向切片，但你不需要记这个词。关键是：不要先把
+<code>src/</code>
+中所有文件读完，而要让同一个任务穿过相关部分。这样每个文件都能挂到一个具体行为上。</p>
+<p>阅读每一站时只写五栏：</p>
+<table>
+<thead>
+<tr class="header">
+<th>这一站</th>
+<th>负责什么</th>
+<th>收到什么</th>
+<th>交出什么</th>
+<th>可能怎样失败</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>请求入口</td>
+<td>接收添加请求</td>
+<td>任务文字</td>
+<td>内部任务对象</td>
+<td>格式错误</td>
+</tr>
+<tr class="even">
+<td>任务规则</td>
+<td>判断是否允许</td>
+<td>任务对象</td>
+<td>通过或错误</td>
+<td>内容为空</td>
+</tr>
+<tr class="odd">
+<td>数据存储</td>
+<td>长期保存任务</td>
+<td>合法任务</td>
+<td>新任务编号</td>
+<td>连接失败</td>
+</tr>
+</tbody>
+</table>
+<p>你不需要立即钻进框架内部。若某个库函数只是把信息按约定交给下一站，先记录“它收到什么、返回什么”。只有它真的影响当前行为时再深入。</p>
+<h2 id="第五步同时找测试">5. 第五步：同时找测试</h2>
+<p>假设任务规则中有一句“标题不能为空”。实现代码告诉你程序怎样检查；测试则更直接地告诉你团队认为哪些结果必须保持：</p>
+<pre class="text"><code>输入：标题为“周五交作业”
+期望：保存成功
+
+输入：标题为空
+期望：拒绝保存，并返回“标题不能为空”</code></pre>
+<p>因此，阅读某个重要动作时，同时搜索它的测试。先看测试准备了什么输入、期望什么输出，再回到实现代码，通常比从实现细节猜意图更快。</p>
+<p>如果关键动作没有测试，也是一条重要信息：这部分修改后主要依赖人工检查，风险更高。</p>
+<h2 id="第六步找出代码怎样交给用户">6.
+第六步：找出“代码怎样交给用户”</h2>
+<p>本地运行成功不等于项目已经掌握。你还要知道一次修改怎样离开开发者电脑。</p>
+<p>仍以增加截止日期为例：</p>
+<ol type="1">
+<li>开发者保存代码变化；</li>
+<li>自动测试检查旧功能和新功能；</li>
+<li>另一位开发者查看改动是否合理；</li>
+<li>系统准备一个新版本；</li>
+<li>新版本放到测试或正式环境；</li>
+<li>团队观察添加任务是否仍然成功。</li>
+</ol>
+<p>这些步骤可能写在自动流程配置、发布脚本或文档中。你不需要第一天学会全部工具，只要先画出“谁在什么条件下把哪一个版本送到哪里”。</p>
+<h2 id="第七步做一个很小但完整的修改">7.
+第七步：做一个很小但完整的修改</h2>
+<p>最有效的验证，不是继续读更多文件，而是走完一次小变化。例如：</p>
+<ul>
+<li>修正一条不清楚的错误信息；</li>
+<li>为“空标题”补一个测试；</li>
+<li>修复 README 中已经过期的启动步骤；</li>
+<li>在失败时增加一条不含敏感信息的记录。</li>
+</ul>
+<p>修改要小，但路线要完整：找到位置、修改、运行检查、查看文件差异、经过项目约定的评审流程。你会立刻发现自己是否真正找到了测试入口、代码规范和交付规则。</p>
+<h2 id="首两小时首日和首周分别做到什么">8.
+首两小时、首日和首周分别做到什么</h2>
+<h3 id="首两小时得到轮廓">首两小时：得到轮廓</h3>
+<ul>
+<li>写出项目卡；</li>
+<li>找到 README、主要代码、测试、配置和启动入口；</li>
+<li>在安全环境中尝试最小动作；</li>
+<li>把问题标为已确认、待验证或未知。</li>
+</ul>
+<h3 id="首日看懂一条完整路线">首日：看懂一条完整路线</h3>
+<ul>
+<li>追踪一个核心动作；</li>
+<li>找到它的数据、失败方式和测试；</li>
+<li>画出运行路线；</li>
+<li>找到一次近期修改怎样被检查和发布。</li>
+</ul>
+<h3 id="首周证明自己能安全修改">首周：证明自己能安全修改</h3>
+<ul>
+<li>完成一个低风险的小改动；</li>
+<li>观察一次实际发布，或读最近一次发布记录；</li>
+<li>把已经确认的信息补回共享文档；</li>
+<li>向维护者询问仍然高风险的未知项。</li>
+</ul>
+<h2
+id="本节停一下判断你是否真的熟悉了">本节停一下：判断你是否真的“熟悉了”</h2>
+<details>
+<summary>
+<ol type="1">
+<li>为什么不建议从第一个文件开始逐行读？
+</summary>
+<p>
+因为缺少具体问题时，细节没有位置可挂。先选“添加任务”这类完整动作，相关文件会自然形成一条路线，无关文件可以暂时跳过。
+</p>
+</details></li>
+</ol>
+<details>
+<summary>
+<ol start="2" type="1">
+<li>看见一个文件名后，为什么只能先写“待验证”？
+</summary>
+<p>
+文件名表达作者的组织意图，但不能证明它在当前运行环境中的真实作用。还要结合代码调用、配置、测试或实际运行来确认。
+</p>
+</details></li>
+</ol>
+<details>
+<summary>
+<ol start="3" type="1">
+<li>什么才算完成第一轮熟悉？
+</summary>
+<p>
+你能说明项目目标，追踪一条从输入到结果的运行路线，知道修改后怎样检查，并知道新版本大致怎样交给用户。不是读完全部代码。
+</p>
+</details></li>
+</ol>
+<h1 id="三一个项目需要哪些文档">三、一个项目需要哪些文档</h1>
+<p>现在回答第二个问题的前半部分：合格的项目文档有哪些。</p>
+<p>不要先问“行业标准要求几个文件”，而要先问“哪些人需要完成哪些任务”。文档的价值是减少错误行动，不是让目录看起来专业。</p>
+<h2 id="最先需要的三份核心文档">1. 最先需要的三份核心文档</h2>
+<p>对一个需要别人接手的项目，先保证三类核心资料存在。</p>
+<h3 id="文档一项目首页">文档一：项目首页</h3>
+<p>常见文件名是 <code>README</code>。它回答：</p>
+<ul>
+<li>项目为谁解决什么问题；</li>
+<li>最短的成功示例是什么；</li>
+<li>运行需要什么条件；</li>
+<li>更详细的开发、结构和故障文档在哪里；</li>
+<li>遇到问题向谁求助。</li>
+</ul>
+<p>README 是门厅和路标，不是把所有资料塞进一个文件的大仓库。</p>
+<h3 id="文档二开发指南">文档二：开发指南</h3>
+<p>它面向要修改项目的人，回答：</p>
+<ul>
+<li>怎样建立本地测试环境；</li>
+<li>常用的启动、测试和检查命令是什么；</li>
+<li>怎样增加依赖或改变数据结构；</li>
+<li>一次修改怎样提交给团队检查；</li>
+<li>哪些操作会改数据或接触真实服务。</li>
+</ul>
+<h3 id="文档三项目结构说明">文档三：项目结构说明</h3>
+<p>它回答“主要部分怎样连接”：</p>
+<ul>
+<li>使用者是谁；</li>
+<li>主要组件分别负责什么；</li>
+<li>一个核心动作怎样流过组件；</li>
+<li>数据保存在哪里；</li>
+<li>依赖哪些外部系统；</li>
+<li>哪些限制导致了当前设计。</li>
+</ul>
+<p>这通常叫作<strong>架构文档</strong>。这里的“架构”不用想得神秘：它就是软件的大块职责、连接方式和重要取舍。</p>
+<h2 id="项目变复杂后再增加三类文档">2. 项目变复杂后，再增加三类文档</h2>
+<h3 id="行为与接口说明">行为与接口说明</h3>
+<p>当其他程序或用户依赖稳定行为时，要写清输入、输出、错误和兼容规则。例如添加任务的接口要说明：标题是否必填、最长多少、成功返回什么、失败怎样表示。</p>
+<h3 id="重要决定记录">重要决定记录</h3>
+<p>结构图只能告诉你“现在怎样”，不能说明“为什么这样”。例如项目为什么把任务存进远程数据库，而不是浏览器本地文件？把这类重要决定的背景、选择和代价写下来，叫作<strong>决策记录</strong>，常见英文缩写是
+ADR。</p>
+<p>这个词不是重点。重点是保存不能从当前代码中恢复的“为什么”。</p>
+<h3 id="上线与故障处理指南">上线与故障处理指南</h3>
+<p>如果项目有真实用户，就要记录：怎样发布、怎样确认健康、看到某种错误时先检查什么、怎样回退到旧版本、什么情况必须联系负责人。这类文档常被称为运行手册或
+runbook。</p>
+<h2 id="用读者任务决定是否需要">3. 用读者任务决定是否需要</h2>
+<table>
+<thead>
+<tr class="header">
+<th>谁在读</th>
+<th>他想完成什么</th>
+<th>最需要的文档</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>第一次接触的人</td>
+<td>判断项目是否适合自己</td>
+<td>项目首页</td>
+</tr>
+<tr class="even">
+<td>新开发者</td>
+<td>在本地启动并修改代码</td>
+<td>开发指南</td>
+</tr>
+<tr class="odd">
+<td>维护者</td>
+<td>理解主要部分和数据流动</td>
+<td>项目结构说明</td>
+</tr>
+<tr class="even">
+<td>其他程序的开发者</td>
+<td>正确调用并处理错误</td>
+<td>接口说明</td>
+</tr>
+<tr class="odd">
+<td>后来的设计者</td>
+<td>理解过去为何这样选择</td>
+<td>决策记录</td>
+</tr>
+<tr class="even">
+<td>线上负责人</td>
+<td>发现故障后止损和恢复</td>
+<td>运行手册</td>
+</tr>
+</tbody>
+</table>
+<p>个人一次性脚本不需要六套正式文件；可能一个写得清楚的 README
+就够。真实用户依赖的在线系统则不能只留下启动命令。文档多少由“理解错误的代价”决定。</p>
+<h2 id="教程操作步骤参考资料和解释不要混成一团">4.
+教程、操作步骤、参考资料和解释不要混成一团</h2>
+<p>同一个主题可能有四种写法：</p>
+<table>
+<thead>
+<tr class="header">
+<th>读者此刻的需要</th>
+<th>合适写法</th>
+<th>待办项目示例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>第一次学习</td>
+<td>教程：带着读者成功一次</td>
+<td>十分钟添加第一条任务</td>
+</tr>
+<tr class="even">
+<td>正在完成工作</td>
+<td>操作指南：直达具体目标</td>
+<td>怎样增加一个配置项</td>
+</tr>
+<tr class="odd">
+<td>正在查准确事实</td>
+<td>参考资料：固定结构列事实</td>
+<td>所有配置项与默认值</td>
+</tr>
+<tr class="even">
+<td>想理解原因</td>
+<td>解释：讲背景和取舍</td>
+<td>为什么使用远程数据库</td>
+</tr>
+</tbody>
+</table>
+<p>如果 README
+在三行启动命令中间突然插入十页设计历史，新手会中断操作；熟手查命令也会困难。内容不一定要删除，但应该拆开并互相链接。</p>
+<h2 id="本节停一下选择文档">本节停一下：选择文档</h2>
+<details>
+<summary>
+<ol type="1">
+<li>新成员想在本地运行项目，应该先看什么？
+</summary>
+<p>
+先从 README 获得入口，再进入开发指南完成环境、启动和测试。README
+负责导航，开发指南负责完整操作。
+</p>
+</details></li>
+</ol>
+<details>
+<summary>
+<ol start="2" type="1">
+<li>结构图已经画出数据库，为什么还可能需要决策记录？
+</summary>
+<p>
+结构图只说明当前使用数据库；决策记录说明当时面临什么问题、还考虑过什么方案、选择数据库带来哪些收益和代价。
+</p>
+</details></li>
+</ol>
+<h1 id="四合格的文档应该怎样写">四、合格的文档应该怎样写</h1>
+<p>现在回答第二个问题的后半部分。合格文档不是“内容很多”或“语言正式”，而是目标读者能据此形成正确理解，或安全完成一个动作。</p>
+<h2 id="写之前先回答六个问题">1. 写之前先回答六个问题</h2>
+<p>每篇文档动笔前，先写：</p>
+<pre class="text"><code>读者是谁：第一次接手项目的开发者
+他要完成什么：在本地添加一条测试任务
+他已经知道什么：会使用命令行，不熟悉本项目
+需要什么前提：已安装指定版本的运行环境
+怎样算成功：页面出现刚刚添加的任务
+本文不讲什么：正式环境发布和数据库原理</code></pre>
+<p>这六行相当于作者和读者之间的契约。如果写不出来，正文很容易从安装跳到架构，再跳到历史，最后谁也不知道读完应该得到什么。</p>
+<h2 id="每个操作步骤都写动作结果失败">2.
+每个操作步骤都写“动作—结果—失败”</h2>
+<p>坏写法：</p>
+<pre class="text"><code>配置数据库，然后运行迁移并启动服务。</code></pre>
+<p>读者不知道配置在哪里、命令改变什么、成功长什么样、失败能否重试。</p>
+<p>更好的写法：</p>
+<pre class="text"><code>目的：为本地测试项目准备空数据库。
+前提：确认 DATABASE_URL 指向本机测试库；不要使用正式库地址。
+动作：复制示例配置，并运行初始化命令。
+成功标志：命令返回“schema version 12”，启动后健康页面显示 OK。
+常见失败：若提示连接被拒绝，先确认本地数据库进程已经启动。
+副作用：初始化会建立测试表；如需重来，只删除本地测试库。</code></pre>
+<p>可以记住一个简单模板：</p>
+<blockquote>
+<p><strong>为什么做 → 做之前确认什么 → 具体做什么 → 看见什么算成功 →
+失败怎么办 → 改变了什么。</strong></p>
+</blockquote>
+<p>不危险的简单步骤可以省略部分字段；涉及删除数据、发布、付费服务或权限时，六项都应写清。</p>
+<h2 id="写项目结构时用一个真实动作串起来">3.
+写项目结构时，用一个真实动作串起来</h2>
+<p>坏架构说明常常只有三个方框：“前端—后端—数据库”。它没有说每部分负责什么，也没有说明信息怎样流动。</p>
+<p>待办项目的结构说明可以这样写：</p>
+<pre class="text"><code>目标：让小组成员共同记录和完成任务。
+
+网页组件：收集用户输入并显示任务列表，不决定任务是否合法。
+任务组件：执行“标题不能为空”等规则，不关心网页怎样显示。
+存储组件：保存和读取任务，不决定业务规则。
+
+添加任务路线：
+网页把标题交给任务组件 → 任务组件检查规则
+→ 合法任务交给存储组件 → 保存结果返回网页。
+
+失败示例：
+标题为空时，任务组件直接返回错误，不接触存储组件。
+数据库不可用时，存储组件报告保存失败，网页提示稍后重试。</code></pre>
+<p>这段文字同时回答了职责、接口、正常路线和失败路线。图只是帮助看关系，旁边仍应写清箭头传递什么。</p>
+<h2 id="写重要决定时保留当时的选择题">4.
+写重要决定时，保留当时的选择题</h2>
+<p>一个够用的决定记录只需四块：</p>
+<pre class="text"><code>标题：任务数据改为远程保存
+
+背景：任务目前只存在使用者的浏览器里，换电脑后看不到，
+也无法与组员共享。
+
+决定：由服务端数据库统一保存任务。
+
+后果：成员可以跨设备共享；但项目必须维护数据库，
+离线时不能直接添加任务，还要处理连接失败和数据备份。</code></pre>
+<p>“后果”必须同时写收益和代价。若只写“为了提高可扩展性而采用数据库”，未来读者仍然不知道这个决定解决了哪个具体问题。</p>
+<h2 id="写故障处理时从看见什么开始">5.
+写故障处理时，从“看见什么”开始</h2>
+<p>坏写法：“出现问题时检查日志并联系负责人。”</p>
+<p>更好的故障指南：</p>
+<pre class="text"><code>现象：用户点击添加后持续看到“保存失败”。
+影响：新任务无法创建；已有任务仍可查看。
+
+第一步：打开状态页面，确认数据库连接是否正常。
+第二步：查看最近一次发布是否改变了数据配置。
+第三步：若故障从新版本发布后开始，按回退步骤恢复旧版本。
+
+恢复标准：连续添加三条测试任务都成功，并保持十分钟。
+升级条件：发现已有任务丢失，或十五分钟内仍未恢复。</code></pre>
+<p>人在故障中没有时间阅读背景论文。运行手册应该围绕信号、行动、成功标准和升级条件组织。</p>
+<h2 id="文档怎样避免很快过期">6. 文档怎样避免很快过期</h2>
+<p>文档过期往往不是作者懒，而是代码改变时没有人想起它。解决办法是建立“变化与文档”的连接：</p>
+<table>
+<thead>
+<tr class="header">
+<th>项目发生的变化</th>
+<th>同时检查什么文档</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>改了启动命令</td>
+<td>README、开发指南</td>
+</tr>
+<tr class="even">
+<td>新增配置项</td>
+<td>配置参考、部署说明</td>
+</tr>
+<tr class="odd">
+<td>改了用户可见行为</td>
+<td>使用示例、接口说明、版本说明</td>
+</tr>
+<tr class="even">
+<td>改了组件职责</td>
+<td>结构图、运行路线、决定记录</td>
+</tr>
+<tr class="odd">
+<td>新增故障或告警</td>
+<td>运行手册</td>
+</tr>
+</tbody>
+</table>
+<p>文档最好与代码一起保存修改历史、一起接受评审。有人修改添加任务的接口时，评审清单应提醒他同步更新接口说明和示例。</p>
+<p>“最后更新于某日”只能说明年龄，不能证明正确。更强的证据是：“一位第一次接手的人，按这篇文档在全新测试环境中成功完成过目标任务。”</p>
+<h2 id="一篇文档的六项合格标准">7. 一篇文档的六项合格标准</h2>
+<ol type="1">
+<li><strong>读者明确</strong>：写给谁，默认他知道什么；</li>
+<li><strong>目标明确</strong>：读完要理解什么或完成什么；</li>
+<li><strong>范围明确</strong>：适用什么版本和环境，不讲什么；</li>
+<li><strong>结果可验证</strong>：步骤后面有成功标志；</li>
+<li><strong>风险可见</strong>：危险动作写明副作用、权限和恢复方法；</li>
+<li><strong>有人维护</strong>：项目变化时知道应检查它，读者能够反馈错误。</li>
+</ol>
+<h2 id="本节停一下判断写法">本节停一下：判断写法</h2>
+<details>
+<summary>
+<ol type="1">
+<li>为什么只有命令的操作指南不合格？
+</summary>
+<p>
+读者不知道命令的目的、前置状态、成功信号和失败处理，尤其不能判断是否对错误环境造成了副作用。
+</p>
+</details></li>
+</ol>
+<details>
+<summary>
+<ol start="2" type="1">
+<li>架构文档为什么要包含失败路线？
+</summary>
+<p>
+正常路线只告诉你理想情况。维护项目时更常需要判断某一站失败会怎样传播、数据是否已经改变、用户会看到什么。
+</p>
+</details></li>
+</ol>
+<details>
+<summary>
+<ol start="3" type="1">
+<li>怎样检验文档是否真的可信？
+</summary>
+<p>
+让符合目标读者条件、但没有作者口头帮助的人按文档完成任务；同时把相关文档放进代码变化的评审流程。
+</p>
+</details></li>
+</ol>
+<h1
+id="五把两道题合在一起接手过程就是文档体检">五、把两道题合在一起：接手过程就是文档体检</h1>
+<p>快速熟悉项目和写好文档并不是两项分开的技能。一个新成员接手项目的过程，正好可以检验文档缺什么。</p>
+<p>以待办项目为例：</p>
+<table>
+<thead>
+<tr class="header">
+<th>接手时做的事</th>
+<th>如果受阻，说明缺少什么</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>判断项目为谁解决什么</td>
+<td>README 缺少目标和边界</td>
+</tr>
+<tr class="even">
+<td>在本地完成第一次添加</td>
+<td>入门教程或开发指南过期</td>
+</tr>
+<tr class="odd">
+<td>追踪添加任务路线</td>
+<td>结构说明缺少职责和数据流</td>
+</tr>
+<tr class="even">
+<td>理解为什么使用数据库</td>
+<td>缺少决定记录</td>
+</tr>
+<tr class="odd">
+<td>修改“标题不能为空”</td>
+<td>测试与贡献规则不清楚</td>
+</tr>
+<tr class="even">
+<td>判断怎样发布</td>
+<td>发布说明缺失</td>
+</tr>
+<tr class="odd">
+<td>处理保存失败</td>
+<td>运行手册缺失</td>
+</tr>
+</tbody>
+</table>
+<p>因此，新成员遇到的困难不要只保存在私人笔记中。先验证答案，再补回共享文档。下一位接手者就能从更高的位置开始。</p>
+<p>可以给自己只保留四张临时纸：</p>
+<h3 id="第一张项目卡">第一张：项目卡</h3>
+<p>目标、使用者、核心动作、非目标、主要数据、负责人。</p>
+<h3 id="第二张运行路线">第二张：运行路线</h3>
+<p>一个核心动作经过哪些组件，每站收到什么、交出什么、怎样失败。</p>
+<h3 id="第三张变更路线">第三张：变更路线</h3>
+<p>修改怎样检查、由谁评审、怎样发布、怎样观察和回退。</p>
+<h3 id="第四张未知问题">第四张：未知问题</h3>
+<pre class="text"><code>问题：数据库连接失败时，添加请求会不会自动重试？
+当前判断：没有确认。
+已有证据：代码中看到重试设置，但没找到相关测试。
+错误代价：可能重复添加同一任务。
+下一步：运行失败测试，并询问维护者。</code></pre>
+<p>稳定、反复有用的答案应合并进项目文档；一次性的探索过程不必全部保留。</p>
+<h1
+id="六最后压缩以后拿到项目按这张卡行动">六、最后压缩：以后拿到项目，按这张卡行动</h1>
+<h2 id="看懂项目">看懂项目</h2>
+<pre class="text"><code>1. 目标：它替谁解决什么问题？
+2. 运行：选择一个核心动作，从输入追到结果。
+3. 检查：找到这个动作的测试和失败情况。
+4. 变更：弄清修改怎样评审、发布、观察和回退。
+5. 验证：完成一个小而完整的安全改动。</code></pre>
+<h2 id="检查文档是否完整">检查文档是否完整</h2>
+<pre class="text"><code>所有项目先保证：项目首页 + 开发指南 + 结构说明。
+存在稳定外部行为时：补接口说明。
+存在重要取舍时：补决定记录。
+有真实线上用户时：补发布与故障处理指南。</code></pre>
+<h2 id="写一篇合格文档">写一篇合格文档</h2>
+<pre class="text"><code>先写读者、目标、前提、范围和成功标准。
+操作步骤写清：动作、结果、失败和副作用。
+结构说明写清：职责、交接、正常路线和失败路线。
+项目改变时，让相关文档进入同一次评审。</code></pre>
+<p>回到开头的四概念：目标决定运行路线；变更路线修改运行路线；文档保存前三者。只要这张图还在，你遇到
+Git、数据库、测试、CI/CD、容器等新工具时，就可以先问：“它在运行路线或变更路线中负责哪一步？”工具就不会再以孤立术语出现。</p>
+<h1 id="参考资料">参考资料</h1>
+<ol type="1">
+<li><a href="https://diataxis.fr/">Diátaxis
+官方文档框架</a>——区分教程、操作指南、参考资料和解释，避免一篇文档同时承担互相冲突的读者任务。</li>
+<li><a href="https://c4model.com/">C4 Model
+官方站点</a>——用系统边界、主要运行单元和组件等不同缩放层级表达软件结构；本文只采用“先画高层职责与连接”的思想。</li>
+<li><a
+href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes">GitHub
+Docs：About READMEs</a>——README
+用来说明项目为何有用、可以做什么和怎样使用。</li>
+<li>Michael Nygard, <a
+href="https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions">Documenting
+Architecture Decisions</a>——轻量决定记录的经典来源。</li>
+<li><a href="https://12factor.net/build-release-run">The Twelve-Factor
+App：Build, release,
+run</a>——区分准备成品、成品结合环境配置形成发布、启动运行三个阶段。</li>
+<li><a
+href="https://sre.google/resources/practices-and-processes/incident-management-guide/">Google
+SRE：Incident Management
+Guide</a>——运行故障的准备、响应、恢复和事后学习。</li>
+</ol>
+<section id="reader-feedback" data-feedback-status="pending">
+<h1>
+读后反馈与修订记录
+</h1>
+<article class="feedback-entry">
+<h2>
+2026-07-17 · 第 0 轮（生成记录）
+</h2>
+<p>
+<strong>原始需求：</strong>读者不熟悉现代软件开发；拿到项目不知道如何快速熟悉，也不知道合格文档有哪些、应该怎么写。要求写一篇系统性教学文章，并在对应章节回答这两个问题。
+</p>
+<p>
+<strong>问题分类：</strong>结构 / 先修 / 实践方法 / 文档写作
+</p>
+<p>
+<strong>处理：</strong>第一版以运行回路和变更回路组织文章，分别回答陌生项目接手与文档体系。
+</p>
+<p>
+<strong>状态：</strong>已进入第 1 轮反馈修订
+</p>
+</article>
+<article class="feedback-entry">
+<h2>
+2026-07-18 · 第 1 轮
+</h2>
+<p>
+<strong>原始反馈：</strong>
+</p>
+<ol>
+<li>
+“太难了。你不能假设我计算机水平和我的数学水平一样。在阅读文稿的过程中，由于充斥着大量术语（如果是数学，我可以凭借丰富的经验快速猜出你指的什么），并且缺少例子，文章变得太过抽象而难以阅读，尤其我需要反复向前翻看，十分破坏阅读体验。”
+</li>
+<li>
+“新概念多而缺少关系图。我希望在正式阅读文章之前，就能通过关系图知道有哪些‘核心’概念以及他们之间的逻辑关系（只保留核心的概念，从而快速掌握）。”
+</li>
+</ol>
+<p>
+<strong>问题分类：</strong>难度 / 先修假设 / 术语密度 / 例子 / 结构 /
+阅读导航
+</p>
+<p>
+<strong>处理：</strong>全文改按计算机工程新手基线写作；开头增加只含“目标—运行路线—变更路线—文档”的核心关系图；删除或降级非核心术语；用同一个待办清单项目贯穿所有章节；术语在首次出现位置就地解释；把自检分散到相关章节，避免依赖回翻。
+</p>
+<p>
+<strong>Skill
+更新：</strong>新增“不同领域分别校准先修，不从数学能力推断计算机能力”“概念密集文章必须在正文前提供精简核心关系图，并用贯穿例子承载关系”两条规则。
+</p>
+<p>
+<strong>状态：</strong>已处理，待读者复核
+</p>
+</article>
+</section>
+</body>
+</html>

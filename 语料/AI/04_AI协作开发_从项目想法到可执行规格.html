@@ -1,0 +1,1424 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-id" content="ai-004">
+  <meta name="corpus-category" content="AI">
+  <meta name="corpus-status" content="awaiting_review">
+  <meta name="reading-status" content="未读">
+  <meta name="estimated-reading-time" content="30-35 minutes">
+  <meta name="corpus-integrated-date" content="2026-07-22">
+  <title>让 AI 照着文档做出完整项目：从项目想法到可执行规格</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #d8dee8;
+      --soft: #f6f8fb;
+      --blue: #2155a3;
+      --blue-soft: #edf4ff;
+      --green: #276749;
+      --green-soft: #eef9f1;
+      --orange: #a14c0b;
+      --orange-soft: #fff7e8;
+      --red: #a93226;
+      --red-soft: #fff1f0;
+      --purple: #6941a5;
+      --purple-soft: #f5f0ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 38px 44px 84px;
+      color: var(--ink);
+      background: #fff;
+      font-family: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
+      line-height: 1.84;
+      overflow-wrap: break-word;
+    }
+
+    h1, h2, h3, h4, nav, .sans, .pill, .map-card, .gate-title {
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    h1 {
+      margin: 0 0 1.15rem;
+      color: #111827;
+      font-size: 2.05rem;
+      line-height: 1.35;
+      letter-spacing: -0.025em;
+    }
+
+    h2 {
+      margin-top: 3.15rem;
+      padding-bottom: 0.38rem;
+      border-bottom: 1px solid var(--line);
+      color: #111827;
+      font-size: 1.52rem;
+      line-height: 1.42;
+    }
+
+    h3 {
+      margin-top: 2.15rem;
+      color: #172033;
+      font-size: 1.23rem;
+      line-height: 1.48;
+    }
+
+    h4 {
+      margin-top: 1.7rem;
+      color: #25324a;
+      font-size: 1.08rem;
+    }
+
+    p { margin: 0.86rem 0; }
+    li { margin: 0.38rem 0; }
+    strong { color: #111827; }
+
+    a {
+      color: var(--blue);
+      text-underline-offset: 0.14em;
+    }
+
+    nav#TOC {
+      margin: 1.9rem 0 2.75rem;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--soft);
+    }
+
+    nav#TOC::before {
+      display: block;
+      margin-bottom: 0.48rem;
+      font-weight: 700;
+      content: "主目录";
+    }
+
+    nav#TOC ul {
+      margin: 0.28rem 0;
+      padding-left: 1.35rem;
+    }
+
+    nav#TOC a { text-decoration: none; }
+    nav#TOC a:hover { text-decoration: underline; }
+
+    blockquote {
+      margin: 1.25rem 0;
+      padding: 0.78rem 1.05rem;
+      color: #364152;
+      background: var(--soft);
+      border-left: 4px solid #7aa2e3;
+    }
+
+    blockquote > :first-child { margin-top: 0; }
+    blockquote > :last-child { margin-bottom: 0; }
+
+    table {
+      display: block;
+      width: 100%;
+      margin: 1.35rem 0;
+      overflow-x: auto;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+
+    th, td {
+      min-width: 7.4rem;
+      padding: 0.65rem 0.76rem;
+      border: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--soft);
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      text-align: left;
+    }
+
+    code {
+      padding: 0.12em 0.33em;
+      border-radius: 4px;
+      background: var(--soft);
+      font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Noto Sans Mono CJK SC", monospace;
+      font-size: 0.9em;
+    }
+
+    pre {
+      max-width: 100%;
+      margin: 1.25rem 0;
+      padding: 1rem;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #f8fafc;
+      line-height: 1.63;
+      white-space: pre;
+    }
+
+    pre code {
+      padding: 0;
+      background: transparent;
+      font-size: 0.88rem;
+    }
+
+    .meta, .callout, .good, .warning, .bad, .example, .checkpoint, .definition {
+      margin: 1.25rem 0;
+      padding: 0.82rem 1rem;
+      border: 1px solid var(--line);
+      border-left-width: 4px;
+      border-radius: 8px;
+    }
+
+    .meta, .callout, .definition {
+      border-left-color: #78a2e6;
+      background: var(--blue-soft);
+    }
+
+    .good, .checkpoint {
+      border-left-color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .warning {
+      border-left-color: var(--orange);
+      background: var(--orange-soft);
+    }
+
+    .bad {
+      border-left-color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .example {
+      border-left-color: var(--purple);
+      background: var(--purple-soft);
+    }
+
+    .meta p { margin: 0.34rem 0; }
+
+    .pill {
+      display: inline-block;
+      margin: 0 0.28rem 0.22rem 0;
+      padding: 0.06rem 0.48rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      font-size: 0.84rem;
+    }
+
+    .core-map {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.72rem;
+      margin: 1.4rem 0;
+    }
+
+    .map-card {
+      position: relative;
+      min-height: 9rem;
+      padding: 0.86rem 0.9rem;
+      border: 1px solid #cfd8e6;
+      border-top: 4px solid var(--blue);
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(30, 64, 110, 0.06);
+    }
+
+    .map-card:nth-child(2), .map-card:nth-child(5) { border-top-color: var(--green); }
+    .map-card:nth-child(3), .map-card:nth-child(6) { border-top-color: var(--purple); }
+
+    .map-card .num {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .map-card h3 {
+      margin: 0.18rem 0 0.38rem;
+      font-size: 1.02rem;
+    }
+
+    .map-card p {
+      margin: 0;
+      color: #465268;
+      font-size: 0.9rem;
+      line-height: 1.62;
+    }
+
+    .map-arrow {
+      margin: -0.2rem 0 0.8rem;
+      color: var(--muted);
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", sans-serif;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .flow {
+      margin: 1.3rem 0;
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fbfcfe;
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.85;
+      text-align: center;
+    }
+
+    .gate {
+      margin: 1.45rem 0;
+      padding: 1rem 1.08rem;
+      border: 2px solid #9ab5a2;
+      border-radius: 10px;
+      background: #fbfffc;
+    }
+
+    .gate-title {
+      margin-bottom: 0.3rem;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin: 1.2rem 0;
+    }
+
+    .compare > div {
+      padding: 0.85rem 0.95rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .compare .left { background: var(--red-soft); }
+    .compare .right { background: var(--green-soft); }
+    .compare h4 { margin: 0 0 0.45rem; }
+
+    details {
+      margin: 1.1rem 0;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+    }
+
+    summary {
+      padding: 0.8rem 0.95rem;
+      cursor: pointer;
+      background: var(--soft);
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-weight: 700;
+    }
+
+    details > :not(summary) { margin-left: 1rem; margin-right: 1rem; }
+    details > pre { margin-left: 0.8rem; margin-right: 0.8rem; }
+
+    .small { color: var(--muted); font-size: 0.91rem; }
+
+    hr {
+      margin: 2.7rem 0;
+      border: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    #reader-feedback {
+      margin-top: 4rem;
+      padding-top: 1rem;
+      border-top: 2px solid #111827;
+    }
+
+    @media (max-width: 760px) {
+      html { font-size: 16px; }
+      body { padding: 22px 18px 58px; line-height: 1.78; }
+      h1 { font-size: 1.68rem; }
+      h2 { margin-top: 2.55rem; font-size: 1.36rem; }
+      h3 { font-size: 1.16rem; }
+      nav#TOC { padding: 0.86rem 0.92rem; }
+      .core-map { grid-template-columns: 1fr; }
+      .map-card { min-height: 0; }
+      .compare { grid-template-columns: 1fr; }
+      .flow { text-align: left; }
+      th, td { min-width: 8.2rem; }
+      pre { padding: 0.82rem; }
+    }
+
+    @media print {
+      body { max-width: none; padding: 0; color: #000; }
+      nav#TOC { break-after: page; }
+      h2, h3 { break-after: avoid; }
+      table, blockquote, .callout, .good, .warning, .bad, .example, .checkpoint, .definition, .gate, .map-card { break-inside: avoid; }
+      a { color: #000; text-decoration: none; }
+      details { break-inside: auto; }
+      details > * { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>让 AI 照着文档做出完整项目：从项目想法到可执行规格</h1>
+    <div class="meta">
+      <p><strong>语料编号：</strong>AI 04</p>
+      <p><strong>所属领域：</strong>AI · 人机协作开发</p>
+      <p><strong>预计阅读时间：</strong>30—35 分钟</p>
+      <p><strong>阅读状态：</strong>未读</p>
+      <p><strong>本文任务：</strong>承接“黑盒—灰盒—白盒”，说明项目尚未存在时，应怎样把想法写成 AI 可以实施、检查并交付的项目规格。</p>
+      <p><strong>先修说明：</strong>默认你知道代码、目录、测试和 Git 的基本含义；不默认你熟悉需求工程、架构设计或 AI 编程工作流，相关概念都会在第一次出现时解释。</p>
+    </div>
+  </header>
+
+  <section id="map">
+    <h2>正式阅读前：只记住这六个核心节点</h2>
+
+    <p>上一章讨论的是：面对一个<strong>已经存在</strong>的项目，怎样从黑盒行为进入灰盒流程，再按需要进入局部白盒。现在把时间方向反过来：项目还不存在，你要先规定未来系统应该成为什么样子。</p>
+
+    <div class="core-map" aria-label="AI 项目规格的六个核心节点">
+      <article class="map-card">
+        <div class="num">01 · 为什么做</div>
+        <h3>目标与边界</h3>
+        <p>解决谁的什么问题；第一版做什么，明确不做什么。</p>
+      </article>
+      <article class="map-card">
+        <div class="num">02 · 做成什么</div>
+        <h3>黑盒契约</h3>
+        <p>给定什么输入，用户能观察到什么结果；失败时又会看到什么。</p>
+      </article>
+      <article class="map-card">
+        <div class="num">03 · 大体怎样运转</div>
+        <h3>灰盒蓝图</h3>
+        <p>系统有哪些主要阶段，各阶段传递什么，边界在哪里。</p>
+      </article>
+      <article class="map-card">
+        <div class="num">04 · 哪些不能自由发挥</div>
+        <h3>白盒硬约束</h3>
+        <p>只规定真正不能改变的技术选择、数据规则和安全底线。</p>
+      </article>
+      <article class="map-card">
+        <div class="num">05 · 怎样判对错</div>
+        <h3>验收证据</h3>
+        <p>用例、样例、测试与检查命令，把“感觉完成”变成可判定结果。</p>
+      </article>
+      <article class="map-card">
+        <div class="num">06 · 怎样逐步完成</div>
+        <h3>分阶段交付</h3>
+        <p>先确认规格，再设计、拆任务、实现、验证；每一步都有进入下一步的门槛。</p>
+      </article>
+    </div>
+
+    <div class="map-arrow">阅读方向：目标与边界 → 黑盒契约 → 灰盒蓝图 → 必要的白盒约束 → 验收证据 → 分阶段实施与反馈</div>
+
+    <div class="callout">
+      <strong>全文中心结论：</strong>你需要的不是一篇“足够长的提示词”，而是一份<strong>可执行的项目规格</strong>。它一方面减少 AI 必须猜测的关键决定，另一方面保留不重要的实现自由；最重要的是，它同时写明怎样证明项目已经完成。
+    </div>
+  </section>
+
+  <nav id="TOC" aria-label="文章目录">
+    <ul>
+      <li><a href="#s1">一、它与普通项目文档究竟有什么不同</a></li>
+      <li><a href="#s2">二、贯穿案例：StudyHTML Lite</a></li>
+      <li><a href="#s3">三、先写目标、边界和决定权</a></li>
+      <li><a href="#s4">四、把黑盒需求写成可观察的契约</a></li>
+      <li><a href="#s5">五、用灰盒蓝图规定主路线</a></li>
+      <li><a href="#s6">六、白盒只写真正的硬约束</a></li>
+      <li><a href="#s7">七、验收证据决定“完整”是什么意思</a></li>
+      <li><a href="#s8">八、不要让一篇巨型文档承担所有职责</a></li>
+      <li><a href="#s9">九、AI 应当怎样按阶段执行</a></li>
+      <li><a href="#s10">十、可直接复制的项目构建规格模板</a></li>
+      <li><a href="#s11">十一、常见失败写法与最终检查表</a></li>
+      <li><a href="#s12">十二、自检与结论</a></li>
+      <li><a href="#refs">参考资料</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section id="s1">
+      <h2>一、它与普通项目文档究竟有什么不同</h2>
+
+      <h3>1. 已有项目文档描述现实，构建规格规定未来</h3>
+
+      <p>给一个成熟项目写 README、使用指南或架构说明，基本任务是<strong>描述已经存在的事实</strong>：</p>
+
+      <ul>
+        <li>软件现在有什么功能；</li>
+        <li>安装和启动命令是什么；</li>
+        <li>一次请求现在经过哪些模块；</li>
+        <li>哪些接口和数据结构已经被其他部分依赖。</li>
+      </ul>
+
+      <p>这种文档如果与代码冲突，应当以运行证据和代码为线索修正文档。因为代码所构成的系统已经存在，文档是在画它的地图。</p>
+
+      <p>让 AI 从零构建项目时，时间方向相反。系统还不存在，你写的是<strong>规范性文档</strong>：它不只说“我想要什么”，还规定未来实现必须满足什么、可以自由选择什么，以及怎样证明它满足了要求。此时，文档是代码的上游约束。</p>
+
+      <table>
+        <thead>
+          <tr><th>视角</th><th>理解已有项目时</th><th>让 AI 新建项目时</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>黑盒</td><td>观察系统现在对外提供什么</td><td>规定未来系统必须表现出什么行为</td></tr>
+          <tr><td>灰盒</td><td>恢复项目当前的主要处理阶段</td><td>规定推荐的系统边界、主要阶段和接口</td></tr>
+          <tr><td>白盒</td><td>定位真实文件、函数和状态更新</td><td>只提前固定不能交给 AI 自由选择的实现约束</td></tr>
+          <tr><td>验证</td><td>用测试和运行轨迹确认理解是否正确</td><td>用测试和验收场景确认实现是否符合规格</td></tr>
+        </tbody>
+      </table>
+
+      <h3>2. “让 AI 照着做”不等于“一次生成必然成功”</h3>
+
+      <p>这里必须直接否定一个过强的期待：不存在一篇文档，可以让任意模型在任意规模项目中一次生成全部代码，并且天然保证没有遗漏、没有冲突、能够运行。</p>
+
+      <p>原因不神秘：</p>
+
+      <ol>
+        <li>文档不可能预见所有现实冲突，例如依赖版本、运行环境和第三方接口变化；</li>
+        <li>自然语言仍可能有多种解释；</li>
+        <li>代码是否正确，需要在真实环境里安装、构建、运行和测试；</li>
+        <li>用户往往要看到原型，才能发现自己真正想要什么；</li>
+        <li>如果 AI 没有文件、终端或浏览器工具，再好的文档也不能让它亲自验证结果。</li>
+      </ol>
+
+      <p>因此，“照着文档产出完整项目”的现实含义应当是：</p>
+
+      <blockquote>
+        <p>AI 能够根据规格先提出阻塞问题，再生成设计与任务计划，逐步实现各部分，运行现有验证手段，修正失败，最后清楚报告已验证和未验证的内容。</p>
+      </blockquote>
+
+      <p>文档的价值不是取消迭代，而是让每轮迭代都有稳定的判定依据，避免模型每次都重新猜你的目标。</p>
+
+      <h3>3. 给这种文档一个准确名称</h3>
+
+      <p>本文把它称为<strong>项目构建规格</strong>。你也会看到“项目规格”“实现规格”“spec”或“spec-driven development（规格驱动开发）”等名称。名称不是重点，重点是它同时包含三种性质：</p>
+
+      <ul>
+        <li><strong>约束性：</strong>写清必须满足、禁止发生和允许自由选择的内容；</li>
+        <li><strong>可实施性：</strong>AI 能从中推出结构、任务和修改动作；</li>
+        <li><strong>可验证性：</strong>人和机器都能依据它判断结果是否合格。</li>
+      </ul>
+
+      <div class="bad">
+        <strong>不是项目构建规格：</strong>“做一个简洁、现代、稳定、功能完善的语料转 HTML 工具。”这句话表达了愿望，却没有决定系统边界，也无法判定“现代”和“完善”是否实现。
+      </div>
+    </section>
+
+    <section id="s2">
+      <h2>二、贯穿案例：StudyHTML Lite</h2>
+
+      <p>为了避免后文变成术语清单，全文只使用同一个小项目。</p>
+
+      <div class="example">
+        <h3>项目想法</h3>
+        <p><strong>名称：</strong>StudyHTML Lite</p>
+        <p><strong>一句话目标：</strong>把用户已经写好的 Markdown 学习语料转换成一个可离线打开的 HTML 文件。</p>
+        <p><strong>核心原则：</strong>它只负责呈现，不调用 AI 改写语料内容。</p>
+      </div>
+
+      <p>用户最初可能只会这样告诉 AI：</p>
+
+      <blockquote>
+        <p>帮我做一个把 Markdown 转成好看的 HTML 的小工具，要有预览和下载。</p>
+      </blockquote>
+
+      <p>这已经足够开启讨论，却不够直接进入编码。AI 仍然必须猜：</p>
+
+      <ul>
+        <li>它是网页、桌面应用、命令行工具，还是现有项目的插件？</li>
+        <li>文件是否上传服务器？</li>
+        <li>“好看”指固定模板，还是允许用户自定义？</li>
+        <li>Markdown 中的代码块、表格、公式和危险 HTML 怎样处理？</li>
+        <li>输出是单个独立 HTML，还是 HTML 加资源文件夹？</li>
+        <li>空文件、错误编码、超大文件怎样提示？</li>
+        <li>“完成”只指页面出现，还是还包括测试、文档与构建命令？</li>
+      </ul>
+
+      <p>项目构建规格所做的事情，就是把这些会显著改变实现的分叉逐一关闭；对于不影响目标的小决定，则明确交给 AI。</p>
+
+      <div class="definition">
+        <strong>阻塞问题：</strong>如果不同答案会导致项目边界、数据安全、核心技术路线或验收结果明显不同，那么它必须在编码前解决。例如“文件是否上传云端”就是阻塞问题；按钮圆角是 8px 还是 10px，通常不是。
+      </div>
+    </section>
+
+    <section id="s3">
+      <h2>三、先写目标、边界和决定权</h2>
+
+      <h3>1. 先回答“为什么”，但不要写成宏大口号</h3>
+
+      <p>项目目标最有用的写法包含四个要素：</p>
+
+      <ol>
+        <li><strong>谁：</strong>哪类用户；</li>
+        <li><strong>在什么情境：</strong>他正在完成什么任务；</li>
+        <li><strong>遇到什么困难：</strong>当前成本或风险是什么；</li>
+        <li><strong>希望产生什么变化：</strong>不是功能名，而是任务结果。</li>
+      </ol>
+
+      <div class="compare">
+        <div class="left">
+          <h4>弱目标</h4>
+          <p>开发一个强大的 Markdown 转 HTML 系统，提高学习效率。</p>
+        </div>
+        <div class="right">
+          <h4>可工作的目标</h4>
+          <p>让已经完成学习语料写作的个人用户，不需要手写 HTML 和 CSS，也能在本地把一份 Markdown 转换为可离线保存、阅读和分享的单个 HTML 文件。</p>
+        </div>
+      </div>
+
+      <p>第二种写法能帮助 AI判断：重点是本地、离线、单文件和已有内容的呈现；它不是在线编辑平台，也不是 AI 写作助手。</p>
+
+      <h3>2. 用“第一版不做什么”切断自动膨胀</h3>
+
+      <p>AI 很容易根据相似产品补全“常见功能”。这并不是恶意，而是模型在填补空白。如果你只写“生成 HTML”，它可能顺手增加账号、云同步、模板市场、版本历史或在线协作。于是项目看似更完整，实际却偏离了第一版目标。</p>
+
+      <p>StudyHTML Lite 的第一版边界可以写成：</p>
+
+      <div class="example">
+        <p><strong>本版包含：</strong>选择本地 Markdown 文件、验证输入、生成预览、下载单个 HTML、显示可理解的错误。</p>
+        <p><strong>本版明确不包含：</strong>账号系统、服务器上传、数据库、AI 改写、多人协作、模板市场、版本管理、PDF 导出。</p>
+      </div>
+
+      <p>“不做”不是对未来永久禁止，而是防止本轮交付失去结束位置。</p>
+
+      <h3>3. 把决定分成固定、授权和待确认三类</h3>
+
+      <p>一份对 AI 友好的规格，不是把所有细节都固定。它应当明确<strong>决定权</strong>：</p>
+
+      <table>
+        <thead>
+          <tr><th>类别</th><th>含义</th><th>StudyHTML Lite 示例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>固定决定</strong></td><td>AI 必须遵守，不得自行替换</td><td>文件只在本地处理；不得改写正文；输出必须是单个 HTML</td></tr>
+          <tr><td><strong>授权决定</strong></td><td>AI 可以在约束内自行选择，但应记录选择</td><td>内部函数名、模块文件数量、测试库、按钮的细小视觉参数</td></tr>
+          <tr><td><strong>待确认决定</strong></td><td>当前证据不足，实施前必须暂停提问</td><td>是否支持原始 HTML；数学公式采用何种离线渲染方案</td></tr>
+        </tbody>
+      </table>
+
+      <p>这张表解决了一个常见矛盾：文档太粗，AI 大量猜测；文档太细，又把 AI 降成机械打字员，还可能提前固定错误方案。好的规格固定高风险决定，授权低风险细节，并把真正未知项暴露出来。</p>
+
+      <div class="gate">
+        <div class="gate-title">进入“写详细需求”前的门槛</div>
+        <ul>
+          <li>能够用一段话说清用户、情境、困难和目标结果；</li>
+          <li>第一版包含与不包含的内容没有明显矛盾；</li>
+          <li>所有会改变核心路线的问题，都已决定或明确标成待确认；</li>
+          <li>AI 被授权自行决定的范围已经写出。</li>
+        </ul>
+        <p>达不到这四点，就不应急着列技术栈和文件目录。</p>
+      </div>
+    </section>
+
+    <section id="s4">
+      <h2>四、把黑盒需求写成可观察的契约</h2>
+
+      <h3>1. 一条需求应当像“未来事实”</h3>
+
+      <p>黑盒需求不解释内部怎样实现，只描述在某种条件下，外部能够观察到什么。最实用的句式是：</p>
+
+      <div class="definition">
+        <p><strong>在……条件下，当用户……时，系统必须……；如果……失败，系统必须……。</strong></p>
+      </div>
+
+      <p>例如：</p>
+
+      <div class="compare">
+        <div class="left">
+          <h4>模糊写法</h4>
+          <p>支持 Markdown 导入，错误处理要完善，HTML 要美观且兼容性好。</p>
+        </div>
+        <div class="right">
+          <h4>可验收写法</h4>
+          <p>用户选择 UTF-8 编码的 <code>.md</code> 文件后，系统必须显示文件名并允许生成预览；若文件为空，生成按钮不得产生下载文件，并显示“文件内容为空”的提示。</p>
+        </div>
+      </div>
+
+      <p>后者没有彻底定义所有设计，却已经能够被人操作、被测试检查。</p>
+
+      <h3>2. 给需求编号，建立稳定引用</h3>
+
+      <p>编号不是为了形式主义，而是为了让设计、任务和测试都能指出自己在服务哪一条要求。StudyHTML Lite 可以先写五条核心需求：</p>
+
+      <table>
+        <thead>
+          <tr><th>编号</th><th>级别</th><th>可观察要求</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>REQ-001</td><td>必须</td><td>用户能够选择一个本地 <code>.md</code> 文件；处理期间不得把文件内容发送到网络。</td></tr>
+          <tr><td>REQ-002</td><td>必须</td><td>生成的预览必须保留标题、段落、列表和代码块的内容与层次，不得增删正文语句。</td></tr>
+          <tr><td>REQ-003</td><td>必须</td><td>用户能够下载一个包含正文与样式的单个 <code>.html</code> 文件，并在断网状态下打开阅读。</td></tr>
+          <tr><td>REQ-004</td><td>必须</td><td>空文件或无法读取的文件不得产生伪成功结果；界面必须显示原因，并保留用户重新选择文件的入口。</td></tr>
+          <tr><td>REQ-005</td><td>应该</td><td>手机宽度下正文不产生页面级横向滚动；代码块自身允许横向滚动。</td></tr>
+        </tbody>
+      </table>
+
+      <p>注意这些要求都指向用户或外部系统能观察的结果。至于内部用几个函数、是否使用某个 Markdown 解析库，暂时不写进黑盒需求。</p>
+
+      <h3>3. 用场景把多条需求连成一个完整动作</h3>
+
+      <p>单条需求容易局部正确、整体断裂。一个<strong>用户场景</strong>就是从起点到结果的完整动作。它可以用“前提—动作—结果”写出：</p>
+
+      <div class="example">
+        <p><strong>场景 A：正常生成</strong></p>
+        <p><strong>前提：</strong>用户打开工具，准备了一份包含标题、列表和代码块的 UTF-8 Markdown 文件。</p>
+        <p><strong>动作：</strong>用户选择文件并点击“生成”。</p>
+        <p><strong>结果：</strong>页面显示预览；用户点击“下载”得到单个 HTML；断网打开该 HTML，正文内容与原文件一致，标题和代码块可读。</p>
+      </div>
+
+      <div class="example">
+        <p><strong>场景 B：空文件失败</strong></p>
+        <p><strong>前提：</strong>用户选择一个内容为空的 Markdown 文件。</p>
+        <p><strong>动作：</strong>系统完成读取。</p>
+        <p><strong>结果：</strong>页面显示“文件内容为空”；不展示旧预览为新结果，不创建下载文件。</p>
+      </div>
+
+      <p>这种写法在行为驱动开发中常被整理为 Given—When—Then。你不需要背英文术语，只要记住：<strong>先给条件，再给动作，最后写外部可见结果</strong>。结果尽量不要写成“数据库插入一行”这类内部细节，因为用户真正关心的是界面、文件、消息或其他系统收到的输出。</p>
+
+      <h3>4. 例子比形容词更能传达预期</h3>
+
+      <p>如果格式重要，给一个最小输入和预期输出；如果视觉重要，给参考页面、截图或明确的设计规则；如果错误提示重要，写出消息内容或至少写出必须包含的信息。AI 从例子中识别边界，通常比从“友好”“现代”“专业”等形容词中猜测更稳定。</p>
+
+      <pre><code>输入片段：
+# 马尔可夫链
+
+- 状态空间
+- 转移概率
+
+```python
+P = [[0.8, 0.2], [0.3, 0.7]]
+```
+
+预期：
+1. “马尔可夫链”成为一级标题；
+2. 两项内容成为无序列表；
+3. Python 代码原样保留在独立代码块中；
+4. 不新增总结，不改写术语。</code></pre>
+
+      <div class="gate">
+        <div class="gate-title">进入“设计内部路线”前的门槛</div>
+        <ul>
+          <li>每个核心用户动作至少有一个正常场景；</li>
+          <li>每个高风险失败至少有一个失败场景；</li>
+          <li>“简洁、稳定、完善”一类词已经被例子或判定条件替代；</li>
+          <li>每条必须需求都有稳定编号；</li>
+          <li>不看实现代码，也能判断场景结果是否出现。</li>
+        </ul>
+      </div>
+
+      <details>
+        <summary>本节停一下：你能否判断这句话的问题？</summary>
+        <p><strong>原句：</strong>“系统应采用优秀的解析方案，高质量地处理各种 Markdown。”</p>
+        <p><strong>答案：</strong>它把实现评价和行为要求混在一起。“优秀”“高质量”“各种”都没有边界。应先列出本版支持的结构，例如标题、列表、代码块和表格，再给输入输出样例；解析库的选择可以留到技术设计。</p>
+      </details>
+    </section>
+
+    <section id="s5">
+      <h2>五、用灰盒蓝图规定主路线</h2>
+
+      <h3>1. 灰盒不是函数清单，而是责任与交接</h3>
+
+      <p>黑盒契约说“用户应该得到什么”，却没有说明系统怎样组织。完全不写内部路线，AI 可能生成一个所有逻辑挤在单文件里的项目；过早写到函数级，又会把规格绑在尚未验证的实现上。</p>
+
+      <p>灰盒蓝图停在中间层，只回答：</p>
+
+      <ul>
+        <li>系统边界在哪里；</li>
+        <li>一次请求经过哪些主要阶段；</li>
+        <li>每个阶段接收什么、交出什么；</li>
+        <li>错误从哪里产生，怎样传到用户；</li>
+        <li>哪些信息需要保存，哪些只在本次操作中存在。</li>
+      </ul>
+
+      <p>StudyHTML Lite 的主路线可以写成：</p>
+
+      <div class="flow">
+        本地文件选择<br>
+        → 读取并验证文本<br>
+        → 把 Markdown 转为结构化文档<br>
+        → 套用固定阅读模板生成 HTML<br>
+        → 在页面中预览<br>
+        → 下载单个 HTML 文件
+      </div>
+
+      <p>这里的“结构化文档”不是新功能，而是一种中间数据：例如把“一级标题”“列表项”“代码块”表示成有类型的节点。它让“理解 Markdown”与“决定 HTML 长什么样”分开，日后更换样式时不必重写文件读取逻辑。</p>
+
+      <h3>2. 每个阶段都写输入、输出和失败</h3>
+
+      <table>
+        <thead>
+          <tr><th>阶段</th><th>输入</th><th>成功输出</th><th>失败结果</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>文件读取</td><td>用户选择的本地文件</td><td>文件名与文本</td><td>不可读、编码异常、内容为空</td></tr>
+          <tr><td>输入验证</td><td>文本</td><td>确认可继续处理</td><td>产生带错误码和用户消息的失败结果</td></tr>
+          <tr><td>Markdown 解析</td><td>合法文本</td><td>结构化文档节点</td><td>指出不支持或无法解析的位置</td></tr>
+          <tr><td>HTML 生成</td><td>结构化文档与模板</td><td>完整 HTML 字符串</td><td>不覆盖上一份成功结果，并报告失败</td></tr>
+          <tr><td>预览与下载</td><td>HTML 字符串</td><td>可读预览与文件下载</td><td>显示浏览器限制或生成失败信息</td></tr>
+        </tbody>
+      </table>
+
+      <p>这张表比“创建 parser、renderer、downloadService 三个类”更稳定。类名可以变化，阶段之间的责任和数据交接不应随意混乱。</p>
+
+      <h3>3. 对交接数据写最小契约</h3>
+
+      <p>如果一个阶段的输出会交给另一个阶段，仅写“返回结果”太模糊。可以给出一个小型数据契约：</p>
+
+      <pre><code>成功：
+{
+  "ok": true,
+  "html": "&lt;!doctype html&gt;...",
+  "warnings": []
+}
+
+失败：
+{
+  "ok": false,
+  "errorCode": "EMPTY_INPUT",
+  "message": "文件内容为空"
+}</code></pre>
+
+      <p>它不要求 AI 必须照抄这个 JavaScript 对象，却固定了重要语义：成功和失败不能混在一起；失败有稳定机器码，也有给用户看的消息；成功时才允许进入预览和下载。</p>
+
+      <h3>4. 灰盒蓝图应能追溯到黑盒需求</h3>
+
+      <p>每个主要阶段都应当服务某些需求。例如：</p>
+
+      <table>
+        <thead>
+          <tr><th>阶段</th><th>主要负责的需求</th><th>为什么需要它</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>本地文件读取</td><td>REQ-001</td><td>保证输入来自用户本地，且不必经过服务器</td></tr>
+          <tr><td>解析与生成</td><td>REQ-002、REQ-003</td><td>保留内容层次并生成离线单文件</td></tr>
+          <tr><td>错误结果</td><td>REQ-004</td><td>让失败可见，避免伪成功</td></tr>
+          <tr><td>响应式样式</td><td>REQ-005</td><td>保证手机阅读不出现页面级横向溢出</td></tr>
+        </tbody>
+      </table>
+
+      <p>如果某个模块找不到任何需求来源，可能是过度设计；如果某条需求没有任何阶段负责，说明设计遗漏。</p>
+
+      <div class="gate">
+        <div class="gate-title">进入“固定技术约束”前的门槛</div>
+        <ul>
+          <li>能够从用户动作一路追到最终输出；</li>
+          <li>每个阶段的输入、输出和失败方式都清楚；</li>
+          <li>每条核心需求至少有一个阶段负责；</li>
+          <li>蓝图尚未陷入逐函数伪代码，允许 AI 在阶段内部组织实现。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="s6">
+      <h2>六、白盒只写真正的硬约束</h2>
+
+      <h3>1. 不是越具体越好</h3>
+
+      <p>白盒内容会接近具体技术：语言、框架、存储结构、接口格式、依赖限制、安全规则，甚至某个核心算法。它的成本也最高，因为技术环境一变，白盒细节最容易过时。</p>
+
+      <p>只有满足以下至少一项，才值得提前固定：</p>
+
+      <ul>
+        <li>与现有项目兼容所必需；</li>
+        <li>涉及隐私、安全、数据丢失或不可逆迁移；</li>
+        <li>其他模块将长期依赖这一接口或数据格式；</li>
+        <li>运行环境已经限制可用语言、框架或依赖；</li>
+        <li>某种质量目标必须通过特定结构才能稳定达到；</li>
+        <li>用户已经明确做出不可由 AI 改写的设计决定。</li>
+      </ul>
+
+      <p>StudyHTML Lite 值得固定的白盒约束包括：</p>
+
+      <div class="example">
+        <ul>
+          <li><strong>必须：</strong>文件内容只在浏览器内处理，运行时不得发出网络请求；</li>
+          <li><strong>必须：</strong>正文转换与页面样式分开；不得让样式层改写内容节点；</li>
+          <li><strong>必须：</strong>输出 HTML 自含必要 CSS，不依赖在线字体或 CDN；</li>
+          <li><strong>必须：</strong>失败不得清除上一份仍然有效的输入文件；</li>
+          <li><strong>应该：</strong>核心转换函数在相同输入与模板下产生相同输出，便于测试；</li>
+          <li><strong>可以：</strong>AI 自行选择经过维护、许可证兼容的 Markdown 解析库，并在设计说明中记录理由。</li>
+        </ul>
+      </div>
+
+      <p>不值得在最初规格中固定的细节可能包括：</p>
+
+      <ul>
+        <li>内部函数必须叫 <code>convertMarkdownToHtml</code>；</li>
+        <li>必须分成恰好七个源文件；</li>
+        <li>每个类必须使用某一种设计模式；</li>
+        <li>按钮圆角必须是某个像素值，而视觉上并无严格参考；</li>
+        <li>在尚未比较方案前，强行指定一个自己也不了解的库。</li>
+      </ul>
+
+      <h3>2. 用“必须、应该、可以”表达强度</h3>
+
+      <p>规格中最危险的词是“最好”“尽量”“适当”。它们把责任留给 AI 猜。可以借用工程规范中的三档表达：</p>
+
+      <table>
+        <thead>
+          <tr><th>词</th><th>实际含义</th><th>偏离时怎样处理</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>必须 / 禁止</strong></td><td>缺少它就不合格，或会造成明确风险</td><td>不得自行偏离；发现冲突必须暂停报告</td></tr>
+          <tr><td><strong>应该 / 不建议</strong></td><td>默认遵守，但存在经过说明的例外</td><td>偏离前说明理由、影响和替代方案</td></tr>
+          <tr><td><strong>可以</strong></td><td>属于实现自由，不影响合格判定</td><td>AI 可自行决定并保持一致</td></tr>
+        </tbody>
+      </table>
+
+      <p>重要的是强度与理由一致。不要把个人审美偏好写成“必须”，也不要把隐私底线写成“尽量”。</p>
+
+      <h3>3. 写出贯穿所有路径的不变量</h3>
+
+      <div class="definition">
+        <strong>不变量：</strong>不管用户走正常路径还是失败路径，都必须始终成立的条件。它不是某一步做什么，而是系统任何时刻都不能破坏的底线。
+      </div>
+
+      <p>本例的不变量包括：</p>
+
+      <ul>
+        <li>原始 Markdown 文件永不被修改；</li>
+        <li>在没有成功生成新 HTML 前，不能把旧结果标记成新结果；</li>
+        <li>任何正文内容都不得被发送到网络；</li>
+        <li>下载按钮只指向最近一次成功生成的 HTML；</li>
+        <li>失败消息必须与失败原因对应，不能统一显示“未知错误”。</li>
+      </ul>
+
+      <p>不变量比函数流程更值得写进规格，因为它们横跨多个模块和异常分支，也是 AI 最容易在局部修改时意外破坏的东西。</p>
+
+      <div class="gate">
+        <div class="gate-title">进入“设计验收”前的门槛</div>
+        <ul>
+          <li>每条硬约束都有业务、兼容、安全或质量理由；</li>
+          <li>强制项、推荐项和自由项没有混用；</li>
+          <li>关键隐私、数据和失败底线已写成不变量；</li>
+          <li>没有用大量函数名和文件名假装规格很精确。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="s7">
+      <h2>七、验收证据决定“完整”是什么意思</h2>
+
+      <h3>1. 没有判卷标准，“完成”只是模型的自我评价</h3>
+
+      <p>AI 可能生成代码、看到页面出现，就说“项目已完成”。人类开发者也会犯同样的错误。问题在于，“有代码”“能启动”“核心功能正确”“可以交付”是四个不同层次。</p>
+
+      <p>规格必须提供<strong>判卷标准</strong>：当实际结果出现时，怎样判断它与预期一致。工程里有时称它为 test oracle；你只需记住它就是“正确答案的判定办法”。</p>
+
+      <h3>2. 让需求、场景、测试一一对应</h3>
+
+      <table>
+        <thead>
+          <tr><th>需求</th><th>验证方式</th><th>合格证据</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>REQ-001 本地处理</td><td>自动测试 + 浏览器网络面板人工检查</td><td>读取样例文件成功；生成期间无对外请求</td></tr>
+          <tr><td>REQ-002 内容不改写</td><td>固定输入样例比较</td><td>标题、段落、列表、代码文本与输入逐项一致</td></tr>
+          <tr><td>REQ-003 离线单文件</td><td>构建后人工验收</td><td>只下载一个 HTML；断网后可打开且样式存在</td></tr>
+          <tr><td>REQ-004 失败可见</td><td>空文件与不可读文件测试</td><td>不产生下载物；消息包含具体原因；可重新选择</td></tr>
+          <tr><td>REQ-005 手机可读</td><td>390px 视口检查</td><td>页面无整体横向滚动；代码块可独立滚动</td></tr>
+        </tbody>
+      </table>
+
+      <p>这张映射表还会暴露两种问题：</p>
+
+      <ul>
+        <li>有需求却没有验证办法：要求仍然太模糊，或测试能力尚未准备；</li>
+        <li>有大量测试却找不到需求来源：测试可能在保护偶然实现细节，给后续修改制造阻力。</li>
+      </ul>
+
+      <h3>3. 完整项目至少包含哪些交付物</h3>
+
+      <p>“完整”不等于文件数量多。对于一个可以独立运行的小工具，更可靠的定义是：另一个人拿到仓库后，不依赖作者脑内知识，也能建立环境、运行项目、验证核心行为并理解已知限制。</p>
+
+      <p>StudyHTML Lite 的交付清单可以是：</p>
+
+      <ul>
+        <li>实现核心功能的源代码；</li>
+        <li>依赖声明与锁定文件；</li>
+        <li>可重复的安装、测试、构建和启动命令；</li>
+        <li>覆盖核心正常路径和失败路径的自动测试；</li>
+        <li>用于人工验收的固定 Markdown 样例；</li>
+        <li>README：说明用途、启动、构建、使用和限制；</li>
+        <li>项目构建规格与技术设计，且内容与最终实现一致；</li>
+        <li>不得包含真实密钥、个人文件或调试残留；</li>
+        <li>最终报告：列出已验证、未验证和已知问题。</li>
+      </ul>
+
+      <h3>4. 写出 Definition of Done：完成边界</h3>
+
+      <p><strong>Definition of Done</strong> 可以直译为“完成定义”：只有全部条件满足，本轮才允许称为完成。示例：</p>
+
+      <div class="checkpoint">
+        <ol>
+          <li>从干净环境按 README 安装依赖能够成功；</li>
+          <li><code>npm test</code> 全部通过；</li>
+          <li><code>npm run build</code> 成功且无未解释错误；</li>
+          <li>场景 A 与场景 B 的人工验收通过；</li>
+          <li>390px 移动端检查通过；</li>
+          <li>规格中的所有“必须”要求都有验证记录；</li>
+          <li>未验证项被明确标出，不得用“应该没问题”冒充验证；</li>
+          <li>README、设计说明和实际命令一致。</li>
+        </ol>
+      </div>
+
+      <p>这里的命令只是本例。在真实项目里，应写入仓库真正使用的命令；如果 AI 没有条件执行某项检查，它必须报告“未验证”，而不是把“生成了代码”写成“验证通过”。</p>
+
+      <div class="gate">
+        <div class="gate-title">规格可以交给 AI 实施的门槛</div>
+        <ul>
+          <li>每条“必须”需求都有至少一种可执行或可人工复现的检查；</li>
+          <li>正常路径、失败路径和数据安全底线都有证据来源；</li>
+          <li>已经定义源代码以外的必要交付物；</li>
+          <li>“完成”是一个条件集合，不是 AI 自己决定的一句话。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="s8">
+      <h2>八、不要让一篇巨型文档承担所有职责</h2>
+
+      <h3>1. 小项目可以一篇写完，中型项目应按用途拆开</h3>
+
+      <p>你最初问的是“写一篇什么样的说明文档”。对很小、一次性的小工具，一篇 <code>PROJECT_SPEC.md</code> 的确可以包含目标、需求、设计、任务和验收。但项目变大后，所有内容塞进一篇文档会产生三个问题：</p>
+
+      <ol>
+        <li>产品目标、技术设计和当前任务的变化速度不同，改一处容易让另一处过期；</li>
+        <li>同一条要求在多个段落重复，久而久之互相冲突；</li>
+        <li>AI 每次都加载全部内容，会让真正相关的约束被淹没。</li>
+      </ol>
+
+      <p>更稳妥的文件分工是：</p>
+
+      <table>
+        <thead>
+          <tr><th>文件或载体</th><th>主要回答</th><th>不应拿它代替什么</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>PROJECT_SPEC.md</code></td><td>为什么做、做什么、不做什么、怎样验收</td><td>不负责列出每个函数和当前任务进度</td></tr>
+          <tr><td><code>DESIGN.md</code></td><td>主要组件、流程、数据契约、硬约束与技术决定</td><td>不替代用户需求，也不写成全仓库代码解释</td></tr>
+          <tr><td><code>TASKS.md</code></td><td>这一次按什么顺序实施，哪些已完成、被什么阻塞</td><td>不把暂时任务状态写回长期架构原则</td></tr>
+          <tr><td><code>AGENTS.md</code></td><td>AI 在这个仓库中怎样安装、测试、修改和汇报</td><td>不替代某个功能的产品规格</td></tr>
+          <tr><td><code>tests/</code> 与样例</td><td>哪些行为能够被机器重复验证</td><td>不单独承担“为什么做”的解释</td></tr>
+        </tbody>
+      </table>
+
+      <p>这些名称不是强制标准。重要的是职责分开：<strong>规格决定正确方向，设计决定主要结构，任务决定当前顺序，仓库指令决定 AI 的工作规则，测试提供可执行证据。</strong></p>
+
+      <h3>2. <code>AGENTS.md</code> 为什么不能代替项目规格</h3>
+
+      <p><code>AGENTS.md</code> 一类文件适合放长期、跨任务都成立的操作说明，例如：</p>
+
+      <ul>
+        <li>怎样安装依赖；</li>
+        <li>运行哪些测试与格式化命令；</li>
+        <li>哪些目录可以修改，哪些生成物不得手改；</li>
+        <li>代码风格和提交前检查；</li>
+        <li>遇到冲突、失败或不确定时如何汇报。</li>
+      </ul>
+
+      <p>但“这个版本要增加离线 HTML 导出”是具体项目或功能要求，应放进规格。否则几个月后功能已完成，AI 仍会把一次性目标当成所有任务都必须重复执行的长期规则。</p>
+
+      <h3>3. 只保留一个事实来源</h3>
+
+      <p>同一条决定尽量只在一个地方完整定义，其他文件通过编号引用。例如：</p>
+
+      <pre><code>PROJECT_SPEC.md:
+REQ-003：输出必须是可离线打开的单个 HTML 文件。
+
+DESIGN.md:
+导出模块负责实现 REQ-003；样式写入 HTML 的 &lt;style&gt;，不引用 CDN。
+
+TASKS.md:
+- [ ] T-07 实现 REQ-003 的单文件导出
+- [ ] T-08 为 REQ-003 增加断网验收样例
+
+tests/acceptance/export.spec.ts:
+// Covers: REQ-003</code></pre>
+
+      <p>这样需求改变时，先改规格，再检查设计、任务和测试是否需要同步；无需在五个地方寻找五段略有不同的自然语言。</p>
+    </section>
+
+    <section id="s9">
+      <h2>九、AI 应当怎样按阶段执行</h2>
+
+      <h3>1. 文档写完后，不要直接说“全部做完”</h3>
+
+      <p>即使规格已经充分，也应要求 AI 经过多个检查点。原因不是把小项目官僚化，而是让错误在代价较低的时候暴露：需求误解应在写代码前发现，架构冲突应在铺开文件前发现，运行错误应在交付前发现。</p>
+
+      <table>
+        <thead>
+          <tr><th>阶段</th><th>AI 要做什么</th><th>产出</th><th>进入下一阶段的标准</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0. 澄清</td><td>找冲突、模糊词、隐含假设和缺失边界</td><td>阻塞问题与假设清单</td><td>没有未处理的阻塞问题</td></tr>
+          <tr><td>1. 规格确认</td><td>把讨论整理为目标、需求、场景和验收</td><td><code>PROJECT_SPEC.md</code></td><td>每条必须需求可判定，用户确认方向</td></tr>
+          <tr><td>2. 技术设计</td><td>检查现有环境，设计主要阶段、接口和风险</td><td><code>DESIGN.md</code></td><td>需求都有责任归属，重大选择有理由</td></tr>
+          <tr><td>3. 任务拆分</td><td>按依赖顺序拆成可独立验证的小任务</td><td><code>TASKS.md</code></td><td>每项任务指向需求与验证，不只是文件名</td></tr>
+          <tr><td>4. 第一条纵向切片</td><td>先做一条从输入到输出的最小完整路径</td><td>能运行的骨架</td><td>核心场景端到端跑通，而非只有空目录</td></tr>
+          <tr><td>5. 扩展与异常</td><td>补其余需求、失败路径、边界和文档</td><td>候选完整项目</td><td>自动测试通过，关键人工检查完成</td></tr>
+          <tr><td>6. 最终审计</td><td>逐项对照规格、清理临时内容、报告缺口</td><td>交付报告</td><td>完成定义全部满足，或清楚列出未完成项</td></tr>
+        </tbody>
+      </table>
+
+      <div class="definition">
+        <strong>纵向切片：</strong>先完成一条很薄但从用户输入贯穿到真实输出的路线。例如先支持“一个简单 Markdown 文件 → 页面预览 → 单文件下载”，而不是先把所有界面画完、所有解析类型建完，却没有任何一条路线能运行。
+      </div>
+
+      <h3>2. 让 AI 在开始前先反驳规格</h3>
+
+      <p>你不希望 AI 只顺着你的方案优化，可以在执行协议中明确写：</p>
+
+      <pre><code>在修改代码前：
+1. 检查规格内部是否矛盾；
+2. 列出会显著改变实现的缺失决定；
+3. 区分已确认事实、你的推断和仍待确认的假设；
+4. 若发现更简单方案，说明它能删除哪些复杂度及其代价；
+5. 对阻塞问题暂停实施；对非阻塞细节按授权范围自行决定。</code></pre>
+
+      <p>这里的关键不是要求 AI “挑刺”三个字，而是给出挑刺的对象和停止规则。否则它可能为了显得批判而制造无关异议，或者发现真正冲突后仍继续猜测。</p>
+
+      <h3>3. 跨多轮对话时，把进度留在仓库里</h3>
+
+      <p>不要依赖“模型应该记得上次做到哪里”。每轮结束至少更新：</p>
+
+      <ul>
+        <li>已完成任务及对应需求编号；</li>
+        <li>实际运行过的命令与结果；</li>
+        <li>新增决定及其理由；</li>
+        <li>当前阻塞和下一步；</li>
+        <li>规格是否因用户反馈发生变化。</li>
+      </ul>
+
+      <p>下一轮 AI 先读规格、设计、任务状态和仓库指令，再检查当前代码。这比把旧聊天全文重新塞进上下文更可靠，因为仓库中的文件是可检查、可版本化的当前事实。</p>
+
+      <h3>4. 规格不是永远冻结的，但修改必须显式</h3>
+
+      <p>做出原型后，你可能发现需求本身不合理。此时不是强迫代码服从旧文档，也不是让 AI 悄悄偏离，而是：</p>
+
+      <div class="flow">
+        发现现实冲突<br>
+        → 说明原规格哪里失效<br>
+        → 用户确认新决定<br>
+        → 更新规格与变更记录<br>
+        → 同步设计、任务和测试<br>
+        → 再修改实现
+      </div>
+
+      <p>规格的权威性来自“当前实现应当能追溯到当前规格”，而不是“初稿永远不许改变”。</p>
+    </section>
+
+    <section id="s10">
+      <h2>十、可直接复制的项目构建规格模板</h2>
+
+      <p>下面是一份适合个人小工具或单一功能的模板。它故意没有要求你预先规定每个函数。方括号中的内容需要替换；不适用的章节可以明确写“不适用”，不要留出让 AI 猜测的空白。</p>
+
+      <details open>
+        <summary>展开：PROJECT_SPEC.md 最小完整模板</summary>
+        <pre><code># [项目名称] 项目构建规格
+
+状态：[草案 / 已确认 / 实施中 / 已验收]
+版本：[v0.1]
+最后更新：[日期]
+
+## 0. AI 执行协议
+
+- 编码前先检查矛盾、阻塞问题和隐含假设。
+- 不得自行改写“必须”要求；发现冲突时暂停并报告。
+- 对“可以自行决定”的事项，选择最简单且可维护的方案，并记录选择。
+- 按“规格确认 → 设计 → 任务 → 实现 → 验证 → 最终审计”推进。
+- 只有实际运行过的检查才能标记为通过；无法运行的项目写为“未验证”。
+- 不修改与当前任务无关的用户文件。
+
+## 1. 问题与目标
+
+### 1.1 用户
+[谁会使用]
+
+### 1.2 使用情境
+[他在什么任务中使用]
+
+### 1.3 当前困难
+[现在为什么费时、易错或不可完成]
+
+### 1.4 目标结果
+[项目交付后，用户的任务发生什么可观察变化]
+
+## 2. 第一版边界
+
+### 2.1 本版包含
+- [功能或能力]
+
+### 2.2 本版明确不包含
+- [非目标；不是“以后永远不做”]
+
+## 3. 决定权
+
+### 3.1 固定决定：AI 不得改变
+- [隐私、兼容、数据、安全、接口等]
+
+### 3.2 授权决定：AI 可自行选择并记录理由
+- [低风险技术或视觉细节]
+
+### 3.3 待确认决定：实施前必须提问
+- [当前会改变核心路线的问题]
+
+## 4. 核心用户场景
+
+### SCN-001 [场景名]
+- 前提：[初始状态]
+- 动作：[用户做什么]
+- 预期结果：[外部可见结果]
+- 失败结果：[失败时必须看到什么，哪些状态不得被破坏]
+
+## 5. 黑盒需求
+
+- REQ-001 [必须] 在……条件下，当……时，系统必须……
+- REQ-002 [必须] 系统禁止……
+- REQ-003 [应该] 系统应该……；若偏离，必须说明理由。
+- REQ-004 [可以] 实现可以选择……
+
+## 6. 输入、输出与样例
+
+### 6.1 输入
+- 格式：
+- 大小或数量边界：
+- 合法样例：
+- 非法样例：
+
+### 6.2 输出
+- 格式：
+- 必须保留的内容：
+- 可变化的内容：
+- 预期样例：
+
+## 7. 灰盒蓝图
+
+### 7.1 系统边界
+[哪些在系统内，哪些外部依赖不归本项目负责]
+
+### 7.2 主处理路线
+[输入] → [阶段 A] → [阶段 B] → [输出]
+
+### 7.3 阶段交接
+| 阶段 | 输入 | 成功输出 | 失败输出 | 对应需求 |
+|---|---|---|---|---|
+| A | ... | ... | ... | REQ-... |
+
+### 7.4 状态与副作用
+- 需要保存什么：
+- 何时创建、更新、删除：
+- 会写文件、发请求或改变外部状态的步骤：
+
+## 8. 白盒硬约束
+
+### 8.1 必须 / 禁止
+- [真正不可自由选择的技术与安全规则]
+
+### 8.2 应该
+- [默认方案及允许偏离的条件]
+
+### 8.3 不变量
+- 无论成功或失败，[某条件] 始终成立。
+
+### 8.4 外部接口或数据契约
+[只有其他模块会依赖时才详细固定]
+
+## 9. 失败、安全与恢复
+
+- 预期失败类型：
+- 给用户的消息：
+- 是否允许重试：
+- 失败后必须保持的状态：
+- 隐私和敏感数据规则：
+- 删除或覆盖前的保护：
+
+## 10. 验收映射
+
+| 需求 | 自动检查 | 人工检查 | 合格证据 |
+|---|---|---|---|
+| REQ-001 | [测试名] | [操作步骤] | [明确结果] |
+
+## 11. 项目交付物
+
+- 源代码
+- 依赖与环境声明
+- 自动测试与固定样例
+- 安装、测试、构建、启动命令
+- README 与设计说明
+- 必要配置示例，不含真实密钥
+- 已知限制与最终验证报告
+
+## 12. 实施阶段与门槛
+
+1. 规格确认：[进入下一阶段的条件]
+2. 技术设计：[进入下一阶段的条件]
+3. 第一条纵向切片：[端到端可运行的最小场景]
+4. 完整实现：[其余需求和失败路径]
+5. 最终审计：[逐条对照完成定义]
+
+## 13. 完成定义
+
+- [ ] 干净环境能够安装
+- [ ] 自动测试全部通过
+- [ ] 构建与启动命令成功
+- [ ] 所有“必须”需求有通过证据
+- [ ] 关键人工场景已复现
+- [ ] 文档与实际实现一致
+- [ ] 未验证项和已知问题已列出
+- [ ] 没有密钥、个人数据和临时调试内容
+
+## 14. 变更记录
+
+- [日期] [修改了什么] [为什么] [影响哪些需求、设计和测试]</code></pre>
+      </details>
+
+      <h3>怎样把模板用得不官僚</h3>
+
+      <p>对于两三天能完成的小工具，可以把第 7—13 节压缩成几张表；对于已经嵌入主项目的插件，则应把长期仓库规则放进 <code>AGENTS.md</code>，把功能规格与技术设计拆开。判断是否需要拆文档，只问两个问题：</p>
+
+      <ol>
+        <li>这部分内容的变化速度是否与其他部分明显不同？</li>
+        <li>AI 执行某个具体任务时，是否需要加载这部分全部内容？</li>
+      </ol>
+
+      <p>如果两个答案都是“否”，继续放在一篇文档里就够了。不要为了模仿大型团队而制造空文件。</p>
+    </section>
+
+    <section id="s11">
+      <h2>十一、常见失败写法与最终检查表</h2>
+
+      <h3>1. 只有功能列表，没有完整场景</h3>
+      <p>“上传、预览、导出、删除”四个词没有说明它们怎样连接，也没有说明失败后保留什么。改为至少写一条从起点到结果的正常路径，再为高风险位置写失败路径。</p>
+
+      <h3>2. 把技术栈当成需求</h3>
+      <p>“React + FastAPI + PostgreSQL”只是实现选择，不能说明用户为什么需要项目、系统怎样才算正确。先写行为和边界，再判断技术选择是否真的被环境或规模要求固定。</p>
+
+      <h3>3. 用形容词代替标准</h3>
+      <p>“高性能、健壮、优雅、现代、用户友好”都需要继续追问。性能应说明参考环境、输入规模和测量方式；友好应给出关键交互或错误消息；视觉应给参考样例与允许变化范围。</p>
+
+      <h3>4. 只写成功路径</h3>
+      <p>文件为空、网络中断、权限不足、外部接口超时、数据库迁移失败时会发生什么，往往比正常路径更决定项目是否可靠。至少覆盖会造成数据丢失、隐私泄露和伪成功的失败。</p>
+
+      <h3>5. 提前规定全部白盒细节</h3>
+      <p>逐函数伪代码会让 AI 忠实实现一个未经验证的方案。规格应固定外部行为、主要边界和高风险约束，把可逆的低层选择留给设计阶段。</p>
+
+      <h3>6. 所有资料全文同时塞给模型</h3>
+      <p>上下文越长不等于执行越稳定。长期规则、当前规格、技术设计和任务状态应当分工；执行某项任务时加载相关部分，并用需求编号保持跨文件联系。</p>
+
+      <h3>7. 规格改了，测试和文档没有改</h3>
+      <p>结果会出现三个“真相”：用户口头想法、旧规格、当前代码。每次需求变化都应显式更新规格，再检查设计、任务和测试的影响。</p>
+
+      <h3>8. 把“AI 说完成”当成完成</h3>
+      <p>最终报告必须区分：</p>
+
+      <ul>
+        <li><strong>已实现且已验证：</strong>有运行命令或人工复现记录；</li>
+        <li><strong>已实现但未验证：</strong>代码存在，但环境不允许检查；</li>
+        <li><strong>未实现：</strong>尚未满足规格；</li>
+        <li><strong>偏离规格：</strong>说明原因、影响和是否获得用户确认。</li>
+      </ul>
+
+      <h3>一份好规格的八个特点</h3>
+
+      <table>
+        <thead>
+          <tr><th>特点</th><th>检查问题</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>有边界</td><td>第一版明确不做什么吗？</td></tr>
+          <tr><td>可观察</td><td>不看内部实现，能判断用户是否得到结果吗？</td></tr>
+          <tr><td>分层</td><td>目标、黑盒行为、灰盒路线和白盒约束是否没有混成一团？</td></tr>
+          <tr><td>决定权明确</td><td>AI 知道哪些必须遵守、哪些可以选择、哪些需要提问吗？</td></tr>
+          <tr><td>有例子</td><td>关键输入、输出、失败和视觉预期是否有具体样例？</td></tr>
+          <tr><td>可追溯</td><td>设计、任务和测试能指回需求编号吗？</td></tr>
+          <tr><td>可验证</td><td>每个“必须”是否都有检查办法和通过证据？</td></tr>
+          <tr><td>可演化</td><td>修改规格时，是否能看出受影响的设计、任务与测试？</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>最短审稿法：</strong>逐段问三句话——“这段做出了什么决定？”“AI 能据此采取什么动作？”“人怎样验证动作正确？”如果三问都答不出，这段大概率只是背景或修辞，应删减、移动或改写。
+      </div>
+    </section>
+
+    <section id="s12">
+      <h2>十二、自检与结论</h2>
+
+      <details>
+        <summary>自检 1：为什么不能只给 AI 一份传统 README？</summary>
+        <p>README 通常面向已经存在的项目，主要说明用途、安装和使用。它很少完整规定第一版边界、待确认问题、内部主路线、硬约束、任务顺序和完成证据。AI 可以从 README 猜出项目轮廓，却无法据此可靠判断所有实现选择与验收结果。</p>
+      </details>
+
+      <details>
+        <summary>自检 2：黑盒规格写得越详细，是否越好？</summary>
+        <p>不是。应详细到能够判定行为是否正确，但不应混入无关的内部实现。例如“断网仍能打开单个 HTML”是可验收要求；“必须使用某函数拼接 style 标签”是实现细节，除非存在特殊兼容理由。</p>
+      </details>
+
+      <details>
+        <summary>自检 3：什么时候必须写白盒约束？</summary>
+        <p>当选择与兼容、安全、隐私、不可逆数据、外部接口、固定运行环境或明确质量底线有关时。可逆且低风险的函数组织、命名和局部算法，通常留给设计与实现阶段。</p>
+      </details>
+
+      <details>
+        <summary>自检 4：为什么测试不能等代码完成后再随便补？</summary>
+        <p>因为验收标准决定“什么叫正确”。如果先生成大量代码，再临时发明测试，测试容易顺着当前实现写，只证明“代码和自己一致”，而不是证明它满足用户需求。至少核心验收场景应在实施前确定。</p>
+      </details>
+
+      <details>
+        <summary>自检 5：规格发现错误后，是坚持规格还是直接改代码？</summary>
+        <p>都不是。先显式说明规格为什么失效，确认新决定并更新规格，再同步设计、任务和测试，最后修改代码。这样当前文档与当前实现仍然对应。</p>
+      </details>
+
+      <h3>最终压缩</h3>
+
+      <p>已有项目的文档主要是在描述现实；让 AI 新建项目的文档是在规定未来。因此，你真正要写的是：</p>
+
+      <div class="flow">
+        目标与非目标<br>
+        → 可观察的黑盒需求与失败场景<br>
+        → 主要阶段、数据交接与系统边界<br>
+        → 少量不可违反的白盒约束<br>
+        → 需求对应的测试、样例与完成定义<br>
+        → 带检查点的实施流程与最终报告
+      </div>
+
+      <p>它最重要的特点不是“足够详细”，而是<strong>关键决定不含糊、非关键细节不乱管、每项要求都能落到行动、每项行动都有办法验收</strong>。</p>
+
+      <p>对你的实际项目，更适合的做法也不是把所有内容继续堆进一篇越来越长的需求报告。可以把“产品与功能规格”“主系统中的技术设计”“AI 的长期工作规则”“当前任务清单”“可执行验收”分开维护，再用需求编号连接。这样 AI 每次拿到的是当前任务真正需要的上下文，同时仍能追溯到你最初想解决的问题。</p>
+
+      <div class="good">
+        <strong>一句话记忆：</strong>给 AI 写项目文档，不是在教它逐字敲代码，而是在给它一张带边界的施工图、一套明确的决定权和一份不能自评的验收卷。
+      </div>
+    </section>
+  </main>
+
+  <section id="refs">
+    <h2>参考资料</h2>
+    <ul>
+      <li>本项目计算机语料 03《项目内部理解：黑盒、灰盒、白盒》：本文直接承接其中“外部行为—主要阶段—局部实现—运行证据”的理解层次，并把时间方向从理解已有项目反转为规定未来项目。</li>
+      <li><a href="https://github.com/github/spec-kit">GitHub Spec Kit</a>：其官方流程把“说明要做什么与为什么”同技术计划、任务拆分、实施和一致性检查分开，说明规格驱动开发并不是把所有内容塞进一条提示词。</li>
+      <li><a href="https://agents.md/">AGENTS.md</a>：把面向编码代理的安装、测试和仓库约定放在可预测位置；本文据此区分“AI 的长期工作规则”与“一次项目或功能的规格”。</li>
+      <li><a href="https://cucumber.io/docs/gherkin/reference/">Cucumber Gherkin Reference</a>：其 Given—When—Then 结构和对可观察结果的强调，为本文的“前提—动作—结果”验收场景提供了参考。</li>
+      <li><a href="https://datatracker.ietf.org/doc/html/rfc2119">RFC 2119</a> 与 <a href="https://datatracker.ietf.org/doc/html/rfc8174">RFC 8174</a>：规定 MUST、SHOULD、MAY 等要求强度的含义；本文将其思想转换为中文的“必须、应该、可以”。</li>
+    </ul>
+    <p class="small">外部资料核验日期：2026-07-22。本文不要求使用某个特定规格工具；引用这些资料是为了说明分层、可观察验收、要求强度和仓库指令分工的通用原则。</p>
+  </section>
+
+  <section id="reader-feedback" data-feedback-status="pending">
+    <h2>读后反馈与修订记录</h2>
+    <article class="feedback-entry">
+      <h3>2026-07-22 · 第 0 轮</h3>
+      <p><strong>原始反馈：</strong>尚未收到。</p>
+      <p><strong>问题分类：</strong>待阅读。</p>
+      <p><strong>处理：</strong>本文已生成，等待读者对难度、黑盒—灰盒—白盒承接是否自然、StudyHTML Lite 案例是否足够具体、模板是否真正可复用等方面给出反馈。</p>
+      <p><strong>状态：</strong>待处理。</p>
+    </article>
+  </section>
+</body>
+</html>

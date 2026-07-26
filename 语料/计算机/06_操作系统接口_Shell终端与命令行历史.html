@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>壳、终端与内核：从《攻壳机动队》理解 Shell 的历史与操作系统边界</title>
+  <meta name="corpus-id" content="computer-006">
+  <meta name="corpus-category" content="计算机">
+  <meta name="corpus-series" content="操作系统与系统接口">
+  <meta name="corpus-status" content="unread">
+  <meta name="estimated-reading-time" content="40-50 minutes">
+  <meta name="generated-date" content="2026-07-24">
+  <meta name="sources-verified-through" content="2026-07-24">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #5d6878;
+      --line: #d9e0ea;
+      --soft: #f5f8fc;
+      --blue: #175cd3;
+      --blue-soft: #eaf2ff;
+      --green: #157f5b;
+      --green-soft: #eaf8f2;
+      --amber: #925400;
+      --amber-soft: #fff6e3;
+      --red: #b42318;
+      --red-soft: #fff0ee;
+      --violet: #6941c6;
+      --violet-soft: #f3efff;
+      --shadow: 0 10px 30px rgba(28, 45, 76, .07);
+    }
+    * { box-sizing: border-box; }
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+    body {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 38px 42px 86px;
+      color: var(--ink);
+      background: #fff;
+      font-family: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", STSong, serif;
+      line-height: 1.86;
+      overflow-wrap: break-word;
+    }
+    h1, h2, h3, h4, nav, .sans {
+      font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2.12rem;
+      line-height: 1.32;
+      letter-spacing: -.025em;
+    }
+    h2 {
+      margin: 3.45rem 0 1.15rem;
+      padding-bottom: .42rem;
+      border-bottom: 1px solid var(--line);
+      font-size: 1.5rem;
+      line-height: 1.42;
+    }
+    h3 {
+      margin: 2.25rem 0 .75rem;
+      font-size: 1.22rem;
+      line-height: 1.45;
+    }
+    h4 {
+      margin: 1.55rem 0 .5rem;
+      font-size: 1.05rem;
+    }
+    p { margin: .86rem 0; }
+    li { margin: .38rem 0; }
+    a {
+      color: var(--blue);
+      text-decoration-thickness: 1px;
+      text-underline-offset: .16em;
+    }
+    code, kbd {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: .9em;
+    }
+    code {
+      padding: .1em .32em;
+      border-radius: 4px;
+      background: var(--soft);
+    }
+    pre {
+      margin: 1.15rem 0;
+      padding: 1rem 1.1rem;
+      overflow-x: auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background: #101828;
+      color: #eef4ff;
+      line-height: 1.62;
+    }
+    pre code { padding: 0; background: transparent; color: inherit; }
+    header.hero {
+      margin-bottom: 2.3rem;
+      padding: 1.8rem 0 1.35rem;
+    }
+    .eyebrow {
+      margin-bottom: .65rem;
+      color: var(--blue);
+      font-size: .88rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+    .subtitle {
+      margin: 1rem 0 0;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+    .meta {
+      display: flex;
+      gap: .55rem;
+      flex-wrap: wrap;
+      margin-top: 1.15rem;
+    }
+    .tag {
+      padding: .28rem .62rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #40506a;
+      background: var(--soft);
+      font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif;
+      font-size: .82rem;
+    }
+    nav#toc {
+      margin: 1.8rem 0 3rem;
+      padding: 1.15rem 1.35rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--soft);
+    }
+    nav#toc strong { display: block; margin-bottom: .5rem; }
+    nav#toc ol {
+      columns: 2;
+      column-gap: 2.6rem;
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+    nav#toc li { break-inside: avoid; margin: .25rem 0; }
+    .lead, .thesis, .definition, .warning, .example, .history-note, .comparison-note {
+      margin: 1.3rem 0;
+      padding: 1rem 1.15rem;
+      border-radius: 10px;
+    }
+    .lead {
+      border-left: 4px solid var(--blue);
+      background: var(--blue-soft);
+    }
+    .thesis {
+      border: 1px solid #b9cff4;
+      background: linear-gradient(135deg, #f7faff, #eef5ff);
+      box-shadow: var(--shadow);
+      font-size: 1.04rem;
+    }
+    .definition { border: 1px solid #b9cff4; background: var(--blue-soft); }
+    .warning { border: 1px solid #f1c8c3; background: var(--red-soft); }
+    .example { border: 1px solid #f0d5a3; background: var(--amber-soft); }
+    .history-note { border: 1px solid #d4c8f5; background: var(--violet-soft); }
+    .comparison-note { border: 1px solid #a9dccb; background: var(--green-soft); }
+    .definition strong:first-child,
+    .warning strong:first-child,
+    .example strong:first-child,
+    .history-note strong:first-child,
+    .comparison-note strong:first-child {
+      font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif;
+    }
+    .concept-map {
+      margin: 1.6rem 0 2.3rem;
+      padding: 1.2rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfdff;
+      box-shadow: var(--shadow);
+    }
+    .concept-map h2 { margin-top: 0; }
+    .layer-stack {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: .45rem;
+      margin-top: 1rem;
+    }
+    .layer {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 1rem;
+      align-items: center;
+      padding: .72rem .85rem;
+      border: 1px solid #c8d5e6;
+      border-radius: 9px;
+      background: #fff;
+    }
+    .layer strong {
+      color: #173f78;
+      font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif;
+    }
+    .arrow {
+      color: #73839a;
+      text-align: center;
+      font-family: "Noto Sans CJK SC", sans-serif;
+      font-size: .86rem;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin: 1.2rem 0;
+    }
+    .card {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+    .card h3, .card h4 { margin-top: 0; }
+    .flow-steps {
+      counter-reset: step;
+      margin: 1.2rem 0;
+      padding: 0;
+      list-style: none;
+    }
+    .flow-steps li {
+      position: relative;
+      margin: .72rem 0;
+      padding: .75rem .85rem .75rem 3.3rem;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+    }
+    .flow-steps li::before {
+      counter-increment: step;
+      position: absolute;
+      top: .66rem;
+      left: .78rem;
+      width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--blue);
+      content: counter(step);
+      font-family: "Noto Sans CJK SC", sans-serif;
+      font-size: .86rem;
+      font-weight: 700;
+      line-height: 1.8rem;
+      text-align: center;
+    }
+    .timeline {
+      margin: 1.2rem 0;
+      padding-left: 1.25rem;
+      border-left: 3px solid #c6d4e8;
+    }
+    .timeline article {
+      position: relative;
+      margin: 0 0 1.25rem;
+      padding: .1rem 0 .2rem 1rem;
+    }
+    .timeline article::before {
+      position: absolute;
+      top: .42rem;
+      left: -1.78rem;
+      width: .72rem;
+      height: .72rem;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 0 1px #97aed0;
+      content: "";
+    }
+    .timeline h3 { margin: 0 0 .4rem; }
+    table {
+      display: block;
+      width: 100%;
+      margin: 1.25rem 0;
+      overflow-x: auto;
+      border-collapse: collapse;
+      font-size: .91rem;
+    }
+    th, td {
+      min-width: 135px;
+      padding: .64rem .72rem;
+      border: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th {
+      background: var(--soft);
+      font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif;
+      text-align: left;
+    }
+    .small { color: var(--muted); font-size: .88rem; }
+    details {
+      margin: .8rem 0;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+    }
+    summary {
+      padding: .72rem .9rem;
+      cursor: pointer;
+      font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif;
+      font-weight: 700;
+    }
+    details > div { padding: 0 .95rem .9rem; }
+    .checkpoint {
+      margin: 2rem 0;
+      padding: 1.05rem 1.15rem;
+      border: 1px solid #c7b9f2;
+      border-radius: 12px;
+      background: #faf8ff;
+    }
+    .checkpoint h3 { margin-top: 0; color: #51349a; }
+    .source-list {
+      margin: 1rem 0;
+      padding: 0;
+      list-style: none;
+    }
+    .source-list li {
+      margin: .9rem 0;
+      padding: .8rem .9rem;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+    }
+    .source-list .url {
+      display: block;
+      margin-top: .28rem;
+      color: var(--muted);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: .78rem;
+      overflow-wrap: anywhere;
+    }
+    .source-type {
+      display: inline-block;
+      margin-right: .45rem;
+      padding: .12rem .42rem;
+      border-radius: 999px;
+      color: #38506f;
+      background: var(--soft);
+      font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif;
+      font-size: .76rem;
+    }
+    #reader-feedback {
+      margin-top: 3.5rem;
+      padding: 1.2rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--soft);
+    }
+    #reader-feedback h2 { margin-top: 0; }
+    .feedback-entry {
+      margin-top: 1rem;
+      padding-top: .8rem;
+      border-top: 1px solid var(--line);
+    }
+    @media (max-width: 680px) {
+      html { font-size: 16px; }
+      body { padding: 22px 17px 58px; line-height: 1.78; }
+      h1 { font-size: 1.7rem; }
+      h2 { margin-top: 2.75rem; font-size: 1.33rem; }
+      h3 { font-size: 1.15rem; }
+      nav#toc ol { columns: 1; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .layer { grid-template-columns: 1fr; gap: .25rem; }
+      table { font-size: .85rem; }
+      th, td { min-width: 120px; padding: .54rem .6rem; }
+    }
+    @media print {
+      body { max-width: none; padding: 0; color: #000; }
+      nav#toc { break-after: page; }
+      h2, h3, .card, .definition { break-after: avoid; }
+      table, .concept-map, .checkpoint { break-inside: avoid; }
+      a { color: #000; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="eyebrow sans">计算机 · 操作系统与系统接口 · 06</div>
+    <h1>壳、终端与内核：<br>从《攻壳机动队》理解 Shell 的历史与操作系统边界</h1>
+    <p class="subtitle">Shell 不是计算机最深处的秘密，而是人类能够进入那套秘密系统、组合其能力并让它持续工作的语言边界。</p>
+    <div class="meta">
+      <span class="tag">语料编号：computer-006</span>
+      <span class="tag">预计阅读 40—50 分钟</span>
+      <span class="tag">状态：未读</span>
+      <span class="tag">先修：408 操作系统基础</span>
+      <span class="tag">资料核验：截至 2026-07-24</span>
+    </div>
+  </header>
+
+  <section class="lead">
+    <strong>先纠正两个词：</strong>作品的英文标题是 <em>Ghost in the Shell</em>，不是 “Ghost under the Shell”。而在操作系统里，真正承担最底层资源管理的是<strong>内核</strong>；Shell 是运行在内核外的普通用户态程序。它之所以叫“壳”，并不是因为它本身隐藏在社会最深处，而是因为它包在核心之外，把内部机制包装成可输入、可组合、可自动化的命令语言。
+  </section>
+
+  <section class="thesis">
+    <strong>全文中心句：</strong>终端负责把字符送进来、把字符显示出去；Shell 负责理解这些字符表达的命令；工具程序完成具体任务；内核负责进程、文件、内存、权限和设备。所谓“macOS 的终端更好用”，大多数时候不是 Terminal.app 这个窗口更优秀，而是 macOS 原生继承了一套连续、统一、与服务器世界高度相容的 Unix 命令行环境。
+  </section>
+
+  <section class="concept-map" aria-labelledby="map-title">
+    <h2 id="map-title">正式阅读前：六层结构图</h2>
+    <p>相邻两层之间的箭头表示“上一层使用下一层提供的接口”，不是说上一层知道下一层的全部实现。</p>
+    <div class="layer-stack">
+      <div class="layer"><strong>人</strong><span>输入命令，观察结果，只需要掌握约定，而不必理解晶体管和调度器。</span></div>
+      <div class="arrow">字符与按键 ↓　↑ 屏幕文本</div>
+      <div class="layer"><strong>终端模拟器</strong><span>Terminal.app、Windows Terminal、iTerm2 等窗口；管理字体、颜色、标签页和字符显示。</span></div>
+      <div class="arrow">TTY / PTY 字符通道 ↓　↑ 字节流与控制序列</div>
+      <div class="layer"><strong>Shell</strong><span>zsh、bash、PowerShell、cmd；读取命令，解析语法，建立管道，启动程序并维护会话状态。</span></div>
+      <div class="arrow">参数、环境、文件描述符、进程控制 ↓　↑ 输出与退出状态</div>
+      <div class="layer"><strong>命令与应用程序</strong><span>grep、git、python、编译器以及系统管理工具；它们不是 Shell，只是被 Shell 启动。</span></div>
+      <div class="arrow">系统调用与库接口 ↓　↑ 数据、错误码、信号</div>
+      <div class="layer"><strong>操作系统内核</strong><span>管理进程、虚拟内存、文件系统、权限、网络和设备；它才是操作系统的资源核心。</span></div>
+      <div class="arrow">机器指令、寄存器、总线与中断 ↓　↑ 硬件状态</div>
+      <div class="layer"><strong>硬件</strong><span>逻辑电路、存储器、CPU 与设备。0 和 1 是状态编码，不是用户直接面对的工作语言。</span></div>
+    </div>
+  </section>
+
+  <nav id="toc" aria-label="目录">
+    <strong>目录</strong>
+    <ol>
+      <li><a href="#metaphor">你的“壳”隐喻哪里准确，哪里需要修正</a></li>
+      <li><a href="#definition">Shell 的严格定义与系统边界</a></li>
+      <li><a href="#command-flow">一条命令怎样穿过操作系统</a></li>
+      <li><a href="#terminal">终端、控制台、命令行与 Shell</a></li>
+      <li><a href="#history">从批处理到 Shell：交互方式怎样演化</a></li>
+      <li><a href="#families">“Shell 版本”其实是多个语言家族</a></li>
+      <li><a href="#unix-design">Unix Shell 为什么具有异常强的组合能力</a></li>
+      <li><a href="#windows-history">Windows 命令行为什么走出另一条路</a></li>
+      <li><a href="#mac-vs-win">macOS 为什么常被认为更好用</a></li>
+      <li><a href="#inspect">亲手辨认自己的终端与 Shell</a></li>
+      <li><a href="#ghost-return">重新理解 Ghost in the Shell</a></li>
+      <li><a href="#self-check">自检题与参考答案</a></li>
+      <li><a href="#conclusion">结论压缩</a></li>
+      <li><a href="#references">参考资料</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <section id="metaphor">
+      <h2>一、你的“壳”隐喻哪里准确，哪里需要修正</h2>
+
+      <h3>1.1 准确之处：日常世界建立在不可见接口之上</h3>
+      <p>你观察到的关键事实是正确的：现代技术系统能够运转，不是因为每个人都理解其内部，而是因为内部复杂性被稳定接口遮蔽了。按下“保存”，应用程序调用文件接口；打开网页，浏览器调用网络接口；发送消息，客户端调用远程服务接口。用户只知道“这样操作会产生那样结果”，不需要知道页表怎样映射、网卡怎样产生中断、磁盘怎样安排写入。</p>
+      <p>这种现象在计算机科学中叫<strong>抽象</strong>：下一层承诺某种可观察行为，上一层只依赖承诺，不依赖内部实现。抽象不是假装底层不存在，而是把底层压缩为可以可靠使用的边界。</p>
+      <p>《攻壳机动队》中的公安九课确实很像一种“系统维护与高权限操作层”：普通人只看见城市、公司、媒体和日常服务；九课处理的是网络入侵、身份篡改、国家机器和信息基础设施中的异常。它活动在普通界面背后，并通过特殊权限影响可见世界。这个直觉与操作系统分层非常接近。</p>
+
+      <h3>1.2 需要修正之处：Shell 不是底层，而是底层的外壳</h3>
+      <p>不过，若把九课直接比作 Shell，容易遗漏一个方向问题：Shell 并不是躲在内核下面执行最原始操作的组件。它通常只是一个用户态进程，权限未必比普通程序高。它不能随意读取内核内存，也不能绕过权限模型。它所做的是把用户输入翻译成一系列程序启动、文件重定向、管道连接和进程控制操作，再通过操作系统公开的接口请求内核执行。</p>
+      <div class="warning">
+        <strong>不要把 Shell 理解成“操作系统管理员模式”。</strong>普通用户运行的 zsh 或 bash 仍受普通用户权限限制。只有当你通过 <code>sudo</code>、管理员令牌或其他授权机制提升某个操作的权限时，它才可能要求内核以更高权限执行。Shell 是控制语言，不自动等于特权。
+      </div>
+
+      <h3>1.3 “计算机本质是加法和 0/1 存储”也只对了一半</h3>
+      <p>从数字电路角度看，计算机确实把信息编码成比特，并通过逻辑门改变比特状态。加法器又是 CPU 中极重要的基础构件：减法可转为补码加法，地址计算依赖加法，比较和循环控制也常借助算术结果。</p>
+      <p>但严格说，计算机的本质不能只压缩为“加法与存储”。至少还需要：</p>
+      <ul>
+        <li><strong>逻辑运算：</strong>与、或、非、异或决定条件和位操作；</li>
+        <li><strong>控制：</strong>根据指令和条件决定下一步执行什么；</li>
+        <li><strong>寻址：</strong>确定数据和指令位于哪里；</li>
+        <li><strong>状态转移：</strong>寄存器、内存和设备在时钟与事件作用下更新；</li>
+        <li><strong>输入输出：</strong>让封闭计算接触键盘、磁盘、网络与现实设备。</li>
+      </ul>
+      <p>更准确的说法是：<strong>最底层是对离散物理状态的可控变换；操作系统把这些变换组织为进程、内存、文件和设备；Shell 再把操作系统能力组织成适合人类表达和组合的命令。</strong></p>
+    </section>
+
+    <section id="definition">
+      <h2>二、Shell 的严格定义与系统边界</h2>
+
+      <h3>2.1 狭义定义：命令语言解释器</h3>
+      <p>POSIX 标准把 Shell 定义为<strong>命令语言解释器</strong>。这里有三个关键词：</p>
+      <ol>
+        <li><strong>语言：</strong>它不只接受一个程序名，还定义变量、引号、条件、循环、管道、重定向和函数等语法；</li>
+        <li><strong>解释：</strong>它读取文本，识别语法结构，并在运行时决定启动什么、怎样连接；</li>
+        <li><strong>命令：</strong>它的主要动作是改变当前会话状态，或者调用其他程序完成工作。</li>
+      </ol>
+      <div class="definition">
+        <strong>本文定义：</strong>Shell 是一个运行在用户态的交互式命令解释器兼脚本语言执行器。它维护会话状态，解析命令语言，把程序、文件和进程连接起来，并通过操作系统接口请求内核执行资源操作。
+      </div>
+
+      <h3>2.2 广义定义：图形界面也可能是 Shell</h3>
+      <p>“Shell”广义上可以表示任何包在操作系统能力外部的用户界面，因此图形桌面、文件管理器也会被称为 graphical shell。例如 Windows Explorer 不只是文件浏览器，还承担桌面、任务栏等系统外壳功能。</p>
+      <p>不过在程序员日常语境里，“打开 Shell”“写 Shell 脚本”通常特指命令 Shell。本文也采用这个狭义含义。</p>
+
+      <h3>2.3 Shell 负责什么，不负责什么</h3>
+      <table>
+        <thead><tr><th>Shell 负责</th><th>Shell 通常不负责</th></tr></thead>
+        <tbody>
+          <tr><td>显示提示符，读取输入行</td><td>绘制终端窗口、字体和标签页</td></tr>
+          <tr><td>解析引号、变量、通配符和控制结构</td><td>直接调度 CPU 或管理页表</td></tr>
+          <tr><td>查找命令，启动程序</td><td>实现 grep、git、python 的具体功能</td></tr>
+          <tr><td>建立管道和输入输出重定向</td><td>亲自读写磁盘扇区或发送网卡数据包</td></tr>
+          <tr><td>维护工作目录、环境变量、别名和历史</td><td>绕过文件权限和用户身份</td></tr>
+          <tr><td>管理前台/后台任务与退出状态</td><td>替代内核的进程和信号机制</td></tr>
+        </tbody>
+      </table>
+
+      <h3>2.4 为什么 <code>cd</code> 必须由 Shell 自己执行</h3>
+      <p>这是 Shell 与操作系统进程模型连接得最漂亮的例子。</p>
+      <p>操作系统把<strong>当前工作目录</strong>保存在进程状态中。子进程通常继承父进程的工作目录，但子进程修改自己的目录，不会反向修改父进程。假设 <code>cd</code> 是一个普通外部程序：</p>
+      <ol>
+        <li>Shell 启动一个 <code>cd</code> 子进程；</li>
+        <li>子进程把自己的目录改到 <code>/tmp</code>；</li>
+        <li>子进程退出；</li>
+        <li>父 Shell 的工作目录完全没有变化。</li>
+      </ol>
+      <p>所以 <code>cd</code> 必须是 Shell 的<strong>内建命令</strong>：它直接修改 Shell 进程自己的工作目录。类似地，<code>export</code> 要修改 Shell 向未来子进程传递的环境变量，<code>jobs</code>、<code>fg</code> 要访问 Shell 正在管理的任务表，它们都不能简单外包给一个短命子进程。</p>
+    </section>
+
+    <section id="command-flow">
+      <h2>三、一条命令怎样穿过操作系统</h2>
+
+      <p>考虑下面这条 Unix 风格命令：</p>
+      <pre><code>grep -R "ERROR" logs | sort | uniq -c &gt; error-counts.txt</code></pre>
+      <p>它的表面含义是：递归查找 <code>logs</code> 目录中含有 <code>ERROR</code> 的行，排序，把连续相同行计数，再把结果写入文件。真正重要的不是记住命令，而是看见一次请求怎样流经系统。</p>
+
+      <ol class="flow-steps">
+        <li><strong>终端模拟器接收按键。</strong>窗口把字符编码后，经伪终端通道送给当前前台程序。此时它不知道 <code>|</code> 是管道，也不知道 <code>&gt;</code> 是重定向；对终端而言，它们只是字符。</li>
+        <li><strong>Shell 读取一整行。</strong>Shell 处于“读取—解释—执行—再次读取”的循环中。按下回车后，它开始把字符划分为单词和操作符。</li>
+        <li><strong>Shell 解析语法。</strong>双引号说明 <code>ERROR</code> 是一个整体；两个 <code>|</code> 把命令分成三个阶段；<code>&gt;</code> 表示标准输出不再回到屏幕，而要连接到文件。</li>
+        <li><strong>Shell 做展开。</strong>若命令中有 <code>$HOME</code>、<code>$(date)</code>、<code>*.log</code> 等，它会按照该 Shell 的规则完成变量展开、命令替换和路径名展开。引号的主要任务，就是控制哪些字符在何时被解释。</li>
+        <li><strong>Shell 建立内核对象。</strong>它请求内核创建两个管道，并打开或创建 <code>error-counts.txt</code>。管道是内核维护的字节缓冲区，一端写入，另一端读取。</li>
+        <li><strong>Shell 创建并装载程序进程。</strong>传统 Unix 模型常用 <code>fork</code> 复制进程，再用 <code>exec</code> 把子进程替换为目标程序；现代系统也可能使用 <code>posix_spawn</code> 等优化接口。无论具体实现怎样，Shell 都要让三个程序各自成为可调度的执行实体。</li>
+        <li><strong>Shell 重接文件描述符。</strong><code>grep</code> 的标准输出接到第一根管道，<code>sort</code> 的标准输入来自第一根管道、输出进入第二根管道，<code>uniq</code> 的输出接到目标文件。程序本身只读“标准输入”、写“标准输出”，并不需要知道对方是谁。</li>
+        <li><strong>内核调度并搬运数据。</strong>三个进程可能交错运行。<code>grep</code> 产生一部分数据，<code>sort</code> 读取；管道满时写进程阻塞，管道空时读进程阻塞。调度、阻塞、唤醒和文件写入都由内核完成。</li>
+        <li><strong>Shell 收集退出状态。</strong>前台管道结束后，Shell 得到进程的退出信息，更新特殊状态变量，再显示下一次提示符。</li>
+      </ol>
+
+      <div class="example">
+        <strong>这个例子揭示的核心不变量：</strong>Unix 工具无需彼此认识。它们只承诺从标准输入读字节、向标准输出写字节，并用退出状态报告成功或失败。Shell 负责连接，内核保证通道和进程机制。这正是接口把复杂系统拆开的方式。
+      </div>
+
+      <h3>3.1 <kbd>Ctrl</kbd>+<kbd>C</kbd> 为什么能中断程序</h3>
+      <p>按下 <kbd>Ctrl</kbd>+<kbd>C</kbd> 时，终端驱动通常把这个控制字符解释为中断请求，向前台进程组发送 <code>SIGINT</code> 信号。Shell 自己通常不在这个前台进程组中，否则它也会一起退出。命令结束后，Shell 重新成为终端前台控制者并显示提示符。</p>
+      <p>这解释了“任务控制”为什么是 Shell、终端和内核三者共同完成的：</p>
+      <ul>
+        <li>终端识别控制键；</li>
+        <li>内核维护会话、进程组和前台归属并传递信号；</li>
+        <li>Shell 建立进程组、记录后台任务，并实现 <code>jobs</code>、<code>fg</code>、<code>bg</code>。</li>
+      </ul>
+    </section>
+
+    <section id="terminal">
+      <h2>四、终端、控制台、命令行与 Shell 到底是什么关系</h2>
+
+      <h3>4.1 最初的终端是一台真实机器</h3>
+      <p>早期大型机昂贵而集中，用户不直接坐在主机前。所谓 terminal，是连接主机的输入输出设备：可能是电传打字机，也可能是带键盘和显像管的字符终端。它负责把按键发送到远端计算机，再把计算机输出打印或显示出来。</p>
+      <p>因此，“终端”最初不是软件，也不是命令解释器，而是<strong>通信端点</strong>。</p>
+
+      <h3>4.2 今天的 Terminal.app 是终端模拟器</h3>
+      <p>个人电脑已经有自己的键盘和屏幕，但大量命令行程序仍按照老终端的字符协议工作。于是出现 terminal emulator：一个图形应用，模拟历史终端的行为，解释颜色、光标移动、清屏等控制序列，并通过伪终端把字符流交给命令行程序。</p>
+      <p>macOS 的 Terminal.app 和 Windows Terminal 都是终端模拟器或终端宿主。它们可以关闭、替换、换主题，但这些操作不会自动把 zsh 变成 bash，也不会把 PowerShell 变成 cmd。</p>
+
+      <h3>4.3 PTY 是隐藏在两者之间的软件线缆</h3>
+      <p>Unix 中常见的 PTY（pseudo-terminal，伪终端）由一对软件端点构成：</p>
+      <ul>
+        <li>终端模拟器连接“主端”，负责人的输入输出；</li>
+        <li>Shell 或其他命令行程序连接“从端”，以为自己面对一台传统终端。</li>
+      </ul>
+      <p>这个抽象让终端窗口与命令行程序解耦：同一个 zsh 可以运行在 Terminal.app、iTerm2、SSH 连接或编辑器内置终端中；同一个 Windows Terminal 也可以分别承载 cmd、PowerShell 和 WSL 中的 bash。</p>
+
+      <h3>4.4 四个容易混淆的词</h3>
+      <table>
+        <thead><tr><th>词</th><th>准确含义</th><th>例子</th></tr></thead>
+        <tbody>
+          <tr><td>终端 / terminal</td><td>承载字符交互的设备或模拟器</td><td>Terminal.app、Windows Terminal、iTerm2</td></tr>
+          <tr><td>Shell</td><td>读取并解释命令语言的程序</td><td>zsh、bash、fish、cmd、PowerShell</td></tr>
+          <tr><td>命令行工具</td><td>由 Shell 启动、完成具体任务的程序</td><td>git、grep、python、ffmpeg</td></tr>
+          <tr><td>命令行界面 / CLI</td><td>以文本命令作为主要交互形式的界面范式</td><td><code>git commit</code> 的参数接口</td></tr>
+        </tbody>
+      </table>
+
+      <div class="warning">
+        <strong>最常见的错误句子：</strong>“这个命令在 Windows Terminal 里不能运行，所以 Windows Terminal 不支持它。”更可能的原因是当前标签页运行了错误的 Shell。Terminal 只是容器；语法由 cmd、PowerShell 或 WSL 内的 bash 决定。
+      </div>
+    </section>
+
+    <section id="history">
+      <h2>五、从批处理到 Shell：人机交互方式怎样演化</h2>
+
+      <div class="timeline">
+        <article>
+          <h3>阶段 0：人把作业交给操作员</h3>
+          <p>早期计算机一次运行一批卡片或磁带上的作业。程序员准备程序和数据，操作员排队装入机器，几小时后取回输出。此时没有持续会话，也没有“我输入一条命令，系统立即回答”的交互习惯。</p>
+          <p>这种模式的问题不只是慢，而是反馈闭环极长：一个拼写错误、路径错误或参数错误都可能浪费整轮等待。</p>
+        </article>
+
+        <article>
+          <h3>1960 年代初：分时系统让用户获得持续会话</h3>
+          <p>分时系统让多名用户通过终端共享主机。每人感觉自己在独占一台响应及时的计算机。交互出现后，系统需要一个常驻程序反复接收用户请求、调用程序并返回结果。</p>
+          <p>Louis Pouzin 在 CTSS 环境中编写 RUNCOM，使一组命令能够从文件中依次执行并接受参数替换。后来他用“Shell”称呼包在系统过程之外的命令调用层。这个名字不是后人附会；“命令作为积木、能够组合成新命令”的思想从一开始就在 Shell 概念中。</p>
+        </article>
+
+        <article>
+          <h3>1965 年后：Multics 把 Shell 发展成全局过程调用入口</h3>
+          <p>Multics 是雄心极大的分时操作系统项目。它的命令处理思想影响了后来 Unix。Shell 不再只是启动单个程序，而逐渐成为一个可以调用、链接和组织系统过程的统一入口。</p>
+        </article>
+
+        <article>
+          <h3>1971 前后：Thompson Shell 与早期 Unix</h3>
+          <p>早期 Unix 的 Shell 很小，但架构意义巨大：它作为普通用户程序运行，而不是硬塞在内核中。读取命令、创建进程、执行文件、等待结束这一循环，与 Unix 的进程模型天然配合。</p>
+          <p>更重要的是重定向和后来成熟的管道：程序不必为“输出到屏幕、文件还是另一个程序”分别编写接口。Shell 在启动前重接文件描述符，普通程序保持简单。这种设计把内核机制变成可在命令行中自由组合的语言符号。</p>
+        </article>
+
+        <article>
+          <h3>1979：Bourne Shell 让命令文件成为结构化程序</h3>
+          <p>Version 7 Unix 的 Bourne Shell（<code>sh</code>）把条件、循环、变量、函数式组合和脚本执行组织成更完整的语言。Shell 从“交互式程序启动器”变成“系统自动化语言”。现代 POSIX Shell 语言主要沿这条家族发展。</p>
+        </article>
+
+        <article>
+          <h3>1970 年代末至 1980 年代：交互体验与脚本能力分叉又合流</h3>
+          <p>C shell 强调命令历史、别名和交互体验；KornShell 在 Bourne 兼容方向上吸收更强的交互和编程能力。此后 Shell 演化不再只是增加“能不能运行程序”，而是同时竞争三件事：脚本可移植性、交互效率和语言表达力。</p>
+        </article>
+
+        <article>
+          <h3>1980 年代末以后：Bash、zsh 与自由 Unix 生态</h3>
+          <p>Bash 作为 GNU 的 Bourne-Again Shell，兼顾 Bourne/POSIX 脚本传统和交互功能，后来随 GNU/Linux 广泛传播。zsh 则进一步强化补全、模式匹配和命令行编辑，并吸收 bash、ksh、tcsh 的许多特性。macOS 当前默认登录 Shell 是 zsh。</p>
+        </article>
+
+        <article>
+          <h3>2006 以后：PowerShell 重新设计 Windows 自动化接口</h3>
+          <p>Windows PowerShell 1.0 于 2006 年发布。它没有简单复制 Unix 文本工具，而是围绕 .NET 对象、统一的 Verb-Noun 命名和系统管理接口设计。它证明 Shell 并不是 Unix 专利，但不同操作系统暴露的对象模型会塑造完全不同的命令语言。</p>
+        </article>
+      </div>
+
+      <div class="history-note">
+        <strong>历史主线不是“Shell 越来越花哨”。</strong>真正的发展是：从批量提交作业，到持续交互；从启动程序，到组合程序；从手工输入，到可重复脚本；从文本流自动化，到针对复杂系统对象的结构化管理。
+      </div>
+    </section>
+
+    <section id="families">
+      <h2>六、“Shell 版本”其实是多个语言家族</h2>
+
+      <p>日常说“Shell 的版本”容易混合四件不同的事：</p>
+      <ol>
+        <li><strong>标准语言：</strong>POSIX 规定一种可移植的 <code>sh</code> 命令语言；</li>
+        <li><strong>实现：</strong>bash、dash、ksh、zsh 是不同程序，并非同一个 Shell 的皮肤；</li>
+        <li><strong>发行版本：</strong>例如 zsh 5.x、PowerShell 7.x；</li>
+        <li><strong>配置框架：</strong>Oh My Zsh 只是管理 zsh 配置、插件和主题，不是另一种 Shell。</li>
+      </ol>
+
+      <table>
+        <thead>
+          <tr><th>名称</th><th>主要家族与目标</th><th>重要特点</th><th>常见位置</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>sh</code> / Bourne Shell</td><td>Bourne 家族祖先</td><td>把 Shell 脚本确立为结构化自动化语言；后来的 POSIX Shell 以其传统为核心</td><td>历史 Unix；现代系统中的 <code>/bin/sh</code> 是兼容入口，未必仍是原始 Bourne 程序</td></tr>
+          <tr><td><code>bash</code></td><td>Bourne/POSIX 风格</td><td>脚本兼容性强，交互功能完整，GNU/Linux 中极常见</td><td>Linux 发行版、服务器、CI 脚本</td></tr>
+          <tr><td><code>dash</code></td><td>轻量 POSIX Shell</td><td>启动快、功能克制，适合系统脚本；交互体验不是重点</td><td>某些 Linux 的 <code>/bin/sh</code></td></tr>
+          <tr><td><code>ksh</code></td><td>Bourne 家族增强</td><td>较强脚本语言与交互功能，影响 Bash 和 zsh</td><td>商业 Unix、历史企业脚本</td></tr>
+          <tr><td><code>zsh</code></td><td>Bourne-like，交互优先但也能脚本</td><td>强补全、模式匹配、命令行编辑和高度可配置性</td><td>macOS 默认登录 Shell，开发者个人环境</td></tr>
+          <tr><td><code>fish</code></td><td>重新设计的交互 Shell</td><td>默认体验友好、自动建议明显，但故意不追求 POSIX Shell 语法兼容</td><td>个人交互环境</td></tr>
+          <tr><td><code>csh</code> / <code>tcsh</code></td><td>C 风格历史分支</td><td>推动历史、别名和任务控制体验，但脚本语言与 Bourne 家族不同</td><td>BSD 历史环境、部分科研机构旧系统</td></tr>
+          <tr><td><code>cmd.exe</code></td><td>DOS/Windows 命令 Shell</td><td>兼容大量批处理脚本和 Windows 命令习惯，语言能力与一致性有限</td><td>Windows 兼容与传统运维</td></tr>
+          <tr><td>PowerShell</td><td>Windows 管理 Shell，现已跨平台</td><td>管道传递对象而非只传文本；统一 cmdlet 命名；深度连接 .NET 与管理接口</td><td>Windows 管理、云与企业自动化</td></tr>
+        </tbody>
+      </table>
+
+      <h3>6.1 默认 Shell 不等于脚本解释器永远相同</h3>
+      <p>macOS 默认登录 Shell 是 zsh，意思是你打开新的终端会话时通常先启动 zsh。但一个脚本可以在第一行用 shebang 指定别的解释器：</p>
+      <pre><code>#!/bin/sh
+#!/bin/bash
+#!/usr/bin/env python3</code></pre>
+      <p>所以“我在 zsh 终端里运行脚本”不代表脚本一定由 zsh 解释。Shell 先读取文件的执行信息，内核和启动机制再选择指定解释器。</p>
+
+      <h3>6.2 交互 Shell 与脚本 Shell 的评价标准不同</h3>
+      <p>交互使用关注补全、历史搜索、提示符、错误提示和编辑手感；系统脚本关注启动速度、语义稳定、可移植性和依赖最小。zsh 可能很适合人类输入，但系统启动脚本未必应该依赖复杂 zsh 特性。fish 对初学者交互友好，却不是运行 POSIX shell 脚本的替代品。</p>
+    </section>
+
+    <section id="unix-design">
+      <h2>七、Unix Shell 为什么具有异常强的组合能力</h2>
+
+      <h3>7.1 小工具不是重点，统一接口才是重点</h3>
+      <p>人们常把 Unix 哲学概括为“一个程序只做一件事”。这句话若孤立理解，会变成鼓励把软件拆得极碎。真正关键的是：小程序共享可组合接口。</p>
+      <p>Unix 命令行长期围绕几项约定形成生态：</p>
+      <ul>
+        <li>程序从参数获得控制信息；</li>
+        <li>从标准输入读取数据；</li>
+        <li>把主要结果写到标准输出；</li>
+        <li>把诊断信息写到标准错误；</li>
+        <li>用退出状态表示成功与失败；</li>
+        <li>把文件、设备和管道尽可能统一为可读写的描述符。</li>
+      </ul>
+      <p>因为接口相同，Shell 才能在不知道程序内部实现的情况下重定向和连接它们。工具的价值不是单独有多强，而是能否进入组合网络。</p>
+
+      <h3>7.2 文本管道的优势与代价</h3>
+      <div class="grid-2">
+        <article class="card">
+          <h3>优势</h3>
+          <ul>
+            <li>任何语言都能读写字节和文本，边界极低；</li>
+            <li>容易保存、查看、调试和通过 SSH 传输；</li>
+            <li>工具无需共享类型系统或运行时；</li>
+            <li>老程序与新程序可以长期组合。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>代价</h3>
+          <ul>
+            <li>列位置、空格和换行可能造成脆弱解析；</li>
+            <li>文件名中的特殊字符会暴露边界问题；</li>
+            <li>结构化数据要额外使用 JSON、CSV 等约定；</li>
+            <li>不同工具的参数和输出格式并不完全一致。</li>
+          </ul>
+        </article>
+      </div>
+
+      <h3>7.3 PowerShell 为什么选择对象管道</h3>
+      <p>PowerShell 不满足于“解析前一个命令打印出来的第 3 列”。它的 cmdlet 可以把进程、文件、服务等 .NET 对象沿管道传递；后续命令访问对象属性，而不是猜测文本布局。</p>
+      <pre><code>Get-Process | Where-Object CPU -gt 100 | Sort-Object CPU -Descending</code></pre>
+      <p>这里传递的是进程对象。<code>CPU</code> 是属性，不是显示表格中的某一列文本。这对 Windows 系统管理很有优势。</p>
+      <p>但对象管道也有边界：一旦连接传统外部程序，输入输出通常仍回到文本；PowerShell 的命令名较长；跨语言组合依赖序列化或格式转换。两种哲学不是“先进与落后”，而是对通用互操作和结构安全的不同取舍。</p>
+    </section>
+
+    <section id="windows-history">
+      <h2>八、Windows 命令行为什么走出另一条路</h2>
+
+      <h3>8.1 DOS 继承的是个人计算机命令解释器</h3>
+      <p>Unix 从多用户、分时、远程终端和程序员工作站环境成长；MS-DOS 则服务于资源受限的个人计算机，并强调与既有应用兼容。<code>COMMAND.COM</code> 同时承担启动环境和命令解释任务，批处理语言主要围绕文件操作与程序启动形成。</p>
+      <p>这条历史导致 Windows 命令行长期保留驱动器盘符、反斜杠路径、<code>.bat</code> 语法和大量兼容行为。它不是“没有设计”，而是兼容性在系统价值中占据极高位置。</p>
+
+      <h3>8.2 Windows NT 的控制台模型与 Unix TTY 不同</h3>
+      <p>传统 Windows 字符程序常通过 Windows Console API 与控制台宿主交互，而 Unix 程序更常面向字节流、TTY 和控制序列。两者历史接口不同，使跨平台终端工具在 Windows 上长期需要额外适配。</p>
+      <p>现代 Windows 通过 ConPTY（伪控制台）建立更接近 PTY 的解耦通道，Windows Terminal 可以作为外部宿主承载 cmd、PowerShell、SSH 与 WSL 命令行程序。这显著修复了过去“窗口、控制台服务和命令行程序纠缠在一起”的问题。</p>
+
+      <h3>8.3 PowerShell 解决的是 Windows 管理碎片化</h3>
+      <p>传统 Windows 管理接口分散在注册表、WMI、COM、事件日志、服务控制器和各种管理工具中。cmd 的文本批处理语言难以为这些复杂对象提供统一模型。PowerShell 的目标因此不是模仿 bash，而是把系统管理对象化：</p>
+      <ul>
+        <li>统一的 Verb-Noun 命令命名，如 <code>Get-Process</code>；</li>
+        <li>对象管道，减少文本列解析；</li>
+        <li>提供程序机制，把注册表、证书库等暴露成类似路径空间；</li>
+        <li>连接 .NET 类型、远程管理和企业产品接口。</li>
+      </ul>
+      <p>若任务是管理 Active Directory、Windows 服务、注册表或 Microsoft 企业产品，PowerShell 往往比在 macOS 上模仿 Unix 命令更自然。</p>
+
+      <h3>8.4 WSL 不是“给 cmd 加几个 Linux 命令”</h3>
+      <p>Windows Subsystem for Linux 提供的是一个 Linux 环境，包含 Linux 文件系统、系统调用兼容与 GNU/Linux 命令工具。打开 Windows Terminal 的 Ubuntu 标签页时，终端宿主仍是 Windows Terminal，但内部运行的 Shell 和用户空间可以是 bash 与 Linux 工具链。</p>
+      <p>这使今天的比较发生根本变化：不能再把“Windows”简单等同于“cmd.exe”。一个现代 Windows 开发环境可能同时包含：</p>
+      <ul>
+        <li>Windows Terminal 负责窗口；</li>
+        <li>PowerShell 管理 Windows；</li>
+        <li>WSL 中的 bash/zsh 管理 Linux 开发环境；</li>
+        <li>编辑器通过 ConPTY 与两边连接。</li>
+      </ul>
+    </section>
+
+    <section id="mac-vs-win">
+      <h2>九、为什么人们说 macOS 的“终端”比 Windows 更好用</h2>
+
+      <div class="warning">
+        <strong>先否定字面说法：</strong>若只比较终端模拟器应用，Windows Terminal 并不比 macOS 自带 Terminal.app 差，某些方面甚至更现代：标签页、窗格、配置档、Unicode 和 GPU 文本渲染都很完整。真正让许多开发者感觉 macOS 更顺手的，是终端背后的 Unix 系统环境，而不是窗口本身。
+      </div>
+
+      <h3>9.1 macOS 从系统根部就是 Unix 风格环境</h3>
+      <p>macOS 的 Darwin 基础包含 BSD 与大量 POSIX 接口。进程、权限、信号、目录树、设备和网络工具都与 Unix 传统连续。打开 Terminal.app 后，并不是进入一个后来附加的兼容层，而是直接进入本机操作系统原生的命令行世界。</p>
+      <p>这带来一种重要的<strong>语义一致性</strong>：</p>
+      <ul>
+        <li>本地开发脚本与 Linux 服务器上的脚本相近；</li>
+        <li>SSH 后的远程环境与本地操作方式相近；</li>
+        <li>Git、编译器、Python、Node、容器和构建工具大量围绕 Unix 路径与进程语义设计；</li>
+        <li>文档中的 <code>sh</code>/<code>bash</code> 示例通常无需翻译成另一套命令语言。</li>
+      </ul>
+
+      <h3>9.2 开发者真正节省的是“翻译边界”</h3>
+      <p>假设一个项目的部署目标是 Linux 服务器。macOS 用户本地使用 <code>/</code> 路径、Unix 权限、Shell 脚本、SSH、信号和相近工具；到服务器后虽然仍有 BSD/GNU 差异，但基本系统模型未改变。</p>
+      <p>传统 Windows 本机环境则可能跨越多重边界：</p>
+      <ul>
+        <li><code>C:\</code> 与 <code>/home</code> 的路径模型；</li>
+        <li>cmd、PowerShell 与 POSIX Shell 的引用和变量语法；</li>
+        <li>CRLF 与 LF 换行；</li>
+        <li>Windows 权限模型与 Unix 用户/组/执行位；</li>
+        <li>Win32 进程、控制台与 Unix 信号/PTY 语义；</li>
+        <li>原生 Windows 文件系统与 WSL 文件系统之间的性能和路径边界。</li>
+      </ul>
+      <p>macOS “好用”的核心常常只是：完成同一项跨平台开发任务时，需要跨越的语义转换更少。</p>
+
+      <h3>9.3 zsh 的默认交互体验确实较强</h3>
+      <p>macOS 默认登录 Shell 是 zsh。zsh 提供强大的补全、历史搜索、路径展开、命令行编辑和定制能力。配合适度配置，用户能在输入阶段发现参数、补全分支或目录，并把 Git 状态等上下文放入提示符。</p>
+      <p>但这里也要拆开三层：</p>
+      <ul>
+        <li>zsh 是 Shell；</li>
+        <li>Oh My Zsh 是配置框架；</li>
+        <li>Terminal.app 或 iTerm2 是终端模拟器。</li>
+      </ul>
+      <p>安装一个华丽主题不会改变操作系统接口，也不会自动提高脚本质量。过多插件反而可能拖慢启动、隐藏命令来源并制造不可移植配置。</p>
+
+      <h3>9.4 macOS 并不等于 Linux，Unix 优势也有边界</h3>
+      <p>macOS 自带许多 BSD 系工具，而 Linux 常用 GNU 实现。两边命令同名，选项却可能不同，例如 <code>sed</code>、<code>date</code>、<code>stat</code>。默认文件系统通常大小写不敏感，也可能掩盖 Linux 部署时的文件名问题。系统完整性保护、应用沙箱和 Apple 特有框架也会改变某些管理操作。</p>
+      <p>因此 macOS 更接近 Linux 开发环境，但绝不是 Linux 的复制品。</p>
+
+      <h3>9.5 Windows 在哪些任务上反而更好</h3>
+      <table>
+        <thead><tr><th>任务</th><th>通常更自然的环境</th><th>原因</th></tr></thead>
+        <tbody>
+          <tr><td>Linux 服务器、Web、容器、开源构建链</td><td>macOS 原生 Unix 或 Windows + WSL</td><td>POSIX Shell、路径、SSH 与服务器语义相近</td></tr>
+          <tr><td>Windows 服务、注册表、AD、Microsoft 企业产品</td><td>PowerShell</td><td>对象模型和管理接口直接对应 Windows 系统对象</td></tr>
+          <tr><td>纯终端窗口体验</td><td>Windows Terminal、iTerm2 等现代终端</td><td>标签页、窗格、GPU 渲染和配置能力；不能用操作系统名字简单判断</td></tr>
+          <tr><td>同时开发 Windows 与 Linux</td><td>Windows Terminal + PowerShell + WSL</td><td>同一桌面可进入两套原生语义，但必须管理边界</td></tr>
+          <tr><td>Apple 平台开发</td><td>macOS</td><td>Xcode、SDK、签名与平台工具只能完整存在于 Apple 环境</td></tr>
+        </tbody>
+      </table>
+
+      <div class="comparison-note">
+        <strong>最准确的结论：</strong>macOS 自带的命令行环境对 Unix/Linux 导向的开发工作通常更连贯；Windows Terminal 这个应用本身很优秀，PowerShell 对 Windows 管理更强，WSL 又大幅缩小了 Linux 开发差距。今天再说“Mac 终端全面碾压 Windows”已经是不准确的旧印象。
+      </div>
+    </section>
+
+    <section id="inspect">
+      <h2>十、亲手辨认自己的终端、Shell 与命令</h2>
+
+      <h3>10.1 在 macOS 或 Linux 中</h3>
+      <pre><code># 账户设置的登录 Shell
+echo "$SHELL"
+
+# 当前正在运行的 Shell 进程名
+ps -p $$ -o comm=
+
+# 当前 Shell 对自身的称呼
+printf '%s\n' "$0"
+
+# 查看版本
+zsh --version
+bash --version
+
+# 判断一个名字是内建、别名、函数还是外部程序
+type cd
+type git
+type ls</code></pre>
+      <p><code>$SHELL</code> 记录账户的登录 Shell，但不一定等于当前进程。例如你从 zsh 中手动运行 <code>bash</code>，当前 Shell 已变成 bash，而环境变量可能仍显示原来的登录 Shell。因此需要结合 <code>ps</code>、<code>$0</code> 和 <code>type</code> 判断。</p>
+
+      <h3>10.2 在 PowerShell 中</h3>
+      <pre><code># PowerShell 版本与运行环境
+$PSVersionTable
+
+# 查看命令解析到了什么
+Get-Command cd
+Get-Command git
+Get-Command ls
+
+# 查看当前进程
+Get-Process -Id $PID</code></pre>
+      <p>PowerShell 中的 <code>ls</code> 常是 <code>Get-ChildItem</code> 的别名；它不是 Unix <code>ls</code> 程序。相同拼写不保证相同语义，这也是跨 Shell 复制命令时必须先确认环境的原因。</p>
+
+      <h3>10.3 在 Windows Terminal 中识别当前配置</h3>
+      <p>看标签页标题和提示符不总可靠。最稳妥的方法是分别运行环境特有的查询：</p>
+      <ul>
+        <li>出现 <code>$PSVersionTable</code> 对象：你在 PowerShell；</li>
+        <li><code>echo %COMSPEC%</code> 返回 <code>cmd.exe</code> 路径：你在 cmd；</li>
+        <li><code>uname -a</code> 显示 Linux 且路径类似 <code>/home/...</code>：你很可能在 WSL；</li>
+        <li>Windows Terminal 本身只是承载以上任意环境。</li>
+      </ul>
+
+      <div class="checkpoint">
+        <h3>最小实验：证明终端与 Shell 可以分离</h3>
+        <ol>
+          <li>在 macOS Terminal 中运行 <code>bash</code>，观察提示符和 <code>ps -p $$ -o comm=</code>；</li>
+          <li>输入 <code>exit</code>，返回 zsh；</li>
+          <li>终端窗口从未改变，但内部 Shell 进程已经替换两次。</li>
+        </ol>
+        <p>Windows Terminal 中分别新建 PowerShell、Command Prompt 和 WSL 标签页，也是在做同一个实验：一个终端宿主可以承载多个命令解释器。</p>
+      </div>
+    </section>
+
+    <section id="ghost-return">
+      <h2>十一、重新理解 Ghost in the Shell</h2>
+
+      <p>《攻壳机动队》官方世界观把 “ghost” 与人的意识、自我和不可完全还原的主体性联系起来，而 “shell” 是义体、网络化身体和可被替换、侵入、复制的技术载体。英文标题中的介词是 <em>in</em>：幽灵存在于壳中，而不是站在壳下面。</p>
+      <p>计算机 Shell 与这个标题并非同一来源，但两者可以形成有启发性的对照：</p>
+      <table>
+        <thead><tr><th>作品隐喻</th><th>操作系统对应</th><th>不能强行类比之处</th></tr></thead>
+        <tbody>
+          <tr><td>Shell 是身体与技术载体</td><td>Shell 是人接触系统能力的外层语言界面</td><td>命令 Shell 不是身体，也不是意识容器</td></tr>
+          <tr><td>Ghost 体现主体性与意志</td><td>人的意图通过命令被编码并进入系统</td><td>程序执行没有自动获得人的主体性</td></tr>
+          <tr><td>网络深层结构影响日常社会</td><td>内核、协议、权限和后台服务支撑可见应用</td><td>Shell 多数时候是入口，不是基础设施本身</td></tr>
+          <tr><td>公安九课在隐藏层处理异常</td><td>系统管理员、运维、调试器和安全工具观察普通用户看不到的状态</td><td>管理员也必须受内核安全模型和组织授权约束</td></tr>
+        </tbody>
+      </table>
+
+      <p>你最初的感受可以改写成一句更准确的话：</p>
+      <div class="thesis">
+        我们生活在由看不见的底层系统支撑的界面世界中。Shell 不是那个底层系统本身，而是少数能够让人离开表层按钮、直接用语言组合底层公开能力的入口。它让隐藏结构变得可调用，却仍然不要求使用者掌握每个晶体管和内核实现。
+      </div>
+      <p>这也是 Shell 至今没有被图形界面淘汰的原因：按钮适合呈现设计者事先想到的操作；语言接口允许用户把已有动作组合成设计者没有逐一制作按钮的新流程。Shell 的力量不是“更底层”，而是<strong>可组合、可记录、可重复、可审查</strong>。</p>
+    </section>
+
+    <section id="self-check">
+      <h2>十二、自检题与参考答案</h2>
+
+      <div class="checkpoint">
+        <h3>问题 1：关闭 Terminal.app 为什么不会删除 zsh？</h3>
+        <details><summary>展开参考答案</summary><div>
+          <p>Terminal.app 是终端模拟器，zsh 是被它启动并通过 PTY 连接的 Shell 进程。关闭窗口会结束或断开当前会话，但 zsh 程序文件仍在系统中；换一个终端模拟器仍能启动它。</p>
+        </div></details>
+
+        <h3>问题 2：为什么管道是 Shell 语法，却依赖内核？</h3>
+        <details><summary>展开参考答案</summary><div>
+          <p><code>|</code> 由 Shell 解析，Shell 决定哪些程序相连；真正的管道缓冲区、阻塞、唤醒和文件描述符由内核实现。Shell 提供语言，内核提供机制。</p>
+        </div></details>
+
+        <h3>问题 3：为什么说 <code>cd</code> 不能只是一个普通外部程序？</h3>
+        <details><summary>展开参考答案</summary><div>
+          <p>当前工作目录是进程状态。外部 <code>cd</code> 只能改变子进程自己的目录，退出后父 Shell 不受影响；所以 Shell 必须在自身进程内执行目录切换。</p>
+        </div></details>
+
+        <h3>问题 4：macOS 的 Terminal.app 与 Windows Terminal 谁更强？</h3>
+        <details><summary>展开参考答案</summary><div>
+          <p>无法用操作系统名字直接判断。作为终端模拟器，Windows Terminal 在标签页、窗格、Unicode、GPU 渲染和多配置承载方面很现代；macOS 开发者常说“终端更好用”，主要是在评价其原生 Unix 环境和工具生态，不是只评价 Terminal.app。</p>
+        </div></details>
+
+        <h3>问题 5：PowerShell 的对象管道为什么不等于 Unix 文本管道的简单升级？</h3>
+        <details><summary>展开参考答案</summary><div>
+          <p>对象管道保留结构和类型，特别适合统一运行时与系统管理；文本管道跨语言、跨年代、跨远程连接更普遍。对象管道连接外部程序时常退回文本，而文本管道处理复杂结构时又需要额外格式。二者优化目标不同。</p>
+        </div></details>
+      </div>
+    </section>
+
+    <section id="conclusion">
+      <h2>十三、结论压缩</h2>
+      <ol>
+        <li><strong>内核是资源核心，Shell 是外部命令解释层。</strong>Shell 运行在用户态，通过公开接口请求内核工作。</li>
+        <li><strong>终端不是 Shell。</strong>终端模拟器承载字符输入输出；Shell 理解命令；命令行工具完成具体任务。</li>
+        <li><strong>Shell 同时是交互界面和编程语言。</strong>它能解析命令、维护会话、建立管道、重定向文件并自动化流程。</li>
+        <li><strong>Shell 的历史由反馈和组合需求推动。</strong>批处理过渡到分时交互，程序启动器发展为可组合的脚本语言。</li>
+        <li><strong>不同 Shell 不是单纯版本号。</strong>Bourne/POSIX、C shell、PowerShell 等属于不同语言家族和设计取向。</li>
+        <li><strong>Unix Shell 的力量来自统一接口。</strong>标准输入输出、文件描述符、退出状态和管道使互不认识的程序可以组合。</li>
+        <li><strong>macOS 的优势主要是原生 Unix 语义连贯。</strong>它与 Linux 服务器和开源开发工具链接近，减少环境翻译。</li>
+        <li><strong>Windows 已不能再等同于 cmd。</strong>Windows Terminal 是现代终端宿主，PowerShell 擅长对象化管理，WSL 提供 Linux 环境。</li>
+        <li><strong>“Ghost in the Shell”最好的计算机类比不是底层秘密。</strong>它提醒我们：人的意图必须借助某种壳进入复杂系统，而接口既赋予能力，也限定能力。</li>
+      </ol>
+      <p>在更大的操作系统知识结构中，本篇把你已经学过的进程、系统调用、文件描述符、信号、权限和终端设备重新连成了一条用户可观察的控制链。下一步最自然的主题，是深入 Unix 的“进程—文件描述符—管道—信号—PTY”模型，亲手实现一个最小 Shell，从代码层验证本文结构。</p>
+    </section>
+
+    <section id="references">
+      <h2>十四、参考资料与原地址</h2>
+      <p class="small">历史事实优先采用参与者回忆、标准、项目官方文档和操作系统厂商资料。产品文档会继续变化，本文核验截止日期为 2026-07-24。</p>
+      <ul class="source-list">
+        <li><span class="source-type">参与者回忆</span><a href="https://multicians.org/shell.html">Louis Pouzin / Multicians — The Origin of the Shell</a><span class="url">https://multicians.org/shell.html</span><span class="small">用于 RUNCOM、Shell 命名以及“命令作为构件”思想的历史。</span></li>
+        <li><span class="source-type">历史档案</span><a href="https://web.mit.edu/multics-history/">MIT — Multics History Project</a><span class="url">https://web.mit.edu/multics-history/</span><span class="small">用于确认 Multics 项目背景。</span></li>
+        <li><span class="source-type">历史源码与手册</span><a href="https://www.tuhs.org/Archive/Distributions/Research/Dennis_v1/UNIX_ProgrammersManual_Nov71.pdf">TUHS — First Edition UNIX Programmer’s Manual</a><span class="url">https://www.tuhs.org/Archive/Distributions/Research/Dennis_v1/UNIX_ProgrammersManual_Nov71.pdf</span><span class="small">用于早期 Unix 命令解释器和系统接口的历史背景。</span></li>
+        <li><span class="source-type">标准</span><a href="https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html">The Open Group — POSIX.1-2024 Shell Command Language</a><span class="url">https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html</span><span class="small">用于 Shell 作为命令语言解释器及其解析/执行模型。</span></li>
+        <li><span class="source-type">官方手册</span><a href="https://www.gnu.org/software/bash/manual/bash.html">GNU — Bash Reference Manual</a><span class="url">https://www.gnu.org/software/bash/manual/bash.html</span><span class="small">用于 Bash、脚本、命令执行与交互功能。</span></li>
+        <li><span class="source-type">官方历史</span><a href="https://www.kornshell.com/doc/faq.html">KornShell — KSH-93 FAQ</a><span class="url">https://www.kornshell.com/doc/faq.html</span><span class="small">用于 ksh 由 David Korn 开发及早期版本时间。</span></li>
+        <li><span class="source-type">官方项目</span><a href="https://zsh.sourceforge.io/">Zsh — Official Project Site</a><span class="url">https://zsh.sourceforge.io/</span><span class="small">用于 zsh 的交互定位、脚本能力与家族关系。</span></li>
+        <li><span class="source-type">Apple 官方</span><a href="https://support.apple.com/guide/terminal/change-general-settings-trmlstrtup/mac">Apple — Terminal General Settings</a><span class="url">https://support.apple.com/guide/terminal/change-general-settings-trmlstrtup/mac</span><span class="small">用于确认 macOS 默认登录 Shell 为 zsh，以及 Terminal 可启动不同 Shell。</span></li>
+        <li><span class="source-type">Apple 开发文档</span><a href="https://developer.apple.com/library/archive/documentation/Porting/Conceptual/PortingUnix/">Apple — Porting UNIX/Linux Applications to OS X</a><span class="url">https://developer.apple.com/library/archive/documentation/Porting/Conceptual/PortingUnix/</span><span class="small">用于 macOS 的 Unix 基础、POSIX/BSD 环境与移植边界。</span></li>
+        <li><span class="source-type">Microsoft 官方</span><a href="https://learn.microsoft.com/en-us/powershell/scripting/what-is-a-command-shell">Microsoft — What is a command shell?</a><span class="url">https://learn.microsoft.com/en-us/powershell/scripting/what-is-a-command-shell</span><span class="small">用于区分 Shell、终端和命令行工具。</span></li>
+        <li><span class="source-type">Microsoft 官方</span><a href="https://learn.microsoft.com/en-us/windows/terminal/faq">Microsoft — Windows Terminal FAQ</a><span class="url">https://learn.microsoft.com/en-us/windows/terminal/faq</span><span class="small">用于 Windows Terminal 作为多个 Shell 的宿主，而非 Shell 本身。</span></li>
+        <li><span class="source-type">Microsoft 工程历史</span><a href="https://devblogs.microsoft.com/commandline/windows-command-line-the-evolution-of-the-windows-command-line/">Microsoft — The Evolution of the Windows Command-Line</a><span class="url">https://devblogs.microsoft.com/commandline/windows-command-line-the-evolution-of-the-windows-command-line/</span><span class="small">用于 DOS、Windows Console、PowerShell 与 WSL 的历史连续性。</span></li>
+        <li><span class="source-type">Microsoft 架构</span><a href="https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/">Microsoft — Introducing the Windows Pseudo Console (ConPTY)</a><span class="url">https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/</span><span class="small">用于 PTY/ConPTY、终端宿主与命令行进程解耦。</span></li>
+        <li><span class="source-type">Microsoft 官方</span><a href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_objects">Microsoft — PowerShell Objects</a><span class="url">https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_objects</span><span class="small">用于 PowerShell 管道传递对象的机制。</span></li>
+        <li><span class="source-type">Microsoft 官方</span><a href="https://learn.microsoft.com/en-us/windows/wsl/about">Microsoft — What is Windows Subsystem for Linux?</a><span class="url">https://learn.microsoft.com/en-us/windows/wsl/about</span><span class="small">用于 WSL 是 Linux 环境而非 cmd 插件的说明。</span></li>
+        <li><span class="source-type">作品官方</span><a href="https://theghostintheshell.jp/en/introduction/article/ghost">Ghost in the Shell Official Global Site — Ghost</a><span class="url">https://theghostintheshell.jp/en/introduction/article/ghost</span><span class="small">用于作品中的 ghost、义体化与人机边界背景。</span></li>
+      </ul>
+    </section>
+  </main>
+
+  <section id="reader-feedback" data-feedback-status="pending">
+    <h2>读后反馈与修订记录</h2>
+    <article class="feedback-entry" data-date="2026-07-24" data-round="0">
+      <h3>2026-07-24 · 初始生成</h3>
+      <p><strong>原始需求：</strong>结合《攻壳机动队》的 “shell” 隐喻与计算机操作系统，阐述 Shell 的发展历史和主要版本，解释 Shell 与终端的关系，并说明为什么 macOS 的终端常被认为比 Windows 更好用。</p>
+      <p><strong>问题分类：</strong>结构 / 历史 / 概念边界 / 系统比较</p>
+      <p><strong>处理：</strong>以“人—终端—Shell—程序—内核—硬件”六层结构为主线；补充命令执行、进程、文件描述符、管道、信号与任务控制；区分 Shell 家族和发行版本；把 macOS/Windows 的比较拆成终端模拟器、Shell、操作系统语义和开发生态四层。</p>
+      <p><strong>Skill 更新：</strong>无。该隐喻和比较范围暂视为本篇特定要求，待读后反馈判断是否形成计算机领域的可复用规则。</p>
+      <p><strong>状态：</strong>待读后反馈</p>
+    </article>
+  </section>
+</body>
+</html>

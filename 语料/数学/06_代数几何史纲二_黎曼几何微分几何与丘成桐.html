@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>代数几何史纲（二）：黎曼几何、相对论与丘成桐在哪里相遇？</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <style>
+    :root { color-scheme:light; --ink:#172033; --muted:#5e687b; --line:#d8dfeb; --soft:#f5f7fb; --accent:#6b3da5; --accent2:#0f7280; --accent-soft:#f1ebf8; --blue-soft:#eaf6f8; --warm:#fff8e9; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0 auto; padding:2.2rem 1.35rem 5rem; max-width:950px; color:var(--ink); background:#fff; font:17px/1.83 system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; }
+    h1 { font-size:2rem; line-height:1.3; margin:0 0 1.2rem; }
+    h2 { margin-top:3.1rem; padding-top:.5rem; border-top:1px solid var(--line); font-size:1.54rem; }
+    h3 { margin-top:2rem; font-size:1.17rem; }
+    p, li { text-align:justify; }
+    a { color:#5b2d92; text-underline-offset:3px; overflow-wrap:anywhere; }
+    blockquote { margin:1.2rem 0; padding:.9rem 1.05rem; border-left:4px solid var(--accent); background:var(--accent-soft); color:#49296f; }
+    nav#TOC { margin:1.4rem 0 2.6rem; padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; }
+    nav#TOC::before { content:"目录"; display:block; font-weight:750; margin-bottom:.45rem; }
+    nav#TOC ul { margin:.22rem 0; padding-left:1.35rem; }
+    .history-lanes, .structure-stack, .proof-chain { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.72rem; margin:1.35rem 0; }
+    .history-lanes section, .structure-stack section, .proof-chain section { min-height:94px; padding:.82rem .9rem; border:1px solid #d5c6e6; border-radius:11px; background:linear-gradient(145deg,#fff,#f6f0fb); }
+    .history-lanes strong, .history-lanes span, .structure-stack strong, .structure-stack span, .proof-chain strong, .proof-chain span { display:block; }
+    .history-lanes span, .structure-stack span, .proof-chain span { margin-top:.35rem; color:var(--muted); font-size:.92rem; line-height:1.6; }
+    .proof-chain { grid-template-columns:repeat(5,minmax(0,1fr)); }
+    .proof-chain section { position:relative; min-height:130px; }
+    .proof-chain section:not(:last-child)::after { content:"→"; position:absolute; right:-.62rem; top:42%; z-index:2; color:var(--accent); font-weight:800; }
+    .concept-tree { padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; overflow-x:auto; }
+    .concept-tree ul { margin:.3rem 0; }
+    table { width:100%; border-collapse:collapse; display:block; overflow-x:auto; margin:1.2rem 0; }
+    th, td { min-width:145px; border:1px solid var(--line); padding:.65rem .75rem; vertical-align:top; }
+    th { background:var(--soft); }
+    math[display="block"] { display:block; max-width:100%; overflow-x:auto; overflow-y:hidden; padding:.45rem 0; }
+    details { margin:1rem 0 1.5rem; padding:.78rem 1rem; border:1px solid var(--line); border-radius:10px; background:var(--blue-soft); }
+    summary { cursor:pointer; font-weight:750; color:#155e68; }
+    #reader-feedback { margin-top:3.5rem; padding:1rem 1.2rem; background:var(--warm); border:1px solid #ead6a7; border-radius:12px; }
+    .feedback-entry { padding:.45rem 0 .9rem; }
+    code { overflow-wrap:anywhere; }
+    @media (max-width:860px) {
+      .proof-chain { grid-template-columns:1fr; }
+      .proof-chain section { min-height:auto; }
+      .proof-chain section:not(:last-child)::after { content:"↓"; right:auto; left:50%; top:auto; bottom:-1.05rem; }
+    }
+    @media (max-width:650px) {
+      body { padding:1.2rem .92rem 4rem; font-size:16px; line-height:1.79; }
+      h1 { font-size:1.64rem; }
+      h2 { font-size:1.32rem; margin-top:2.55rem; }
+      h3 { font-size:1.09rem; }
+      p, li { text-align:left; }
+      blockquote, .concept-tree, #reader-feedback { margin-left:0; margin-right:0; padding:.76rem .86rem; }
+      .history-lanes, .structure-stack { grid-template-columns:1fr; }
+      th, td { min-width:132px; }
+    }
+  </style>
+  <meta name="corpus-id" content="06">
+  <meta name="domain" content="mathematics">
+  <meta name="series" content="history-of-algebraic-geometry">
+  <meta name="series-part" content="2-of-4">
+  <meta name="production-status" content="draft-ready">
+  <meta name="reading-status" content="unread">
+  <meta name="expected-reading-time" content="45-55-minutes">
+  <meta name="generated-date" content="2026-07-18">
+  <meta name="revision-round" content="0">
+  <meta name="experimental-series" content="true">
+  <meta name="feedback-scope" content="series-only">
+  <meta name="skill-adjustment" content="disabled">
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">代数几何史纲（二）：黎曼几何、相对论与丘成桐在哪里相遇？</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#同一个几何一词至少指五种不同的问题"
+id="toc-同一个几何一词至少指五种不同的问题">0.
+同一个“几何”一词，至少指五种不同的问题</a></li>
+<li><a href="#从-gauss-到-riemann几何为什么不必住在外部空间中"
+id="toc-从-gauss-到-riemann几何为什么不必住在外部空间中">1. 从 Gauss 到
+Riemann：几何为什么不必住在外部空间中？</a></li>
+<li><a href="#从-riemann-度量到相对论只差一个负号吗"
+id="toc-从-riemann-度量到相对论只差一个负号吗">2. 从 Riemann
+度量到相对论：只差一个负号吗？</a></li>
+<li><a href="#另一座桥复流形为什么会带上-riemann-度量"
+id="toc-另一座桥复流形为什么会带上-riemann-度量">3.
+另一座桥：复流形为什么会带上 Riemann 度量？</a></li>
+<li><a href="#calabi-猜想怎样在一个复流形上挑出典范度量"
+id="toc-calabi-猜想怎样在一个复流形上挑出典范度量">4. Calabi
+猜想：怎样在一个复流形上挑出“典范度量”？</a></li>
+<li><a href="#丘成桐究竟开创了什么又没有开创什么"
+id="toc-丘成桐究竟开创了什么又没有开创什么">5.
+丘成桐究竟开创了什么，又没有开创什么？</a></li>
+<li><a href="#把两篇文章接起来方程复结构度量的层级"
+id="toc-把两篇文章接起来方程复结构度量的层级">6.
+把两篇文章接起来：方程、复结构、度量的层级</a></li>
+<li><a href="#最小记忆清单" id="toc-最小记忆清单">7.
+最小记忆清单</a></li>
+<li><a href="#史料与延伸阅读" id="toc-史料与延伸阅读">8.
+史料与延伸阅读</a></li>
+<li><a href="#reader-feedback"
+id="toc-reader-feedback">阅读反馈记录</a></li>
+</ul>
+</nav>
+<blockquote>
+<p><strong>系列性质</strong>：实验性语料；共四篇。本系列的阅读反馈只用于修订本系列，不写入通用
+Skill。<br />
+<strong>预计阅读时间</strong>：45—55 分钟<br />
+<strong>阅读状态</strong>：未读<br />
+<strong>本篇任务</strong>：区分代数几何、微分几何、Riemann 几何、Lorentz
+几何和复几何；理解从 Gauss—Riemann 到 Einstein
+的度量主线，以及从复流形—Kähler 几何到 Calabi
+猜想—丘成桐定理的汇合主线。<br />
+<strong>核心纠误</strong>：丘成桐没有“开创微分几何”；他在一个已有百余年历史的领域中，以非线性偏微分方程解决了若干核心存在性问题，并推动了现代几何分析的发展。</p>
+</blockquote>
+<hr />
+<h2 id="同一个几何一词至少指五种不同的问题">0.
+同一个“几何”一词，至少指五种不同的问题</h2>
+<p>你提到的代数几何、相对论中的 Riemann
+几何和丘成桐的工作确实相连，但它们不是同一门学科换了三个名字。先把对象和附加结构分开。</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>领域</th>
+<th>基本对象</th>
+<th>主要结构</th>
+<th>典型问题</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>代数几何</td>
+<td>代数簇、概形</td>
+<td>正则函数、多项式关系</td>
+<td>方程的解集、映射、族、算术性质</td>
+</tr>
+<tr class="even">
+<td>微分几何</td>
+<td>光滑流形</td>
+<td>可微结构</td>
+<td>切空间、微分形式、曲率、整体结构</td>
+</tr>
+<tr class="odd">
+<td>Riemann 几何</td>
+<td>光滑流形</td>
+<td>正定度量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math></td>
+<td>长度、角度、测地线、Ricci 曲率</td>
+</tr>
+<tr class="even">
+<td>Lorentz 几何</td>
+<td>光滑流形</td>
+<td>一正三负或三正一负的非退化度量</td>
+<td>时空、光锥、因果结构；广义相对论</td>
+</tr>
+<tr class="odd">
+<td>复/Kähler 几何</td>
+<td>复流形</td>
+<td>复结构；兼容的 Hermitian 与辛结构</td>
+<td>全纯函数、Hodge 理论、典范度量</td>
+</tr>
+</tbody>
+</table>
+<p>一条光滑复射影代数簇可以同时属于前三列中的多个世界：</p>
+<ol type="1">
+<li>方程给它代数结构；</li>
+<li>复坐标给它复流形结构；</li>
+<li>选取 Kähler 度量后，可以谈长度、曲率和偏微分方程。</li>
+</ol>
+<p>但这些结构不应混同。<strong>代数结构规定哪些函数算正则；度量结构规定怎样测量。</strong>
+同一个复流形可以带很多不同的 Riemann 度量。</p>
+<p>本篇沿三条线前进。</p>
+<div class="history-lanes" aria-label="本篇三条历史主线">
+<section>
+<strong>A　测量的内在化</strong><span>Gauss 曲面 → Riemann 流形 →
+曲率张量</span>
+</section>
+<section>
+<strong>B　时空几何</strong><span>Minkowski 时空 → Einstein 方程 →
+Lorentz 几何</span>
+</section>
+<section>
+<strong>C　复几何的典范度量</strong><span>Kähler → Calabi 猜想 → Yau →
+代数几何应用</span>
+</section>
+</div>
+<hr />
+<h2 id="从-gauss-到-riemann几何为什么不必住在外部空间中">1. 从 Gauss 到
+Riemann：几何为什么不必住在外部空间中？</h2>
+<h3 id="gauss-的问题曲率能否由曲面内部居民测出">1.1 Gauss
+的问题：曲率能否由曲面内部居民测出？</h3>
+<p>一张纸可以卷成圆柱而不拉伸。作为三维空间中的曲面，它的外形变了；但纸面上的长度与角度没有变，内在
+Gauss 曲率仍为零。球面则不能不拉伸地铺平，因为它有正 Gauss 曲率。</p>
+<p>Gauss 的“绝妙定理”说明，曲面的 Gauss 曲率虽然最初可通过它在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mn>3</mn></msup><annotation encoding="application/x-tex">\mathbb R^3</annotation></semantics></math>
+中的弯曲来定义，最终却能只由曲面上的第一基本形式算出。也就是说，生活在曲面内部、只能测长度和角度的居民，也能判断自己所在空间是否弯曲。</p>
+<p>这是第一次关键转向：<strong>几何不再依赖把对象嵌进更高维欧氏空间；度量本身就能产生内在曲率。</strong></p>
+<h3 id="光滑流形与切空间">1.2 光滑流形与切空间</h3>
+<p><strong>光滑
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+维流形</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+是一个局部看起来像
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mi>n</mi></msup><annotation encoding="application/x-tex">\mathbb R^n</annotation></semantics></math>
+的拓扑空间，并配有坐标图，使坐标图之间的转换函数光滑。</p>
+<p>在点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>∈</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">p\in M</annotation></semantics></math>
+处，切空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>p</mi></msub><mi>M</mi></mrow><annotation encoding="application/x-tex">T_pM</annotation></semantics></math>
+是所有经过
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+的曲线速度向量所成的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+维向量空间。若局部坐标为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>x</mi><mn>1</mn></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>x</mi><mi>n</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x^1,\ldots,x^n)</annotation></semantics></math>，切向量可以写成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mi>v</mi><mi>i</mi></msup><mfrac><mi>∂</mi><mrow><mi>∂</mi><msup><mi>x</mi><mi>i</mi></msup></mrow></mfrac><msub><mo minsize="2.4" maxsize="2.4" stretchy="false" form="prefix">|</mo><mi>p</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+v=\sum_{i=1}^{n}v^i\frac{\partial}{\partial x^i}\bigg|_p.
+</annotation></semantics></math></p>
+<p>这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><mi>/</mi><mi>∂</mi><msup><mi>x</mi><mi>i</mi></msup></mrow><annotation encoding="application/x-tex">\partial/\partial x^i</annotation></semantics></math>
+是坐标方向的基，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>v</mi><mi>i</mi></msup><annotation encoding="application/x-tex">v^i</annotation></semantics></math>
+是向量分量。切空间把弯曲流形在每一点“线性化”，使线性代数可以逐点使用。</p>
+<h3 id="riemann-度量逐点变化的内积">1.3 Riemann
+度量：逐点变化的内积</h3>
+<p><strong>Riemann 度量</strong>是在每个切空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>p</mi></msub><mi>M</mi></mrow><annotation encoding="application/x-tex">T_pM</annotation></semantics></math>
+上给定一个正定内积
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>p</mi></msub><annotation encoding="application/x-tex">g_p</annotation></semantics></math>，并要求它随
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+光滑变化。局部写成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>g</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><msup><mi>x</mi><mi>i</mi></msup><mo>⊗</mo><mi>d</mi><msup><mi>x</mi><mi>j</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+g=\sum_{i,j=1}^{n}g_{ij}(x)\,dx^i\otimes dx^j.
+</annotation></semantics></math></p>
+<p>逐一解释：</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">g_{ij}(x)</annotation></semantics></math>
+是位置
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+处的对称正定矩阵；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><msup><mi>x</mi><mi>i</mi></msup></mrow><annotation encoding="application/x-tex">dx^i</annotation></semantics></math>
+是测量第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+个坐标分量的余切向量；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><msup><mi>x</mi><mi>i</mi></msup><mo>⊗</mo><mi>d</mi><msup><mi>x</mi><mi>j</mi></msup></mrow><annotation encoding="application/x-tex">dx^i\otimes dx^j</annotation></semantics></math>
+表示一个双线性测量规则；</li>
+<li>整个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+输入两个切向量，输出它们的内积。</li>
+</ul>
+<p>曲线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi><mo>:</mo><mrow><mo stretchy="true" form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>→</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">\gamma:[a,b]\to M</annotation></semantics></math>
+的长度定义为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∫</mo><mi>a</mi><mi>b</mi></msubsup><msqrt><mrow><msub><mi>g</mi><mrow><mi>γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>γ</mi><mo accent="true">̇</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mover><mi>γ</mi><mo accent="true">̇</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msqrt><mspace width="0.167em"></mspace><mi>d</mi><mi>t</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+L(\gamma)=\int_a^b\sqrt{g_{\gamma(t)}(\dot\gamma(t),\dot\gamma(t))}\,dt.
+</annotation></semantics></math></p>
+<p>被积式先用
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+求速度向量的长度，再沿时间累加。由此可以定义两点距离、最短曲线和测地线。</p>
+<h3 id="riemann-的扩展从二维曲面到任意维多重广延量">1.4 Riemann
+的扩展：从二维曲面到任意维“多重广延量”</h3>
+<p>Riemann 在 1854 年就职演讲中把 Gauss
+的二维思想推广到任意维。他提出：空间的度量不是先验固定的 Euclidean
+公式，而是可以由位置依赖的二次型给出；曲率应该描述这个度量偏离局部
+Euclidean 的方式。</p>
+<p>之后 Christoffel、Ricci、Levi-Civita
+等人发展出协变微分和张量计算。Riemann
+曲率张量可以看作“向量沿一个无穷小闭路平行移动后不能完全回到原方向”的测量。对曲率张量缩并，得到
+Ricci 曲率
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">c</mi></mrow><annotation encoding="application/x-tex">\mathrm{Ric}</annotation></semantics></math>；再缩并一次，得到标量曲率
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>。</p>
+<p>这里的历史顺序很重要：相对论没有凭空“发明弯曲时空所需的数学”。Einstein
+使用的是十九世纪从 Gauss、Riemann 到 Ricci、Levi-Civita
+累积起来的微分几何语言，同时赋予度量新的物理意义。</p>
+<hr />
+<h2 id="从-riemann-度量到相对论只差一个负号吗">2. 从 Riemann
+度量到相对论：只差一个负号吗？</h2>
+<h3 id="minkowski-时空不是正定-riemann-空间">2.1 Minkowski 时空不是正定
+Riemann 空间</h3>
+<p>狭义相对论把时间与空间统一为四维时空。在惯性坐标中，间隔可写成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><msup><mi>s</mi><mn>2</mn></msup><mo>=</mo><mo>−</mo><msup><mi>c</mi><mn>2</mn></msup><mi>d</mi><msup><mi>t</mi><mn>2</mn></msup><mo>+</mo><mi>d</mi><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mi>d</mi><msup><mi>y</mi><mn>2</mn></msup><mo>+</mo><mi>d</mi><msup><mi>z</mi><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+ds^2=-c^2dt^2+dx^2+dy^2+dz^2.
+</annotation></semantics></math></p>
+<p>符号约定也可以整体反号。关键不是选哪一种，而是时间方向与三个空间方向符号相反。因此一个非零向量的“平方长度”可能为正、负或零；光线方向满足
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><msup><mi>s</mi><mn>2</mn></msup><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">ds^2=0</annotation></semantics></math>。</p>
+<p>这种度量不是正定的，所以严格说广义相对论使用的是 <strong>Lorentz
+流形</strong>或<strong>伪 Riemann 流形</strong>，而非正定 Riemann
+流形。日常说“相对论使用 Riemann 几何”是历史和广义称呼上的简写。</p>
+<p>那个负号不是无关紧要的装饰。它产生光锥，把切向量分成类时、类空和零向量，并决定哪些事件能因果影响另一些事件。正定
+Riemann 几何没有这种因果结构。</p>
+<h3 id="einstein-的转向引力不再是固定舞台上的力">2.2 Einstein
+的转向：引力不再是固定舞台上的力</h3>
+<p>Newton
+理论在预先给定的空间与时间中，用引力势或力描述物质相互作用。Einstein
+的广义相对论让时空度量
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><annotation encoding="application/x-tex">g_{\mu\nu}</annotation></semantics></math>
+本身成为动力学变量：物质影响时空曲率，曲率又决定自由落体轨道。</p>
+<p>Einstein 场方程通常写成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><msub><mi>G</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><mo>+</mo><mi>Λ</mi><msub><mi>g</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><mo>=</mo><mfrac><mrow><mn>8</mn><mi>π</mi><mi>G</mi></mrow><msup><mi>c</mi><mn>4</mn></msup></mfrac><msub><mi>T</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+G_{\mu\nu}+\Lambda g_{\mu\nu}
+=\frac{8\pi G}{c^4}T_{\mu\nu}
+}
+</annotation></semantics></math></p>
+<p>其中：</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><annotation encoding="application/x-tex">g_{\mu\nu}</annotation></semantics></math>
+是 Lorentz 度量；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><annotation encoding="application/x-tex">R_{\mu\nu}</annotation></semantics></math>
+是 Ricci
+曲率，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+是标量曲率；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><mo>=</mo><msub><mi>R</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>R</mi><msub><mi>g</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub></mrow><annotation encoding="application/x-tex">G_{\mu\nu}=R_{\mu\nu}-\frac12Rg_{\mu\nu}</annotation></semantics></math>
+是 Einstein 张量；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><annotation encoding="application/x-tex">T_{\mu\nu}</annotation></semantics></math>
+是能量—动量张量，记录物质与能量；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+是 Newton
+引力常数，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+是光速；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
+是宇宙学常数。</li>
+</ul>
+<p>左边只由时空度量及其一、二阶导数组成，描述几何；右边描述物质。口号“物质告诉时空如何弯曲，时空告诉物质如何运动”正是这一结构的压缩。</p>
+<h3 id="bianchi-恒等式为什么对应能量守恒">2.3 Bianchi
+恒等式为什么对应能量守恒？</h3>
+<p>Riemann 曲率满足一个微分恒等式，缩并后得到</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>∇</mi><mi>μ</mi></msup><msub><mi>G</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\nabla^\mu G_{\mu\nu}=0.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∇</mi><annotation encoding="application/x-tex">\nabla</annotation></semantics></math>
+是由度量唯一决定、同时保持度量且无挠的 Levi-Civita 联络。把 Einstein
+方程两边作协变散度，就得到</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>∇</mi><mi>μ</mi></msup><msub><mi>T</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\nabla^\mu T_{\mu\nu}=0.
+</annotation></semantics></math></p>
+<p>它表达局部能量—动量守恒。这里几何恒等式不是解方程之后偶然出现的性质，而是约束右端物理量必须满足守恒律。微分几何的结构直接决定了物理方程允许什么源。</p>
+<h3 id="相对论与代数几何有直接继承关系吗">2.4
+相对论与代数几何有直接继承关系吗？</h3>
+<p>一般相对论的标准时空是光滑 Lorentz
+流形，研究工具主要来自微分几何、偏微分方程与全局分析，不要求时空由多项式方程定义。因此“相对论使用
+Riemann 几何”不能推出“相对论就是代数几何的应用”。</p>
+<p>二者确有现代接口，例如代数曲面、twistor 理论、模空间、弦论紧化和
+Calabi–Yau
+流形，但这是更晚出现的交叉。最重要的共同祖先是“流形”和“曲率”语言，而不是多项式零点。</p>
+<h3 id="分段自检一">分段自检一</h3>
+<ol type="1">
+<li>Riemann 度量与 Lorentz 度量的决定性差别是什么？</li>
+<li>广义相对论为什么不只是“在弯曲空间里继续用 Newton 引力”？</li>
+<li>Einstein 方程左边的几何恒等式如何限制右边的物质？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>前者正定；后者不定号，时间方向与空间方向符号不同，因此产生光锥和因果结构。</li>
+<li>度量本身成为由物质决定的动力学场，不再是预先固定的舞台。</li>
+<li>Bianchi 恒等式给出 Einstein
+张量协变散度为零，从而要求能量—动量张量也协变守恒。</li>
+</ol>
+</details>
+<hr />
+<h2 id="另一座桥复流形为什么会带上-riemann-度量">3.
+另一座桥：复流形为什么会带上 Riemann 度量？</h2>
+<h3 id="复结构与度量是两层不同数据">3.1 复结构与度量是两层不同数据</h3>
+<p>复
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+维流形局部像
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℂ</mi><mi>n</mi></msup><annotation encoding="application/x-tex">\mathbb C^n</annotation></semantics></math>，坐标变换全纯。把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℂ</mi><mi>n</mi></msup><annotation encoding="application/x-tex">\mathbb C^n</annotation></semantics></math>
+看作
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mrow><mn>2</mn><mi>n</mi></mrow></msup><annotation encoding="application/x-tex">\mathbb R^{2n}</annotation></semantics></math>，它自然有一个线性算子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math>，表示每个复坐标乘以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>，满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>J</mi><mn>2</mn></msup><mo>=</mo><mo>−</mo><mo>id</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+J^2=-\operatorname{id}.
+</annotation></semantics></math></p>
+<p><strong>Hermitian 度量</strong>是与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math>
+相容的 Riemann 度量，即</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>J</mi><mi>u</mi><mo>,</mo><mi>J</mi><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+g(Ju,Jv)=g(u,v).
+</annotation></semantics></math></p>
+<p>由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math>
+定义二形式</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ω</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>J</mi><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\omega(u,v)=g(Ju,v).
+</annotation></semantics></math></p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>ω</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">d\omega=0</annotation></semantics></math>，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>M</mi><mo>,</mo><mi>J</mi><mo>,</mo><mi>g</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(M,J,g)</annotation></semantics></math>
+称为 Kähler
+流形，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+称为 Kähler 形式。</p>
+<p>Kähler 条件把三套结构锁在一起：</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math>：复分析结构；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>：Riemann
+度量结构；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>：辛几何结构。</li>
+</ul>
+<p>这就是代数几何与微分几何最稳定的会合区之一。</p>
+<h3 id="为什么射影代数簇天然进入-kähler-世界">3.2
+为什么射影代数簇天然进入 Kähler 世界？</h3>
+<p>复射影空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ℙ</mi><mi>n</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℂ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P^n(\mathbb C)</annotation></semantics></math>
+带有标准的 Fubini–Study Kähler 度量。若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>⊆</mo><msup><mi>ℙ</mi><mi>n</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℂ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X\subseteq\mathbb P^n(\mathbb C)</annotation></semantics></math>
+是光滑射影代数簇，把该度量限制到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>，就得到
+Kähler 度量。</p>
+<p>因此存在一条自然通道：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">光滑复射影簇</mtext><mo>⇒</mo><mtext mathvariant="normal">紧致复流形</mtext><mo>⇒</mo><mtext mathvariant="normal">紧致 Kähler 流形</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{光滑复射影簇}
+\Longrightarrow
+\text{紧致复流形}
+\Longrightarrow
+\text{紧致 Kähler 流形}.
+</annotation></semantics></math></p>
+<p>反方向不完全成立：并非每个紧致复流形都是射影的，甚至并非每个紧致
+Kähler 流形都来自射影嵌入。Kodaira 嵌入定理给出一个关键判据：若紧致
+Kähler 流形存在积分 Kähler
+类，也就是合适的正线丛，就可以嵌入复射影空间。这里“某个微分形式的上同调类是否积分”决定了分析对象能否代数化。</p>
+<h3 id="第一-chern-类与典范线丛在记录什么">3.3 第一 Chern
+类与典范线丛在记录什么？</h3>
+<p>复流形的全纯余切丛最高外幂</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>X</mi></msub><mo>=</mo><mover><mo>⋀</mo><mi>n</mi></mover><msubsup><mi>T</mi><mi>X</mi><mrow><mo>*</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msubsup></mrow><annotation encoding="application/x-tex">
+K_X=\bigwedge^nT_X^{*(1,0)}
+</annotation></semantics></math></p>
+<p>称为典范线丛。它的局部截面就是全纯体积形式。第一 Chern 类
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">c_1(X)</annotation></semantics></math>
+可以看作该复流形切丛弯曲方式的拓扑记录，并与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mi>X</mi></msub><annotation encoding="application/x-tex">K_X</annotation></semantics></math>
+的 Chern 类符号相反。</p>
+<p>对 Kähler 度量，Ricci 形式
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ρ</mi><annotation encoding="application/x-tex">\rho</annotation></semantics></math>
+是一个闭的实
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,1)</annotation></semantics></math>-形式，其上同调类满足</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>ρ</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mn>2</mn><mi>π</mi><msub><mi>c</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[\rho]=2\pi c_1(X).
+</annotation></semantics></math></p>
+<p>这条公式非常关键：Ricci
+曲率是分析对象，会随度量改变；但它所在的上同调类由复流形的拓扑—全纯结构固定。于是一个自然问题出现：在固定
+Kähler 类中，能否挑选度量，使 Ricci 曲率成为我们指定的代表元？</p>
+<p>这正是 Calabi 猜想。</p>
+<h3 id="与已学拓扑的接口基本群和曲率分别看见什么">3.4
+与已学拓扑的接口：基本群和曲率分别看见什么？</h3>
+<p>基本群只依赖底层拓扑空间；Riemann
+度量则是在同一个光滑流形上附加的测量数据。因此改变度量不会改变
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>M</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi_1(M)</annotation></semantics></math>，但会改变测地线长度和曲率。反过来，曲率条件有时能强迫基本群受到限制，这正是整体微分几何的典型主题。</p>
+<p>一个直接例子是：球面与环面都是闭曲面，却有</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>S</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>π</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>T</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>ℤ</mi><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\pi_1(S^2)=1,
+\qquad
+\pi_1(T^2)=\mathbb Z^2.
+</annotation></semantics></math></p>
+<p>球面带常正曲率度量，平坦环面可由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\mathbb R^2</annotation></semantics></math>
+对格子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℤ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\mathbb Z^2</annotation></semantics></math>
+取商得到。其基本群的两个生成元正对应两个独立的平移方向。对亏格
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">g\ge2</annotation></semantics></math>
+的闭可定向曲面，统一化定理说明它可以带常负曲率度量。于是闭曲面分类中的三档亏格也对应三种标准曲率符号：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mn>0</mn><mo>↔</mo><mo>+</mo><mn>1</mn><mo>,</mo><mspace width="2.0em"></mspace><mi>g</mi><mo>=</mo><mn>1</mn><mo>↔</mo><mn>0</mn><mo>,</mo><mspace width="2.0em"></mspace><mi>g</mi><mo>≥</mo><mn>2</mn><mo>↔</mo><mo>−</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+g=0\leftrightarrow +1,
+\qquad
+g=1\leftrightarrow 0,
+\qquad
+g\ge2\leftrightarrow -1.
+</annotation></semantics></math></p>
+<p>注意这不是说任意度量都具有该常曲率，而是说每个相应拓扑类型存在这样的标准代表。拓扑先把空间分型，几何再在每一型中寻找典范度量；Calabi
+问题在高维复流形中延续的正是这种思想。</p>
+<p>基本群还有一个与曲率更精细的接口：<strong>holonomy（和乐群）</strong>。把切向量沿闭路平行移动一圈，它返回原点时可能发生旋转；所有闭路产生的线性变换组成
+holonomy 群。基本群记录闭路不能怎样缩掉，holonomy
+记录联络沿闭路积累了怎样的几何变化。若两条闭路同伦，在平坦联络下
+holonomy 相同；一般有曲率时，即使可缩闭路也可能产生非平凡
+holonomy，所以二者相关却不能等同。</p>
+<hr />
+<h2 id="calabi-猜想怎样在一个复流形上挑出典范度量">4. Calabi
+猜想：怎样在一个复流形上挑出“典范度量”？</h2>
+<h3 id="为什么存在一个好度量是困难的">4.1
+为什么“存在一个好度量”是困难的？</h3>
+<p>拓扑或代数条件常只能告诉我们某类度量若存在会有什么性质，却不能直接造出度量。度量的系数是函数，曲率包含这些函数的一、二阶导数；要求曲率满足指定条件，会得到非线性偏微分方程。</p>
+<p>在同一个 Kähler 类中，Kähler 形式可写成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ω</mi><mi>φ</mi></msub><mo>=</mo><mi>ω</mi><mo>+</mo><mi>i</mi><mi>∂</mi><mover><mi>∂</mi><mo accent="true">‾</mo></mover><mi>φ</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\omega_\varphi=\omega+i\partial\bar\partial\varphi,
+</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>
+是参考 Kähler
+形式，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>φ</mi><annotation encoding="application/x-tex">\varphi</annotation></semantics></math>
+是待求实函数，并要求
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ω</mi><mi>φ</mi></msub><annotation encoding="application/x-tex">\omega_\varphi</annotation></semantics></math>
+仍为正。Calabi 把指定 Ricci 形式的问题化为复 Monge–Ampère 方程</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo>+</mo><mi>i</mi><mi>∂</mi><mover><mi>∂</mi><mo accent="true">‾</mo></mover><mi>φ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>n</mi></msup><mo>=</mo><msup><mi>e</mi><mi>F</mi></msup><msup><mi>ω</mi><mi>n</mi></msup></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+(\omega+i\partial\bar\partial\varphi)^n
+=e^F\omega^n
+}
+</annotation></semantics></math></p>
+<p>逐项解释：</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+是复维数；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ω</mi><mi>n</mi></msup><annotation encoding="application/x-tex">\omega^n</annotation></semantics></math>
+是参考体积形式；</li>
+<li>左边是新度量的体积形式；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+是由目标 Ricci 形式决定的已知函数；</li>
+<li>未知量只有标量函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>φ</mi><annotation encoding="application/x-tex">\varphi</annotation></semantics></math>，但最高阶导数以行列式方式非线性出现。</li>
+</ul>
+<p>Calabi 证明了满足条件的解若存在则唯一，真正困难的是存在性。</p>
+<h3 id="丘成桐定理的准确陈述">4.2 丘成桐定理的准确陈述</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+是紧致 Kähler 流形，固定一个 Kähler 类
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mi>ω</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[\omega]</annotation></semantics></math>。给定代表
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>π</mi><msub><mi>c</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">2\pi c_1(X)</annotation></semantics></math>
+的光滑实闭
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,1)</annotation></semantics></math>-形式
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ρ</mi><annotation encoding="application/x-tex">\rho</annotation></semantics></math>，丘成桐证明：</p>
+<blockquote>
+<p>在类
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mi>ω</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[\omega]</annotation></semantics></math>
+中存在唯一的 Kähler 度量，其 Ricci 形式等于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ρ</mi><annotation encoding="application/x-tex">\rho</annotation></semantics></math>。</p>
+</blockquote>
+<p>一个最重要的推论是：若</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+c_1(X)=0,
+</annotation></semantics></math></p>
+<p>则每个 Kähler 类中存在唯一的 Ricci-flat Kähler 度量，即</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">c</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>g</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathrm{Ric}(g)=0.
+</annotation></semantics></math></p>
+<p>注意 Ricci-flat 不等于整个 Riemann
+曲率张量为零。这样的流形可以整体非常弯曲，只是曲率的一种缩并为零。</p>
+<h3 id="证明策略的逻辑骨架连续性方法为何需要先验估计">4.3
+证明策略的逻辑骨架：连续性方法为何需要先验估计？</h3>
+<p>不进入完整证明，也值得掌握其结构。把目标方程放进参数族</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ω</mi><mo>+</mo><mi>i</mi><mi>∂</mi><mover><mi>∂</mi><mo accent="true">‾</mo></mover><msub><mi>φ</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>n</mi></msup><mo>=</mo><msup><mi>e</mi><mrow><mi>t</mi><mi>F</mi><mo>+</mo><msub><mi>c</mi><mi>t</mi></msub></mrow></msup><msup><mi>ω</mi><mi>n</mi></msup><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>≤</mo><mi>t</mi><mo>≤</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(\omega+i\partial\bar\partial\varphi_t)^n=e^{tF+c_t}\omega^n,
+\qquad 0\le t\le1.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math>
+时容易求解，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math>
+是目标。令</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>t</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo>:</mo><mrow><mtext mathvariant="normal">方程在 </mtext><mspace width="0.333em"></mspace></mrow><mi>t</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 处有解</mtext></mrow><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S=\{t\in[0,1]:\text{方程在 }t\text{ 处有解}\}.
+</annotation></semantics></math></p>
+<p>证明分三步：</p>
+<ol type="1">
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>∈</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">0\in S</annotation></semantics></math>，所以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+非空；</li>
+<li>用线性化与隐函数定理证明
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+是开集；</li>
+<li>用与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+无关的先验估计控制
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>φ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\varphi_t</annotation></semantics></math>
+及其各阶导数，证明极限不会爆炸，因而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+是闭集。</li>
+</ol>
+<p>区间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0,1]</annotation></semantics></math>
+连通，非空且又开又闭的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+只能是整个区间，于是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>∈</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">1\in S</annotation></semantics></math>。</p>
+<p>真正的数学重量集中在第三步。形式上写一个连续参数并不难；难点是保证接近极限时解不会失控。丘成桐建立的零阶、二阶及高阶估计，使非线性方程的解族进入合适的紧集。这种“几何问题
+→ 非线性 PDE → 先验估计 →
+紧致性”的模式，成为几何分析的中心方法之一。</p>
+<h3 id="分段自检二">分段自检二</h3>
+<ol type="1">
+<li>为什么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c_1(X)=0</annotation></semantics></math>
+是拓扑/复几何条件，而 Ricci-flat 是度量条件？</li>
+<li>连续性方法中“开”与“闭”分别依靠什么类型的工具？</li>
+<li>Ricci-flat 为什么不意味着流形局部 Euclidean？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>c</mi><mn>1</mn></msub><annotation encoding="application/x-tex">c_1</annotation></semantics></math>
+是切丛的特征类，不随具体度量改变；Ricci-flat
+是从某个特定度量计算出的曲率条件。丘成桐定理把前者转化为后者的存在性。</li>
+<li>开性来自线性化后的可逆性和隐函数定理；闭性依靠统一先验估计与紧致性。</li>
+<li>Ricci 张量只是完整 Riemann
+曲率张量的缩并；缩并为零不强迫完整张量为零。</li>
+</ol>
+</details>
+<hr />
+<h2 id="丘成桐究竟开创了什么又没有开创什么">5.
+丘成桐究竟开创了什么，又没有开创什么？</h2>
+<h3 id="他没有开创微分几何">5.1 他没有开创微分几何</h3>
+<p>微分几何至少可以追溯到十八、十九世纪的曲线曲面理论；Gauss
+建立内在曲率，Riemann 推广到高维，Christoffel、Ricci 和 Levi-Civita
+发展张量与联络，Cartan、Weyl、Hopf、Chern
+等人在二十世纪上半叶已经建立极其丰富的整体微分几何。</p>
+<p>所以把丘成桐说成“微分几何的开创者”在历史上是不准确的。</p>
+<p>更准确的说法是：他是<strong>现代几何分析的奠基性人物之一</strong>。几何分析不是一人一日创立的单一学科，而是一种逐渐成熟的研究纲领：用偏微分方程、变分法和全局分析解决几何与拓扑问题。丘成桐对
+Calabi 猜想的证明是这个纲领最有代表性的突破之一。</p>
+<h3 id="他的几项代表性贡献如何分属不同接口">5.2
+他的几项代表性贡献如何分属不同接口？</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>工作</th>
+<th>所在接口</th>
+<th>解决的核心问题</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Calabi 猜想</td>
+<td>复微分几何 + 非线性 PDE + 代数几何</td>
+<td>给定 Kähler 类能否实现指定 Ricci 形式</td>
+</tr>
+<tr class="even">
+<td>正质量定理（与 Schoen）</td>
+<td>Riemann 几何 + 广义相对论</td>
+<td>合理孤立引力系统的总质量非负，零质量对应平直情形</td>
+</tr>
+<tr class="odd">
+<td>极小曲面方法</td>
+<td>变分法 + 几何 PDE + 拓扑</td>
+<td>用面积临界曲面探测流形的整体结构</td>
+</tr>
+<tr class="even">
+<td>Kähler–Einstein 与稳定性方向</td>
+<td>复几何 + 代数几何</td>
+<td>典范度量的存在性如何由代数稳定性刻画</td>
+</tr>
+</tbody>
+</table>
+<p>1982 年国际数学联盟授予丘成桐 Fields
+奖的说明，同时提到他在微分方程、代数几何中的 Calabi
+猜想、广义相对论中的正质量猜想，以及实、复 Monge–Ampère
+方程方面的贡献。这份表述本身就显示：他的工作不是局限在一个封闭分支，而是让多个领域通过“曲率方程”互通。</p>
+<h3 id="丘成桐与代数几何的关系分析存在性会产生代数结论">5.3
+丘成桐与代数几何的关系：分析存在性会产生代数结论</h3>
+<p>Calabi 猜想原本是关于 Kähler
+度量的分析问题，但其输入和输出会触及代数几何：</p>
+<ol type="1">
+<li>光滑射影簇天然是 Kähler 流形；</li>
+<li>第一 Chern 类、典范线丛、正线丛本来就是代数几何核心对象；</li>
+<li>Ricci-flat 或 Kähler–Einstein
+度量给出规范代表，使分类与模空间获得刚性；</li>
+<li>Yau 的估计可以推出某些 Chern 数不等式与代数簇的结构结论；</li>
+<li>典范度量存在性与几何不变量理论中的稳定性后来形成 Yau–Tian–Donaldson
+图景。</li>
+</ol>
+<p>一个很有代表性的原则是：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">代数稳定性</mtext><mspace width="1.0em"></mspace><mo>⇔</mo><mi>?</mi><mspace width="1.0em"></mspace><mtext mathvariant="normal">典范 Kähler 度量存在性</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{代数稳定性}
+\quad\Longleftrightarrow?\quad
+\text{典范 Kähler 度量存在性}.
+</annotation></semantics></math></p>
+<p>左边由群作用、退化和不变量描述，右边由非线性 PDE
+描述。它不是把代数几何变成微分几何，而是表明同一对象的代数结构和度量结构之间存在深刻对应。</p>
+<h3 id="calabiyau-流形到底是什么">5.4 “Calabi–Yau 流形”到底是什么？</h3>
+<p>这个术语在不同文献中有略不同约定。适合入门的核心版本是：紧致 Kähler
+流形
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>，其第一
+Chern 类为零；常再附加典范线丛平凡或有限基本群等条件。</p>
+<p>为什么有些定义要求
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\pi_1(X)=1</annotation></semantics></math>？如果不要求单连通，平坦复环面也满足
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c_1=0</annotation></semantics></math>，会被纳入非常宽的“Calabi–Yau”类别。要求单连通，可以排除由非平凡基本群带来的环面因子，并使
+Ricci-flat 度量的 holonomy 更接近特殊酉群
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">SU(n)</annotation></semantics></math>。但不同研究目的需要不同边界，所以阅读文献时必须先看作者采用哪条定义，不能只凭名称推断。</p>
+<p>丘成桐定理保证这种流形在每个 Kähler 类中存在唯一 Ricci-flat Kähler
+度量。因此名字中的“Yau”首先来自定理，而不是说这些流形由他首次定义。</p>
+<p>它与理论物理的联系出现在弦论紧化中：额外维度若取适当 Calabi–Yau
+三维复流形，可以保留所需超对称性。这里代数几何负责构造和分类复簇，微分几何负责
+Ricci-flat
+度量，物理学研究其紧化后产生的粒子和场。三种语言在同一对象上叠加，但各自回答不同问题。</p>
+<hr />
+<h2 id="把两篇文章接起来方程复结构度量的层级">6.
+把两篇文章接起来：方程、复结构、度量的层级</h2>
+<p>考虑一个光滑射影复簇
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>⊆</mo><msup><mi>ℙ</mi><mi>N</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℂ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">X\subseteq\mathbb P^N(\mathbb C)</annotation></semantics></math>。可以按以下顺序给它增加结构：</p>
+<div class="structure-stack" aria-label="从代数簇到典范度量的结构层级">
+<section>
+<strong>多项式方程</strong><span>决定
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+的代数结构与正则函数</span>
+</section>
+<section>
+<strong>复流形结构</strong><span>允许全纯坐标、微分形式和 Dolbeault
+算子</span>
+</section>
+<section>
+<strong>Kähler
+类</strong><span>规定面积与体积的上同调尺度，但仍有许多度量</span>
+</section>
+<section>
+<strong>曲率方程</strong><span>在该类中挑出 Ricci-flat 或
+Kähler–Einstein 代表</span>
+</section>
+</div>
+<p>不要把箭头反向理解成“度量决定了方程”。通常一份代数结构可以容纳多个
+Kähler 类，每个类又有无数度量；特殊的曲率方程才可能挑出唯一代表。</p>
+<p>同样，不要把广义相对论的 Lorentz 度量与 Kähler
+度量混为一谈。前者是不定号的四维实时空度量，后者是复流形上正定、与复结构相容的度量。它们都使用曲率、联络和
+PDE，但物理含义与代数背景不同。</p>
+<hr />
+<h2 id="最小记忆清单">7. 最小记忆清单</h2>
+<ol type="1">
+<li>微分几何研究光滑流形；Riemann 几何是在其上增加正定度量。</li>
+<li>广义相对论严格使用 Lorentz 型伪 Riemann
+几何，符号不定产生光锥与因果结构。</li>
+<li>Einstein
+方程让度量成为动力学变量，并把曲率与能量—动量联系起来。</li>
+<li>代数结构规定正则函数，度量规定长度和曲率，两者是不同层的数据。</li>
+<li>光滑复射影簇天然给出紧致 Kähler 流形。</li>
+<li>Ricci 形式代表
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>π</mi><msub><mi>c</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">2\pi c_1(X)</annotation></semantics></math>，把曲率与特征类接在一起。</li>
+<li>丘成桐证明 Calabi
+猜想；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c_1(X)=0</annotation></semantics></math>
+时，每个 Kähler 类有唯一 Ricci-flat 度量。</li>
+<li>丘成桐不是微分几何的开创者，而是现代几何分析的奠基性人物之一，其工作直接连接代数几何、PDE
+和广义相对论。</li>
+</ol>
+<hr />
+<h2 id="史料与延伸阅读">8. 史料与延伸阅读</h2>
+<ul>
+<li>B. Riemann, <a
+href="https://www.maths.tcd.ie/pub/HistMath/People/Riemann/Geom/"><em>Über
+die Hypothesen, welche der Geometrie zu Grunde liegen</em></a>
+(1854)：高维内在度量思想的原始讲演。</li>
+<li>A. Einstein, <em>Die Grundlage der allgemeinen
+Relativitätstheorie</em> (1916)：广义相对论的系统论述。</li>
+<li>S.-T. Yau, <em>On the Ricci Curvature of a Compact Kähler Manifold
+and the Complex Monge–Ampère Equation, I</em>, Comm. Pure Appl. Math. 31
+(1978), 339–411。</li>
+<li><a
+href="https://www.mathunion.org/imu-awards/fields-medal/fields-medals-1982">IMU：Fields
+Medals 1982</a>：丘成桐获奖工作的同期概述。</li>
+<li><a href="https://www.numdam.org/issues/AST_1978__58__1_0/">Séminaire
+sur la preuve de la conjecture de Calabi</a>
+(1978)：对丘成桐证明的同时代研讨班讲义。</li>
+<li><a
+href="https://asd.gsfc.nasa.gov/blueshift/index.php/2015/11/25/100-years-of-general-relativity/">NASA：100
+Years of General Relativity</a>：广义相对论百年历史概览。</li>
+</ul>
+<hr />
+<h2 id="reader-feedback">阅读反馈记录</h2>
+<div class="feedback-entry">
+<p>
+<strong>当前状态：</strong>等待首次阅读反馈。
+</p>
+<p>
+<strong>实验约束：</strong>本系列反馈只用于修订代数几何史纲四篇，不触发通用
+Skill 的规则变更。
+</p>
+</div>
+</body>
+</html>

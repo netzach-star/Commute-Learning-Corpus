@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>从需求到设计（一）：为什么项目要分阶段，设计文档又为什么不只有接口和组件</title>
+  <meta name="corpus-id" content="computer-007">
+  <meta name="corpus-category" content="计算机">
+  <meta name="corpus-series" content="软件工程与系统设计">
+  <meta name="corpus-status" content="unread">
+  <meta name="estimated-reading-time" content="35-45 minutes">
+  <meta name="generated-date" content="2026-07-24">
+  <meta name="source-basis" content="用户提供的 V4 剩余技术实验片段 D-01 至 D-06">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #5d6878;
+      --line: #d9e0ea;
+      --soft: #f5f8fc;
+      --blue: #175cd3;
+      --blue-soft: #eaf2ff;
+      --green: #157f5b;
+      --green-soft: #eaf8f2;
+      --amber: #925400;
+      --amber-soft: #fff6e3;
+      --red: #b42318;
+      --red-soft: #fff0ee;
+      --violet: #6941c6;
+      --violet-soft: #f3efff;
+      --shadow: 0 10px 30px rgba(28, 45, 76, .07);
+    }
+    * { box-sizing: border-box; }
+    html { font-size: 17px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 38px 42px 86px;
+      color: var(--ink);
+      background: #fff;
+      font-family: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", STSong, serif;
+      line-height: 1.86;
+      overflow-wrap: break-word;
+    }
+    h1, h2, h3, h4, nav, .sans, table { font-family: "Noto Sans CJK SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    h1 { margin: 0; font-size: 2.08rem; line-height: 1.34; letter-spacing: -.025em; }
+    h2 { margin: 3.35rem 0 1.15rem; padding-bottom: .42rem; border-bottom: 1px solid var(--line); font-size: 1.5rem; line-height: 1.42; }
+    h3 { margin: 2.2rem 0 .75rem; font-size: 1.22rem; line-height: 1.45; }
+    h4 { margin: 1.55rem 0 .5rem; font-size: 1.05rem; }
+    p { margin: .86rem 0; }
+    li { margin: .38rem 0; }
+    a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: .16em; }
+    code, kbd { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: .9em; }
+    code { padding: .1em .32em; border-radius: 4px; background: var(--soft); }
+    pre { margin: 1.15rem 0; padding: 1rem 1.1rem; overflow-x: auto; border: 1px solid #cbd5e1; border-radius: 10px; background: #101828; color: #eef4ff; line-height: 1.62; }
+    pre code { padding: 0; background: transparent; color: inherit; }
+    header.hero { margin-bottom: 2.3rem; padding: 1.8rem 0 1.35rem; }
+    .eyebrow { margin-bottom: .65rem; color: var(--blue); font-size: .88rem; font-weight: 700; letter-spacing: .08em; }
+    .subtitle { margin: 1rem 0 0; color: var(--muted); font-size: 1.08rem; }
+    .meta { display: flex; gap: .55rem; flex-wrap: wrap; margin-top: 1.15rem; }
+    .tag { padding: .28rem .62rem; border: 1px solid var(--line); border-radius: 999px; color: #40506a; background: var(--soft); font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif; font-size: .82rem; }
+    nav#toc { margin: 1.8rem 0 3rem; padding: 1.15rem 1.35rem; border: 1px solid var(--line); border-radius: 12px; background: var(--soft); }
+    nav#toc strong { display: block; margin-bottom: .5rem; }
+    nav#toc ol { columns: 2; column-gap: 2.6rem; margin: 0; padding-left: 1.25rem; }
+    nav#toc li { break-inside: avoid; margin: .25rem 0; }
+    .lead, .thesis, .definition, .warning, .example, .source-note, .comparison-note {
+      margin: 1.3rem 0;
+      padding: 1rem 1.15rem;
+      border-radius: 10px;
+    }
+    .lead { border-left: 4px solid var(--blue); background: var(--blue-soft); }
+    .thesis { border: 1px solid #b9cff4; background: linear-gradient(135deg, #f7faff, #eef5ff); box-shadow: var(--shadow); font-size: 1.04rem; }
+    .definition { border: 1px solid #b9cff4; background: var(--blue-soft); }
+    .warning { border: 1px solid #f1c8c3; background: var(--red-soft); }
+    .example { border: 1px solid #f0d5a3; background: var(--amber-soft); }
+    .source-note { border: 1px solid #d4c8f5; background: var(--violet-soft); }
+    .comparison-note { border: 1px solid #a9dccb; background: var(--green-soft); }
+    .concept-map { margin: 1.6rem 0 2.3rem; padding: 1.2rem; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; box-shadow: var(--shadow); }
+    .concept-map h2, .concept-map h3 { margin-top: 0; }
+    .layer-stack { display: grid; grid-template-columns: 1fr; gap: .45rem; margin-top: 1rem; }
+    .layer { display: grid; grid-template-columns: 170px 1fr; gap: 1rem; align-items: center; padding: .78rem .9rem; border: 1px solid #c8d5e6; border-radius: 9px; background: #fff; }
+    .layer strong { color: #173f78; font-family: "Noto Sans CJK SC", "PingFang SC", sans-serif; }
+    .arrow { color: #73839a; text-align: center; font-family: "Noto Sans CJK SC", sans-serif; font-size: .86rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.2rem 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9rem; margin: 1.2rem 0; }
+    .card { padding: 1rem; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+    .card h3, .card h4 { margin-top: 0; }
+    .flow-steps { counter-reset: step; margin: 1.2rem 0; padding: 0; list-style: none; }
+    .flow-steps li { position: relative; margin: .72rem 0; padding: .75rem .85rem .75rem 3.3rem; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+    .flow-steps li::before { counter-increment: step; position: absolute; top: .66rem; left: .78rem; width: 1.8rem; height: 1.8rem; border-radius: 50%; color: #fff; background: var(--blue); content: counter(step); font-family: "Noto Sans CJK SC", sans-serif; font-size: .86rem; font-weight: 700; line-height: 1.8rem; text-align: center; }
+    .pipeline { display: flex; flex-wrap: wrap; align-items: stretch; gap: .55rem; margin: 1.25rem 0; }
+    .pipeline .node { flex: 1 1 125px; min-width: 115px; padding: .78rem .7rem; border: 1px solid #c9d6e8; border-radius: 9px; background: #fff; text-align: center; font-family: "Noto Sans CJK SC", sans-serif; font-size: .9rem; }
+    .pipeline .node strong { display: block; color: #173f78; }
+    .pipeline .sep { display: flex; align-items: center; color: #6b778b; }
+    table { display: block; width: 100%; margin: 1.35rem 0; overflow-x: auto; border-collapse: collapse; font-size: .92rem; line-height: 1.62; }
+    th, td { min-width: 145px; padding: .72rem .76rem; border: 1px solid var(--line); vertical-align: top; }
+    th { color: #27364f; background: var(--soft); text-align: left; }
+    .small { color: var(--muted); font-size: .9rem; }
+    .checklist { padding-left: 0; list-style: none; }
+    .checklist li { position: relative; padding-left: 1.7rem; }
+    .checklist li::before { position: absolute; left: .1rem; color: var(--green); content: "✓"; font-family: sans-serif; font-weight: 700; }
+    .question { margin: 1rem 0; padding: .8rem 1rem; border-left: 4px solid #97a7bd; background: #f8fafc; }
+    details { margin: .8rem 0; padding: .75rem .95rem; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+    summary { cursor: pointer; color: #253858; font-family: "Noto Sans CJK SC", sans-serif; font-weight: 700; }
+    #reader-feedback { margin-top: 4rem; padding: 1.2rem; border: 1px dashed #aab7ca; border-radius: 12px; background: #fafcff; }
+    #reader-feedback h2 { margin-top: 0; }
+    @media (max-width: 760px) {
+      body { padding: 24px 20px 64px; line-height: 1.8; }
+      h1 { font-size: 1.72rem; }
+      h2 { margin-top: 2.75rem; font-size: 1.34rem; }
+      nav#toc ol { columns: 1; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .layer { grid-template-columns: 1fr; gap: .25rem; }
+      .pipeline { display: grid; grid-template-columns: 1fr; }
+      .pipeline .sep { justify-content: center; transform: rotate(90deg); }
+    }
+    @media print {
+      body { max-width: none; padding: 0; color: #000; }
+      nav#toc { break-after: page; }
+      h2, h3 { break-after: avoid; }
+      table, .card, .definition, .warning, .example, .source-note { break-inside: avoid; }
+      a { color: #000; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<header class="hero">
+  <div class="eyebrow">软件工程与系统设计 · 第一篇</div>
+  <h1>从需求到设计：为什么项目要分阶段，设计文档又为什么不只有接口和组件</h1>
+  <p class="subtitle">以“V4 剩余技术实验 D-01～D-06”为案例，理解需求、架构、风险实验、实现与发布之间的真正关系。</p>
+  <div class="meta">
+    <span class="tag">语料编号 computer-007</span>
+    <span class="tag">预计阅读 35—45 分钟</span>
+    <span class="tag">先修：能读需求文档、具有小型项目经验</span>
+    <span class="tag">状态：待读</span>
+  </div>
+</header>
+
+<nav id="toc" aria-label="文章目录">
+  <strong>目录</strong>
+  <ol>
+    <li><a href="#intro">你遇到的断层是什么</a></li>
+    <li><a href="#five-docs">一个项目至少有五层问题</a></li>
+    <li><a href="#stages">为什么项目必须分阶段推进</a></li>
+    <li><a href="#design-contents">设计文档除了接口和组件还要写什么</a></li>
+    <li><a href="#spike">技术实验 Spike 为什么存在</a></li>
+    <li><a href="#decode">把 D-01～D-06 翻译成人话</a></li>
+    <li><a href="#reading">怎样阅读 AI 生成的设计文档</a></li>
+    <li><a href="#template">一份可读设计文档的推荐结构</a></li>
+    <li><a href="#questions">自检题与参考答案</a></li>
+    <li><a href="#next">本篇结论与后续系列</a></li>
+  </ol>
+</nav>
+
+<section class="lead" id="intro">
+  <strong>先说结论：</strong>
+  你看到的那一段并不只是“设计组件怎么连接”，而是在规定：哪些高风险假设必须先通过小规模实验，才能允许后面的正式实现开始。它属于设计文档里的<strong>风险验证计划</strong>，也可以称为技术实验计划或 Spike 计划。
+</section>
+
+<p>当你和 AI 讨论需求时，文字通常仍然接近人的生活语言：</p>
+
+<ul>
+  <li>用户希望编辑文档关联；</li>
+  <li>系统应当保存历史；</li>
+  <li>两个 Agent 分别处理内容和关联；</li>
+  <li>前端应当可以独立使用；</li>
+  <li>更新知识库后不应出现重复内容。</li>
+</ul>
+
+<p>这些句子容易理解，因为它们描述的是<strong>你想得到的能力</strong>。然而一旦进入设计阶段，问题就变了：</p>
+
+<ul>
+  <li>“两个 Agent 分别处理”是否真的意味着两个互不共享历史的会话？</li>
+  <li>一条无向关联在数据库中保存一份还是两份？</li>
+  <li>两个人同时从两个方向添加同一条关联会发生什么？</li>
+  <li>数据库提交成功，但负责更新 Markdown 的后台进程死掉了，系统如何恢复？</li>
+  <li>同一个文档更新后，检索系统会不会把新旧版本都当成活跃来源？</li>
+</ul>
+
+<p>需求文档往往没有回答这些问题，因为它们不是用户目标本身；但如果设计阶段不回答，代码会用某种偶然方式替你回答。所谓“实现细节”，很多时候并不细：它会决定数据是否丢失、并发时是否重复、失败后能否恢复，以及将来还能不能改。</p>
+
+<div class="thesis">
+  <strong>本文中心句：</strong>
+  设计不是把需求翻译成类、接口和数据库表；设计是在真正写大量代码之前，系统地决定<strong>边界、责任、数据、状态、失败、验证和演进方式</strong>。
+</div>
+
+<section id="five-docs">
+<h2>一、一个项目至少有五层问题，而不是只有“需求”和“代码”</h2>
+
+<p>你之所以感到需求文档突然变成了另一种语言，一个重要原因是：AI 把中间几层压缩掉了。完整的软件工作通常可以拆成下面五层。它们未必分别对应五个文件，但对应五种不同的问题。</p>
+
+<div class="concept-map">
+  <div class="layer-stack">
+    <div class="layer"><strong>1. 背景与问题</strong><span>现实中到底发生了什么？为什么值得做？谁在什么场景下遇到什么困难？</span></div>
+    <div class="arrow">↓ 把现实问题收束为可交付目标</div>
+    <div class="layer"><strong>2. 需求与验收</strong><span>系统必须提供什么能力？哪些不做？怎样证明用户目标已经满足？</span></div>
+    <div class="arrow">↓ 把“想要什么”转化为“系统必须保证什么”</div>
+    <div class="layer"><strong>3. 设计与决策</strong><span>系统边界、组件职责、数据模型、状态、失败处理、权限和演进方式怎样安排？</span></div>
+    <div class="arrow">↓ 对仍然不确定的高风险部分先做实验</div>
+    <div class="layer"><strong>4. 技术验证与实现</strong><span>关键方案是否可行？正式代码按什么顺序实现、测试和集成？</span></div>
+    <div class="arrow">↓ 在真实环境中逐步放量并持续观察</div>
+    <div class="layer"><strong>5. 发布与运行</strong><span>怎样迁移旧数据、灰度上线、监控故障、回滚并长期维护？</span></div>
+  </div>
+</div>
+
+<h3>1. 需求不是“所有细节的总和”</h3>
+
+<p>需求的核心任务是确定<strong>外部可观察的承诺</strong>。例如：</p>
+
+<div class="example">
+  <strong>需求表达：</strong><br>
+  用户在文档 A 与文档 B 之间添加无向关联后，无论从 A 还是 B 查看，都应看到同一条关联；重复添加不应产生两条记录。
+</div>
+
+<p>这句话已经比“支持文档关联”严格很多，但它仍然没有决定：</p>
+
+<ul>
+  <li>数据库保存一条 canonical link，还是分别保存 A→B 与 B→A；</li>
+  <li>文档页面中的关联列表是实时查询，还是提前构建好的投影；</li>
+  <li>更新关联时是否产生文档修订；</li>
+  <li>并发写入由数据库唯一约束、应用锁还是分布式锁处理。</li>
+</ul>
+
+<p>这些都属于设计空间。多个设计可能满足同一个需求，但它们的复杂度、性能、故障模式和演进成本不同。</p>
+
+<h3>2. 接口与组件只回答设计问题的一部分</h3>
+
+<p>组件图能告诉你“系统有哪些大块”，接口能告诉你“这些大块允许怎样互相调用”。但一个系统即使组件图画得很漂亮，也可能存在：</p>
+
+<ul>
+  <li>同一对象在不同组件中有两套互相矛盾的状态；</li>
+  <li>数据库成功而搜索索引失败，产生永久不一致；</li>
+  <li>后台任务被重复消费，生成多份结果；</li>
+  <li>新版本上线后无法读取旧数据；</li>
+  <li>服务重启后会话历史丢失；</li>
+  <li>出现故障时没有日志、指标和追踪信息，无法定位。</li>
+</ul>
+
+<p>这些问题不主要来自“接口签名写错”，而来自<strong>状态、时间、并发和失败</strong>。因此真正的设计文档必须超出静态组件图。</p>
+</section>
+
+<section id="stages">
+<h2>二、为什么项目要分阶段推进</h2>
+
+<p>“分阶段”常被误解为项目管理者喜欢制造流程，或者把一个本来能直接完成的任务拆成许多会议。确实存在过度流程化，但合理的阶段不是为了增加仪式，而是为了管理三种会不断变化的东西：</p>
+
+<div class="grid-3">
+  <div class="card">
+    <h3>信息</h3>
+    <p>早期你只知道问题和目标，后来才逐渐知道数据规模、接口限制、异常情况和真实用户行为。</p>
+  </div>
+  <div class="card">
+    <h3>风险</h3>
+    <p>某些错误只影响一段代码，另一些错误会破坏数据模型、发布架构或全部历史内容。</p>
+  </div>
+  <div class="card">
+    <h3>修改成本</h3>
+    <p>想法阶段改一句话很便宜；大量代码、数据和外部集成建立后，再改同一决定会牵动更多对象。</p>
+  </div>
+</div>
+
+<h3>1. 阶段的本质是“在下一种成本发生前，先解决对应问题”</h3>
+
+<p>可以把项目推进理解为一系列逐渐变贵的承诺：</p>
+
+<div class="pipeline" aria-label="项目阶段">
+  <div class="node"><strong>问题确认</strong>承诺值得做</div><div class="sep">→</div>
+  <div class="node"><strong>需求基线</strong>承诺做什么</div><div class="sep">→</div>
+  <div class="node"><strong>架构设计</strong>承诺怎样组织</div><div class="sep">→</div>
+  <div class="node"><strong>技术实验</strong>证明关键假设</div><div class="sep">→</div>
+  <div class="node"><strong>正式实现</strong>投入完整工程成本</div><div class="sep">→</div>
+  <div class="node"><strong>发布运行</strong>承担真实数据与用户风险</div>
+</div>
+
+<p>每进入下一阶段，系统都会增加新的“沉没结构”：代码、测试、数据、接口依赖、用户习惯和运维配置。阶段门的意义是：在这些结构大量形成前，检查上一层最危险的问题是否已经得到足够回答。</p>
+
+<div class="warning">
+  <strong>不是所有问题都必须在前期完全解决。</strong>
+  软件设计不可能消除全部不确定性。阶段化的目标是把问题分成：现在必须决定的、可以通过实验验证的、可以推迟到实现时决定的，以及故意保留为开放点的。把所有细节都提前决定，同样会造成浪费。
+</div>
+
+<h3>2. 阶段必须有“进入条件”和“退出证据”</h3>
+
+<p>如果阶段只有名字，没有进入条件、产物和验收标准，它就只是日历上的标签。例如“进入开发阶段”不能只表示“我们讨论得差不多了”，而应有类似的证据：</p>
+
+<ul class="checklist">
+  <li>核心用户流程已经明确，并写成可验收行为；</li>
+  <li>系统边界和不做范围已确认；</li>
+  <li>关键数据对象及其生命周期已定义；</li>
+  <li>高风险技术假设已经通过 Spike，或被明确登记为阻断项；</li>
+  <li>主要故障场景和恢复策略已有答案；</li>
+  <li>实现顺序不会要求后续推翻基础数据结构。</li>
+</ul>
+
+<p>你提供的原文中，“每项必须在对应实现前完成”和每个 D 项后的“通过标准”，就是典型的阶段门。它在说：</p>
+
+<blockquote class="source-note">
+  这些能力目前还不能仅凭设计者的判断认定可行。先用受控实验取得证据；实验不通过，对应实现不得继续。
+</blockquote>
+
+<h3>3. 为什么不直接在正式代码中边做边验证</h3>
+
+<p>当然可以边写正式代码边发现问题，但风险较高时，这种做法会把三个目标混在一起：</p>
+
+<ol>
+  <li>探索方案是否可行；</li>
+  <li>建立可维护的正式结构；</li>
+  <li>满足完整产品需求和异常处理。</li>
+</ol>
+
+<p>探索代码为了快速获得答案，可以使用假数据、固定参数和临时接口；正式代码则需要长期维护、完整错误处理、可观测性和兼容性。如果一开始就要求探索代码同时达到正式质量，验证会变慢；如果把临时探索代码直接当作正式实现，又会把大量偶然决定固化进系统。</p>
+
+<p>因此，合理的流程通常是：</p>
+
+<pre><code>提出高风险假设
+→ 设计最小实验
+→ 规定通过/失败标准
+→ 运行实验并记录证据
+→ 据此选择、修改或放弃正式方案
+→ 再进入完整实现</code></pre>
+</section>
+
+<section id="design-contents">
+<h2>三、从需求到设计，除了接口和组件，还必须加上什么</h2>
+
+<p>下面这部分是本文最重要的“设计地图”。不是每个项目都要建立同样长的文档，但设计者必须对这些问题有意识；项目越涉及持久化数据、多 Agent、并发、后台任务和多个展示投影，越不能只写组件与接口。</p>
+
+<h3>1. 目标、范围与设计约束</h3>
+
+<p>设计文档开头仍然要重述目标，但不是复制需求全文，而是明确本设计负责解决什么，不负责什么，以及有哪些已经不能随意改变的条件。</p>
+
+<table>
+  <thead><tr><th>需要记录</th><th>为什么存在</th><th>缺失后的典型问题</th></tr></thead>
+  <tbody>
+    <tr><td>本次设计目标</td><td>让所有技术选择围绕同一结果，而不是各自优化</td><td>文档写得很复杂，却没有覆盖最关键用户流程</td></tr>
+    <tr><td>非目标</td><td>主动限制范围，防止每个相关问题都被吸进当前版本</td><td>项目不断扩张，无法判断何时完成</td></tr>
+    <tr><td>既有资产</td><td>说明哪些能力已经交付，避免重复建设</td><td>原文强调“Stage 0 不重做”，正是在保护已有投入</td></tr>
+    <tr><td>技术与组织约束</td><td>记录必须兼容的数据库、部署环境、权限和团队能力</td><td>设计理论可行，但不适用于实际环境</td></tr>
+    <tr><td>假设与未知项</td><td>区分事实、暂定判断和待验证问题</td><td>推测被逐渐当成既定事实</td></tr>
+  </tbody>
+</table>
+
+<h3>2. 系统上下文与边界</h3>
+
+<p>组件设计之前，应先回答：系统外部有哪些人和系统？谁调用谁？哪些数据由本系统负责，哪些只是暂时读取？</p>
+
+<p>例如原文提到 <code>ReviewWorkspace</code>、<code>ReviewApi</code>、<code>InnoSpark</code>、知识库与两个 Agent 会话。仅从片段无法知道它们的完整定义，但可以看出设计者关心一个边界问题：</p>
+
+<div class="example">
+  <strong>D-05 的核心不是“做一个前端页面”。</strong><br>
+  它要证明审阅工作区能够只依赖规定好的 ReviewApi 运行，而不是偷偷依赖主系统的内部状态。只有这样，前端模块才真正独立、可测试、可复用。
+</div>
+
+<p>系统边界存在的理由是控制依赖。边界不清时，一个模块表面上独立，实际启动、登录、数据格式和错误处理都依赖另一个巨大系统，最终无法单独测试或替换。</p>
+
+<h3>3. 核心概念与统一词汇</h3>
+
+<p>设计文档应建立术语表，尤其是项目内部名词。比如：</p>
+
+<ul>
+  <li><code>AgentSession</code> 到底是模型的一次调用、持续会话、数据库记录，还是三者组合？</li>
+  <li><code>Bundle</code> 包含哪些文件和元数据？</li>
+  <li><code>current</code> 是数据库指针、当前修订号，还是当前发布对象？</li>
+  <li><code>projection job</code> 是更新 Markdown、HTML、搜索索引，还是统一的派生视图任务？</li>
+  <li><code>L2</code>、<code>P0</code>、<code>S-09</code> 在当前片段中没有定义，必须回到项目术语表或 Stage 0 文档查找。</li>
+</ul>
+
+<p>没有统一词汇时，同一个词可能在不同章节中代表不同对象。AI 尤其容易在长文档中保持语言相似，却悄悄改变对象含义。</p>
+
+<h3>4. 数据模型、所有权与生命周期</h3>
+
+<p>接口描述一次调用，数据模型描述系统长期保存什么。设计需要明确：</p>
+
+<ul>
+  <li>有哪些核心实体和值对象；</li>
+  <li>每个对象的唯一标识是什么；</li>
+  <li>谁有权创建、修改、发布和删除；</li>
+  <li>对象是否可变，还是每次修改产生新版本；</li>
+  <li>什么叫草稿、已发布、当前版本和历史版本；</li>
+  <li>派生数据能否重建，源数据在哪里。</li>
+</ul>
+
+<p>D-02 中的“一条 canonical link”和“两端关联修订均增加”，就是数据模型与生命周期决定：</p>
+
+<ul>
+  <li>逻辑上 A—B 是一条无向关系，所以源数据只保存一条规范记录；</li>
+  <li>但 A 和 B 各自展示的关联列表都发生变化，所以两端的派生版本都要更新。</li>
+</ul>
+
+<p>如果不先决定“哪一个是源数据，哪一些是投影”，系统很容易保存三份看似相同的数据，后来却不知道以哪份为准。</p>
+
+<h3>5. 关键流程、状态机和不变量</h3>
+
+<p>静态组件图不说明一个对象怎样从开始走到结束。因此设计文档还要描述关键流程：</p>
+
+<pre><code>候选生成
+→ 用户审阅
+→ 发生冲突时重新加载或合并
+→ 用户确认发布
+→ 核心事务提交
+→ 后台重建 Bundle / Markdown / 索引
+→ 新版本成为 serving current</code></pre>
+
+<p>与此同时，要写出必须始终成立的<strong>不变量</strong>。不变量是设计中非常有力量的表达，因为它比“正常情况下怎样做”更严格。</p>
+
+<div class="definition">
+  <strong>不变量：</strong>
+  系统无论经历怎样的合法操作、并发和可恢复故障，都必须保持为真的条件。
+</div>
+
+<p>结合原文，可以识别出一些候选不变量：</p>
+
+<ul>
+  <li>同一对文档之间最多存在一条活跃 canonical link；</li>
+  <li>内容会话不能读取关联候选目录；</li>
+  <li>关联会话只能读取经过允许的文档，而不是原始来源；</li>
+  <li>事务提交前失败，不得改变 current；</li>
+  <li>同一个事件被重复消费，不得产生多个等价 projection job；</li>
+  <li>更新 documentId 后，不得同时存在两个活跃来源。</li>
+</ul>
+
+<p>一旦不变量明确，接口、数据库约束和测试都能围绕它们设计。</p>
+
+<h3>6. 一致性、事务、并发与幂等</h3>
+
+<p>这是很多需求文档不会提到、但设计文档必须面对的部分。因为现实执行不是一条永不失败的顺序：</p>
+
+<ul>
+  <li>两个请求可能同时到达；</li>
+  <li>同一消息可能被投递两次；</li>
+  <li>数据库提交成功后进程可能立刻崩溃；</li>
+  <li>后台派生任务可能比主事务晚几秒甚至几分钟；</li>
+  <li>用户打开页面时可能看到旧版本。</li>
+</ul>
+
+<p>设计需要明确：</p>
+
+<table>
+  <thead><tr><th>问题</th><th>要作出的设计决定</th></tr></thead>
+  <tbody>
+    <tr><td>哪些修改必须一起成功或一起失败？</td><td>事务边界</td></tr>
+    <tr><td>多个请求修改同一对象如何协调？</td><td>乐观并发、ETag、数据库约束或锁</td></tr>
+    <tr><td>同一个任务执行两次是否安全？</td><td>幂等键、唯一约束和去重规则</td></tr>
+    <tr><td>主数据与派生视图暂时不一致是否允许？</td><td>一致性模型和可接受延迟</td></tr>
+    <tr><td>提交后后台任务丢失如何补回？</td><td>outbox、重试和对账机制</td></tr>
+  </tbody>
+</table>
+
+<p>D-02、D-03 和 D-05 都在处理这一组问题，而不是单纯验证接口能否调用成功。</p>
+
+<h3>7. 失败模型、恢复与降级</h3>
+
+<p>很多初学者的设计只描述成功路径：</p>
+
+<pre><code>收到请求 → 保存数据 → 更新页面 → 完成</code></pre>
+
+<p>真正的系统设计还要问每个箭头之间失败怎么办：</p>
+
+<ul>
+  <li>在保存前失败：是否可以直接重试？</li>
+  <li>保存成功但响应丢失：客户端重试会不会重复写入？</li>
+  <li>新投影构建失败：旧版本能否继续提供服务？</li>
+  <li>服务重启：会话能否恢复，还是从检查点重建？</li>
+  <li>依赖系统不可用：当前功能是阻断、只读还是降级？</li>
+</ul>
+
+<p>D-01 要求重启后恢复或重建；D-03 要求 worker 丢失后仍可恢复，并保持旧 serving 可读；这些就是恢复和降级策略。</p>
+
+<h3>8. 非功能需求与容量预算</h3>
+
+<p>“功能正确”并不等于“系统可用”。设计还要规定：</p>
+
+<ul>
+  <li>延迟上限；</li>
+  <li>吞吐与并发规模；</li>
+  <li>存储增长；</li>
+  <li>模型 token 成本；</li>
+  <li>召回率、精确率和误建议比例；</li>
+  <li>可用性、恢复时间和数据丢失容忍度。</li>
+</ul>
+
+<p>D-04 的“precision、延迟和 token”就是三个不同维度的预算。如果只要求模型“能生成候选”，系统可能以极高 token 成本生成大量错误候选。技术上能运行，产品上仍不可接受。</p>
+
+<h3>9. 安全、权限与信息隔离</h3>
+
+<p>在多 Agent 系统中，“不同 Agent 使用不同提示词”不等于隔离。设计必须说明：</p>
+
+<ul>
+  <li>每个 Agent 能访问哪些数据源；</li>
+  <li>上下文由谁组装；</li>
+  <li>会话历史是否共享；</li>
+  <li>工具权限是否不同；</li>
+  <li>敏感原始来源能否进入不需要它的会话；</li>
+  <li>日志和检查点中是否泄漏不应保存的内容。</li>
+</ul>
+
+<p>D-01 的验收标准本质上是一个信息流安全测试：内容会话和关联会话必须拥有不同的可见世界，而且这种隔离在恢复后仍成立。</p>
+
+<h3>10. 可观测性与运维</h3>
+
+<p>设计文档应说明出了问题怎样知道：</p>
+
+<ul>
+  <li>哪些日志记录一次任务从创建到完成；</li>
+  <li>哪些指标反映 outbox 堆积、投影失败、重复消费和召回质量；</li>
+  <li>怎样追踪一个 documentId 在数据库、Bundle、Markdown 和检索源中的版本；</li>
+  <li>怎样人工重放、对账或修复。</li>
+</ul>
+
+<p>可观测性不是上线后再随手加日志。若核心对象没有稳定 ID、状态转换没有事件记录，后来很难补出完整追踪链。</p>
+
+<h3>11. 迁移、兼容、发布与回滚</h3>
+
+<p>一个新设计通常不是在真空中启动。原文明确说“Stage 0 不重做”，这意味着 V2 必须建立在已有能力之上。因此需要写明：</p>
+
+<ul>
+  <li>旧对象怎样迁移到新模型；</li>
+  <li>新旧版本是否需要同时读取；</li>
+  <li>发布顺序是先改数据库、再上服务，还是相反；</li>
+  <li>失败时回滚代码是否也要回滚数据；</li>
+  <li>旧 serving 为什么仍可读，何时切换 current。</li>
+</ul>
+
+<p>D-06 要求“同一 documentId 更新后不会产生新旧两个活跃来源”，就是发布后数据一致性的验收条件。至于 <code>L2</code>、<code>P0</code> 和 <code>S-09</code> 的确切含义，当前片段没有提供，不能仅凭名称判断。</p>
+
+<h3>12. 验证计划、开放问题与决策记录</h3>
+
+<p>最后，设计文档必须诚实地区分：</p>
+
+<ul>
+  <li>已经确定的设计；</li>
+  <li>有多个候选方案但尚未选择的部分；</li>
+  <li>必须做实验才能知道的部分；</li>
+  <li>当前能力不足而被登记为阻断的部分；</li>
+  <li>已经做出的重要取舍及其理由。</li>
+</ul>
+
+<p>这就是为什么原文在 D-06 中允许三种结果：<code>upsert</code>、版本化 manifest pointer，或者记录为 capability 阻断。一个技术实验不一定要证明原方案正确；它也可以产生“当前环境做不到，因此必须调整范围”的合法结论。</p>
+</section>
+
+<section id="spike">
+<h2>四、技术实验 Spike 为什么存在</h2>
+
+<div class="definition">
+  <strong>Spike：</strong>
+  为回答一个具体技术未知项而进行的有时限、小范围实验。它的主要产物不是可交付功能，而是证据：某方案能否工作、在什么条件下工作、有哪些限制，以及正式设计该如何调整。
+</div>
+
+<h3>1. 什么问题值得做 Spike</h3>
+
+<p>不是任何不确定性都需要实验。适合 Spike 的通常是以下问题：</p>
+
+<ul>
+  <li>一旦判断错误，会推翻核心数据模型或架构；</li>
+  <li>仅靠阅读文档无法确认真实行为；</li>
+  <li>依赖已有系统的具体能力，而不是抽象上“理论可行”；</li>
+  <li>涉及并发、崩溃恢复、性能或第三方限制；</li>
+  <li>正式实现成本很高，但最小验证成本较低。</li>
+</ul>
+
+<p>例如“双 AgentSession 能否真正隔离并分别恢复”，就不能只根据 Session Adapter 的接口名称推断。必须创建两个会话、注入不同信息、重启并恢复，观察是否真的保持隔离。</p>
+
+<h3>2. 一个合格 Spike 包含什么</h3>
+
+<ol class="flow-steps">
+  <li><strong>问题：</strong>我们到底不知道什么？不要写成宽泛的“研究会话系统”。</li>
+  <li><strong>风险：</strong>这个未知项为什么会阻塞后续设计或造成昂贵返工？</li>
+  <li><strong>最小环境：</strong>使用哪些真实组件，哪些部分可以用 fake 或固定数据代替？</li>
+  <li><strong>操作步骤：</strong>怎样触发正常、并发、失败和恢复场景？</li>
+  <li><strong>通过标准：</strong>哪些可观察结果出现才算方案成立？</li>
+  <li><strong>失败后的决策：</strong>换方案、缩范围、补能力，还是登记阻断？</li>
+  <li><strong>证据：</strong>代码、日志、测试结果、测量数据和结论保存在哪里？</li>
+</ol>
+
+<h3>3. Spike 与普通测试有什么区别</h3>
+
+<table>
+  <thead><tr><th>维度</th><th>Spike</th><th>正式测试</th></tr></thead>
+  <tbody>
+    <tr><td>目标</td><td>消除未知、支持设计决策</td><td>持续验证已经承诺的行为</td></tr>
+    <tr><td>发生时间</td><td>通常在对应实现前</td><td>实现过程中及之后持续运行</td></tr>
+    <tr><td>代码质量</td><td>可临时，但必须足以产生可信证据</td><td>应稳定、自动化、可长期维护</td></tr>
+    <tr><td>结果</td><td>可能证明方案不可行</td><td>失败通常表示实现偏离规格或发生回归</td></tr>
+    <tr><td>范围</td><td>围绕一个高风险问题的最小切片</td><td>覆盖单元、集成、端到端和非功能要求</td></tr>
+  </tbody>
+</table>
+
+<div class="warning">
+  <strong>常见误区：</strong>
+  Spike 不是“先随便写一版，以后再重构”的许可证。它必须有明确问题和结束条件。没有决策问题、没有通过标准、也没有证据记录的“探索”，很容易变成无人敢删的半成品。
+</div>
+</section>
+
+<section id="decode">
+<h2>五、把你提供的 D-01～D-06 翻译成人话</h2>
+
+<div class="source-note">
+  <strong>材料边界：</strong>
+  本节只依据你提供的片段解释这些实验在设计中的职责。片段没有定义 Stage 0、V2、V4、InnoSpark、L2、P0、S-09、Bundle 等对象的完整含义，因此下文不会擅自补成确定架构。
+</div>
+
+<table>
+  <thead>
+    <tr><th>实验</th><th>它真正担心什么</th><th>为什么不能等正式实现后再发现</th><th>实验通过后允许什么继续</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>D-01<br>双 AgentSession 隔离</strong></td>
+      <td>两个 Agent 是否真的拥有互相隔离的历史、数据可见性和恢复状态，而不是表面上分成两个名字</td>
+      <td>若底层 Session Adapter 不能隔离，整个多 Agent 权限模型和上下文设计都要推翻</td>
+      <td>继续实现内容 Agent 与关联 Agent 的独立工作流</td>
+    </tr>
+    <tr>
+      <td><strong>D-02<br>无向关联双端版本</strong></td>
+      <td>一条关系如何只保存一次，却可靠地反映到两个文档的版本与投影中；并发反向操作会不会重复或死锁</td>
+      <td>这直接决定关系的数据模型、事务边界和锁顺序，晚发现会影响大量代码与历史数据</td>
+      <td>继续实现关联增删、文档修订和双端重建</td>
+    </tr>
+    <tr>
+      <td><strong>D-03<br>核心事务与 outbox</strong></td>
+      <td>数据库状态已经提交，但后台投影任务丢失或重复时，系统能否恢复且不产生重复任务</td>
+      <td>这是数据正确性基础；若提交与任务投递之间存在不可恢复缝隙，系统会永久不一致</td>
+      <td>继续实现异步 Bundle、Markdown 或其他投影构建</td>
+    </tr>
+    <tr>
+      <td><strong>D-04<br>候选召回预算</strong></td>
+      <td>在真实规模下，候选检索是否足够准、足够快、token 成本可接受；模型为何频繁创造新节点</td>
+      <td>若召回层质量太差，后面调大模型提示或放宽新节点上限只会掩盖根因并扩大成本</td>
+      <td>确定召回策略和模型可见候选集，再实现稳定关联建议</td>
+    </tr>
+    <tr>
+      <td><strong>D-05<br>ReviewWorkspace 独立构建</strong></td>
+      <td>审阅前端能否仅依赖公开 ReviewApi 完成预览、审阅、冲突和发布，而不耦合主系统内部</td>
+      <td>若接口边界不够，前端完成后才发现必须嵌入主项目，会推翻模块化与复用目标</td>
+      <td>继续独立开发和测试审阅工作区</td>
+    </tr>
+    <tr>
+      <td><strong>D-06<br>L2 受控更新</strong></td>
+      <td>已有系统到底支持怎样的同 documentId 更新语义，更新后能否保证只有一个活跃来源</td>
+      <td>若能力被错误假设，发布后检索可能同时读取新旧版本，形成难以察觉的重复和污染</td>
+      <td>选择 upsert、版本指针方案，或明确登记能力阻断</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>为什么这些实验放在“对应实现前”，而不是项目最开始一起做</h3>
+
+<p>原文写的是“每项必须在对应实现前完成”，而不是“项目启动时一次性完成全部实验”。这体现了一个重要原则：</p>
+
+<div class="comparison-note">
+  <strong>风险验证也要按依赖顺序进行。</strong>
+  太早做实验时，相关设计尚未稳定，实验对象和标准可能不断变化；太晚做则已经投入大量实现成本。最合适的时间通常是：需求与候选设计已经足够清楚，但正式实现尚未依赖该假设。
+</div>
+
+<p>因此，“分阶段”不是所有事情严格串行。实际项目中，需求细化、设计、Spike 和局部实现可能交错进行；关键是不能让一个尚未验证的高风险假设悄悄成为后面大量工作的地基。</p>
+</section>
+
+<section id="reading">
+<h2>六、怎样阅读 AI 突然交给你的设计文档</h2>
+
+<p>当 AI 从需求跳到大量技术名词时，不建议逐个名词搜索。先恢复文档的逻辑骨架。对任何一节，你可以连续问下面七个问题。</p>
+
+<ol class="flow-steps">
+  <li><strong>这节在保护哪一条需求？</strong> 找不到对应需求，说明可能是过度设计，或者需求文档缺项。</li>
+  <li><strong>它担心哪一种失败？</strong> 数据丢失、重复、越权、延迟、成本、耦合，还是无法迁移？</li>
+  <li><strong>它要决定什么？</strong> 数据模型、事务边界、接口、部署方式，还是能力是否存在？</li>
+  <li><strong>哪些是项目内术语？</strong> 要求 AI 给出定义和来源章节，不要接受循环解释。</li>
+  <li><strong>输入、操作、输出是什么？</strong> 把抽象段落改写成一次完整流程。</li>
+  <li><strong>通过标准如何被观察？</strong> 是数据库记录、日志、页面行为、性能数据还是重启后的状态？</li>
+  <li><strong>失败后改变哪个设计？</strong> 如果失败也不影响任何决定，这个实验可能没有价值。</li>
+</ol>
+
+<h3>1. 让 AI 为每一节补“为什么存在”</h3>
+
+<p>你可以要求设计文档中的每个重要章节使用统一格式：</p>
+
+<pre><code>问题：当前存在什么不确定性或风险？
+关联需求：它保护哪条用户目标或系统约束？
+设计决定：我们准备怎样处理？
+替代方案：还有哪些可行路径，为什么没选？
+失败场景：什么情况下会出错？
+验证方式：怎样证明该决定成立？
+下游影响：哪些组件和实现依赖这个结论？</code></pre>
+
+<p>这种格式并不要求你先懂所有技术。即使不理解 outbox 的实现，你也能先理解：它要封住“数据库已经提交，但任务通知丢失”的缝隙。</p>
+
+<h3>2. 要求先给“阅读地图”，再给技术细节</h3>
+
+<p>一份适合项目负责人阅读的设计文档，应该先给出：</p>
+
+<ul>
+  <li>本次设计解决的三到五个核心问题；</li>
+  <li>系统上下文图；</li>
+  <li>一条端到端主流程；</li>
+  <li>核心数据对象及其关系；</li>
+  <li>最重要的不变量；</li>
+  <li>仍未解决的高风险问题与 Spike；</li>
+  <li>推荐阅读顺序。</li>
+</ul>
+
+<p>之后再展开数据库表、接口字段和并发细节。没有地图时，读者会在每个局部段落里理解句子，却不知道它们为什么同时存在。</p>
+
+<h3>3. 区分“我不懂术语”和“文档本身缺失”</h3>
+
+<p>以你提供的片段为例，以下两种情况必须分开：</p>
+
+<table>
+  <thead><tr><th>情况</th><th>处理方法</th></tr></thead>
+  <tbody>
+    <tr><td><code>outbox</code>、<code>ETag</code>、<code>upsert</code> 是行业技术概念</td><td>可以要求从问题、机制和例子开始解释</td></tr>
+    <tr><td><code>L2</code>、<code>P0</code>、<code>S-09</code> 是项目内部代号，但片段未定义</td><td>不能靠常识猜；必须回到项目文档查定义或要求作者补交叉引用</td></tr>
+  </tbody>
+</table>
+
+<p>这很重要：不是所有“看不懂”都应该归因于读者基础不足。设计文档若使用内部术语却不提供定义与链接，本身就是文档缺陷。</p>
+</section>
+
+<section id="template">
+<h2>七、一份同时适合你和实现者阅读的设计文档结构</h2>
+
+<p>下面是一份推荐骨架。小项目可以合并章节，但不应在没有判断的情况下删掉相应问题。</p>
+
+<table>
+  <thead><tr><th>章节</th><th>要回答的问题</th><th>主要读者</th></tr></thead>
+  <tbody>
+    <tr><td>1. 摘要与阅读地图</td><td>这次设计解决什么，先看哪几节</td><td>所有人</td></tr>
+    <tr><td>2. 背景、目标与非目标</td><td>为什么做、做到哪里停止</td><td>项目负责人、产品、开发</td></tr>
+    <tr><td>3. 需求映射与验收</td><td>每个设计问题保护哪条需求</td><td>项目负责人、测试</td></tr>
+    <tr><td>4. 既有系统与约束</td><td>Stage 0 有什么，什么不能重做</td><td>架构与实现者</td></tr>
+    <tr><td>5. 术语与核心概念</td><td>Session、Bundle、current 等究竟是什么</td><td>所有新加入者</td></tr>
+    <tr><td>6. 系统上下文与边界</td><td>外部参与者、系统及数据责任</td><td>架构、前后端</td></tr>
+    <tr><td>7. 端到端流程</td><td>一次任务怎样从输入走到发布</td><td>所有实现者</td></tr>
+    <tr><td>8. 数据模型与生命周期</td><td>保存什么、谁是源、怎样版本化</td><td>后端、数据、测试</td></tr>
+    <tr><td>9. 组件与接口</td><td>职责怎样分配、数据怎样传递</td><td>实现者</td></tr>
+    <tr><td>10. 状态、不变量与并发</td><td>什么必须始终为真，并发怎样处理</td><td>后端、测试</td></tr>
+    <tr><td>11. 失败、恢复与降级</td><td>每一步失败时系统保持什么状态</td><td>后端、运维</td></tr>
+    <tr><td>12. 性能、安全与可观测性</td><td>质量预算、权限和故障定位</td><td>架构、运维、安全</td></tr>
+    <tr><td>13. 迁移、发布与回滚</td><td>怎样从旧系统安全进入新系统</td><td>开发、运维</td></tr>
+    <tr><td>14. 技术实验与通过标准</td><td>哪些假设还需证据，失败后怎样决策</td><td>项目负责人、实现者</td></tr>
+    <tr><td>15. 实现阶段与依赖顺序</td><td>先做什么，哪些工作被什么阻塞</td><td>项目负责人、开发</td></tr>
+    <tr><td>16. 开放问题与决策记录</td><td>还有什么未知，重要取舍为何如此</td><td>所有维护者</td></tr>
+  </tbody>
+</table>
+
+<h3>为什么还要写“实现阶段”，设计不是已经结束了吗</h3>
+
+<p>架构设计告诉你目标结构，实施计划告诉你怎样安全到达目标结构。两者不同。</p>
+
+<p>例如最终设计需要：</p>
+
+<ul>
+  <li>两个隔离会话；</li>
+  <li>canonical link；</li>
+  <li>事务与 outbox；</li>
+  <li>独立 ReviewWorkspace；</li>
+  <li>受控 L2 更新。</li>
+</ul>
+
+<p>但实现不能随意并行。如果会话隔离实验未通过，依赖它的两个 Agent 流程不应大规模开发；如果 canonical link 的并发策略未定，两端版本重建也没有稳定基础。实施阶段需要把设计依赖转化为工作依赖。</p>
+
+<div class="thesis">
+  <strong>架构回答“完成后系统是什么样”，阶段计划回答“怎样以最小返工和可控风险走到那里”。</strong>
+</div>
+</section>
+
+<section id="questions">
+<h2>八、自检题与参考答案</h2>
+
+<div class="question"><strong>问题 1：</strong>为什么“支持无向关联”仍不足以直接指导实现？</div>
+<details><summary>参考答案</summary><p>因为它只说明外部能力，没有决定关系保存几份、唯一标识、并发去重、删除语义、两端版本更新和派生投影重建。多个设计都能满足表面需求，却具有不同故障模式。</p></details>
+
+<div class="question"><strong>问题 2：</strong>项目分阶段的核心目的是什么？</div>
+<details><summary>参考答案</summary><p>不是制造流程，而是在代码、数据、集成和用户依赖大规模形成之前，先解决当前最昂贵的未知项。每一阶段都应有进入条件、产物和退出证据。</p></details>
+
+<div class="question"><strong>问题 3：</strong>Spike 的产物主要是功能代码吗？</div>
+<details><summary>参考答案</summary><p>不是。Spike 的主要产物是支持设计决策的证据，包括测试代码、日志、测量结果、限制条件和结论。其代码可以被丢弃，结论必须被记录。</p></details>
+
+<div class="question"><strong>问题 4：</strong>D-03 为什么不仅是“加一个后台任务队列”？</div>
+<details><summary>参考答案</summary><p>因为真正问题是数据库事务与异步任务之间的一致性缝隙：提交前失败不能改变 current；提交后 worker 丢失仍要恢复；重复消费不能重复生成投影任务；新投影失败时旧 serving 仍应可读。</p></details>
+
+<div class="question"><strong>问题 5：</strong>看到 L2、P0、S-09 不懂时，应先搜索行业定义吗？</div>
+<details><summary>参考答案</summary><p>不应直接猜。它们看起来是项目内部代号，当前片段没有定义。应回到术语表、Stage 0 交付文档或相应章节查交叉引用；作者若未提供，就是文档需要补充。</p></details>
+
+<div class="question"><strong>问题 6：</strong>接口和组件之外，设计文档最容易被忽略的三类内容是什么？</div>
+<details><summary>参考答案</summary><p>可选答案很多，例如：数据所有权与生命周期；状态、不变量和并发；失败恢复；非功能预算；安全权限；迁移发布；验证计划。关键是说明静态结构无法独自回答时间、状态和失败问题。</p></details>
+</section>
+
+<section id="next">
+<h2>九、本篇结论与后续系列</h2>
+
+<p>现在可以重新理解你看到的“第 19 节”：它不是突然脱离需求去炫耀技术，而是在尝试把几个可能推翻系统基础的未知项放在正式实现之前验证。问题在于，它直接使用了项目内部名词和技术机制，却没有先给读者提供设计地图、风险来源与术语解释。</p>
+
+<p>从需求进入设计后，至少需要补齐以下内容：</p>
+
+<pre><code>目标、范围与约束
+→ 系统边界与统一词汇
+→ 数据模型与生命周期
+→ 端到端流程、状态机与不变量
+→ 一致性、事务、并发和幂等
+→ 失败、恢复与降级
+→ 性能、安全和可观测性
+→ 迁移、发布与回滚
+→ 技术实验、验收证据与开放问题
+→ 实现阶段和依赖顺序</code></pre>
+
+<p>接口与组件只是其中两项。它们描述系统“静态地由什么组成”；而真正让系统能够在现实中运行的，是对状态变化、并发冲突、局部失败和长期演进的处理。</p>
+
+<div class="comparison-note">
+  <strong>建议的后续三篇：</strong>
+  <ol>
+    <li><strong>从需求到设计（二）：逐条拆解 D-01～D-06</strong>——重点讲 Session 隔离、canonical link、ETag、召回预算和受控更新。</li>
+    <li><strong>从需求到设计（三）：事务、outbox、幂等与最终一致性</strong>——用一次“发布文档并重建投影”的完整故障过程讲可靠性。</li>
+    <li><strong>从需求到设计（四）：怎样审查 AI 生成的设计文档</strong>——建立需求追踪、术语检查、不变量检查、故障注入和实施依赖检查表。</li>
+  </ol>
+</div>
+
+<h3>材料说明</h3>
+<p class="small">本文的案例部分以用户提供的“19. 针对 V4 的剩余技术实验”片段为基础；对片段未定义的项目内部对象保持未决，不擅自补充其确切含义。其余内容为通用软件工程与系统设计方法解释。</p>
+</section>
+
+<section id="reader-feedback" data-feedback-status="pending">
+  <h2>读后反馈与修订记录</h2>
+  <article class="feedback-entry">
+    <h3>2026-07-24 · 第 0 轮</h3>
+    <p><strong>原始反馈：</strong>待读，尚未收到正文反馈。</p>
+    <p><strong>问题分类：</strong>待定</p>
+    <p><strong>处理：</strong>本文先建立“需求—设计—技术实验—实现—发布”的总体地图，并以 D-01～D-06 为贯穿案例；更具体的机制留待后续文章。</p>
+    <p><strong>状态：</strong>待处理</p>
+  </article>
+</section>
+</body>
+</html>

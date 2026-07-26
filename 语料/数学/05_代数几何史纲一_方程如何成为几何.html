@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>代数几何史纲（一）：方程如何成为几何？</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <style>
+    :root { color-scheme:light; --ink:#172033; --muted:#5e687b; --line:#d8dfeb; --soft:#f5f7fb; --accent:#6b3da5; --accent2:#0f7280; --accent-soft:#f1ebf8; --blue-soft:#eaf6f8; --warm:#fff8e9; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0 auto; padding:2.2rem 1.35rem 5rem; max-width:950px; color:var(--ink); background:#fff; font:17px/1.83 system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; }
+    h1 { font-size:2rem; line-height:1.3; margin:0 0 1.2rem; }
+    h2 { margin-top:3.1rem; padding-top:.5rem; border-top:1px solid var(--line); font-size:1.54rem; }
+    h3 { margin-top:2rem; font-size:1.17rem; }
+    p, li { text-align:justify; }
+    a { color:#5b2d92; text-underline-offset:3px; overflow-wrap:anywhere; }
+    blockquote { margin:1.2rem 0; padding:.9rem 1.05rem; border-left:4px solid var(--accent); background:var(--accent-soft); color:#49296f; }
+    nav#TOC { margin:1.4rem 0 2.6rem; padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; }
+    nav#TOC::before { content:"目录"; display:block; font-weight:750; margin-bottom:.45rem; }
+    nav#TOC ul { margin:.22rem 0; padding-left:1.35rem; }
+    .history-lanes, .structure-stack, .proof-chain { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.72rem; margin:1.35rem 0; }
+    .history-lanes section, .structure-stack section, .proof-chain section { min-height:94px; padding:.82rem .9rem; border:1px solid #d5c6e6; border-radius:11px; background:linear-gradient(145deg,#fff,#f6f0fb); }
+    .history-lanes strong, .history-lanes span, .structure-stack strong, .structure-stack span, .proof-chain strong, .proof-chain span { display:block; }
+    .history-lanes span, .structure-stack span, .proof-chain span { margin-top:.35rem; color:var(--muted); font-size:.92rem; line-height:1.6; }
+    .proof-chain { grid-template-columns:repeat(5,minmax(0,1fr)); }
+    .proof-chain section { position:relative; min-height:130px; }
+    .proof-chain section:not(:last-child)::after { content:"→"; position:absolute; right:-.62rem; top:42%; z-index:2; color:var(--accent); font-weight:800; }
+    .concept-tree { padding:1rem 1.2rem; background:var(--soft); border:1px solid var(--line); border-radius:12px; overflow-x:auto; }
+    .concept-tree ul { margin:.3rem 0; }
+    table { width:100%; border-collapse:collapse; display:block; overflow-x:auto; margin:1.2rem 0; }
+    th, td { min-width:145px; border:1px solid var(--line); padding:.65rem .75rem; vertical-align:top; }
+    th { background:var(--soft); }
+    math[display="block"] { display:block; max-width:100%; overflow-x:auto; overflow-y:hidden; padding:.45rem 0; }
+    details { margin:1rem 0 1.5rem; padding:.78rem 1rem; border:1px solid var(--line); border-radius:10px; background:var(--blue-soft); }
+    summary { cursor:pointer; font-weight:750; color:#155e68; }
+    #reader-feedback { margin-top:3.5rem; padding:1rem 1.2rem; background:var(--warm); border:1px solid #ead6a7; border-radius:12px; }
+    .feedback-entry { padding:.45rem 0 .9rem; }
+    code { overflow-wrap:anywhere; }
+    @media (max-width:860px) {
+      .proof-chain { grid-template-columns:1fr; }
+      .proof-chain section { min-height:auto; }
+      .proof-chain section:not(:last-child)::after { content:"↓"; right:auto; left:50%; top:auto; bottom:-1.05rem; }
+    }
+    @media (max-width:650px) {
+      body { padding:1.2rem .92rem 4rem; font-size:16px; line-height:1.79; }
+      h1 { font-size:1.64rem; }
+      h2 { font-size:1.32rem; margin-top:2.55rem; }
+      h3 { font-size:1.09rem; }
+      p, li { text-align:left; }
+      blockquote, .concept-tree, #reader-feedback { margin-left:0; margin-right:0; padding:.76rem .86rem; }
+      .history-lanes, .structure-stack { grid-template-columns:1fr; }
+      th, td { min-width:132px; }
+    }
+  </style>
+  <meta name="corpus-id" content="05">
+  <meta name="domain" content="mathematics">
+  <meta name="series" content="history-of-algebraic-geometry">
+  <meta name="series-part" content="1-of-4">
+  <meta name="production-status" content="draft-ready">
+  <meta name="reading-status" content="unread">
+  <meta name="expected-reading-time" content="45-55-minutes">
+  <meta name="generated-date" content="2026-07-18">
+  <meta name="revision-round" content="0">
+  <meta name="experimental-series" content="true">
+  <meta name="feedback-scope" content="series-only">
+  <meta name="skill-adjustment" content="disabled">
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">代数几何史纲（一）：方程如何成为几何？</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#先回答代数几何到底研究什么"
+id="toc-先回答代数几何到底研究什么">0.
+先回答“代数几何到底研究什么”</a></li>
+<li><a href="#第一条线从圆锥曲线到方程的零点集"
+id="toc-第一条线从圆锥曲线到方程的零点集">1.
+第一条线：从圆锥曲线到“方程的零点集”</a></li>
+<li><a href="#第二条线为什么必须把平行线送到无穷远"
+id="toc-第二条线为什么必须把平行线送到无穷远">2.
+第二条线：为什么必须把平行线送到无穷远？</a></li>
+<li><a href="#第三条线riemann-为什么把多值函数变成曲面"
+id="toc-第三条线riemann-为什么把多值函数变成曲面">3. 第三条线：Riemann
+为什么把多值函数变成曲面？</a></li>
+<li><a href="#第四条线分类曲线时应该保留什么不变量"
+id="toc-第四条线分类曲线时应该保留什么不变量">4.
+第四条线：分类曲线时，应该保留什么不变量？</a></li>
+<li><a href="#一张概念树古典代数几何已经获得了什么又丢了什么"
+id="toc-一张概念树古典代数几何已经获得了什么又丢了什么">5.
+一张概念树：古典代数几何已经获得了什么，又丢了什么？</a></li>
+<li><a href="#最小记忆清单" id="toc-最小记忆清单">6.
+最小记忆清单</a></li>
+<li><a href="#史料与延伸阅读" id="toc-史料与延伸阅读">7.
+史料与延伸阅读</a></li>
+<li><a href="#reader-feedback"
+id="toc-reader-feedback">阅读反馈记录</a></li>
+</ul>
+</nav>
+<blockquote>
+<p><strong>系列性质</strong>：实验性语料；共四篇。本系列的阅读反馈只用于修订本系列，不写入通用
+Skill。<br />
+<strong>预计阅读时间</strong>：45—55 分钟<br />
+<strong>阅读状态</strong>：未读<br />
+<strong>本篇任务</strong>：认识从坐标几何、射影几何到代数簇与 Riemann
+曲面的第一条历史主线；掌握仿射代数集、理想、Zariski
+拓扑、射影空间、奇点、双有理等价和亏格的基本定义；理解零点定理、Bézout
+定理与 Riemann–Roch 定理各自在修补什么缺陷。<br />
+<strong>不要求</strong>：证明零点定理、建立层上同调、计算一般曲线的亏格。后两项会在第四篇重新出现。</p>
+</blockquote>
+<hr />
+<h2 id="先回答代数几何到底研究什么">0. 先回答“代数几何到底研究什么”</h2>
+<p>最短的回答是：<strong>研究多项式方程解集的几何，并用几何反过来研究方程。</strong>
+但这句话会掩盖两次关键转向。</p>
+<p>第一，研究对象不是某一条画出来的曲线，而是由方程、允许的坐标变换以及底域共同决定的结构。同一个方程在实数、复数、有理数和有限域上，会呈现完全不同的问题。</p>
+<p>第二，现代代数几何最终不再把“解的集合”当作全部对象。它还要保存解附近的函数、无穷小信息、参数族以及底环。这一步要等到第四篇的概形语言才能说清楚。本篇先走到古典代数簇，因为只有亲自碰到古典语言的边界，概形才不会显得是凭空制造的抽象。</p>
+<p>本篇的四条历史支线如下。</p>
+<div class="history-lanes" aria-label="本篇四条历史主线">
+<section>
+<strong>A　方程与坐标</strong><span>圆锥曲线 → Descartes 坐标 →
+多项式零点集</span>
+</section>
+<section>
+<strong>B　无穷远与交点</strong><span>透视画法 → 射影空间 → Bézout
+计数</span>
+</section>
+<section>
+<strong>C　函数与曲面</strong><span>复积分 → 多值函数 → Riemann
+曲面</span>
+</section>
+<section>
+<strong>D　不变量</strong><span>奇点 → 双有理分类 → 亏格与
+Riemann–Roch</span>
+</section>
+</div>
+<p>它们在十九世纪末汇合成一个新观点：一条代数曲线既是方程的零点集，也是一个可以承载函数、微分和拓扑不变量的几何对象。</p>
+<hr />
+<h2 id="第一条线从圆锥曲线到方程的零点集">1.
+第一条线：从圆锥曲线到“方程的零点集”</h2>
+<h3 id="古希腊几何能研究曲线却缺少统一的运算语言">1.1
+古希腊几何能研究曲线，却缺少统一的运算语言</h3>
+<p>古希腊数学已经系统研究椭圆、抛物线和双曲线。它们来自圆锥面被平面截出的不同截痕，因此统称圆锥曲线。这套方法擅长证明图形性质，却有两个限制。</p>
+<p>其一，不同曲线往往需要不同的作图和论证。其二，“求两条曲线的交点”没有被统一为一个消元问题。几何对象能够被看见，但它们之间还缺少一种可计算的共同语言。</p>
+<p>十七世纪的 Descartes 和 Fermat
+把点写成坐标，把曲线写成方程。圆、抛物线和双曲线于是成为二次多项式的零点集。例如</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">
+x^2+y^2-1=0
+</annotation></semantics></math></p>
+<p>描述单位圆。这个式子的整体含义是：在平面中挑出所有使多项式
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">f(x,y)=x^2+y^2-1</annotation></semantics></math>
+取值为零的点。</p>
+<p>坐标法的革命性不只是“几何题可以列方程”。更重要的是，<strong>加法、乘法、因式分解与消元开始控制几何</strong>：</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>g</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">fg=0</annotation></semantics></math>
+的零点集是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f=0</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">g=0</annotation></semantics></math>
+两个零点集的并；</li>
+<li>同时满足
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f=0</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">g=0</annotation></semantics></math>
+是两个零点集的交；</li>
+<li>因式分解对应把几何对象拆成分支；</li>
+<li>消去一个变量对应把高维对象投影到较低维。</li>
+</ul>
+<p>这正是“代数”与“几何”之间最初的字典。</p>
+<h3 id="底域决定你到底在问什么">1.2 底域决定你到底在问什么</h3>
+<p>固定一个域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>。你可以把域理解为允许进行加、减、乘、除（除数非零）的数系，如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb R</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℂ</mi><annotation encoding="application/x-tex">\mathbb C</annotation></semantics></math>、<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>
+或有限域
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝔽</mi><mi>p</mi></msub><annotation encoding="application/x-tex">\mathbb F_p</annotation></semantics></math>。</p>
+<p>含
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+个变量的多项式环记为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+k[x_1,\ldots,x_n].
+</annotation></semantics></math></p>
+<p>这里的系数来自
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>。给定一组多项式
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>⊆</mo><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">S\subseteq k[x_1,\ldots,x_n]</annotation></semantics></math>，定义它们的公共零点集</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>S</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>a</mi><mo>∈</mo><msup><mi>k</mi><mi>n</mi></msup><mo>:</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 对每个 </mtext><mspace width="0.333em"></mspace></mrow><mi>f</mi><mo>∈</mo><mi>S</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V(S)=\{a\in k^n:f(a)=0\text{ 对每个 }f\in S\}.
+</annotation></semantics></math></p>
+<p>这称为一个仿射代数集。</p>
+<p>同一个式子
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup><mo>+</mo><mn>1</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x^2+y^2+1=0</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\mathbb R^2</annotation></semantics></math>
+中没有点，在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℂ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\mathbb C^2</annotation></semantics></math>
+中却有很多点。因此“方程是什么”和“在哪个域中求解”不可分离。</p>
+<p>代数几何常先在代数闭域上工作。<strong>代数闭</strong>是指每个非常数一元多项式都在该域中有根；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℂ</mi><annotation encoding="application/x-tex">\mathbb C</annotation></semantics></math>
+是典型例子，而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb R</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>
+不是。这样做不是因为实数和有理数不重要，而是为了先让“代数条件与几何零点”之间的对应尽可能完整，随后再研究实点或有理点的额外困难。</p>
+<h3 id="为什么要从方程组升级为理想">1.3
+为什么要从方程组升级为理想？</h3>
+<p>如果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+在某个集合上都为零，那么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>+</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">f+g</annotation></semantics></math>
+也为零；任取多项式
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mi>f</mi></mrow><annotation encoding="application/x-tex">hf</annotation></semantics></math>
+也为零。因此真正由一组方程自动产生的对象不是一张方程清单，而是包含它们全部代数组合的<strong>理想</strong>。</p>
+<p><strong>定义（理想）</strong>　环
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>
+的子集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>I</mi><annotation encoding="application/x-tex">I</annotation></semantics></math>
+称为理想，如果：</p>
+<ol type="1">
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>,</mo><mi>b</mi><mo>∈</mo><mi>I</mi></mrow><annotation encoding="application/x-tex">a,b\in I</annotation></semantics></math>
+推出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>−</mo><mi>b</mi><mo>∈</mo><mi>I</mi></mrow><annotation encoding="application/x-tex">a-b\in I</annotation></semantics></math>；</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>∈</mo><mi>I</mi><mo>,</mo><mi>r</mi><mo>∈</mo><mi>R</mi></mrow><annotation encoding="application/x-tex">a\in I,r\in R</annotation></semantics></math>
+推出
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mi>a</mi><mo>∈</mo><mi>I</mi></mrow><annotation encoding="application/x-tex">ra\in I</annotation></semantics></math>。</li>
+</ol>
+<p>由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>f</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">f_1,\ldots,f_m</annotation></semantics></math>
+生成的理想记为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>f</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>f</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><msub><mi>h</mi><mi>i</mi></msub><msub><mi>f</mi><mi>i</mi></msub><mo>:</mo><msub><mi>h</mi><mi>i</mi></msub><mo>∈</mo><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">}</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(f_1,\ldots,f_m)=\left\{\sum_{i=1}^{m}h_if_i:h_i\in k[x_1,\ldots,x_n]\right\}.
+</annotation></semantics></math></p>
+<p>它与原方程组有相同的公共零点。反过来，给定点集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>⊆</mo><msup><mi>k</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">X\subseteq k^n</annotation></semantics></math>，定义在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+上恒为零的全部多项式</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>f</mi><mo>∈</mo><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>:</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 对每个 </mtext><mspace width="0.333em"></mspace></mrow><mi>x</mi><mo>∈</mo><mi>X</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+I(X)=\{f\in k[x_1,\ldots,x_n]:f(x)=0\text{ 对每个 }x\in X\}.
+</annotation></semantics></math></p>
+<p>于是出现两种反向操作：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mtext mathvariant="normal">理想 </mtext><mspace width="0.333em"></mspace></mrow><mi>I</mi><mspace width="1.0em"></mspace><mover><mo>→</mo><mrow><mspace width="0.278em"></mspace><mi>V</mi><mspace width="0.278em"></mspace></mrow></mover><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">零点集 </mtext><mspace width="0.333em"></mspace></mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mrow><mtext mathvariant="normal">点集 </mtext><mspace width="0.333em"></mspace></mrow><mi>X</mi><mspace width="1.0em"></mspace><mover><mo>→</mo><mrow><mspace width="0.278em"></mspace><mi>I</mi><mspace width="0.278em"></mspace></mrow></mover><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">消失理想 </mtext><mspace width="0.333em"></mspace></mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{理想 }I\quad\xrightarrow{\;V\;}\quad\text{零点集 }V(I),
+\qquad
+\text{点集 }X\quad\xrightarrow{\;I\;}\quad\text{消失理想 }I(X).
+</annotation></semantics></math></p>
+<p>这已经是一个结构性问题：从理想出发取零点，再取这些零点上全部消失的多项式，能否回到原理想？答案揭示了“几何看不见哪些代数信息”。</p>
+<h3 id="hilbert-零点定理第一座精确的代数几何桥梁">1.4 Hilbert
+零点定理：第一座精确的代数—几何桥梁</h3>
+<p>先定义理想的根。</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mi>I</mi></msqrt><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>f</mi><mo>:</mo><mrow><mtext mathvariant="normal">存在 </mtext><mspace width="0.333em"></mspace></mrow><mi>m</mi><mo>≥</mo><mn>1</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 使 </mtext><mspace width="0.333em"></mspace></mrow><msup><mi>f</mi><mi>m</mi></msup><mo>∈</mo><mi>I</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\sqrt I=\{f:\text{存在 }m\ge 1\text{ 使 }f^m\in I\}.
+</annotation></semantics></math></p>
+<p>例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>x</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x^2)</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x)</annotation></semantics></math>
+的零点集都是原点；只看普通点时，无法分辨“一阶消失”和“二阶消失”。因此从几何零点返回代数，最多得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mi>I</mi></msqrt><annotation encoding="application/x-tex">\sqrt I</annotation></semantics></math>，而不是总能得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>I</mi><annotation encoding="application/x-tex">I</annotation></semantics></math>。</p>
+<p><strong>Hilbert 零点定理的几何形式</strong>　若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+是代数闭域，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msqrt><mi>I</mi></msqrt><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{I(V(I))=\sqrt I.}
+</annotation></semantics></math></p>
+<p>公式左边表示：先取
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>I</mi><annotation encoding="application/x-tex">I</annotation></semantics></math>
+的所有公共零点，再收集这些点上消失的全部多项式。定理说结果恰好是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>I</mi><annotation encoding="application/x-tex">I</annotation></semantics></math>
+的根理想。</p>
+<p>这解决了十九世纪代数几何的一个根本问题：几何零点并不是方程的模糊图像；在忽略幂零厚度后，闭代数集与根理想严格反向对应。</p>
+<p>它也准确暴露了缺陷：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x)</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>x</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x^2)</annotation></semantics></math>
+的差别被丢掉了。第四篇的概形会故意把这种“几何上同一点、无穷小结构却不同”的信息放回来。</p>
+<h3 id="zariski-拓扑让多项式零点成为闭集">1.5 Zariski
+拓扑：让多项式零点成为闭集</h3>
+<p>在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>k</mi><mi>n</mi></msup><annotation encoding="application/x-tex">k^n</annotation></semantics></math>
+上规定所有代数集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V(I)</annotation></semantics></math>
+为闭集，得到 Zariski 拓扑。它确实满足拓扑公理，因为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>∩</mo><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>J</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo>+</mo><mi>J</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+V(I)\cap V(J)=V(I+J),
+</annotation></semantics></math></p>
+<p>而有限并可由乘积理想表达。这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo>+</mo><mi>J</mi></mrow><annotation encoding="application/x-tex">I+J</annotation></semantics></math>
+是由
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>I</mi><annotation encoding="application/x-tex">I</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math>
+中元素共同生成的理想。</p>
+<p>Zariski 拓扑比欧氏拓扑粗得多。例如在无限域上的仿射直线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>𝔸</mi><mi>k</mi><mn>1</mn></msubsup><annotation encoding="application/x-tex">\mathbb A^1_k</annotation></semantics></math>
+中，非零一元多项式只有有限个根，所以闭集只有有限集和整条直线。两个非空开集必然相交。</p>
+<p>这种拓扑不是为了测量远近，而是为了记录“哪些点满足共同的代数约束”。一个性质若在某个非空
+Zariski
+开集上成立，常被称为对<strong>一般点</strong>成立；例外集合被若干方程压在较低维的位置上。</p>
+<h3 id="分段自检一">分段自检一</h3>
+<ol type="1">
+<li>为什么方程组自然产生的是理想，而不是任意多项式集合？</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x)</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>x</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x^2)</annotation></semantics></math>
+的普通零点相同，零点定理如何体现这一事实？</li>
+<li>Zariski 拓扑为什么适合代数，却不适合表达通常的距离？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>在同一零点集上消失的函数对加减和乘任意多项式封闭，恰好满足理想公理。</li>
+<li>两个理想的根理想相同，都是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x)</annotation></semantics></math>；普通零点只恢复根理想。</li>
+<li>它只把多项式方程的公共零点规定为闭集，开集通常极大，没有细致的邻域尺度。</li>
+</ol>
+</details>
+<hr />
+<h2 id="第二条线为什么必须把平行线送到无穷远">2.
+第二条线：为什么必须把平行线送到无穷远？</h2>
+<h3 id="仿射平面的交点计数总有漏掉的情况">2.1
+仿射平面的交点计数总有“漏掉”的情况</h3>
+<p>两条不平行直线在平面中交于一点，平行直线却不相交。如果我们想建立“次数决定交点数”的统一定理，平行这一例外非常刺眼。</p>
+<p>透视画法提供了几何直觉：铁轨在远方汇合。射影几何把这件事变成定义，不再把无穷远点看成绘画幻觉。</p>
+<p><strong>定义（射影空间）</strong>　<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+维射影空间
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ℙ</mi><mi>n</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P^n(k)</annotation></semantics></math>
+的点，是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>k</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">k^{n+1}</annotation></semantics></math>
+中非零向量按比例关系得到的等价类：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>∼</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>λ</mi><msub><mi>x</mi><mn>0</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi>λ</mi><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>λ</mi><mo>∈</mo><msup><mi>k</mi><mo>×</mo></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(x_0,\ldots,x_n)\sim(\lambda x_0,\ldots,\lambda x_n),\qquad \lambda\in k^\times.
+</annotation></semantics></math></p>
+<p>点记为齐次坐标</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>x</mi><mn>0</mn></msub><mo>:</mo><mi>⋯</mi><mo>:</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[x_0:\cdots:x_n].
+</annotation></semantics></math></p>
+<p>当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>0</mn></msub><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x_0\ne 0</annotation></semantics></math>
+时，可以除以
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math>，把它写成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo>:</mo><msub><mi>x</mi><mn>1</mn></msub><mi>/</mi><msub><mi>x</mi><mn>0</mn></msub><mo>:</mo><mi>⋯</mi><mo>:</mo><msub><mi>x</mi><mi>n</mi></msub><mi>/</mi><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[1:x_1/x_0:\cdots:x_n/x_0]</annotation></semantics></math>，这给出一份仿射空间。剩余的超平面
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>0</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x_0=0</annotation></semantics></math>
+就是无穷远超平面。</p>
+<h3 id="为什么射影方程必须齐次">2.2 为什么射影方程必须齐次？</h3>
+<p>一个射影点有无数个坐标代表元。要使“代入方程是否为零”不依赖代表元，多项式必须是齐次的。</p>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+次齐次多项式，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>λ</mi><msub><mi>x</mi><mn>0</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi>λ</mi><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>λ</mi><mi>d</mi></msup><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>0</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+F(\lambda x_0,\ldots,\lambda x_n)=\lambda^dF(x_0,\ldots,x_n).
+</annotation></semantics></math></p>
+<p>因此
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">F(x)=0</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>λ</mi><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">F(\lambda x)=0</annotation></semantics></math>
+等价。</p>
+<p>把仿射方程
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(x,y)=0</annotation></semantics></math>
+变成射影方程叫齐次化。例如抛物线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">y=x^2</annotation></semantics></math>
+写成</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mi>y</mi><mi>z</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">
+x^2-yz=0
+</annotation></semantics></math></p>
+<p>的射影闭包；在仿射图
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">z=1</annotation></semantics></math>
+中恢复
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mi>y</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x^2-y=0</annotation></semantics></math>，在无穷远线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">z=0</annotation></semantics></math>
+上多出点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>:</mo><mn>1</mn><mo>:</mo><mn>0</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0:1:0]</annotation></semantics></math>。</p>
+<p>射影化不是随便“加几个点”。它给仿射对象加上最自然的边界，使投影、交点和紧致性行为更统一。在复数上，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ℙ</mi><mi>n</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℂ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb P^n(\mathbb C)</annotation></semantics></math>
+还是一个紧致复流形。</p>
+<h3 id="bézout-定理交点数为什么要计重数">2.3 Bézout
+定理：交点数为什么要计重数？</h3>
+<p>设
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>,</mo><mi>D</mi><mo>⊆</mo><msup><mi>ℙ</mi><mn>2</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C,D\subseteq\mathbb P^2(k)</annotation></semantics></math>
+是次数分别为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>,</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m,n</annotation></semantics></math>
+的射影平面曲线，并且没有公共不可约分支。在代数闭域上，Bézout 定理说</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><munder><mo>∑</mo><mrow><mi>p</mi><mo>∈</mo><mi>C</mi><mo>∩</mo><mi>D</mi></mrow></munder><msub><mi>I</mi><mi>p</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>C</mi><mo>,</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>m</mi><mi>n</mi><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{\sum_{p\in C\cap D}I_p(C,D)=mn.}
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mi>p</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>C</mi><mo>,</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">I_p(C,D)</annotation></semantics></math>
+表示曲线在交点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+的局部交数。公式的意思不是“总有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">mn</annotation></semantics></math>
+个不同的交点”，而是把以下情况都正确计入：</p>
+<ul>
+<li>相切的两个分支在同一点贡献大于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+的重数；</li>
+<li>多个交点合并时仍保存总数；</li>
+<li>仿射平面中缺失的交点可能位于无穷远；</li>
+<li>需要在代数闭域中计入原域没有的点。</li>
+</ul>
+<p>以直线与圆锥曲线为例，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>n</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">m=1,n=2</annotation></semantics></math>，总交数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>。一条割线有两个不同交点；切线只有一个可见交点，但该点交数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>；某些实直线与实圆没有实交点，却在复射影平面中有两个共轭交点。</p>
+<p>这展示了代数几何常用的策略：为了得到没有例外的定理，先扩大空间、扩大数域，并给点附加重数。原问题没有消失，而是成为完整定理中的一个实数切片。</p>
+<hr />
+<h2 id="第三条线riemann-为什么把多值函数变成曲面">3. 第三条线：Riemann
+为什么把多值函数变成曲面？</h2>
+<h3 id="多值不是函数犯错而是底空间选错了">3.1
+多值不是函数犯错，而是底空间选错了</h3>
+<p>复函数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><msqrt><mi>z</mi></msqrt></mrow><annotation encoding="application/x-tex">w=\sqrt z</annotation></semantics></math>
+在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℂ</mi><mo>\</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathbb C\setminus\{0\}</annotation></semantics></math>
+上无法全局选定单值分支：沿绕原点一周的闭路解析延拓，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mi>z</mi></msqrt><annotation encoding="application/x-tex">\sqrt z</annotation></semantics></math>
+会变成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msqrt><mi>z</mi></msqrt></mrow><annotation encoding="application/x-tex">-\sqrt z</annotation></semantics></math>。同样，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">\log z</annotation></semantics></math>
+绕原点一周会增加
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>π</mi><mi>i</mi></mrow><annotation encoding="application/x-tex">2\pi i</annotation></semantics></math>。</p>
+<p>十九世纪的复分析因此面对一个概念问题：代数关系</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo>,</mo><mi>w</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">
+P(z,w)=0
+</annotation></semantics></math></p>
+<p>一般并不把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math>
+定义成复平面上的单值函数。若仍坚持把底空间当作一张复平面，就不得不引入割线，并不断追踪分支跳跃。</p>
+<p>Riemann 的做法是改变空间。对
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>w</mi><mn>2</mn></msup><mo>=</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">w^2=z</annotation></semantics></math>，取两张割开的复平面，沿割线交叉粘合。这样，在新曲面上的每一点不仅记住
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>，还记住处于哪一个分支；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math>
+便成为真正的单值全纯函数。</p>
+<p><strong>Riemann
+曲面</strong>是一个实二维流形，并配有复坐标图，使坐标变换是全纯函数。它在每个小邻域看起来像复平面，但整体可以有球面、环面或更高“洞数”的拓扑。</p>
+<p>一条光滑射影复代数曲线，本身就是紧致 Riemann 曲面。反过来，每个紧致
+Riemann 曲面都能由射影代数曲线实现。这一对应把三种语言绑在一起：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mtext mathvariant="normal">一元复代数函数域</mtext><mo>↔</mo><mtext mathvariant="normal">光滑射影复曲线</mtext><mo>↔</mo><mtext mathvariant="normal">紧致 Riemann 曲面</mtext></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\text{一元复代数函数域}
+\longleftrightarrow
+\text{光滑射影复曲线}
+\longleftrightarrow
+\text{紧致 Riemann 曲面}
+}
+</annotation></semantics></math></p>
+<p>左边强调函数的代数关系，中间强调多项式方程，右边强调复分析与拓扑。这里就是复分析、拓扑和代数几何最早的深层交汇，而不是名字上的偶合。</p>
+<h3 id="奇点同一张代数图像可能藏着不同的内在曲线">3.2
+奇点：同一张代数图像可能藏着不同的内在曲线</h3>
+<p>给平面曲线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>=</mo><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">C=V(f)</annotation></semantics></math>。点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+是光滑点，若梯度</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∇</mi><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>∂</mi><mi>f</mi></mrow><mrow><mi>∂</mi><mi>x</mi></mrow></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mfrac><mrow><mi>∂</mi><mi>f</mi></mrow><mrow><mi>∂</mi><mi>y</mi></mrow></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+\nabla f(p)=\left(\frac{\partial f}{\partial x}(p),\frac{\partial f}{\partial y}(p)\right)
+</annotation></semantics></math></p>
+<p>不为零；若两个偏导都为零，则
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+是奇点。梯度非零时，隐函数定理保证曲线在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+附近像一条光滑的一维曲线。</p>
+<p>比较两个三次方程：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mn>1</mn></msub><mo>:</mo><msup><mi>y</mi><mn>2</mn></msup><mo>=</mo><msup><mi>x</mi><mn>3</mn></msup><mo>−</mo><mi>x</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>C</mi><mn>2</mn></msub><mo>:</mo><msup><mi>y</mi><mn>2</mn></msup><mo>=</mo><msup><mi>x</mi><mn>3</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+C_1:y^2=x^3-x,
+\qquad
+C_2:y^2=x^3.
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>1</mn></msub><annotation encoding="application/x-tex">C_1</annotation></semantics></math>
+的射影闭包光滑；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>2</mn></msub><annotation encoding="application/x-tex">C_2</annotation></semantics></math>
+在原点有尖点，因为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup><mo>−</mo><msup><mi>x</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">f=y^2-x^3</annotation></semantics></math>
+的两个偏导在原点都为零。</p>
+<p>对尖点曲线作参数化</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><msup><mi>t</mi><mn>2</mn></msup><mo>,</mo><mspace width="2.0em"></mspace><mi>y</mi><mo>=</mo><msup><mi>t</mi><mn>3</mn></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">
+x=t^2,\qquad y=t^3,
+</annotation></semantics></math></p>
+<p>就得到一条光滑参数线映到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>2</mn></msub><annotation encoding="application/x-tex">C_2</annotation></semantics></math>。这个过程是<strong>正规化</strong>的最简单例子：用一个正常、通常更光滑的曲线去解析原曲线的自交或尖点。它说明“平面中的图像”与“曲线的内在结构”不完全相同。</p>
+<h3 id="正则函数坐标环与态射">3.3 正则函数、坐标环与态射</h3>
+<p>若
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⊆</mo><msup><mi>k</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">X=V(I)\subseteq k^n</annotation></semantics></math>，它的坐标环定义为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>X</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mi>/</mi><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+k[X]=k[x_1,\ldots,x_n]/I(X).
+</annotation></semantics></math></p>
+<p>两个多项式若在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+上处处取值相同，它们的差属于
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">I(X)</annotation></semantics></math>，因而在商环中代表同一个函数。坐标环就是
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+上全部多项式函数的代数。</p>
+<p>仿射代数集之间的正则映射，是坐标由多项式给出的映射。方向会反转：若</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mo>:</mo><mi>X</mi><mo>→</mo><mi>Y</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\varphi:X\to Y,
+</annotation></semantics></math></p>
+<p>那么把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+上函数与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>φ</mi><annotation encoding="application/x-tex">\varphi</annotation></semantics></math>
+复合，得到</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>φ</mi><mo>*</mo></msup><mo>:</mo><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>Y</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>→</mo><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>X</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>f</mi><mo>↦</mo><mi>f</mi><mo>∘</mo><mi>φ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\varphi^*:k[Y]\to k[X],\qquad f\mapsto f\circ\varphi.
+</annotation></semantics></math></p>
+<p>几何映射向前走，函数拉回向后走。这种反变关系后来成为现代代数几何的基本组织原则：研究空间，可以转而研究它们的函数环；研究空间之间的映射，可以转而研究反方向的环同态。</p>
+<hr />
+<h2 id="第四条线分类曲线时应该保留什么不变量">4.
+第四条线：分类曲线时，应该保留什么不变量？</h2>
+<h3 id="不可约与分支">4.1 不可约与分支</h3>
+<p>代数集
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+若不能写成两个真闭子集的并，称为不可约。例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mi>y</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">xy=0</annotation></semantics></math>
+是两条坐标轴的并，因此可约；而
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>−</mo><msup><mi>x</mi><mn>2</mn></msup><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">y-x^2=0</annotation></semantics></math>
+在通常域上不可约。</p>
+<p>本系列在古典语境中把<strong>代数簇</strong>理解为有限型、约化且不可约的代数几何对象。不同教材对“variety”是否要求不可约存在约定差异；这里明确约定，是为了避免把术语差异误当成数学分歧。</p>
+<p>不可约性对应“对象只有一个代数分支”。在代数一侧，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+不可约当且仅当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">I(X)</annotation></semantics></math>
+是素理想，即商环
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>X</mi><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">k[X]</annotation></semantics></math>
+没有零因子。</p>
+<h3 id="有理函数与双有理等价">4.2 有理函数与双有理等价</h3>
+<p>在不可约仿射簇
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+上，坐标环
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>X</mi><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">k[X]</annotation></semantics></math>
+是整环，可以取分式域</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>Frac</mo><mi>k</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>X</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+k(X)=\operatorname{Frac}k[X],
+</annotation></semantics></math></p>
+<p>称为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+的有理函数域。有理函数允许写成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>/</mi><mi>g</mi></mrow><annotation encoding="application/x-tex">f/g</annotation></semantics></math>，只在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">g\ne0</annotation></semantics></math>
+的开集上有定义。</p>
+<p>两个不可约簇若存在互为逆的有理映射，就称双有理等价。它们可能在少数点或低维子集上不同，却拥有同一个有理函数域。</p>
+<p>例如尖点曲线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>y</mi><mn>2</mn></msup><mo>=</mo><msup><mi>x</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">y^2=x^3</annotation></semantics></math>
+与仿射直线通过
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>↦</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>t</mi><mn>2</mn></msup><mo>,</mo><msup><mi>t</mi><mn>3</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">t\mapsto(t^2,t^3)</annotation></semantics></math>
+双有理等价；逆映射在非原点处可写为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mi>y</mi><mi>/</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">t=y/x</annotation></semantics></math>。双有理几何因此允许把奇点解析掉，保留“一般位置”的函数信息。</p>
+<p>但双有理等价比同构弱。若我们关心奇点本身、无穷远点或参数族中的退化，仅保留函数域就会丢失重要信息。</p>
+<h3 id="亏格洞数微分形式与代数复杂度汇合">4.3
+亏格：洞数、微分形式与代数复杂度汇合</h3>
+<p>对紧致连通可定向曲面，拓扑分类定理用非负整数
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+分类：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">g=0</annotation></semantics></math>
+是球面，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">g=1</annotation></semantics></math>
+是环面，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">g=2</annotation></semantics></math>
+是双环面。这个
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+称为亏格。</p>
+<p>对光滑射影复曲线，亏格还有两个等价面貌：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><msub><mo>dim</mo><mi>ℂ</mi></msub><msup><mi>H</mi><mn>0</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>C</mi><mo>,</mo><msubsup><mi>Ω</mi><mi>C</mi><mn>1</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msub><mo>dim</mo><mi>ℂ</mi></msub><msup><mi>H</mi><mn>1</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>C</mi><mo>,</mo><mi>ℂ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+g=\dim_{\mathbb C}H^0(C,\Omega_C^1)
+=\frac{1}{2}\dim_{\mathbb C}H^1(C,\mathbb C).
+</annotation></semantics></math></p>
+<p>第一项是全纯微分形式空间的维数；第二项来自拓扑上第一上同调。这里不要求掌握层上同调记号，只要看见同一个整数同时计数：</p>
+<ul>
+<li>曲面有多少个独立的“洞”；</li>
+<li>有多少个线性无关的全纯一形式；</li>
+<li>曲线上的亚纯函数会受到多强的全局约束。</li>
+</ul>
+<p>光滑射影平面曲线若次数为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>，则</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mfrac><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>d</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>d</mi><mo>−</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mn>2</mn></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+g=\frac{(d-1)(d-2)}{2}.
+</annotation></semantics></math></p>
+<p>所以直线和光滑圆锥曲线亏格为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>，光滑三次曲线亏格为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>，光滑四次曲线亏格为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>。第三篇会看到：光滑射影亏格
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+曲线再选定一个基点，就是椭圆曲线。</p>
+<h3 id="与已学拓扑的精确接口曲线的基本群怎么读">4.4
+与已学拓扑的精确接口：曲线的基本群怎么读？</h3>
+<p>你已经掌握闭曲面分类定理，因此可以把上面的“亏格”直接接到熟悉的拓扑模型上。每条连通、光滑、射影复代数曲线
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>，作为实流形都是紧致、连通、可定向的二维闭曲面；所以它必与唯一一个亏格为
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+的曲面</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Σ</mi><mi>g</mi></msub><mo>=</mo><msup><mi>S</mi><mn>2</mn></msup><mi>#</mi><munder><munder><mrow><msup><mi>T</mi><mn>2</mn></msup><mi>#</mi><mi>⋯</mi><mi>#</mi><msup><mi>T</mi><mn>2</mn></msup></mrow><mo accent="true">⏟</mo></munder><mrow><mi>g</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> 个环面</mtext></mrow></mrow></munder></mrow><annotation encoding="application/x-tex">
+\Sigma_g=S^2\#\underbrace{T^2\#\cdots\#T^2}_{g\text{ 个环面}}
+</annotation></semantics></math></p>
+<p>同胚。复结构自动给底层实曲面定向，所以不会出现射影平面或 Klein
+瓶等不可定向闭曲面。</p>
+<p>把
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Σ</mi><mi>g</mi></msub><annotation encoding="application/x-tex">\Sigma_g</annotation></semantics></math>
+看成一个边按</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>1</mn></msub><msub><mi>b</mi><mn>1</mn></msub><msubsup><mi>a</mi><mn>1</mn><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msubsup><mi>b</mi><mn>1</mn><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mi>⋯</mi><msub><mi>a</mi><mi>g</mi></msub><msub><mi>b</mi><mi>g</mi></msub><msubsup><mi>a</mi><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msubsup><mi>b</mi><mi>g</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup></mrow><annotation encoding="application/x-tex">
+a_1b_1a_1^{-1}b_1^{-1}\cdots a_gb_ga_g^{-1}b_g^{-1}
+</annotation></semantics></math></p>
+<p>粘合的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mi>g</mi></mrow><annotation encoding="application/x-tex">4g</annotation></semantics></math>
+边形，van Kampen 定理立刻给出基本群表示</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><msub><mi>π</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Σ</mi><mi>g</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">⟨</mo><msub><mi>a</mi><mn>1</mn></msub><mo>,</mo><msub><mi>b</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>a</mi><mi>g</mi></msub><mo>,</mo><msub><mi>b</mi><mi>g</mi></msub><mspace width="0.222em"></mspace><mo stretchy="true" form="infix">|</mo><mspace width="0.222em"></mspace><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>g</mi></munderover><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>a</mi><mi>i</mi></msub><mo>,</mo><msub><mi>b</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">⟩</mo></mrow><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\pi_1(\Sigma_g)
+=\left\langle
+a_1,b_1,\ldots,a_g,b_g
+\ \middle|\
+\prod_{i=1}^{g}[a_i,b_i]=1
+\right\rangle .
+}
+</annotation></semantics></math></p>
+<p>这里
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>a</mi><mi>i</mi></msub><mo>,</mo><msub><mi>b</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><msub><mi>a</mi><mi>i</mi></msub><msub><mi>b</mi><mi>i</mi></msub><msubsup><mi>a</mi><mi>i</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><msubsup><mi>b</mi><mi>i</mi><mrow><mo>−</mo><mn>1</mn></mrow></msubsup></mrow><annotation encoding="application/x-tex">[a_i,b_i]=a_ib_ia_i^{-1}b_i^{-1}</annotation></semantics></math>
+是交换子。这个公式把代数曲线的前三种情形区分得非常清楚：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>亏格</th>
+<th>拓扑曲面</th>
+<th>基本群</th>
+<th>代数几何中的典型对象</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">g=0</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>S</mi><mn>2</mn></msup><annotation encoding="application/x-tex">S^2</annotation></semantics></math></td>
+<td>平凡群</td>
+<td>射影直线与光滑圆锥曲线</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">g=1</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>T</mi><mn>2</mn></msup><annotation encoding="application/x-tex">T^2</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℤ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\mathbb Z^2</annotation></semantics></math></td>
+<td>光滑平面三次曲线，即椭圆曲线（选定基点后）</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">g\ge2</annotation></semantics></math></td>
+<td>多环面</td>
+<td>非阿贝尔曲面群</td>
+<td>高亏格曲线，具有双曲型行为</td>
+</tr>
+</tbody>
+</table>
+<p>把基本群阿贝尔化，相当于强迫所有生成元交换，唯一的曲面关系随之消失，因此</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mn>1</mn></msub><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Σ</mi><mi>g</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">b</mi></mrow></msub><mo>≅</mo><msup><mi>ℤ</mi><mrow><mn>2</mn><mi>g</mi></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\pi_1(\Sigma_g)_{\mathrm{ab}}\cong\mathbb Z^{2g}.
+</annotation></semantics></math></p>
+<p>而第一同调正是基本群的阿贝尔化：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Σ</mi><mi>g</mi></msub><mo>,</mo><mi>ℤ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≅</mo><msup><mi>ℤ</mi><mrow><mn>2</mn><mi>g</mi></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+H_1(\Sigma_g,\mathbb Z)\cong\mathbb Z^{2g}.
+</annotation></semantics></math></p>
+<p>这说明为什么上文有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>dim</mo><mi>ℂ</mi></msub><msup><mi>H</mi><mn>1</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>C</mi><mo>,</mo><mi>ℂ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>2</mn><mi>g</mi></mrow><annotation encoding="application/x-tex">\dim_{\mathbb C}H^1(C,\mathbb C)=2g</annotation></semantics></math>。全纯一形式只占复一阶上同调的“半边”，另一半由反全纯一形式给出；这就是最初等的
+Hodge 分解现象：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>H</mi><mn>1</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>C</mi><mo>,</mo><mi>ℂ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>H</mi><mrow><mn>1</mn><mo>,</mo><mn>0</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>C</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⊕</mo><msup><mi>H</mi><mrow><mn>0</mn><mo>,</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>C</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mo>dim</mo><msup><mi>H</mi><mrow><mn>1</mn><mo>,</mo><mn>0</mn></mrow></msup><mo>=</mo><mo>dim</mo><msup><mi>H</mi><mrow><mn>0</mn><mo>,</mo><mn>1</mn></mrow></msup><mo>=</mo><mi>g</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+H^1(C,\mathbb C)=H^{1,0}(C)\oplus H^{0,1}(C),
+\qquad
+\dim H^{1,0}=\dim H^{0,1}=g.
+</annotation></semantics></math></p>
+<p>因此从你已经学过的课程出发，路线是完全连续的：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">闭曲面分类</mtext><mo>→</mo><mi>g</mi><mo>→</mo><msub><mi>π</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Σ</mi><mi>g</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>→</mo><msub><mi>H</mi><mn>1</mn></msub><mo>→</mo><msup><mi>H</mi><mn>1</mn></msup><mo>→</mo><mtext mathvariant="normal">全纯微分形式</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{闭曲面分类}
+\longrightarrow g
+\longrightarrow \pi_1(\Sigma_g)
+\longrightarrow H_1
+\longrightarrow H^1
+\longrightarrow \text{全纯微分形式}.
+</annotation></semantics></math></p>
+<p>代数几何真正新增的不是另造一个“洞数”，而是证明这个拓扑洞数也控制代数函数、除子和微分形式。</p>
+<h3 id="riemannroch给定极点预算能造出多少函数">4.5
+Riemann–Roch：给定极点预算，能造出多少函数？</h3>
+<p>在紧致 Riemann 曲面
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
+上，亚纯函数不能随意指定极点。为了记录每个点允许出现多高阶的零点或极点，引入除子</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mo>=</mo><munder><mo>∑</mo><mrow><mi>p</mi><mo>∈</mo><mi>C</mi></mrow></munder><msub><mi>n</mi><mi>p</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mi>p</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+D=\sum_{p\in C}n_p[p],
+</annotation></semantics></math></p>
+<p>其中
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mi>p</mi></msub><mo>∈</mo><mi>ℤ</mi></mrow><annotation encoding="application/x-tex">n_p\in\mathbb Z</annotation></semantics></math>，且只有有限个非零。<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mi>p</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">n_p&gt;0</annotation></semantics></math>
+可理解为允许在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+有至多
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>p</mi></msub><annotation encoding="application/x-tex">n_p</annotation></semantics></math>
+阶极点；度定义为</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>deg</mo><mi>D</mi><mo>=</mo><munder><mo>∑</mo><mi>p</mi></munder><msub><mi>n</mi><mi>p</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\deg D=\sum_p n_p.
+</annotation></semantics></math></p>
+<p>记
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">L(D)</annotation></semantics></math>
+为满足“其极点不超过
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+给定预算”的亚纯函数加上零函数所成的向量空间，记</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>dim</mo><mi>L</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\ell(D)=\dim L(D).
+</annotation></semantics></math></p>
+<p>再令
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+是一个典范除子，记录亚纯一形式的零极点。Riemann–Roch 定理说</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>−</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>deg</mo><mi>D</mi><mo>+</mo><mn>1</mn><mo>−</mo><mi>g</mi><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{\ell(D)-\ell(K-D)=\deg D+1-g.}
+</annotation></semantics></math></p>
+<p>左边第一项是我们想造的函数数目；第二项是阻碍这些函数存在的“对偶修正”；右边只含极点总预算和曲线亏格。</p>
+<p>当
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>deg</mo><mi>D</mi></mrow><annotation encoding="application/x-tex">\deg D</annotation></semantics></math>
+足够大时，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>−</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\ell(K-D)=0</annotation></semantics></math>，于是</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>deg</mo><mi>D</mi><mo>+</mo><mn>1</mn><mo>−</mo><mi>g</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\ell(D)=\deg D+1-g.
+</annotation></semantics></math></p>
+<p>这表明高亏格曲线比球面更“刚”：给同样多的极点预算，可用的亚纯函数少
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+个自由度。定理的意义不只是一条维数公式；它把分析问题（亚纯函数）、代数问题（除子）和拓扑不变量（亏格）压在同一个等式里。之后的
+Grothendieck–Riemann–Roch 会把这种思想推广到高维簇和向量丛。</p>
+<h3 id="分段自检二">分段自检二</h3>
+<ol type="1">
+<li>为什么射影化与“计交点重数”必须一起使用，才能得到稳定的交点总数？</li>
+<li>为什么
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><msqrt><mi>z</mi></msqrt></mrow><annotation encoding="application/x-tex">w=\sqrt z</annotation></semantics></math>
+的多值性可以通过更换定义域而消失？</li>
+<li>亏格在代数曲线上至少有哪三种解释？基本群怎样恢复其中的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>g</mi></mrow><annotation encoding="application/x-tex">2g</annotation></semantics></math>？</li>
+</ol>
+<details>
+<summary>
+查看答案
+</summary>
+<ol type="1">
+<li>射影化补回无穷远交点，重数保存相切或合并的交点；只做其中一步仍会漏数。</li>
+<li>新曲面把“底点
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>”和“所处的分支”同时记为一点，沿闭路后不会错误地把两个分支认成同一点。</li>
+<li>紧致曲面的洞数、全纯一形式空间维数、第一上同调维数的一半；它还控制
+Riemann–Roch 中函数自由度的亏损。van Kampen
+给出曲面群表示，阿贝尔化后得到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>1</mn></msub><mo>≅</mo><msup><mi>ℤ</mi><mrow><mn>2</mn><mi>g</mi></mrow></msup></mrow><annotation encoding="application/x-tex">H_1\cong\mathbb Z^{2g}</annotation></semantics></math>。</li>
+</ol>
+</details>
+<hr />
+<h2 id="一张概念树古典代数几何已经获得了什么又丢了什么">5.
+一张概念树：古典代数几何已经获得了什么，又丢了什么？</h2>
+<div class="concept-tree" aria-label="古典代数几何概念树">
+<ul>
+<li>
+<strong>多项式方程</strong>
+<ul>
+<li>
+<strong>仿射化</strong>：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V(I)</annotation></semantics></math>、坐标环、Zariski
+拓扑
+</li>
+<li>
+<strong>完备化</strong>：射影空间、齐次坐标、无穷远点
+</li>
+<li>
+<strong>局部分析</strong>：切空间、Jacobian、奇点与正规化
+</li>
+<li>
+<strong>分类不变量</strong>：函数域、双有理等价、亏格、除子
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p>古典理论已经非常强大，但还留下四个会在后文爆发的问题。</p>
+<ol type="1">
+<li><strong>算术问题</strong>：在
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℂ</mi><annotation encoding="application/x-tex">\mathbb C</annotation></semantics></math>
+上有完整曲线，不等于能找出它的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℚ</mi><annotation encoding="application/x-tex">\mathbb Q</annotation></semantics></math>-点。</li>
+<li><strong>无穷小问题</strong>：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V(x)</annotation></semantics></math>
+与
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>x</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V(x^2)</annotation></semantics></math>
+是同一个点集，重数信息却不同。</li>
+<li><strong>族的问题</strong>：一族曲线随参数退化时，怎样把全部纤维当成一个统一对象？</li>
+<li><strong>高维不变量问题</strong>：曲线可用亏格和
+Riemann–Roch，怎样为高维簇制造合适的上同调？</li>
+</ol>
+<p>第二篇将先转向另一种“几何”：不是从方程定义形状，而是在流形上赋予长度与曲率。那里会澄清为什么广义相对论用的是
+Lorentz 型的伪 Riemann
+几何，以及丘成桐的工作为何恰好落在微分几何、偏微分方程与代数几何的交界。</p>
+<hr />
+<h2 id="最小记忆清单">6. 最小记忆清单</h2>
+<p>读完本篇，建议只固定下面八个节点。</p>
+<ol type="1">
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V(I)</annotation></semantics></math>
+把理想变成零点集，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">I(X)</annotation></semantics></math>
+把点集变成消失理想。</li>
+<li>零点定理
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>V</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>I</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msqrt><mi>I</mi></msqrt></mrow><annotation encoding="application/x-tex">I(V(I))=\sqrt I</annotation></semantics></math>
+精确描述普通零点能恢复多少代数信息。</li>
+<li>Zariski 拓扑记录代数约束，不记录距离。</li>
+<li>射影空间补入无穷远；齐次方程保证定义与坐标比例无关。</li>
+<li>Bézout 定理只有在代数闭、射影且计重数后才呈现无例外的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">mn</annotation></semantics></math>。</li>
+<li>光滑射影复曲线与紧致 Riemann 曲面是同一类对象的两种语言。</li>
+<li>双有理等价保留一般位置的有理函数，却可能忽略奇点和边界。</li>
+<li>Riemann–Roch 用亏格修正“极点预算应产生多少函数”的朴素计数。</li>
+</ol>
+<hr />
+<h2 id="史料与延伸阅读">7. 史料与延伸阅读</h2>
+<ul>
+<li>R. Descartes, <em>La Géométrie</em>
+(1637)：坐标化几何的经典原始文本。</li>
+<li>B. Riemann, <a
+href="https://www.maths.tcd.ie/pub/HistMath/People/Riemann/Grund/"><em>Grundlagen
+für eine allgemeine Theorie der Functionen einer veränderlichen
+complexen Grösse</em></a> (1851)：Riemann 曲面思想的原始来源。</li>
+<li>B. Riemann, <a
+href="https://www.maths.tcd.ie/pub/HistMath/People/Riemann/Geom/"><em>Über
+die Hypothesen, welche der Geometrie zu Grunde liegen</em></a>
+(1854)：下一篇所需的度量几何主线。</li>
+<li>J.-P. Serre, <a
+href="https://www.college-de-france.fr/sites/default/files/media/document/2023-11/Jean-Pierre%20Serre_Faisceaux%20alg%C3%A9briques%20coh%C3%A9rents.pdf"><em>Faisceaux
+algébriques cohérents</em></a>
+(1955)：从古典簇到层论语言的重要桥梁。</li>
+<li><a href="https://stacks.math.columbia.edu/">The Stacks
+Project</a>：现代代数几何定义与定理的开放参考书。</li>
+</ul>
+<hr />
+<h2 id="reader-feedback">阅读反馈记录</h2>
+<div class="feedback-entry">
+<p>
+<strong>当前状态：</strong>等待首次阅读反馈。
+</p>
+<p>
+<strong>实验约束：</strong>本系列反馈只用于修订代数几何史纲四篇，不触发通用
+Skill 的规则变更。
+</p>
+</div>
+</body>
+</html>
