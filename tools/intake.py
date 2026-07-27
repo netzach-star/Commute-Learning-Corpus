@@ -22,6 +22,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 import subprocess
 import sys
@@ -112,13 +113,26 @@ def detect_domain(text: str, filename: str) -> str | None:
     return None
 
 
-def already_collected(clean: str, data: bytes) -> bool:
-    """同名同内容的文件已在某个领域目录里 —— 这份下载是旧的，安静跳过。"""
+def repo_digests() -> set[str]:
+    """仓库内所有语料文章的内容摘要。"""
+    out = set()
     for domain in DOMAINS:
-        p = ROOT / "语料" / domain / clean
-        if p.is_file() and p.read_bytes() == data:
-            return True
-    return False
+        folder = ROOT / "语料" / domain
+        if folder.is_dir():
+            for p in folder.glob("*.html"):
+                out.add(hashlib.sha256(p.read_bytes()).hexdigest())
+    return out
+
+
+def already_collected(data: bytes, digests: set[str] | None = None) -> bool:
+    """内容已在仓库里 —— 这份下载是冗余的。
+
+    按内容比对而非文件名：收稿时会自动分配编号并重命名，
+    按名字找会漏掉所有被改过名的稿子。
+    """
+    if digests is None:
+        digests = repo_digests()
+    return hashlib.sha256(data).hexdigest() in digests
 
 
 def next_number(domain: str, claimed: set[Path]) -> int:
@@ -170,6 +184,7 @@ def plan_from_downloads(fallback_domain: str | None = None) -> list[tuple[Path, 
         return plan
 
     claimed: set[Path] = set()
+    digests = repo_digests()
     for src in sorted(DOWNLOADS.glob("*.html")):
         text = src.read_text(encoding="utf-8", errors="replace")
         data = src.read_bytes()
@@ -177,7 +192,7 @@ def plan_from_downloads(fallback_domain: str | None = None) -> list[tuple[Path, 
 
         # 先看是不是早就收过的旧下载——这一步必须在领域判断之前，
         # 否则仓库里那些没有 corpus-domain 的老文章会被反复报成"缺标签"
-        if already_collected(stem + ".html", data):
+        if already_collected(data, digests):
             continue
 
         domain = detect_domain(text, DEDUP_RE.sub("", src.stem))
@@ -236,9 +251,9 @@ def redundant_downloads() -> list[Path]:
     out: list[Path] = []
     if not DOWNLOADS.is_dir():
         return out
+    digests = repo_digests()
     for src in sorted(DOWNLOADS.glob("*.html")):
-        stem = DOMAIN_PREFIX_RE.sub("", DEDUP_RE.sub("", src.stem))
-        if already_collected(stem + ".html", src.read_bytes()):
+        if already_collected(src.read_bytes(), digests):
             out.append(src)
     return out
 
@@ -417,6 +432,8 @@ def main() -> int:
     articles = changed_articles()
     if not articles:
         print("语料/ 下没有新增或改动的 HTML，无事可做。")
+        # 内容已在仓库里的下载原件仍可清理（例如上次推送失败、这次补做）
+        archive_downloads({}, args.delete_after)
         return 0
 
     print(f"发现 {len(articles)} 个待收文件：\n")
@@ -459,7 +476,14 @@ def main() -> int:
         archive_downloads(staged, args.delete_after)
         return 0
 
-    git("push", "origin", "HEAD")
+    r = subprocess.run(["git", "push", "origin", "HEAD"], cwd=ROOT, capture_output=True, text=True)
+    if r.returncode != 0:
+        print("\n⚠️  已提交到本地，但推送失败：")
+        print("   " + (r.stderr.strip().splitlines() or ["未知错误"])[-1])
+        print("   下载目录里的原件保留未动——内容没上 GitHub 之前不清理。")
+        print("   修好网络/代理后跑 `git push` 补推，再重跑本脚本即可清理原件。")
+        return 1
+
     print("已推送到 origin。")
     archive_downloads(staged, args.delete_after)
     return 0
