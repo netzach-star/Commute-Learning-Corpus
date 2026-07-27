@@ -8,7 +8,9 @@
 SKILL.md                  全局规则（先读这个）
 README.md                 本文件，含语料目录表 = 编号的权威来源
 GPT项目说明.md            粘贴到 ChatGPT 项目指令框的启动协议
+tools/intake.py           收稿：校验新文章 → 更新目录 → 提交推送
 tools/build_index.py      重新生成下面的目录表
+tools/export_for_gpt.py   导出 6 个 SKILL 供上传（联网不可用时的降级方案）
 语料/
 ├── 数学/SKILL.md         + NN_*.html
 ├── 计算机/SKILL.md       + NN_*.html
@@ -46,7 +48,7 @@ GitHub 的 `/tree/` 和 `/commits/` 页面拒绝自动访问，只有 `raw.githu
 
 <!-- INDEX:START -->
 
-**最后更新：2026-07-26**　新增文章后请更新本表；编号取所在领域当前最大值加一。
+**最后更新：2026-07-27**　新增文章后请更新本表；编号取所在领域当前最大值加一。
 
 ### 语料/数学/　—　共 11 篇，下一篇编号 `12`
 
