@@ -112,53 +112,106 @@ def already_collected(clean: str, data: bytes) -> bool:
     return False
 
 
-def stage_from_downloads() -> tuple[dict[Path, Path], list[str]]:
-    """把 ~/Downloads 里的语料 HTML 复制进对应领域目录。
+def next_number(domain: str, claimed: set[Path]) -> int:
+    """该领域下一个空闲编号，把本批次已占用的一并算上。"""
+    folder = ROOT / "语料" / domain
+    nums = [int(m.group(1)) for p in folder.glob("*.html") if (m := NAME_RE.match(p.name))]
+    nums += [int(m.group(1)) for p in claimed if p.parent == folder and (m := NAME_RE.match(p.name))]
+    return max(nums) + 1 if nums else 1
 
-    返回 ({下载文件: 仓库内路径}, 跳过说明)。复制而非移动——校验没过时
-    原件还在 Downloads，不会丢稿。
+
+def resolve_target(domain: str, stem: str, claimed: set[Path]) -> tuple[Path, str | None]:
+    """决定这篇稿子该落到哪个文件名。编号由这里分配，GPT 不需要管。
+
+    stem 是去掉 " (N)" 和领域前缀后的文件名主干（不含 .html）。
+    返回 (目标路径, 需要告知用户的说明)。
     """
-    staged: dict[Path, Path] = {}
-    notes: list[str] = []
+    folder = ROOT / "语料" / domain
+    m = re.match(r"^(\d{2})_(.+)$", stem)
+    body = m.group(2) if m else stem
 
+    # 已有同一篇（编号之后的部分相同）→ 视为新版本，沿用原文件名和编号
+    for p in sorted(list(folder.glob("*.html")) + [q for q in claimed if q.parent == folder]):
+        pm = NAME_RE.match(p.name)
+        if pm and p.stem[len(pm.group(1)) + 1:] == body:
+            return p, None
+
+    if m:
+        want = m.group(1)
+        taken = list(folder.glob(f"{want}_*.html")) + [
+            q for q in claimed if q.parent == folder and q.name.startswith(f"{want}_")
+        ]
+        if not taken:
+            return folder / f"{want}_{body}.html", None
+        n = next_number(domain, claimed)
+        return folder / f"{n:02d}_{body}.html", f"编号 {want} 已被 {taken[0].name} 占用，改用 {n:02d}"
+
+    n = next_number(domain, claimed)
+    return folder / f"{n:02d}_{body}.html", f"未带编号，自动分配 {n:02d}"
+
+
+def plan_from_downloads() -> list[tuple[Path, Path | None, str]]:
+    """规划 ~/Downloads 里每个语料 HTML 的去向。纯只读，不写任何文件。
+
+    返回 [(下载文件, 目标路径或 None, 说明)]；目标为 None 表示不收。
+    """
+    plan: list[tuple[Path, Path | None, str]] = []
     if not DOWNLOADS.is_dir():
-        return staged, [f"找不到下载目录 {DOWNLOADS}"]
+        return plan
 
+    claimed: set[Path] = set()
     for src in sorted(DOWNLOADS.glob("*.html")):
         text = src.read_text(encoding="utf-8", errors="replace")
-        stem = DEDUP_RE.sub("", src.stem)
-        clean = DOMAIN_PREFIX_RE.sub("", stem) + ".html"
-
-        if not NAME_RE.match(clean):
-            continue  # 不是语料文件，安静跳过
-
         data = src.read_bytes()
-        if already_collected(clean, data):
-            continue  # 同名同内容已在仓库里，是旧下载
+        stem = DOMAIN_PREFIX_RE.sub("", DEDUP_RE.sub("", src.stem))
 
-        domain = detect_domain(text, stem)
+        # 先看是不是早就收过的旧下载——这一步必须在领域判断之前，
+        # 否则仓库里那些没有 corpus-domain 的老文章会被反复报成"缺标签"
+        if already_collected(stem + ".html", data):
+            continue
+
+        domain = detect_domain(text, DEDUP_RE.sub("", src.stem))
         if domain is None:
-            notes.append(f"{src.name}：判断不出领域（缺 corpus-domain 且文件名无领域前缀），已跳过")
-            continue
+            # 有反馈区说明它长得像本项目的语料，只是漏了 corpus-domain
+            if re.search(r'id\s*=\s*["\']?reader-feedback', text, re.I):
+                plan.append((src, None, "缺 corpus-domain，无法判断领域，需人工指定"))
+            continue  # 其余 HTML 不是本项目的，安静忽略
 
-        dest = ROOT / "语料" / domain / clean
+        dest, note = resolve_target(domain, stem, claimed)
         rel = dest.relative_to(ROOT)
-        if dest.exists() and dest.read_bytes() == src.read_bytes():
-            notes.append(f"{src.name}：与仓库内现有文件完全相同，已跳过")
-            continue
+
+        if dest.exists() and dest.read_bytes() == data:
+            continue  # 内容一致，无需收
 
         # 目标文件有未提交改动时不覆盖：那些改动可能是手工编辑，
         # 一旦覆盖后校验失败，回滚只能退回 HEAD，改动就没了。
         if dest.exists() and git(
             "-c", "core.quotePath=false", "status", "--porcelain", "--", rel.as_posix()
         ).strip():
-            notes.append(f"{src.name}：目标 {rel} 有未提交改动，为免覆盖已跳过")
+            plan.append((src, None, f"目标 {rel} 有未提交改动，为免覆盖已跳过"))
             continue
 
+        claimed.add(dest)
+        label = f"→ {rel}" + (f"（{note}）" if note else "")
+        plan.append((src, dest, label))
+
+    return plan
+
+
+def stage_from_downloads() -> tuple[dict[Path, Path], list[str]]:
+    """按 plan 把下载目录里的稿子复制进领域目录。
+
+    复制而非移动——校验没过时原件还在 Downloads，不会丢稿。
+    """
+    staged: dict[Path, Path] = {}
+    notes: list[str] = []
+    for src, dest, label in plan_from_downloads():
+        if dest is None:
+            notes.append(f"{src.name}：{label}")
+            continue
         dest.write_bytes(src.read_bytes())
         staged[src] = dest.relative_to(ROOT)
-        notes.append(f"{src.name}  →  语料/{domain}/{clean}")
-
+        notes.append(f"{src.name}  {label}")
     return staged, notes
 
 
@@ -276,27 +329,7 @@ def detect() -> int:
 
     给 SessionStart hook 用——自动跑的东西不该碰工作区。
     """
-    pending: list[str] = []
-
-    if DOWNLOADS.is_dir():
-        for src in sorted(DOWNLOADS.glob("*.html")):
-            text = src.read_text(encoding="utf-8", errors="replace")
-            stem = DEDUP_RE.sub("", src.stem)
-            clean = DOMAIN_PREFIX_RE.sub("", stem) + ".html"
-            if not NAME_RE.match(clean):
-                continue
-            if already_collected(clean, src.read_bytes()):
-                continue
-
-            domain = detect_domain(text, stem)
-            if domain is None:
-                pending.append(f"{src.name}（判断不出领域，需人工指定）")
-                continue
-            dest = ROOT / "语料" / domain / clean
-            if dest.exists() and dest.read_bytes() == src.read_bytes():
-                continue
-            pending.append(f"{src.name} → 语料/{domain}/{clean}")
-
+    pending = [f"{src.name} {label}" for src, _, label in plan_from_downloads()]
     in_repo = [f"{s} {p}" for s, p in changed_articles()]
 
     if not pending and not in_repo:
