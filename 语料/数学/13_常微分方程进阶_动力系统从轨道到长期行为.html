@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="数学">
+  <title>常微分方程进阶：动力系统——从求解轨道到研究长期行为</title>
+  <style>
+    body { max-width: 860px; margin: 0 auto; padding: 2rem 1.2rem 4rem; font: 18px/1.8 system-ui, sans-serif; color: #202124; }
+    h1, h2, h3 { line-height: 1.35; color: #14213d; }
+    h1 { font-size: 2rem; }
+    h2 { margin-top: 2.4rem; border-bottom: 1px solid #ccd3df; padding-bottom: .35rem; }
+    h3 { margin-top: 1.6rem; }
+    .lead, .box, .check, .theorem, .definition { padding: 1rem 1.15rem; margin: 1.2rem 0; border-radius: .45rem; }
+    .lead { background: #eef4ff; }
+    .definition { background: #f4f7f3; border-left: 4px solid #52796f; }
+    .theorem { background: #fff7e8; border-left: 4px solid #d28b28; }
+    .box { background: #f7f7fa; }
+    .check { background: #f2f8ff; border: 1px solid #c9ddf2; }
+    math { font-size: 1.05em; }
+    .display { display: block; overflow-x: auto; margin: 1rem 0; text-align: center; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #cfd4dc; padding: .55rem; vertical-align: top; }
+    th { background: #f2f4f7; }
+    code { background: #f1f3f5; padding: .1rem .25rem; border-radius: .2rem; }
+    summary { cursor: pointer; font-weight: 650; }
+    .muted { color: #5f6368; }
+  </style>
+</head>
+<body>
+<article>
+  <header>
+    <h1>常微分方程进阶：动力系统<br>从求解轨道到研究长期行为</h1>
+    <p class="lead"><strong>核心问题：</strong>当方程不能显式求解，或者即使能求解、公式也无法揭示整体行为时，我们怎样判断一个系统最终趋于平衡、形成周期运动、发生分岔，还是呈现更复杂的长期行为？动力系统（dynamical system）的关键转变，是把“求出一个解”改写为“研究全部轨道在状态空间中的几何与相图（phase portrait）”。</p>
+    <p><strong>阅读前提：</strong>默认已经学过常微分方程的存在唯一性、解对初值与参数的依赖、线性方程组，并接触过但需要复习李雅普诺夫稳定性（Lyapunov stability）。本篇会重新严格陈述稳定性概念，但不再复述分离变量、常数变易等初等积分法。</p>
+  </header>
+
+  <nav class="box" aria-label="知识树">
+    <h2>本篇知识树</h2>
+    <ol>
+      <li><strong>向量场与流：</strong>ODE 的解族如何组成一个时间演化系统；</li>
+      <li><strong>平衡点与线性化：</strong>怎样从雅可比矩阵读出局部相图；</li>
+      <li><strong>李雅普诺夫方法：</strong>不求解方程，怎样证明稳定与渐近稳定；</li>
+      <li><strong>极限集与平面系统：</strong>轨道长期可能落到哪里，周期轨道怎样出现或被排除；</li>
+      <li><strong>分岔、离散映射与混沌：</strong>参数变化怎样改变相图，复杂性从何而来。</li>
+    </ol>
+    <p>贯穿全文的主例子是带阻尼单摆。它让线性化、能量函数、LaSalle 原理和全局相图落在同一个系统上。</p>
+  </nav>
+
+  <section>
+    <h2>一、从“一个解函数”到“状态空间中的流”</h2>
+
+    <div class="definition">
+      <h3>定义 1：自治系统、轨道与流</h3>
+      <p>设 <math><semantics><mrow><mi>U</mi><mo>⊂</mo><msup><mi>R</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">U\subset\mathbb R^n</annotation></semantics></math> 为开集，<math><semantics><mrow><mi>f</mi><mo>:</mo><mi>U</mi><mo>→</mo><msup><mi>R</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">f:U\to\mathbb R^n</annotation></semantics></math>。自治常微分方程（autonomous ordinary differential equation）是</p>
+      <math class="display"><semantics><mrow><mover><mi>x</mi><mo>˙</mo></mover><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>,</mo><mspace width="1em"/><mi>x</mi><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><msub><mi>x</mi><mn>0</mn></msub><mo>∈</mo><mi>U</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">\dot x=f(x),\qquad x(0)=x_0\in U.</annotation></semantics></math>
+      <p>若局部存在唯一性成立，记从初值 <math><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math> 出发的极大解为 <math><semantics><mrow><mi>t</mi><mo>↦</mo><mi>φ</mi><mo stretchy="false">(</mo><mi>t</mi><mo>,</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">t\mapsto\varphi(t,x_0)</annotation></semantics></math>。它的像称为一条轨道（orbit）；所有可定义的 <math><semantics><mrow><msub><mi>φ</mi><mi>t</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mi>φ</mi><mo stretchy="false">(</mo><mi>t</mi><mo>,</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\varphi_t(x_0)=\varphi(t,x_0)</annotation></semantics></math> 合起来称为流（flow）。</p>
+    </div>
+
+    <div class="theorem">
+      <h3>命题 1：流性质来自唯一性</h3>
+      <p>只要两边有定义，就有</p>
+      <math class="display"><semantics><mrow><msub><mi>φ</mi><mn>0</mn></msub><mo>=</mo><mtext>id</mtext><mo>,</mo><mspace width="1em"/><msub><mi>φ</mi><mrow><mi>t</mi><mo>+</mo><mi>s</mi></mrow></msub><mo>=</mo><msub><mi>φ</mi><mi>t</mi></msub><mo>∘</mo><msub><mi>φ</mi><mi>s</mi></msub><mo>.</mo></mrow><annotation encoding="application/x-tex">\varphi_0=\mathrm{id},\qquad \varphi_{t+s}=\varphi_t\circ\varphi_s.</annotation></semantics></math>
+      <p>证明机制很短但极重要：函数 <math><semantics><mrow><mi>t</mi><mo>↦</mo><mi>φ</mi><mo stretchy="false">(</mo><mi>t</mi><mo>+</mo><mi>s</mi><mo>,</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">t\mapsto\varphi(t+s,x_0)</annotation></semantics></math> 与 <math><semantics><mrow><mi>t</mi><mo>↦</mo><mi>φ</mi><mo stretchy="false">(</mo><mi>t</mi><mo>,</mo><mi>φ</mi><mo stretchy="false">(</mo><mi>s</mi><mo>,</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">t\mapsto\varphi(t,\varphi(s,x_0))</annotation></semantics></math> 满足同一个方程，并在 <math><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math> 取同一初值；唯一性迫使二者相等。</p>
+    </div>
+
+    <p>这说明你学过的皮卡定理不只是“保证一道初值问题有答案”。它保证相空间中的轨道不会在同一时刻穿过后分叉，也保证时间演化可以复合。动力系统正是建立在这一结构上。</p>
+
+    <h3>状态空间、向量场与不变集</h3>
+    <p>相空间（phase space）是所有可能状态的集合；<math><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(x)</annotation></semantics></math> 是状态 <math><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math> 处的瞬时速度，因此称为向量场（vector field）。集合 <math><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math> 若满足从其中任一点出发的轨道始终留在其中，就称为正不变集（positively invariant set）；若正、负时间都不离开，则称为不变集（invariant set）。</p>
+
+    <p>非自治方程 <math><semantics><mrow><mover><mi>x</mi><mo>˙</mo></mover><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>t</mi><mo>,</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\dot x=f(t,x)</annotation></semantics></math> 看似没有流的时间平移结构，但可增加变量 <math><semantics><mrow><mover><mi>τ</mi><mo>˙</mo></mover><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\dot\tau=1</annotation></semantics></math>，把它改写为扩充相空间中的自治系统。因此“自治”不是狭窄限制，而是统一语言。</p>
+
+    <h3>主例子：带阻尼单摆</h3>
+    <p>取摆角 <math><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>、角速度 <math><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>，在适当无量纲化后有</p>
+    <math class="display"><semantics><mrow><mover><mi>θ</mi><mo>˙</mo></mover><mo>=</mo><mi>ω</mi><mo>,</mo><mspace width="1em"/><mover><mi>ω</mi><mo>˙</mo></mover><mo>=</mo><mo>−</mo><mi>sin</mi><mi>θ</mi><mo>−</mo><mi>c</mi><mi>ω</mi><mo>,</mo><mspace width=".8em"/><mi>c</mi><mo>></mo><mn>0</mn><mo>.</mo></mrow><annotation encoding="application/x-tex">\dot\theta=\omega,\qquad \dot\omega=-\sin\theta-c\omega,\qquad c&gt;0.</annotation></semantics></math>
+    <p>这里真正的状态是点 <math><semantics><mrow><mo stretchy="false">(</mo><mi>θ</mi><mo>,</mo><mi>ω</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(\theta,\omega)</annotation></semantics></math>，而不是单独的角度。由于角度相差 <math><semantics><mrow><mn>2</mn><mi>π</mi></mrow><annotation encoding="application/x-tex">2\pi</annotation></semantics></math> 表示同一位置，自然相空间是圆柱面，而不是整张平面。为了计算，我们仍可在平面上画周期重复的相图。</p>
+  </section>
+
+  <section>
+    <h2>二、平衡点、线性化与局部相图</h2>
+
+    <div class="definition">
+      <h3>定义 2：平衡点与双曲性</h3>
+      <p>若 <math><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><msup><mi>x</mi><mo>*</mo></msup><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(x^*)=0</annotation></semantics></math>，则 <math><semantics><msup><mi>x</mi><mo>*</mo></msup><annotation encoding="application/x-tex">x^*</annotation></semantics></math> 是平衡点（equilibrium）。若雅可比矩阵（Jacobian matrix） <math><semantics><mrow><mi>D</mi><mi>f</mi><mo stretchy="false">(</mo><msup><mi>x</mi><mo>*</mo></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">Df(x^*)</annotation></semantics></math> 的所有特征值实部都非零，则称该平衡点为双曲平衡点（hyperbolic equilibrium）。</p>
+    </div>
+
+    <p>令 <math><semantics><mrow><mi>y</mi><mo>=</mo><mi>x</mi><mo>−</mo><msup><mi>x</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">y=x-x^*</annotation></semantics></math>。若 <math><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math> 可微，泰勒展开给出</p>
+    <math class="display"><semantics><mrow><mover><mi>y</mi><mo>˙</mo></mover><mo>=</mo><mi>A</mi><mi>y</mi><mo>+</mo><mi>r</mi><mo stretchy="false">(</mo><mi>y</mi><mo stretchy="false">)</mo><mo>,</mo><mspace width="1em"/><mi>A</mi><mo>=</mo><mi>D</mi><mi>f</mi><mo stretchy="false">(</mo><msup><mi>x</mi><mo>*</mo></msup><mo stretchy="false">)</mo><mo>,</mo><mspace width="1em"/><mfrac><mrow><mo>‖</mo><mi>r</mi><mo stretchy="false">(</mo><mi>y</mi><mo stretchy="false">)</mo><mo>‖</mo></mrow><mrow><mo>‖</mo><mi>y</mi><mo>‖</mo></mrow></mfrac><mo>→</mo><mn>0</mn><mspace width=".5em"/><mo stretchy="false">(</mo><mi>y</mi><mo>→</mo><mn>0</mn><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">\dot y=Ay+r(y),\quad A=Df(x^*),\quad \frac{\|r(y)\|}{\|y\|}\to0\ (y\to0).</annotation></semantics></math>
+
+    <div class="theorem">
+      <h3>定理 2：线性化稳定性判据</h3>
+      <p>设 <math><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math> 在平衡点附近连续可微。</p>
+      <ol>
+        <li>若 <math><semantics><mrow><mi>D</mi><mi>f</mi><mo stretchy="false">(</mo><msup><mi>x</mi><mo>*</mo></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">Df(x^*)</annotation></semantics></math> 的所有特征值实部严格为负，则 <math><semantics><msup><mi>x</mi><mo>*</mo></msup><annotation encoding="application/x-tex">x^*</annotation></semantics></math> 局部渐近稳定；事实上具有局部指数衰减。</li>
+        <li>若至少一个特征值实部严格为正，则 <math><semantics><msup><mi>x</mi><mo>*</mo></msup><annotation encoding="application/x-tex">x^*</annotation></semantics></math> 不稳定。</li>
+        <li>若没有特征值实部为零，则非线性系统在平衡点附近与线性系统 <math><semantics><mrow><mover><mi>y</mi><mo>˙</mo></mover><mo>=</mo><mi>A</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">\dot y=Ay</annotation></semantics></math> 拓扑共轭；这就是 Hartman–Grobman 定理的局部内容。</li>
+      </ol>
+      <p><strong>边界：</strong>若存在实部为零的特征值，线性化通常不作结论。线性中心可能被高阶项变成稳定或不稳定焦点；这时要用李雅普诺夫函数、中心流形或正规形。</p>
+    </div>
+
+    <p>“拓扑共轭”是说存在保持轨道方向的局部连续坐标变换，把一个系统的轨道送到另一个系统的轨道。它保存鞍点、源、汇等定性结构，但不承诺角度、距离或运动速度也相同。</p>
+
+    <h3>为什么负实部意味着衰减</h3>
+    <p>在线性系统中，解是 <math><semantics><mrow><mi>y</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><msup><mi>e</mi><mrow><mi>t</mi><mi>A</mi></mrow></msup><mi>y</mi><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y(t)=e^{tA}y(0)</annotation></semantics></math>。若谱全部落在左半平面，可找到常数 <math><semantics><mrow><mi>M</mi><mo>≥</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">M\ge1</annotation></semantics></math> 与 <math><semantics><mrow><mi>α</mi><mo>></mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\alpha&gt;0</annotation></semantics></math>，使</p>
+    <math class="display"><semantics><mrow><mo>‖</mo><msup><mi>e</mi><mrow><mi>t</mi><mi>A</mi></mrow></msup><mo>‖</mo><mo>≤</mo><mi>M</mi><msup><mi>e</mi><mrow><mo>−</mo><mi>α</mi><mi>t</mi></mrow></msup><mo>.</mo></mrow><annotation encoding="application/x-tex">\|e^{tA}\|\le Me^{-\alpha t}.</annotation></semantics></math>
+    <p>非线性余项比 <math><semantics><mrow><mo>‖</mo><mi>y</mi><mo>‖</mo></mrow><annotation encoding="application/x-tex">\|y\|</annotation></semantics></math> 更低阶。常数变易公式把它写成受衰减核控制的积分项，再用 Grönwall 不等式闭合估计。这就是线性结论能够传给非线性系统的证明机制。</p>
+
+    <h3>二维线性系统：迹—行列式图怎样读</h3>
+    <p>对实二阶矩阵 <math><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>，记迹 <math><semantics><mrow><mi>τ</mi><mo>=</mo><mtext>tr</mtext><mi>A</mi></mrow><annotation encoding="application/x-tex">\tau=\operatorname{tr}A</annotation></semantics></math>、行列式 <math><semantics><mrow><mi>Δ</mi><mo>=</mo><mtext>det</mtext><mi>A</mi></mrow><annotation encoding="application/x-tex">\Delta=\det A</annotation></semantics></math>。特征多项式是</p>
+    <math class="display"><semantics><mrow><msup><mi>λ</mi><mn>2</mn></msup><mo>−</mo><mi>τ</mi><mi>λ</mi><mo>+</mo><mi>Δ</mi><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="1em"/><msub><mi>λ</mi><mrow><mn>1</mn><mo>,</mo><mn>2</mn></mrow></msub><mo>=</mo><mfrac><mrow><mi>τ</mi><mo>±</mo><msqrt><mrow><msup><mi>τ</mi><mn>2</mn></msup><mo>−</mo><mn>4</mn><mi>Δ</mi></mrow></msqrt></mrow><mn>2</mn></mfrac><mo>.</mo></mrow><annotation encoding="application/x-tex">\lambda^2-\tau\lambda+\Delta=0,\qquad \lambda_{1,2}=\frac{\tau\pm\sqrt{\tau^2-4\Delta}}2.</annotation></semantics></math>
+    <table>
+      <thead>
+        <tr><th>条件</th><th>特征值</th><th>相图类型</th><th>稳定性</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><math><semantics><mrow><mi>Δ</mi><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta&lt;0</annotation></semantics></math></td><td>实根异号</td><td>鞍点</td><td>不稳定</td></tr>
+        <tr><td><math><semantics><mrow><mi>Δ</mi><mo>></mo><mn>0</mn><mo>,</mo><mspace width=".3em"/><msup><mi>τ</mi><mn>2</mn></msup><mo>−</mo><mn>4</mn><mi>Δ</mi><mo>></mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta&gt;0,\ \tau^2-4\Delta&gt;0</annotation></semantics></math></td><td>同号实根</td><td>结点</td><td>由 <math><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math> 的正负决定源或汇</td></tr>
+        <tr><td><math><semantics><mrow><mi>Δ</mi><mo>></mo><mn>0</mn><mo>,</mo><mspace width=".3em"/><msup><mi>τ</mi><mn>2</mn></msup><mo>−</mo><mn>4</mn><mi>Δ</mi><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta&gt;0,\ \tau^2-4\Delta&lt;0</annotation></semantics></math></td><td>共轭复根</td><td>焦点或中心</td><td><math><semantics><mrow><mi>τ</mi><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\tau&lt;0</annotation></semantics></math> 为螺旋汇，<math><semantics><mrow><mi>τ</mi><mo>></mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\tau&gt;0</annotation></semantics></math> 为螺旋源；<math><semantics><mrow><mi>τ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\tau=0</annotation></semantics></math> 为线性中心</td></tr>
+      </tbody>
+    </table>
+    <p>迹是两个特征值之和，控制平均膨胀或收缩；行列式是两者之积，若为负就强迫一个方向收缩、另一个方向膨胀。判别式决定是沿实特征方向进出，还是在旋转中进出。迹—行列式图只直接分类线性系统；用于非线性系统时仍必须先检查双曲性。</p>
+
+    <h3>阻尼单摆的两个平衡点类型</h3>
+    <p>平衡条件为 <math><semantics><mrow><mi>ω</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\omega=0</annotation></semantics></math> 且 <math><semantics><mrow><mi>sin</mi><mi>θ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\sin\theta=0</annotation></semantics></math>。在圆柱相空间中只有两类：向下位置 <math><semantics><mrow><mo stretchy="false">(</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(0,0)</annotation></semantics></math> 与倒立位置 <math><semantics><mrow><mo stretchy="false">(</mo><mi>π</mi><mo>,</mo><mn>0</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(\pi,0)</annotation></semantics></math>。雅可比矩阵为</p>
+    <math class="display"><semantics><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>θ</mi><mo>,</mo><mi>ω</mi><mo stretchy="false">)</mo><mo>=</mo><mfenced><mtable><mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mo>−</mo><mi>cos</mi><mi>θ</mi></mtd><mtd><mo>−</mo><mi>c</mi></mtd></mtr></mtable></mfenced><mo>.</mo></mrow><annotation encoding="application/x-tex">J(\theta,\omega)=\begin{pmatrix}0&amp;1\\-\cos\theta&amp;-c\end{pmatrix}.</annotation></semantics></math>
+    <ul>
+      <li>在向下位置，特征方程为 <math><semantics><mrow><msup><mi>λ</mi><mn>2</mn></msup><mo>+</mo><mi>c</mi><mi>λ</mi><mo>+</mo><mn>1</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\lambda^2+c\lambda+1=0</annotation></semantics></math>，两根实部都为负，故渐近稳定。小阻尼时为螺旋汇，大阻尼时为结点汇。</li>
+      <li>在倒立位置，特征方程为 <math><semantics><mrow><msup><mi>λ</mi><mn>2</mn></msup><mo>+</mo><mi>c</mi><mi>λ</mi><mo>−</mo><mn>1</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\lambda^2+c\lambda-1=0</annotation></semantics></math>，两根异号，故为鞍点。</li>
+    </ul>
+
+    <h3>线性稳定性也能写成李雅普诺夫函数</h3>
+    <p>矩阵谱判据与下一节的李雅普诺夫方法并不是两套互不相干的理论。若矩阵 <math><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math> 的全部特征值实部为负，那么对任意给定正定对称矩阵 <math><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>，李雅普诺夫矩阵方程（Lyapunov equation）</p>
+    <math class="display"><semantics><mrow><msup><mi>A</mi><mi>T</mi></msup><mi>P</mi><mo>+</mo><mi>P</mi><mi>A</mi><mo>=</mo><mo>−</mo><mi>Q</mi></mrow><annotation encoding="application/x-tex">A^TP+PA=-Q</annotation></semantics></math>
+    <p>有唯一正定对称解 <math><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>。取二次型 <math><semantics><mrow><mi>V</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><msup><mi>x</mi><mi>T</mi></msup><mi>P</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">V(x)=x^TPx</annotation></semantics></math>，沿 <math><semantics><mrow><mover><mi>x</mi><mo>˙</mo></mover><mo>=</mo><mi>A</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">\dot x=Ax</annotation></semantics></math> 有</p>
+    <math class="display"><semantics><mrow><mover><mi>V</mi><mo>˙</mo></mover><mo>=</mo><msup><mi>x</mi><mi>T</mi></msup><mo stretchy="false">(</mo><msup><mi>A</mi><mi>T</mi></msup><mi>P</mi><mo>+</mo><mi>P</mi><mi>A</mi><mo stretchy="false">)</mo><mi>x</mi><mo>=</mo><mo>−</mo><msup><mi>x</mi><mi>T</mi></msup><mi>Q</mi><mi>x</mi><mo>&lt;</mo><mn>0</mn><mspace width=".5em"/><mo stretchy="false">(</mo><mi>x</mi><mo>≠</mo><mn>0</mn><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">\dot V=x^T(A^TP+PA)x=-x^TQx&lt;0\quad(x\ne0).</annotation></semantics></math>
+    <p>几何上，<math><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math> 的等值面是一族椭球；轨道不断穿向更小的椭球。欧氏长度可能在短时间内先增大，尤其当 <math><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math> 非正规时，但存在某个适合系统的二次能量严格下降。这个结论也解释了“寻找李雅普诺夫函数”为何合理：在线性渐近稳定系统中，它必定存在。</p>
+  </section>
+
+  <section class="check">
+    <h2>局部自检一</h2>
+    <ol>
+      <li>为什么存在性本身不能推出流性质，而唯一性可以？</li>
+      <li>若二维系统在线性化后有特征值 <math><semantics><mrow><mo>±</mo><mi>i</mi></mrow><annotation encoding="application/x-tex">\pm i</annotation></semantics></math>，能否直接断言原点稳定？</li>
+      <li>阻尼单摆在倒立位置为什么一定是鞍点，而不依赖阻尼大小？</li>
+    </ol>
+    <details>
+      <summary>答案</summary>
+      <ol>
+        <li>流的复合律要把两个具有同一初值的解认定为同一解；这一步正是唯一性。</li>
+        <li>不能。特征值实部为零，线性化判据失效，高阶项可能改变稳定性。</li>
+        <li>对应特征多项式常数项为负，两根乘积为负，必有一正一负。</li>
+      </ol>
+    </details>
+  </section>
+
+  <section>
+    <h2>三、李雅普诺夫稳定性：把“能量不会增长”变成证明</h2>
+
+    <div class="definition">
+      <h3>定义 3：稳定、吸引与渐近稳定</h3>
+      <p>设 <math><semantics><msup><mi>x</mi><mo>*</mo></msup><annotation encoding="application/x-tex">x^*</annotation></semantics></math> 为平衡点。</p>
+      <ol>
+        <li><strong>李雅普诺夫稳定：</strong>对每个 <math><semantics><mrow><mi>ε</mi><mo>></mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\varepsilon&gt;0</annotation></semantics></math>，存在 <math><semantics><mrow><mi>δ</mi><mo>></mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\delta&gt;0</annotation></semantics></math>，使得 <math><semantics><mrow><mo>‖</mo><msub><mi>x</mi><mn>0</mn></msub><mo>−</mo><msup><mi>x</mi><mo>*</mo></msup><mo>‖</mo><mo>&lt;</mo><mi>δ</mi></mrow><annotation encoding="application/x-tex">\|x_0-x^*\|&lt;\delta</annotation></semantics></math> 蕴含对所有 <math><semantics><mrow><mi>t</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t\ge0</annotation></semantics></math> 都有 <math><semantics><mrow><mo>‖</mo><mi>φ</mi><mo stretchy="false">(</mo><mi>t</mi><mo>,</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo>−</mo><msup><mi>x</mi><mo>*</mo></msup><mo>‖</mo><mo>&lt;</mo><mi>ε</mi></mrow><annotation encoding="application/x-tex">\|\varphi(t,x_0)-x^*\|&lt;\varepsilon</annotation></semantics></math>。</li>
+        <li><strong>局部吸引（locally attractive）：</strong>存在 <math><semantics><mrow><mi>r</mi><mo>></mo><mn>0</mn></mrow><annotation encoding="application/x-tex">r&gt;0</annotation></semantics></math>，只要 <math><semantics><mrow><mo>‖</mo><msub><mi>x</mi><mn>0</mn></msub><mo>−</mo><msup><mi>x</mi><mo>*</mo></msup><mo>‖</mo><mo>&lt;</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">\|x_0-x^*\|&lt;r</annotation></semantics></math>，就有 <math><semantics><mrow><mi>φ</mi><mo stretchy="false">(</mo><mi>t</mi><mo>,</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo>→</mo><msup><mi>x</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">\varphi(t,x_0)\to x^*</annotation></semantics></math>。</li>
+        <li><strong>局部渐近稳定（locally asymptotically stable）：</strong>同时稳定且局部吸引。</li>
+      </ol>
+      <p>“始终不跑远”与“最终靠近”是两件事。平面上的纯旋转使原点稳定但不吸引；只说吸引而不验证稳定，在一般系统中也不够。</p>
+    </div>
+
+    <div class="theorem">
+      <h3>定理 3：李雅普诺夫直接法</h3>
+      <p>设 <math><semantics><msup><mi>x</mi><mo>*</mo></msup><annotation encoding="application/x-tex">x^*</annotation></semantics></math> 为平衡点，存在其邻域上的连续可微函数 <math><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>，满足</p>
+      <math class="display"><semantics><mrow><mi>V</mi><mo stretchy="false">(</mo><msup><mi>x</mi><mo>*</mo></msup><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn><mo>,</mo><mspace width=".7em"/><mi>V</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>></mo><mn>0</mn><mspace width=".4em"/><mo stretchy="false">(</mo><mi>x</mi><mo>≠</mo><msup><mi>x</mi><mo>*</mo></msup><mo stretchy="false">)</mo><mo>,</mo><mspace width=".7em"/><mover><mi>V</mi><mo>˙</mo></mover><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>∇</mi><mi>V</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>·</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>≤</mo><mn>0</mn><mo>.</mo></mrow><annotation encoding="application/x-tex">V(x^*)=0,\quad V(x)&gt;0\ (x\ne x^*),\quad \dot V(x)=\nabla V(x)\cdot f(x)\le0.</annotation></semantics></math>
+      <p>则 <math><semantics><msup><mi>x</mi><mo>*</mo></msup><annotation encoding="application/x-tex">x^*</annotation></semantics></math> 稳定。若进一步在平衡点外有 <math><semantics><mrow><mover><mi>V</mi><mo>˙</mo></mover><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\dot V(x)&lt;0</annotation></semantics></math>，则它局部渐近稳定。</p>
+    </div>
+
+    <h3>证明机制：用子水平集造“不能穿出的围栏”</h3>
+    <p>给定一个希望轨道不离开的球，取其中某个小子水平集 <math><semantics><mrow><mo stretchy="false">{</mo><mi>x</mi><mo>:</mo><mi>V</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>≤</mo><mi>a</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{x:V(x)\le a\}</annotation></semantics></math>。沿轨道有</p>
+    <math class="display"><semantics><mrow><mfrac><mi>d</mi><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mi>V</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mover><mi>V</mi><mo>˙</mo></mover><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>≤</mo><mn>0</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">\frac{d}{dt}V(x(t))=\dot V(x(t))\le0,</annotation></semantics></math>
+    <p>所以轨道一旦从该子水平集出发，就不能穿过更高的等值面。这给出稳定性。若导数严格为负，轨道不可能长期停在任何远离平衡点的紧区域中，从而得到趋近。</p>
+
+    <h3>半负定导数并不自动给出渐近稳定</h3>
+    <p>阻尼单摆的机械能</p>
+    <math class="display"><semantics><mrow><mi>V</mi><mo stretchy="false">(</mo><mi>θ</mi><mo>,</mo><mi>ω</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mi>ω</mi><mn>2</mn></msup><mo>+</mo><mn>1</mn><mo>−</mo><mi>cos</mi><mi>θ</mi></mrow><annotation encoding="application/x-tex">V(\theta,\omega)=\frac12\omega^2+1-\cos\theta</annotation></semantics></math>
+    <p>在向下平衡点附近正定。沿解求导：</p>
+    <math class="display"><semantics><mrow><mover><mi>V</mi><mo>˙</mo></mover><mo>=</mo><mi>ω</mi><mover><mi>ω</mi><mo>˙</mo></mover><mo>+</mo><mi>sin</mi><mi>θ</mi><mover><mi>θ</mi><mo>˙</mo></mover><mo>=</mo><mi>ω</mi><mo stretchy="false">(</mo><mo>−</mo><mi>sin</mi><mi>θ</mi><mo>−</mo><mi>c</mi><mi>ω</mi><mo stretchy="false">)</mo><mo>+</mo><mi>sin</mi><mi>θ</mi><mi>ω</mi><mo>=</mo><mo>−</mo><mi>c</mi><msup><mi>ω</mi><mn>2</mn></msup><mo>≤</mo><mn>0</mn><mo>.</mo></mrow><annotation encoding="application/x-tex">\dot V=\omega\dot\omega+\sin\theta\,\dot\theta=\omega(-\sin\theta-c\omega)+\sin\theta\,\omega=-c\omega^2\le0.</annotation></semantics></math>
+    <p>等号不仅在平衡点成立，而是在整条直线 <math><semantics><mrow><mi>ω</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\omega=0</annotation></semantics></math> 上成立。因此直接法只立即给出稳定性。要证明趋近，需要识别这条直线中哪些点能永久留在其中。</p>
+
+    <div class="theorem">
+      <h3>定理 4：LaSalle 不变性原理（有限维紧集版本）</h3>
+      <p>设 <math><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math> 是紧的正不变集，<math><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math> 在其邻域连续可微，且 <math><semantics><mrow><mover><mi>V</mi><mo>˙</mo></mover><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\dot V\le0</annotation></semantics></math>。令 <math><semantics><mrow><mi>E</mi><mo>=</mo><mo stretchy="false">{</mo><mi>x</mi><mo>∈</mo><mi>Ω</mi><mo>:</mo><mover><mi>V</mi><mo>˙</mo></mover><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">E=\{x\in\Omega:\dot V(x)=0\}</annotation></semantics></math>，再令 <math><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math> 为 <math><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math> 中最大的正不变集，则 <math><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math> 中每条轨道到 <math><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math> 的距离趋于零。</p>
+    </div>
+
+    <p>对阻尼单摆，取不越过倒立能垒的紧子水平集 <math><semantics><mrow><mi>Ω</mi><mo>=</mo><mo stretchy="false">{</mo><mi>V</mi><mo>≤</mo><mi>h</mi><mo stretchy="false">}</mo><mo>,</mo><mspace width=".5em"/><mn>0</mn><mo>&lt;</mo><mi>h</mi><mo>&lt;</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\Omega=\{V\le h\},\quad 0&lt;h&lt;2</annotation></semantics></math>。在 <math><semantics><mrow><mover><mi>V</mi><mo>˙</mo></mover><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\dot V=0</annotation></semantics></math> 上有 <math><semantics><mrow><mi>ω</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\omega=0</annotation></semantics></math>；若轨道要一直留在这里，还必须有 <math><semantics><mrow><mover><mi>ω</mi><mo>˙</mo></mover><mo>=</mo><mo>−</mo><mi>sin</mi><mi>θ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\dot\omega=-\sin\theta=0</annotation></semantics></math>。该能量范围内只有向下平衡点，故 LaSalle 原理推出其中所有解都趋于它。这个论证比线性化更强：线性化只看足够小的邻域，能量子水平集给出了一个明确的吸引域下界。</p>
+  </section>
+
+  <section>
+    <h2>四、极限集：轨道“最后待在哪里”</h2>
+
+    <div class="definition">
+      <h3>定义 4：ω-极限集、吸引子与吸引域</h3>
+      <p>若正向轨道有界，点 <math><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math> 属于初值 <math><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math> 的 ω-极限集（omega-limit set），是指存在 <math><semantics><mrow><msub><mi>t</mi><mi>k</mi></msub><mo>→</mo><mo>∞</mo></mrow><annotation encoding="application/x-tex">t_k\to\infty</annotation></semantics></math> 使</p>
+      <math class="display"><semantics><mrow><mi>φ</mi><mo stretchy="false">(</mo><msub><mi>t</mi><mi>k</mi></msub><mo>,</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo>→</mo><mi>y</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">\varphi(t_k,x_0)\to y.</annotation></semantics></math>
+      <p>粗略地说，它收集轨道在任意遥远未来仍会反复靠近的全部点。吸引子（attractor）是一个不变集，它吸引某个邻域中的全部轨道；这些被吸引初值的集合称为吸引域（basin of attraction）。严格定义有若干技术版本，但“不变、吸引、不能随意再缩小”是核心。</p>
+    </div>
+
+    <p>长期行为的候选对象包括平衡点、周期轨道（periodic orbit）、准周期不变环面以及更复杂的不变集。相空间维数至关重要：一维自治系统的轨道不能穿过平衡点，长期行为很受限制；二维连续流也受到拓扑强约束；从三维开始，混沌吸引子才可能出现在光滑自治流中。</p>
+
+    <h3>二维系统的特殊定理</h3>
+    <div class="theorem">
+      <h3>定理 5：Poincaré–Bendixson 定理的一种常用形式</h3>
+      <p>设二维连续可微系统的一条正向轨道始终留在某个紧集内，并且它的 ω-极限集不含平衡点，则该 ω-极限集是一条周期轨道。</p>
+      <p>这一定理不是说所有二维有界轨道都会周期化；关键假设是极限集中没有平衡点。它真正表达的是：二维光滑自治流无法在有界区域中制造任意复杂的反复缠绕。</p>
+    </div>
+
+    <div class="theorem">
+      <h3>判据 6：Bendixson–Dulac 排除周期轨道</h3>
+      <p>在单连通区域 <math><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math> 中，若存在连续可微函数 <math><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>，使修正向量场 <math><semantics><mrow><mi>B</mi><mi>f</mi></mrow><annotation encoding="application/x-tex">Bf</annotation></semantics></math> 的散度在 <math><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math> 内处处严格为正或处处严格为负，则 <math><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math> 中不存在完全位于其中的周期轨道。更一般的版本允许散度在较小集合上为零，但要补充相应条件。</p>
+    </div>
+
+    <p>阻尼单摆在平面覆盖空间中的向量场散度为</p>
+    <math class="display"><semantics><mrow><mfrac><mrow><mi>∂</mi><mi>ω</mi></mrow><mrow><mi>∂</mi><mi>θ</mi></mrow></mfrac><mo>+</mo><mfrac><mrow><mi>∂</mi><mo stretchy="false">(</mo><mo>−</mo><mi>sin</mi><mi>θ</mi><mo>−</mo><mi>c</mi><mi>ω</mi><mo stretchy="false">)</mo></mrow><mrow><mi>∂</mi><mi>ω</mi></mrow></mfrac><mo>=</mo><mo>−</mo><mi>c</mi><mo>&lt;</mo><mn>0</mn><mo>.</mo></mrow><annotation encoding="application/x-tex">\frac{\partial\omega}{\partial\theta}+\frac{\partial(-\sin\theta-c\omega)}{\partial\omega}=-c&lt;0.</annotation></semantics></math>
+    <p>局部单连通区域内因此不能有周期轨道。物理上这正是相空间面积被压缩、机械能持续耗散的表现。注意圆柱整体并非单连通，直接套用判据时要检查区域；能量单调性则可直接排除真正的非平衡周期运动，因为走完一个周期能量必须回到原值。</p>
+
+    <h3>稳定流形与不稳定流形</h3>
+    <p>鞍点附近并非所有方向都远离。稳定流形（stable manifold）由正时间趋于鞍点的初值组成，不稳定流形（unstable manifold）由负时间趋于鞍点的初值组成。在双曲平衡点附近，它们分别与线性化的稳定、非稳定特征子空间相切。阻尼单摆倒立位置的稳定流形构成吸引域边界的一部分：落在边界上的极少数初值会精确趋向倒立位置，边界两侧则落向角度相差一圈的向下位置。</p>
+  </section>
+
+  <section class="check">
+    <h2>局部自检二</h2>
+    <ol>
+      <li>为什么 <math><semantics><mrow><mover><mi>V</mi><mo>˙</mo></mover><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\dot V\le0</annotation></semantics></math> 通常只能立即推出稳定，而不能立即推出趋于平衡点？</li>
+      <li>在阻尼单摆中，LaSalle 原理比“能量递减”多检查了什么？</li>
+      <li>二维有界轨道的极限集中若没有平衡点，Poincaré–Bendixson 定理给出什么结论？</li>
+    </ol>
+    <details>
+      <summary>答案</summary>
+      <ol>
+        <li>导数可能在一个大集合上为零，轨道可能在该集合中继续运动；例如无阻尼系统沿能量等值线运动。</li>
+        <li>它找出零导数集合中最大的正不变部分；单摆的直线 <math><semantics><mrow><mi>ω</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\omega=0</annotation></semantics></math> 并不整体不变，能永久留下的只有平衡点。</li>
+        <li>ω-极限集是一条周期轨道。</li>
+      </ol>
+    </details>
+  </section>
+
+  <section>
+    <h2>五、分岔：参数变化怎样重组相图</h2>
+
+    <div class="definition">
+      <h3>定义 5：分岔</h3>
+      <p>考虑参数族 <math><semantics><mrow><mover><mi>x</mi><mo>˙</mo></mover><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>μ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\dot x=f(x,\mu)</annotation></semantics></math>。当参数穿过某个临界值时，若相图的定性结构发生变化，例如平衡点数目或稳定性改变、周期轨道产生或消失，就称发生分岔（bifurcation）。</p>
+    </div>
+
+    <h3>完整例子：超临界叉式分岔</h3>
+    <p>考虑标量系统</p>
+    <math class="display"><semantics><mrow><mover><mi>x</mi><mo>˙</mo></mover><mo>=</mo><mi>μ</mi><mi>x</mi><mo>−</mo><msup><mi>x</mi><mn>3</mn></msup><mo>=</mo><mi>x</mi><mo stretchy="false">(</mo><mi>μ</mi><mo>−</mo><msup><mi>x</mi><mn>2</mn></msup><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">\dot x=\mu x-x^3=x(\mu-x^2).</annotation></semantics></math>
+    <p>平衡点满足 <math><semantics><mrow><mi>x</mi><mo stretchy="false">(</mo><mi>μ</mi><mo>−</mo><msup><mi>x</mi><mn>2</mn></msup><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x(\mu-x^2)=0</annotation></semantics></math>：</p>
+    <ul>
+      <li><math><semantics><mrow><mi>μ</mi><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mu&lt;0</annotation></semantics></math> 时，只有 <math><semantics><mrow><mi>x</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x=0</annotation></semantics></math>；导数 <math><semantics><mrow><msub><mi>f</mi><mi>x</mi></msub><mo stretchy="false">(</mo><mn>0</mn><mo>,</mo><mi>μ</mi><mo stretchy="false">)</mo><mo>=</mo><mi>μ</mi><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f_x(0,\mu)=\mu&lt;0</annotation></semantics></math>，故它稳定。</li>
+      <li><math><semantics><mrow><mi>μ</mi><mo>></mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mu&gt;0</annotation></semantics></math> 时，又产生 <math><semantics><mrow><mi>x</mi><mo>=</mo><mo>±</mo><msqrt><mi>μ</mi></msqrt></mrow><annotation encoding="application/x-tex">x=\pm\sqrt\mu</annotation></semantics></math>。此时原点导数为正，变得不稳定；两个新平衡点处有 <math><semantics><mrow><msub><mi>f</mi><mi>x</mi></msub><mo>=</mo><mi>μ</mi><mo>−</mo><mn>3</mn><msup><mi>x</mi><mn>2</mn></msup><mo>=</mo><mo>−</mo><mn>2</mn><mi>μ</mi><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f_x=\mu-3x^2=-2\mu&lt;0</annotation></semantics></math>，所以稳定。</li>
+      <li><math><semantics><mrow><mi>μ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mu=0</annotation></semantics></math> 正是线性化特征值穿过零的非双曲时刻，高阶项决定临界结构。</li>
+    </ul>
+
+    <p>这显示了分岔分析的一般步骤：先找平衡分支，再看线性稳定性何时失效，最后保留最低阶关键非线性项得到正规形（normal form）。常见局部分岔还有鞍结分岔、跨临界分岔和 Hopf 分岔。Hopf 分岔中，一对共轭特征值穿过虚轴，平衡点附近产生或消失周期轨道；它是从局部线性振荡走向自激振荡的标准机制。</p>
+
+    <h3>完整例子：Hopf 正规形怎样产生稳定周期轨道</h3>
+    <p>考虑平面系统</p>
+    <math class="display"><semantics><mrow><mover><mi>x</mi><mo>˙</mo></mover><mo>=</mo><mi>μ</mi><mi>x</mi><mo>−</mo><mi>y</mi><mo>−</mo><mi>x</mi><mo stretchy="false">(</mo><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup><mo stretchy="false">)</mo><mo>,</mo><mspace width=".8em"/><mover><mi>y</mi><mo>˙</mo></mover><mo>=</mo><mi>x</mi><mo>+</mo><mi>μ</mi><mi>y</mi><mo>−</mo><mi>y</mi><mo stretchy="false">(</mo><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">\dot x=\mu x-y-x(x^2+y^2),\qquad \dot y=x+\mu y-y(x^2+y^2).</annotation></semantics></math>
+    <p>在原点的线性化矩阵为</p>
+    <math class="display"><semantics><mrow><mi>A</mi><mo stretchy="false">(</mo><mi>μ</mi><mo stretchy="false">)</mo><mo>=</mo><mfenced><mtable><mtr><mtd><mi>μ</mi></mtd><mtd><mo>−</mo><mn>1</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><mi>μ</mi></mtd></mtr></mtable></mfenced><mo>,</mo><mspace width="1em"/><msub><mi>λ</mi><mrow><mn>1</mn><mo>,</mo><mn>2</mn></mrow></msub><mo>=</mo><mi>μ</mi><mo>±</mo><mi>i</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">A(\mu)=\begin{pmatrix}\mu&amp;-1\\1&amp;\mu\end{pmatrix},\qquad \lambda_{1,2}=\mu\pm i.</annotation></semantics></math>
+    <p>当 <math><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math> 穿过零时，共轭特征值横穿虚轴。改用极坐标 <math><semantics><mrow><mi>x</mi><mo>=</mo><mi>r</mi><mi>cos</mi><mi>θ</mi><mo>,</mo><mspace width=".4em"/><mi>y</mi><mo>=</mo><mi>r</mi><mi>sin</mi><mi>θ</mi></mrow><annotation encoding="application/x-tex">x=r\cos\theta,\ y=r\sin\theta</annotation></semantics></math>，直接计算得到</p>
+    <math class="display"><semantics><mrow><mover><mi>r</mi><mo>˙</mo></mover><mo>=</mo><mi>r</mi><mo stretchy="false">(</mo><mi>μ</mi><mo>−</mo><msup><mi>r</mi><mn>2</mn></msup><mo stretchy="false">)</mo><mo>,</mo><mspace width="1em"/><mover><mi>θ</mi><mo>˙</mo></mover><mo>=</mo><mn>1</mn><mo>.</mo></mrow><annotation encoding="application/x-tex">\dot r=r(\mu-r^2),\qquad \dot\theta=1.</annotation></semantics></math>
+    <ul>
+      <li><math><semantics><mrow><mi>μ</mi><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mu&lt;0</annotation></semantics></math> 时，所有足够近的正半径都减小，原点是稳定焦点；</li>
+      <li><math><semantics><mrow><mi>μ</mi><mo>></mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mu&gt;0</annotation></semantics></math> 时，原点变成不稳定焦点，同时出现半径 <math><semantics><mrow><mi>r</mi><mo>=</mo><msqrt><mi>μ</mi></msqrt></mrow><annotation encoding="application/x-tex">r=\sqrt\mu</annotation></semantics></math> 的周期轨道；半径小于它时向外增长，大于它时向内减小，故周期轨道稳定。</li>
+    </ul>
+    <p>这个例子把三个层次分开了：线性化能发现临界点和原点稳定性的改变；三次项决定周期轨道出现在哪一侧、是否稳定；极坐标则把二维周期运动化成一维半径稳定性问题。一般 Hopf 定理所做的，是在更复杂系统中证明局部行为可归约到这种正规形。</p>
+
+    <h3>结构稳定性：什么性质经得住微小扰动</h3>
+    <p>具体轨道坐标通常对模型误差敏感，因此动力系统更关心相图的定性性质是否稳定。双曲平衡点及其局部稳定、不稳定维数在小扰动下保持；非双曲平衡点则往往是分岔发生的位置。于是“特征值实部是否跨过零”不只是计算技巧，而是区分鲁棒结构与临界结构的边界。</p>
+  </section>
+
+  <section>
+    <h2>六、离散动力系统、Poincaré 映射与混沌</h2>
+
+    <div class="definition">
+      <h3>定义 6：离散动力系统</h3>
+      <p>给定映射 <math><semantics><mrow><mi>F</mi><mo>:</mo><mi>X</mi><mo>→</mo><mi>X</mi></mrow><annotation encoding="application/x-tex">F:X\to X</annotation></semantics></math>，从 <math><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math> 出发反复迭代：</p>
+      <math class="display"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>F</mi><mo stretchy="false">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">x_{n+1}=F(x_n).</annotation></semantics></math>
+      <p>不动点对应连续系统的平衡点，周期点对应周期运动，导数的模决定一维不动点的局部稳定性：若 <math><semantics><mrow><mo>|</mo><msup><mi>F</mi><mo>′</mo></msup><mo stretchy="false">(</mo><msup><mi>x</mi><mo>*</mo></msup><mo stretchy="false">)</mo><mo>|</mo><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">|F'(x^*)|&lt;1</annotation></semantics></math> 则局部吸引，若大于一则排斥。</p>
+    </div>
+
+    <p>离散系统并非旁支。对连续流选取一个横截面，让轨道每次穿过时记录交点，就得到 Poincaré 映射（Poincaré map）。连续系统的一条周期轨道变成截面映射的一个不动点，而周期轨道的横向稳定性变成该不动点的稳定性。它把高一维的连续时间问题降成低一维的迭代问题。</p>
+
+    <h3>“混沌”不是单纯的杂乱</h3>
+    <p>混沌动力学（chaotic dynamics）通常同时涉及确定性演化、对初值的敏感依赖、轨道的反复折叠与某种拓扑混合。敏感性可用最大李雅普诺夫指数（Lyapunov exponent）刻画：沿轨道的无穷小扰动若平均按指数增长，最大指数为正。对离散可微系统，一维情形形式上考察</p>
+    <math class="display"><semantics><mrow><mi>λ</mi><mo stretchy="false">(</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo>=</mo><munder><mi>lim</mi><mrow><mi>n</mi><mo>→</mo><mo>∞</mo></mrow></munder><mfrac><mn>1</mn><mi>n</mi></mfrac><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></munderover><mi>log</mi><mo>|</mo><msup><mi>F</mi><mo>′</mo></msup><mo stretchy="false">(</mo><msub><mi>x</mi><mi>k</mi></msub><mo stretchy="false">)</mo><mo>|</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">\lambda(x_0)=\lim_{n\to\infty}\frac1n\sum_{k=0}^{n-1}\log|F'(x_k)|,</annotation></semantics></math>
+    <p>前提是极限存在。正指数意味着相邻初值在一段时间内平均指数分离，但它不是所有混沌定义的唯一条件。更重要的认识是：ODE 的解对初值连续依赖，与长期不可预测并不矛盾。连续依赖控制固定有限时间；指数放大会让为了预测更久而所需的初值精度呈指数增长。</p>
+
+    <p>二维自治连续流受到 Poincaré–Bendixson 约束，不能产生通常意义的奇异混沌吸引子；三维流或一维非线性迭代已经足够复杂。这是维数、时间离散化与长期行为之间最重要的结构分界之一。</p>
+
+    <h3>数值离散化本身也是动力系统</h3>
+    <p>计算机画出的不是连续流本身，而是某个时间步进映射的迭代。最简单的显式 Euler 方法把 <math><semantics><mrow><mover><mi>x</mi><mo>˙</mo></mover><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\dot x=f(x)</annotation></semantics></math> 替换为</p>
+    <math class="display"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>x</mi><mi>n</mi></msub><mo>+</mo><mi>h</mi><mi>f</mi><mo stretchy="false">(</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">x_{n+1}=x_n+h f(x_n).</annotation></semantics></math>
+    <p>即使连续系统稳定，离散系统也可能不稳定。对 <math><semantics><mrow><mover><mi>x</mi><mo>˙</mo></mover><mo>=</mo><mo>−</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">\dot x=-x</annotation></semantics></math>，精确解按 <math><semantics><msup><mi>e</mi><mrow><mo>−</mo><mi>t</mi></mrow></msup><annotation encoding="application/x-tex">e^{-t}</annotation></semantics></math> 衰减；Euler 迭代却是</p>
+    <math class="display"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>h</mi><mo stretchy="false">)</mo><msub><mi>x</mi><mi>n</mi></msub><mo>.</mo></mrow><annotation encoding="application/x-tex">x_{n+1}=(1-h)x_n.</annotation></semantics></math>
+    <p>只有 <math><semantics><mrow><mo>|</mo><mn>1</mn><mo>−</mo><mi>h</mi><mo>|</mo><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">|1-h|&lt;1</annotation></semantics></math>，也就是 <math><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>h</mi><mo>&lt;</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">0&lt;h&lt;2</annotation></semantics></math> 时数值不动点才稳定；若步长大于二，数值解会交替放大，制造原方程中不存在的发散。</p>
+    <p>因此数值动力学不仅检查局部截断误差，还要问离散映射是否保留稳定性、能量、辛结构或不变集。长时间模拟中，一个每步都很小的误差可能系统性改变吸引子。对于混沌系统，我们通常不期待单条数值轨道永久追踪真实轨道，而更关心统计量、几何结构和定性结论是否可靠。</p>
+  </section>
+
+  <section class="check">
+    <h2>局部自检三</h2>
+    <ol>
+      <li>叉式分岔中，为什么临界参数处不能靠线性化完成判断？</li>
+      <li>连续系统的周期轨道在 Poincaré 映射下对应什么对象？</li>
+      <li>解对初值连续依赖为什么不排斥混沌的长期不可预测性？</li>
+    </ol>
+    <details>
+      <summary>答案</summary>
+      <ol>
+        <li>临界处线性项的特征值为零，非双曲；决定平衡点数目和稳定性的正是高阶非线性项。</li>
+        <li>截面映射的不动点；它的导数或特征乘子描述周期轨道的横向稳定性。</li>
+        <li>连续依赖是有限时间陈述；若扰动指数放大，固定误差容许度下的可预测时间仍然有限。</li>
+      </ol>
+    </details>
+  </section>
+
+  <section>
+    <h2>七、把动力系统看成一门完整课程</h2>
+    <table>
+      <thead>
+        <tr><th>层次</th><th>核心问题</th><th>主要工具</th><th>典型结论</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>局部</td><td>平衡点附近轨道怎样？</td><td>线性化、矩阵谱、Hartman–Grobman、稳定流形</td><td>汇、源、鞍点；双曲结构的鲁棒性</td></tr>
+        <tr><td>稳定性</td><td>扰动是否受控，是否回到目标？</td><td>李雅普诺夫函数、LaSalle 原理</td><td>稳定、渐近稳定、吸引域估计</td></tr>
+        <tr><td>全局</td><td>长期极限对象是什么？</td><td>不变集、极限集、相平面、Poincaré–Bendixson</td><td>平衡点、周期轨道、连接轨道</td></tr>
+        <tr><td>参数</td><td>模型改变时相图何时重组？</td><td>分岔、中心流形、正规形</td><td>鞍结、叉式、Hopf 等分岔</td></tr>
+        <tr><td>复杂性</td><td>确定性系统为何长期不可预测？</td><td>Poincaré 映射、李雅普诺夫指数、符号动力学</td><td>敏感依赖、混沌不变集</td></tr>
+      </tbody>
+    </table>
+
+    <h3>本篇需要掌握</h3>
+    <ul>
+      <li>流的复合律来自解的唯一性，动力系统研究的是整个解族；</li>
+      <li>双曲平衡点可由线性化可靠分类，非双曲情形必须看非线性项；</li>
+      <li>稳定、吸引、渐近稳定不可混用；李雅普诺夫函数用单调量控制轨道；</li>
+      <li>LaSalle 原理研究零导数集合中最大的正不变集；</li>
+      <li>二维流、离散映射和三维流的复杂性边界不同；</li>
+      <li>分岔研究的不是某条解的数值变化，而是整个相图的定性重组。</li>
+    </ul>
+
+    <h3>本篇只需识别</h3>
+    <p>中心流形、正规形、结构稳定性、符号动力学在这里是地图上的后续节点，不要求现在掌握其完整定理和计算。若继续系统学习，合理顺序是：二维相图与李雅普诺夫方法 → 稳定流形与周期轨道 → 局部分岔 → 离散系统与混沌。</p>
+  </section>
+
+  <section>
+    <h2>结语：ODE 的“进阶”究竟进在哪里</h2>
+    <p>初等 ODE 课程常把注意力放在“给定方程，怎样得到解”。动力系统保留存在唯一性、线性方程组和连续依赖这些基础，却更换了问题：</p>
+    <ul>
+      <li>把单个初值的解换成全部初值组成的流；</li>
+      <li>把显式公式换成不变集、能量与几何结构；</li>
+      <li>把有限时间的误差控制换成无穷时间的稳定性和极限集；</li>
+      <li>把固定方程换成参数族，并研究相图何时发生分岔。</li>
+    </ul>
+    <p>阻尼单摆集中展示了这套语言：线性化说明向下位置局部稳定、倒立位置是鞍点；机械能给出不变量的耗散版本；LaSalle 原理把半负定导数升级为渐近收敛；稳定流形解释吸引域边界；无周期运动则来自严格能量耗散。我们始终没有求出单摆的通解，却得到了比通解更接近“系统会怎样”的答案。</p>
+    <p>下一篇转向偏微分方程时，这些思想不会消失。热方程可以看成函数空间中的耗散动力系统，波动方程有守恒能量，稳态解是无限维演化的平衡点；只是“状态”从有限维向量变成整个函数，空间导数、边界条件和函数空间由此进入舞台。</p>
+  </section>
+</article>
+
+<section id="reader-feedback">
+  <h2>读后反馈</h2>
+  <p class="muted">暂无。阅读后可在此追加理解障碍、事实纠错、结构建议与希望展开的主题。</p>
+</section>
+</body>
+</html>

@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="数学">
+  <title>常微分方程进阶：PDE——从三类原型到弱解</title>
+  <style>
+    body { max-width: 860px; margin: 0 auto; padding: 2rem 1.2rem 4rem; font: 18px/1.8 system-ui, sans-serif; color: #202124; }
+    h1, h2, h3 { line-height: 1.35; color: #14213d; }
+    h1 { font-size: 2rem; }
+    h2 { margin-top: 2.4rem; border-bottom: 1px solid #ccd3df; padding-bottom: .35rem; }
+    h3 { margin-top: 1.6rem; }
+    .lead, .box, .check, .theorem, .definition { padding: 1rem 1.15rem; margin: 1.2rem 0; border-radius: .45rem; }
+    .lead { background: #eef4ff; }
+    .definition { background: #f4f7f3; border-left: 4px solid #52796f; }
+    .theorem { background: #fff7e8; border-left: 4px solid #d28b28; }
+    .box { background: #f7f7fa; }
+    .check { background: #f2f8ff; border: 1px solid #c9ddf2; }
+    math { font-size: 1.05em; }
+    .display { display: block; overflow-x: auto; margin: 1rem 0; text-align: center; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #cfd4dc; padding: .55rem; vertical-align: top; }
+    th { background: #f2f4f7; }
+    summary { cursor: pointer; font-weight: 650; }
+    .muted { color: #5f6368; }
+  </style>
+</head>
+<body>
+<article>
+  <header>
+    <h1>常微分方程进阶：PDE<br>从三类原型到弱解</h1>
+    <p class="lead"><strong>核心问题：</strong>偏微分方程（partial differential equation, PDE）为什么会分成椭圆、抛物、双曲三种主要类型？初值、边界条件和函数空间怎样共同决定问题是否适定（well-posed）？我们将用输运方程、热方程、波动方程和 Poisson 方程说明四种核心机制：沿特征线（characteristic curve）搬运、扩散耗散、波动传播、由边界决定平衡态，并说明弱解（weak solution）为何成为自然解概念。</p>
+    <p><strong>阅读前提：</strong>默认熟悉多元微积分、常微分方程的存在唯一性与线性方程组，知道基本的 <math><semantics><msup><mi>L</mi><mi>p</mi></msup><annotation encoding="application/x-tex">L^p</annotation></semantics></math> 空间。本篇会就地定义弱导数与 Sobolev 空间，不预设已经学过 PDE 或泛函分析中的算子半群。</p>
+  </header>
+
+  <nav class="box" aria-label="知识树">
+    <h2>本篇知识树</h2>
+    <ol>
+      <li><strong>问题结构：</strong>方程、区域、初值、边界条件和解空间必须一起给出；</li>
+      <li><strong>一阶输运：</strong>特征线把 PDE 化为 ODE，也揭示非线性激波；</li>
+      <li><strong>三类二阶原型：</strong>热方程耗散，波动方程守恒，Laplace 方程由边界控制；</li>
+      <li><strong>适定性：</strong>存在、唯一与连续依赖要通过先验估计同时组织；</li>
+      <li><strong>弱解：</strong>经典导数不存在时，把导数转移到测试函数上；</li>
+      <li><strong>无限维动力系统：</strong>把时刻 <math><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> 的整条函数看成一个状态。</li>
+    </ol>
+  </nav>
+
+  <section>
+    <h2>一、PDE 问题不是一条方程，而是一整套数据</h2>
+
+    <div class="definition">
+      <h3>定义 1：PDE、阶与线性</h3>
+      <p>设未知函数 <math><semantics><mrow><mi>u</mi><mo>:</mo><mi>Ω</mi><mo>→</mo><mi>R</mi></mrow><annotation encoding="application/x-tex">u:\Omega\to\mathbb R</annotation></semantics></math>，其中 <math><semantics><mrow><mi>Ω</mi><mo>⊂</mo><msup><mi>R</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">\Omega\subset\mathbb R^n</annotation></semantics></math>。一个 <math><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math> 阶 PDE 是关系</p>
+      <math class="display"><semantics><mrow><mi>F</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>D</mi><mi>u</mi><mo>,</mo><mo>…</mo><mo>,</mo><msup><mi>D</mi><mi>k</mi></msup><mi>u</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn><mo>.</mo></mrow><annotation encoding="application/x-tex">F(x,u,Du,\ldots,D^ku)=0.</annotation></semantics></math>
+      <p>它的阶由出现的最高阶偏导决定。若未知函数及其各阶导数只以一次幂线性出现，且系数只依赖自变量，就称为线性 PDE。若最高阶导数线性出现，而其系数可依赖自变量、未知函数及低于最高阶的导数，就称为拟线性（quasilinear）。若最高阶部分的系数只依赖自变量，所有非线性都局限在较低阶项，则称为半线性（semilinear）。</p>
+    </div>
+
+    <p>对 ODE，给出方程与一个时刻的初值往往已经构成自然问题。对 PDE，仅写 <math><semantics><mrow><mo>−</mo><mi>Δ</mi><mi>u</mi><mo>=</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">-\Delta u=f</annotation></semantics></math> 远远不够。还必须知道：</p>
+    <ul>
+      <li>空间区域 <math><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math> 是什么，边界是否光滑；</li>
+      <li>边界上给函数值、法向导数，还是二者组合；</li>
+      <li>是否有时间变量，初始时刻给哪些数据；</li>
+      <li>希望解是连续二阶可微、平方可积，还是仅在分布意义成立；</li>
+      <li>数据属于什么函数空间，解要在哪个范数下连续依赖数据。</li>
+    </ul>
+
+    <h3>三类常见边界条件不是可以任意互换的装饰</h3>
+    <ul>
+      <li><strong>Dirichlet 边界条件：</strong>给出 <math><semantics><mrow><mi>u</mi><mo>|</mo><msub><mo> </mo><mrow><mi>∂</mi><mi>Ω</mi></mrow></msub><mo>=</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">u|_{\partial\Omega}=g</annotation></semantics></math>，例如固定边界温度或固定弦端位移；</li>
+      <li><strong>Neumann 边界条件：</strong>给出外法向导数 <math><semantics><mrow><msub><mi>∂</mi><mi>ν</mi></msub><mi>u</mi><mo>=</mo><mi>h</mi></mrow><annotation encoding="application/x-tex">\partial_\nu u=h</annotation></semantics></math>，例如指定热通量；</li>
+      <li><strong>Robin 边界条件：</strong>给出 <math><semantics><mrow><mi>a</mi><mi>u</mi><mo>+</mo><mi>b</mi><msub><mi>∂</mi><mi>ν</mi></msub><mi>u</mi><mo>=</mo><mi>h</mi></mrow><annotation encoding="application/x-tex">au+b\partial_\nu u=h</annotation></semantics></math>，例如边界与环境之间按温差换热。</li>
+    </ul>
+    <p>边界条件会改变唯一性。以 Poisson 方程的纯 Neumann 问题为例，若 <math><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math> 是解，则 <math><semantics><mrow><mi>u</mi><mo>+</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">u+C</annotation></semantics></math> 也是解，所以至多能在“相差一个常数”的意义下唯一。对方程在区域内积分并使用散度定理，还得到相容条件</p>
+    <math class="display"><semantics><mrow><msub><mo>∫</mo><mi>Ω</mi></msub><mi>f</mi><mi>d</mi><mi>x</mi><mo>=</mo><mo>−</mo><msub><mo>∫</mo><mrow><mi>∂</mi><mi>Ω</mi></mrow></msub><mi>h</mi><mi>d</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\int_\Omega f\,dx=-\int_{\partial\Omega}h\,dS</annotation></semantics></math>
+    <p>（这里采用 <math><semantics><mrow><mo>−</mo><mi>Δ</mi><mi>u</mi><mo>=</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">-\Delta u=f</annotation></semantics></math> 与 <math><semantics><mrow><msub><mi>∂</mi><mi>ν</mi></msub><mi>u</mi><mo>=</mo><mi>h</mi></mrow><annotation encoding="application/x-tex">\partial_\nu u=h</annotation></semantics></math> 的符号约定）。数据若不满足它，就根本不存在解。这个小例子已经同时显示“存在条件”和“唯一性缺陷”都可能来自边界。</p>
+
+    <h3>四个原型问题</h3>
+    <table>
+      <thead>
+        <tr><th>方程</th><th>典型问题</th><th>主要机制</th><th>自然数据</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>输运方程</td><td><math><semantics><mrow><msub><mi>u</mi><mi>t</mi></msub><mo>+</mo><mi>b</mi><mo>·</mo><mi>∇</mi><mi>u</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">u_t+b\cdot\nabla u=0</annotation></semantics></math></td><td>沿流线搬运</td><td>流入边界或初值</td></tr>
+        <tr><td>热方程</td><td><math><semantics><mrow><msub><mi>u</mi><mi>t</mi></msub><mo>−</mo><mi>κ</mi><mi>Δ</mi><mi>u</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">u_t-\kappa\Delta u=0</annotation></semantics></math></td><td>扩散、平滑、耗散</td><td>一个初值加空间边界条件</td></tr>
+        <tr><td>波动方程</td><td><math><semantics><mrow><msub><mi>u</mi><mrow><mi>t</mi><mi>t</mi></mrow></msub><mo>−</mo><msup><mi>c</mi><mn>2</mn></msup><mi>Δ</mi><mi>u</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">u_{tt}-c^2\Delta u=0</annotation></semantics></math></td><td>有限速度传播、能量守恒</td><td>位置和速度两个初值</td></tr>
+        <tr><td>Laplace/Poisson 方程</td><td><math><semantics><mrow><mo>−</mo><mi>Δ</mi><mi>u</mi><mo>=</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">-\Delta u=f</annotation></semantics></math></td><td>平衡、由边界约束内部</td><td>空间边界条件</td></tr>
+      </tbody>
+    </table>
+
+    <h3>为什么要分类</h3>
+    <p>二维二阶线性方程的主部可写成</p>
+    <math class="display"><semantics><mrow><mi>A</mi><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>+</mo><mn>2</mn><mi>B</mi><msub><mi>u</mi><mrow><mi>x</mi><mi>y</mi></mrow></msub><mo>+</mo><mi>C</mi><msub><mi>u</mi><mrow><mi>y</mi><mi>y</mi></mrow></msub><mo>+</mo><mtext>低阶项</mtext><mo>=</mo><mn>0</mn><mo>.</mo></mrow><annotation encoding="application/x-tex">Au_{xx}+2Bu_{xy}+Cu_{yy}+\text{lower-order terms}=0.</annotation></semantics></math>
+    <p>在一点固定系数后，判别量 <math><semantics><mrow><msup><mi>B</mi><mn>2</mn></msup><mo>−</mo><mi>A</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">B^2-AC</annotation></semantics></math> 为负、零、正时，分别称主部为椭圆型（elliptic）、抛物型（parabolic）、双曲型（hyperbolic）。这不是表面命名：经过适当坐标变换，主部会分别类似 Laplace、热、波动算子，因此三类方程需要不同的数据，具有不同的传播与正则性。</p>
+    <p>高维时更自然的说法是考察最高阶项对应的二次型或主符号。分类首先是局部主部的代数性质，随后才转化为全局解的分析性质。</p>
+  </section>
+
+  <section>
+    <h2>二、特征线：PDE 与 ODE 最直接的桥</h2>
+
+    <div class="theorem">
+      <h3>命题 2：常速输运方程的特征线解</h3>
+      <p>在整条实线上考虑</p>
+      <math class="display"><semantics><mrow><msub><mi>u</mi><mi>t</mi></msub><mo>+</mo><mi>c</mi><msub><mi>u</mi><mi>x</mi></msub><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="1em"/><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><msub><mi>u</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">u_t+cu_x=0,\qquad u(x,0)=u_0(x).</annotation></semantics></math>
+      <p>若初值足够光滑，则唯一经典解为</p>
+      <math class="display"><semantics><mrow><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>u</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>x</mi><mo>−</mo><mi>c</mi><mi>t</mi><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">u(x,t)=u_0(x-ct).</annotation></semantics></math>
+    </div>
+
+    <p><strong>推导。</strong>在时空平面中选曲线 <math><semantics><mrow><mi>t</mi><mo>↦</mo><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">t\mapsto(x(t),t)</annotation></semantics></math>，链式法则给出</p>
+    <math class="display"><semantics><mrow><mfrac><mi>d</mi><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>u</mi><mi>t</mi></msub><mo>+</mo><mover><mi>x</mi><mo>˙</mo></mover><msub><mi>u</mi><mi>x</mi></msub><mo>.</mo></mrow><annotation encoding="application/x-tex">\frac d{dt}u(x(t),t)=u_t+\dot x\,u_x.</annotation></semantics></math>
+    <p>令特征曲线满足 ODE <math><semantics><mrow><mover><mi>x</mi><mo>˙</mo></mover><mo>=</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">\dot x=c</annotation></semantics></math>，就有沿线 <math><semantics><mrow><mi>d</mi><mi>u</mi><mo>/</mo><mi>d</mi><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">du/dt=0</annotation></semantics></math>。特征线是 <math><semantics><mrow><mi>x</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mi>ξ</mi><mo>+</mo><mi>c</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">x(t)=\xi+ct</annotation></semantics></math>，线上函数值保持为 <math><semantics><mrow><msub><mi>u</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>ξ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">u_0(\xi)</annotation></semantics></math>。代入 <math><semantics><mrow><mi>ξ</mi><mo>=</mo><mi>x</mi><mo>−</mo><mi>c</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\xi=x-ct</annotation></semantics></math> 即得公式。</p>
+
+    <p>这个例子说明：一阶 PDE 的信息沿特征曲线传播，而特征曲线本身由 ODE 决定。对一般线性一阶方程 <math><semantics><mrow><msub><mi>u</mi><mi>t</mi></msub><mo>+</mo><mi>b</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>·</mo><mi>∇</mi><mi>u</mi><mo>=</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">u_t+b(x,t)\cdot\nabla u=g</annotation></semantics></math>，要联立求解</p>
+    <math class="display"><semantics><mrow><mover><mi>X</mi><mo>˙</mo></mover><mo>=</mo><mi>b</mi><mo stretchy="false">(</mo><mi>X</mi><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>,</mo><mspace width="1em"/><mfrac><mi>d</mi><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mi>u</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">\dot X=b(X,t),\qquad \frac d{dt}u(X(t),t)=g(X(t),t).</annotation></semantics></math>
+
+    <h3>非线性改变了什么：Burgers 方程与特征线相交</h3>
+    <p>考虑无黏 Burgers 方程（inviscid Burgers equation）</p>
+    <math class="display"><semantics><mrow><msub><mi>u</mi><mi>t</mi></msub><mo>+</mo><mi>u</mi><msub><mi>u</mi><mi>x</mi></msub><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="1em"/><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><msub><mi>u</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">u_t+uu_x=0,\qquad u(x,0)=u_0(x).</annotation></semantics></math>
+    <p>特征方程为 <math><semantics><mrow><mover><mi>X</mi><mo>˙</mo></mover><mo>=</mo><mi>u</mi></mrow><annotation encoding="application/x-tex">\dot X=u</annotation></semantics></math>，而沿特征 <math><semantics><mrow><mi>d</mi><mi>u</mi><mo>/</mo><mi>d</mi><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">du/dt=0</annotation></semantics></math>。从 <math><semantics><mi>ξ</mi><annotation encoding="application/x-tex">\xi</annotation></semantics></math> 出发的特征因此是</p>
+    <math class="display"><semantics><mrow><mi>X</mi><mo stretchy="false">(</mo><mi>t</mi><mo>;</mo><mi>ξ</mi><mo stretchy="false">)</mo><mo>=</mo><mi>ξ</mi><mo>+</mo><msub><mi>u</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>ξ</mi><mo stretchy="false">)</mo><mi>t</mi><mo>,</mo><mspace width="1em"/><mi>u</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">(</mo><mi>t</mi><mo>;</mo><mi>ξ</mi><mo stretchy="false">)</mo><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>u</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>ξ</mi><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">X(t;\xi)=\xi+u_0(\xi)t,\qquad u(X(t;\xi),t)=u_0(\xi).</annotation></semantics></math>
+
+    <p>若初值某处递减，后面的较大函数值以更快速度追上前面的较小函数值。映射 <math><semantics><mrow><mi>ξ</mi><mo>↦</mo><mi>X</mi><mo stretchy="false">(</mo><mi>t</mi><mo>;</mo><mi>ξ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\xi\mapsto X(t;\xi)</annotation></semantics></math> 的导数为</p>
+    <math class="display"><semantics><mrow><mfrac><mrow><mi>∂</mi><mi>X</mi></mrow><mrow><mi>∂</mi><mi>ξ</mi></mrow></mfrac><mo>=</mo><mn>1</mn><mo>+</mo><msubsup><mi>u</mi><mn>0</mn><mo>′</mo></msubsup><mo stretchy="false">(</mo><mi>ξ</mi><mo stretchy="false">)</mo><mi>t</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">\frac{\partial X}{\partial\xi}=1+u_0'(\xi)t.</annotation></semantics></math>
+    <p>一旦它变为零，特征坐标不再可逆，经典解的空间导数会爆破。若 <math><semantics><mrow><munder><mi>min</mi><mi>ξ</mi></munder><msubsup><mi>u</mi><mn>0</mn><mo>′</mo></msubsup><mo stretchy="false">(</mo><mi>ξ</mi><mo stretchy="false">)</mo><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\min_\xi u_0'(\xi)&lt;0</annotation></semantics></math>，最早破裂时间形式上为</p>
+    <math class="display"><semantics><mrow><msup><mi>t</mi><mo>*</mo></msup><mo>=</mo><mo>−</mo><mfrac><mn>1</mn><mrow><munder><mi>min</mi><mi>ξ</mi></munder><msubsup><mi>u</mi><mn>0</mn><mo>′</mo></msubsup><mo stretchy="false">(</mo><mi>ξ</mi><mo stretchy="false">)</mo></mrow></mfrac><mo>.</mo></mrow><annotation encoding="application/x-tex">t^*=-\frac1{\min_\xi u_0'(\xi)}.</annotation></semantics></math>
+    <p>这不是解本身无限大，而是斜率无限陡，随后应出现激波（shock）。于是 PDE 的“解”必须从经典解扩大为守恒律弱解，并增加熵条件来恢复物理上正确的唯一性。这里第一次看到一个贯穿 PDE 的现象：存在唯一性取决于你选择什么解概念。</p>
+  </section>
+
+  <section class="check">
+    <h2>局部自检一</h2>
+    <ol>
+      <li>常速输运方程中，初始图形是变形还是平移？方向和速度是什么？</li>
+      <li>Burgers 方程中，为什么下降的初始斜率会导致经典解破裂？</li>
+      <li>为什么仅写一个 PDE 公式通常还没有定义一个数学问题？</li>
+    </ol>
+    <details>
+      <summary>答案</summary>
+      <ol>
+        <li>图形不变形，按速度 <math><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math> 平移；正 <math><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math> 向右。</li>
+        <li>函数值本身就是传播速度；后方较大的值追上前方较小的值，特征相交，特征坐标失去可逆性。</li>
+        <li>区域、初边值数据和解空间尚未指定，而它们会改变存在性、唯一性及稳定性。</li>
+      </ol>
+    </details>
+  </section>
+
+  <section>
+    <h2>三、热方程：扩散、平滑与能量耗散</h2>
+
+    <p>在区间 <math><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>x</mi><mo>&lt;</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">0&lt;x&lt;L</annotation></semantics></math> 上考虑齐次 Dirichlet 边界条件：</p>
+    <math class="display"><semantics><mrow><msub><mi>u</mi><mi>t</mi></msub><mo>=</mo><mi>κ</mi><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>,</mo><mspace width=".7em"/><mi>u</mi><mo stretchy="false">(</mo><mn>0</mn><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mi>u</mi><mo stretchy="false">(</mo><mi>L</mi><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn><mo>,</mo><mspace width=".7em"/><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><msub><mi>u</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">u_t=\kappa u_{xx},\quad u(0,t)=u(L,t)=0,\quad u(x,0)=u_0(x).</annotation></semantics></math>
+
+    <h3>分离变量揭示“空间模态按不同速度衰减”</h3>
+    <p>设 <math><semantics><mrow><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mi>X</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mi>T</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">u(x,t)=X(x)T(t)</annotation></semantics></math>。代入并分离得到</p>
+    <math class="display"><semantics><mrow><mfrac><mrow><msup><mi>T</mi><mo>′</mo></msup></mrow><mrow><mi>κ</mi><mi>T</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msup><mi>X</mi><mo>″</mo></msup></mrow><mi>X</mi></mfrac><mo>=</mo><mo>−</mo><mi>λ</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">\frac{T'}{\kappa T}=\frac{X''}{X}=-\lambda.</annotation></semantics></math>
+    <p>边界值问题 <math><semantics><mrow><mo>−</mo><msup><mi>X</mi><mo>″</mo></msup><mo>=</mo><mi>λ</mi><mi>X</mi><mo>,</mo><mspace width=".4em"/><mi>X</mi><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><mi>X</mi><mo stretchy="false">(</mo><mi>L</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">-X''=\lambda X,\ X(0)=X(L)=0</annotation></semantics></math> 的特征函数与特征值为</p>
+    <math class="display"><semantics><mrow><msub><mi>X</mi><mi>n</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>sin</mi><mfrac><mrow><mi>n</mi><mi>π</mi><mi>x</mi></mrow><mi>L</mi></mfrac><mo>,</mo><mspace width="1em"/><msub><mi>λ</mi><mi>n</mi></msub><mo>=</mo><msup><mfenced><mfrac><mrow><mi>n</mi><mi>π</mi></mrow><mi>L</mi></mfrac></mfenced><mn>2</mn></msup><mo>.</mo></mrow><annotation encoding="application/x-tex">X_n(x)=\sin\frac{n\pi x}{L},\qquad \lambda_n=\left(\frac{n\pi}{L}\right)^2.</annotation></semantics></math>
+    <p>时间因子满足 ODE <math><semantics><mrow><msubsup><mi>T</mi><mi>n</mi><mo>′</mo></msubsup><mo>=</mo><mo>−</mo><mi>κ</mi><msub><mi>λ</mi><mi>n</mi></msub><msub><mi>T</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">T_n'=-\kappa\lambda_nT_n</annotation></semantics></math>，故每个模态按指数衰减。若初值可展开为正弦级数</p>
+    <math class="display"><semantics><mrow><msub><mi>u</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mo>∞</mo></munderover><msub><mi>b</mi><mi>n</mi></msub><mi>sin</mi><mfrac><mrow><mi>n</mi><mi>π</mi><mi>x</mi></mrow><mi>L</mi></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">u_0(x)=\sum_{n=1}^\infty b_n\sin\frac{n\pi x}{L},</annotation></semantics></math>
+    <p>那么</p>
+    <math class="display"><semantics><mrow><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mo>∞</mo></munderover><msub><mi>b</mi><mi>n</mi></msub><msup><mi>e</mi><mrow><mo>−</mo><mi>κ</mi><msup><mfenced><mfrac><mrow><mi>n</mi><mi>π</mi></mrow><mi>L</mi></mfrac></mfenced><mn>2</mn></msup><mi>t</mi></mrow></msup><mi>sin</mi><mfrac><mrow><mi>n</mi><mi>π</mi><mi>x</mi></mrow><mi>L</mi></mfrac><mo>.</mo></mrow><annotation encoding="application/x-tex">u(x,t)=\sum_{n=1}^\infty b_ne^{-\kappa(n\pi/L)^2t}\sin\frac{n\pi x}{L}.</annotation></semantics></math>
+
+    <p><strong>完整例子。</strong>若 <math><semantics><mrow><msub><mi>u</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>sin</mi><mo stretchy="false">(</mo><mi>π</mi><mi>x</mi><mo>/</mo><mi>L</mi><mo stretchy="false">)</mo><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>sin</mi><mo stretchy="false">(</mo><mn>3</mn><mi>π</mi><mi>x</mi><mo>/</mo><mi>L</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">u_0(x)=\sin(\pi x/L)+\frac12\sin(3\pi x/L)</annotation></semantics></math>，则第三模态的衰减指数是第一模态的九倍。细小空间振荡对应高频，迅速消失；剩下的是最慢的低频轮廓。这就是扩散的平滑效应。</p>
+
+    <div class="theorem">
+      <h3>命题 3：热方程的能量恒等式与唯一性</h3>
+      <p>若解足够光滑并满足齐次 Dirichlet 边界条件，则</p>
+      <math class="display"><semantics><mrow><mfrac><mi>d</mi><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mfrac><mn>1</mn><mn>2</mn></mfrac><msubsup><mo>∫</mo><mn>0</mn><mi>L</mi></msubsup><msup><mi>u</mi><mn>2</mn></msup><mi>d</mi><mi>x</mi><mo>=</mo><mo>−</mo><mi>κ</mi><msubsup><mo>∫</mo><mn>0</mn><mi>L</mi></msubsup><msubsup><mi>u</mi><mi>x</mi><mn>2</mn></msubsup><mi>d</mi><mi>x</mi><mo>≤</mo><mn>0</mn><mo>.</mo></mrow><annotation encoding="application/x-tex">\frac d{dt}\frac12\int_0^L u^2\,dx=-\kappa\int_0^L u_x^2\,dx\le0.</annotation></semantics></math>
+    </div>
+
+    <p><strong>推导。</strong>方程乘以 <math><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math> 后积分：</p>
+    <math class="display"><semantics><mrow><msubsup><mo>∫</mo><mn>0</mn><mi>L</mi></msubsup><mi>u</mi><msub><mi>u</mi><mi>t</mi></msub><mi>d</mi><mi>x</mi><mo>=</mo><mi>κ</mi><msubsup><mo>∫</mo><mn>0</mn><mi>L</mi></msubsup><mi>u</mi><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mi>d</mi><mi>x</mi><mo>=</mo><mi>κ</mi><mo stretchy="false">[</mo><mi>u</mi><msub><mi>u</mi><mi>x</mi></msub><msubsup><mo stretchy="false">]</mo><mn>0</mn><mi>L</mi></msubsup><mo>−</mo><mi>κ</mi><msubsup><mo>∫</mo><mn>0</mn><mi>L</mi></msubsup><msubsup><mi>u</mi><mi>x</mi><mn>2</mn></msubsup><mi>d</mi><mi>x</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">\int_0^L uu_t\,dx=\kappa\int_0^L uu_{xx}\,dx=\kappa[uu_x]_0^L-\kappa\int_0^L u_x^2\,dx.</annotation></semantics></math>
+    <p>边界项因 <math><semantics><mrow><mi>u</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">u=0</annotation></semantics></math> 消失。若有两个相同数据的解，它们之差仍满足齐次问题且初始能量为零；能量不能增长，只能恒为零，所以两解相同。这里不需要先写出解公式：先验估计（a priori estimate）直接给出唯一性与稳定性。</p>
+
+    <h3>整空间热核：平滑和无限传播的显式证据</h3>
+    <p>在 <math><semantics><msup><mi>R</mi><mi>n</mi></msup><annotation encoding="application/x-tex">\mathbb R^n</annotation></semantics></math> 上，热方程的解可写成初值与热核（heat kernel）的卷积：</p>
+    <math class="display"><semantics><mrow><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mo>∫</mo><msup><mi>R</mi><mi>n</mi></msup></msub><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo>−</mo><mi>y</mi><mo stretchy="false">)</mo><msub><mi>u</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>y</mi><mo stretchy="false">)</mo><mi>d</mi><mi>y</mi><mo>,</mo><mspace width="1em"/><msub><mi>G</mi><mi>t</mi></msub><mo stretchy="false">(</mo><mi>z</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><msup><mfenced><mrow><mn>4</mn><mi>π</mi><mi>κ</mi><mi>t</mi></mrow></mfenced><mrow><mi>n</mi><mo>/</mo><mn>2</mn></mrow></msup></mfrac><msup><mi>e</mi><mrow><mo>−</mo><mo>|</mo><mi>z</mi><msup><mo>|</mo><mn>2</mn></msup><mo>/</mo><mo stretchy="false">(</mo><mn>4</mn><mi>κ</mi><mi>t</mi><mo stretchy="false">)</mo></mrow></msup><mo>.</mo></mrow><annotation encoding="application/x-tex">u(x,t)=\int_{\mathbb R^n}G_t(x-y)u_0(y)\,dy,\qquad G_t(z)=\frac1{(4\pi\kappa t)^{n/2}}e^{-|z|^2/(4\kappa t)}.</annotation></semantics></math>
+    <p>对每个正时间，Gaussian 核处处为正且无限可微。若非负初值不恒为零，即使它最初只支撑在一个有界区域中，任意远点在任意正时间都会得到正影响：热方程没有有限传播前沿。同时，对卷积结果求空间导数可以把导数落在光滑核上，因此粗糙初值在正时间后变得光滑。这两个性质来自同一个核。</p>
+    <p>热核还满足</p>
+    <math class="display"><semantics><mrow><msub><mi>G</mi><mrow><mi>t</mi><mo>+</mo><mi>s</mi></mrow></msub><mo>=</mo><msub><mi>G</mi><mi>t</mi></msub><mo>*</mo><msub><mi>G</mi><mi>s</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">G_{t+s}=G_t*G_s,</annotation></semantics></math>
+    <p>所以先扩散时间 <math><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math> 再扩散时间 <math><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，等于一次扩散时间 <math><semantics><mrow><mi>t</mi><mo>+</mo><mi>s</mi></mrow><annotation encoding="application/x-tex">t+s</annotation></semantics></math>。这正是后文算子半群性质的具体版本。</p>
+  </section>
+
+  <section>
+    <h2>四、波动方程：能量守恒与有限传播速度</h2>
+
+    <p>一维整线上的 Cauchy 问题为</p>
+    <math class="display"><semantics><mrow><msub><mi>u</mi><mrow><mi>t</mi><mi>t</mi></mrow></msub><mo>−</mo><msup><mi>c</mi><mn>2</mn></msup><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>=</mo><mn>0</mn><mo>,</mo><mspace width=".7em"/><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>,</mo><mspace width=".7em"/><msub><mi>u</mi><mi>t</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mn>0</mn><mo stretchy="false">)</mo><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">u_{tt}-c^2u_{xx}=0,\quad u(x,0)=f(x),\quad u_t(x,0)=g(x).</annotation></semantics></math>
+
+    <div class="theorem">
+      <h3>定理 4：d’Alembert 公式</h3>
+      <p>对足够光滑的数据，解为</p>
+      <math class="display"><semantics><mrow><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo>−</mo><mi>c</mi><mi>t</mi><mo stretchy="false">)</mo><mo>+</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo>+</mo><mi>c</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><mn>2</mn></mfrac><mo>+</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>c</mi></mrow></mfrac><msubsup><mo>∫</mo><mrow><mi>x</mi><mo>−</mo><mi>c</mi><mi>t</mi></mrow><mrow><mi>x</mi><mo>+</mo><mi>c</mi><mi>t</mi></mrow></msubsup><mi>g</mi><mo stretchy="false">(</mo><mi>s</mi><mo stretchy="false">)</mo><mi>d</mi><mi>s</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">u(x,t)=\frac{f(x-ct)+f(x+ct)}2+\frac1{2c}\int_{x-ct}^{x+ct}g(s)\,ds.</annotation></semantics></math>
+    </div>
+
+    <h3>公式从哪里来：双曲算子的因式分解</h3>
+    <p>一维波动算子可以分解为两个一阶输运算子：</p>
+    <math class="display"><semantics><mrow><msubsup><mi>∂</mi><mi>t</mi><mn>2</mn></msubsup><mo>−</mo><msup><mi>c</mi><mn>2</mn></msup><msubsup><mi>∂</mi><mi>x</mi><mn>2</mn></msubsup><mo>=</mo><mo stretchy="false">(</mo><msub><mi>∂</mi><mi>t</mi></msub><mo>−</mo><mi>c</mi><msub><mi>∂</mi><mi>x</mi></msub><mo stretchy="false">)</mo><mo stretchy="false">(</mo><msub><mi>∂</mi><mi>t</mi></msub><mo>+</mo><mi>c</mi><msub><mi>∂</mi><mi>x</mi></msub><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">\partial_t^2-c^2\partial_x^2=(\partial_t-c\partial_x)(\partial_t+c\partial_x).</annotation></semantics></math>
+    <p>因此一般解可拆为一列向右传播和一列向左传播的波：</p>
+    <math class="display"><semantics><mrow><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mi>F</mi><mo stretchy="false">(</mo><mi>x</mi><mo>−</mo><mi>c</mi><mi>t</mi><mo stretchy="false">)</mo><mo>+</mo><mi>G</mi><mo stretchy="false">(</mo><mi>x</mi><mo>+</mo><mi>c</mi><mi>t</mi><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">u(x,t)=F(x-ct)+G(x+ct).</annotation></semantics></math>
+    <p>由初始位置得到 <math><semantics><mrow><mi>F</mi><mo>+</mo><mi>G</mi><mo>=</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">F+G=f</annotation></semantics></math>；由初始速度得到 <math><semantics><mrow><mo>−</mo><mi>c</mi><msup><mi>F</mi><mo>′</mo></msup><mo>+</mo><mi>c</mi><msup><mi>G</mi><mo>′</mo></msup><mo>=</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">-cF'+cG'=g</annotation></semantics></math>。解这两个关系并积分，就得到 d’Alembert 公式。双曲型的“特征方向”在这里正是 <math><semantics><mrow><mi>x</mi><mo>−</mo><mi>c</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">x-ct</annotation></semantics></math> 与 <math><semantics><mrow><mi>x</mi><mo>+</mo><mi>c</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">x+ct</annotation></semantics></math> 保持不变的两族直线。</p>
+
+    <p>点 <math><semantics><mrow><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(x,t)</annotation></semantics></math> 的解只依赖初始区间 <math><semantics><mrow><mo stretchy="false">[</mo><mi>x</mi><mo>−</mo><mi>c</mi><mi>t</mi><mo>,</mo><mi>x</mi><mo>+</mo><mi>c</mi><mi>t</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[x-ct,x+ct]</annotation></semantics></math> 上的数据，称为依赖区域。反过来，一处局部扰动在时间 <math><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> 后只能影响距离不超过 <math><semantics><mrow><mi>c</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">ct</annotation></semantics></math> 的位置。这就是有限传播速度。</p>
+
+    <div class="theorem">
+      <h3>命题 5：波动能量守恒</h3>
+      <p>对衰减足够快的整线解，或满足使边界通量消失的有界区间解，定义</p>
+      <math class="display"><semantics><mrow><mi>E</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>∫</mo><mfenced><mrow><msubsup><mi>u</mi><mi>t</mi><mn>2</mn></msubsup><mo>+</mo><msup><mi>c</mi><mn>2</mn></msup><msubsup><mi>u</mi><mi>x</mi><mn>2</mn></msubsup></mrow></mfenced><mi>d</mi><mi>x</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">E(t)=\frac12\int\left(u_t^2+c^2u_x^2\right)\,dx.</annotation></semantics></math>
+      <p>则 <math><semantics><mrow><msup><mi>E</mi><mo>′</mo></msup><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">E'(t)=0</annotation></semantics></math>。</p>
+    </div>
+
+    <p>推导与热方程相似，但结果不同。方程乘以 <math><semantics><msub><mi>u</mi><mi>t</mi></msub><annotation encoding="application/x-tex">u_t</annotation></semantics></math> 后，利用</p>
+    <math class="display"><semantics><mrow><msub><mi>u</mi><mi>t</mi></msub><msub><mi>u</mi><mrow><mi>t</mi><mi>t</mi></mrow></msub><mo>=</mo><mfrac><mi>∂</mi><mrow><mi>∂</mi><mi>t</mi></mrow></mfrac><mfrac><msubsup><mi>u</mi><mi>t</mi><mn>2</mn></msubsup><mn>2</mn></mfrac><mo>,</mo><mspace width="1em"/><msub><mi>u</mi><mi>t</mi></msub><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>=</mo><mfrac><mi>∂</mi><mrow><mi>∂</mi><mi>x</mi></mrow></mfrac><mo stretchy="false">(</mo><msub><mi>u</mi><mi>t</mi></msub><msub><mi>u</mi><mi>x</mi></msub><mo stretchy="false">)</mo><mo>−</mo><mfrac><mi>∂</mi><mrow><mi>∂</mi><mi>t</mi></mrow></mfrac><mfrac><msubsup><mi>u</mi><mi>x</mi><mn>2</mn></msubsup><mn>2</mn></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">u_tu_{tt}=\partial_t\frac{u_t^2}{2},\qquad u_tu_{xx}=\partial_x(u_tu_x)-\partial_t\frac{u_x^2}{2},</annotation></semantics></math>
+    <p>积分后空间散度项成为边界能量通量。如果边界通量消失，剩余两项正好组成 <math><semantics><msup><mi>E</mi><mo>′</mo></msup><annotation encoding="application/x-tex">E'</annotation></semantics></math>，故能量守恒。热方程的一阶时间导数产生耗散，波动方程的二阶时间导数与空间梯度共同组成守恒能量。两者在形式上只差一个时间导数，长期行为却根本不同。</p>
+
+    <table>
+      <thead>
+        <tr><th>比较</th><th>热方程</th><th>波动方程</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>时间阶数</td><td>一阶，需要一个初值</td><td>二阶，需要位置与速度两个初值</td></tr>
+        <tr><td>能量</td><td>递减，表现为耗散</td><td>守恒，能量在动能与势能间转换</td></tr>
+        <tr><td>传播</td><td>数学上立即影响整个空间，但远处影响极小</td><td>有限速度，存在清晰的影响锥</td></tr>
+        <tr><td>平滑</td><td>正时间后强烈平滑高频</td><td>通常传播已有正则性，不自动抹平奇性</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="check">
+    <h2>局部自检二</h2>
+    <ol>
+      <li>为什么热方程的高频模态比低频模态衰减更快？</li>
+      <li>热方程能量估计怎样推出唯一性？</li>
+      <li>波动方程为什么要给两个初值，而热方程只给一个？</li>
+    </ol>
+    <details>
+      <summary>答案</summary>
+      <ol>
+        <li>第 <math><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math> 个模态的衰减率与空间特征值成正比，而该特征值按 <math><semantics><msup><mi>n</mi><mn>2</mn></msup><annotation encoding="application/x-tex">n^2</annotation></semantics></math> 增长。</li>
+        <li>两解之差满足零初值的齐次方程；其平方积分能量从零出发且不能增长，故恒为零。</li>
+        <li>时间方向上，波动方程是二阶演化方程，像二阶 ODE 一样需要初始位置与初始速度；热方程是一阶演化方程。</li>
+      </ol>
+    </details>
+  </section>
+
+  <section>
+    <h2>五、Laplace 与 Poisson 方程：边界怎样控制内部</h2>
+
+    <div class="definition">
+      <h3>定义 2：调和函数与 Dirichlet 问题</h3>
+      <p>若 <math><semantics><mrow><mi>u</mi><mo>∈</mo><msup><mi>C</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">u\in C^2(\Omega)</annotation></semantics></math> 且 <math><semantics><mrow><mi>Δ</mi><mi>u</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta u=0</annotation></semantics></math>，就称 <math><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math> 是调和函数（harmonic function）。给定边界值 <math><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>，Dirichlet 问题是</p>
+      <math class="display"><semantics><mrow><mo>−</mo><mi>Δ</mi><mi>u</mi><mo>=</mo><mi>f</mi><mspace width=".5em"/><mtext>于</mtext><mspace width=".5em"/><mi>Ω</mi><mo>,</mo><mspace width="1em"/><mi>u</mi><mo>=</mo><mi>g</mi><mspace width=".5em"/><mtext>于</mtext><mspace width=".5em"/><mi>∂</mi><mi>Ω</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">-\Delta u=f\ \text{in }\Omega,\qquad u=g\ \text{on }\partial\Omega.</annotation></semantics></math>
+    </div>
+
+    <p>它没有时间变量，描述稳态：静电势、稳态温度、不可压无旋流的势函数等。它也可以从热方程得到：若温度不再随时间变化，令 <math><semantics><mrow><msub><mi>u</mi><mi>t</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">u_t=0</annotation></semantics></math>，就得到 Laplace 或带源项的 Poisson 方程。</p>
+
+    <div class="theorem">
+      <h3>定理 6：最大值原理与唯一性</h3>
+      <p>设 <math><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math> 有界且连通，<math><semantics><mrow><mi>u</mi><mo>∈</mo><msup><mi>C</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo><mo>∩</mo><mi>C</mi><mo stretchy="false">(</mo><mover><mi>Ω</mi><mo>¯</mo></mover><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">u\in C^2(\Omega)\cap C(\overline\Omega)</annotation></semantics></math> 且 <math><semantics><mrow><mi>Δ</mi><mi>u</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta u=0</annotation></semantics></math>。则</p>
+      <math class="display"><semantics><mrow><munder><mi>max</mi><mover><mi>Ω</mi><mo>¯</mo></mover></munder><mi>u</mi><mo>=</mo><munder><mi>max</mi><mrow><mi>∂</mi><mi>Ω</mi></mrow></munder><mi>u</mi><mo>,</mo><mspace width="1em"/><munder><mi>min</mi><mover><mi>Ω</mi><mo>¯</mo></mover></munder><mi>u</mi><mo>=</mo><munder><mi>min</mi><mrow><mi>∂</mi><mi>Ω</mi></mrow></munder><mi>u</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">\max_{\overline\Omega}u=\max_{\partial\Omega}u,\qquad \min_{\overline\Omega}u=\min_{\partial\Omega}u.</annotation></semantics></math>
+      <p>若内部达到最大值或最小值，则 <math><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math> 必为常数。由此 Dirichlet 问题至多有一个经典解。</p>
+    </div>
+
+    <p><strong>证明机制。</strong>若一个二次可微函数在内部点取得局部最大值，那么该点梯度为零、Hessian 半负定，因此 <math><semantics><mrow><mi>Δ</mi><mi>u</mi><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta u\le0</annotation></semantics></math>。但对调和函数只有非严格等号，单靠这一点还不能排除平台。标准办法是加入一个很小的严格凸扰动，例如在包含区域的坐标球中考察</p>
+    <math class="display"><semantics><mrow><msub><mi>u</mi><mi>ε</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>+</mo><mi>ε</mi><mo>|</mo><mi>x</mi><msup><mo>|</mo><mn>2</mn></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">u_\varepsilon(x)=u(x)+\varepsilon|x|^2,</annotation></semantics></math>
+    <p>于是 <math><semantics><mrow><mi>Δ</mi><msub><mi>u</mi><mi>ε</mi></msub><mo>=</mo><mn>2</mn><mi>n</mi><mi>ε</mi><mo>></mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta u_\varepsilon=2n\varepsilon&gt;0</annotation></semantics></math>，它不可能在内部取得最大值。让 <math><semantics><mrow><mi>ε</mi><mo>↓</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\varepsilon\downarrow0</annotation></semantics></math> 得到弱最大值原理；再结合连通性可得到强最大值原理。这展示了 PDE 证明中常见的“先造严格不等式，再取极限”手法。</p>
+
+    <p><strong>唯一性证明。</strong>若 <math><semantics><msub><mi>u</mi><mn>1</mn></msub><annotation encoding="application/x-tex">u_1</annotation></semantics></math>、<math><semantics><msub><mi>u</mi><mn>2</mn></msub><annotation encoding="application/x-tex">u_2</annotation></semantics></math> 是相同数据的两个解，令 <math><semantics><mrow><mi>w</mi><mo>=</mo><msub><mi>u</mi><mn>1</mn></msub><mo>−</mo><msub><mi>u</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">w=u_1-u_2</annotation></semantics></math>，则 <math><semantics><mrow><mi>Δ</mi><mi>w</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta w=0</annotation></semantics></math> 且边界上 <math><semantics><mrow><mi>w</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w=0</annotation></semantics></math>。最大值原理给 <math><semantics><mrow><mi>w</mi><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w\le0</annotation></semantics></math>，再对 <math><semantics><mrow><mo>−</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">-w</annotation></semantics></math> 应用一次得 <math><semantics><mrow><mi>w</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w\ge0</annotation></semantics></math>，故 <math><semantics><mrow><mi>w</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w=0</annotation></semantics></math>。</p>
+
+    <h3>平均值性质说明“内部没有独立尖峰”</h3>
+    <p>调和函数在任意闭球内部中心的值，等于球面上函数值的平均，也等于球内平均。它把局部微分条件 <math><semantics><mrow><mi>Δ</mi><mi>u</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\Delta u=0</annotation></semantics></math> 转成非局部平均性质，并直接解释最大值原理：一个平均值若等于周围数值的最大值，周围所有数值都只能等于它。</p>
+
+    <p>与输运、波动不同，椭圆方程没有沿某条时间方向推进的自然因果结构；边界整体共同约束内部。也正因此，给错数据类型会破坏适定性：对 Laplace 方程同时任意指定边界函数值和法向导数通常过度决定，只指定过少数据又可能不唯一。</p>
+  </section>
+
+  <section>
+    <h2>六、适定性：PDE 版的存在、唯一与连续依赖</h2>
+
+    <div class="definition">
+      <h3>定义 3：Hadamard 适定性</h3>
+      <p>一个给定数据类与解空间中的问题若满足：</p>
+      <ol>
+        <li>对每组允许数据，解存在；</li>
+        <li>解唯一；</li>
+        <li>解连续依赖数据，即数据的小扰动在指定范数下只造成解的小扰动；</li>
+      </ol>
+      <p>就称该问题适定。缺少任一条则称不适定（ill-posed）。</p>
+    </div>
+
+    <p>这个定义看似与你学过的 ODE 一样，但 PDE 多了两个关键层次。第一，必须声明数据和解的函数空间；同一方程在不同正则性等级下可能有不同答案。第二，边界条件必须与方程类型匹配。比如反向热方程形式上可以把每个衰减模态倒推，但高频要乘上迅速增长的指数，任意微小的高频测量噪声都会被巨大放大，因此连续依赖失败。</p>
+
+    <h3>先验估计是适定性的主轴</h3>
+    <p>理想目标是证明形如</p>
+    <math class="display"><semantics><mrow><mo>‖</mo><mi>u</mi><mo>‖</mo><msub><mo> </mo><mi>X</mi></msub><mo>≤</mo><mi>C</mi><mo stretchy="false">(</mo><mo>‖</mo><mtext>方程右端</mtext><mo>‖</mo><msub><mo> </mo><mi>Y</mi></msub><mo>+</mo><mo>‖</mo><mtext>初边值数据</mtext><mo>‖</mo><msub><mo> </mo><mi>Z</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\|u\|_X\le C\bigl(\|\text{forcing}\|_Y+\|\text{initial/boundary data}\|_Z\bigr)</annotation></semantics></math>
+    <p>的估计，其中常数 <math><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math> 不依赖具体解。把估计用于两解之差，往往得到唯一性和连续依赖；把近似解代入估计，则可证明近似序列收敛并构造存在性。于是“能量法”不只是一种物理直觉，而是把存在、唯一、稳定连成一体的分析技术。</p>
+
+    <p>常见构造法包括 Fourier 变换或级数、Green 函数、变分法、Galerkin 逼近、压缩映射和半群方法。不同方法的共同结构是：先在容易处理的有限维或光滑层面构造近似，再用与近似尺度无关的先验估计取极限。</p>
+  </section>
+
+  <section>
+    <h2>七、经典解不够时：弱导数与弱解</h2>
+
+    <p>Burgers 方程会形成激波；Poisson 方程的数据若只有平方可积，也未必产生二阶连续可微解。强行要求经典导数会把许多自然极限排除在外。弱解的核心不是“降低标准”，而是找到在极限过程下封闭、仍保留方程结构的解概念。</p>
+
+    <div class="definition">
+      <h3>定义 4：弱导数与 Sobolev 空间</h3>
+      <p>设 <math><semantics><mrow><mi>u</mi><mo>∈</mo><msubsup><mi>L</mi><mtext>loc</mtext><mn>1</mn></msubsup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">u\in L^1_{\mathrm{loc}}(\Omega)</annotation></semantics></math>。若存在 <math><semantics><mrow><mi>v</mi><mo>∈</mo><msubsup><mi>L</mi><mtext>loc</mtext><mn>1</mn></msubsup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">v\in L^1_{\mathrm{loc}}(\Omega)</annotation></semantics></math>，使对每个测试函数 <math><semantics><mrow><mi>φ</mi><mo>∈</mo><msubsup><mi>C</mi><mi>c</mi><mo>∞</mo></msubsup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\phi\in C_c^\infty(\Omega)</annotation></semantics></math> 都有</p>
+      <math class="display"><semantics><mrow><msub><mo>∫</mo><mi>Ω</mi></msub><mi>u</mi><msub><mi>∂</mi><mi>i</mi></msub><mi>φ</mi><mi>d</mi><mi>x</mi><mo>=</mo><mo>−</mo><msub><mo>∫</mo><mi>Ω</mi></msub><mi>v</mi><mi>φ</mi><mi>d</mi><mi>x</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">\int_\Omega u\,\partial_i\phi\,dx=-\int_\Omega v\phi\,dx,</annotation></semantics></math>
+      <p>则称 <math><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math> 是 <math><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math> 的第 <math><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> 个弱偏导。Sobolev 空间（Sobolev space）</p>
+      <math class="display"><semantics><mrow><msup><mi>H</mi><mn>1</mn></msup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">{</mo><mi>u</mi><mo>∈</mo><msup><mi>L</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo><mo>:</mo><msub><mi>∂</mi><mi>i</mi></msub><mi>u</mi><mo>∈</mo><msup><mi>L</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo><mspace width=".4em"/><mtext>对所有</mtext><mspace width=".4em"/><mi>i</mi><mo stretchy="false">}</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">H^1(\Omega)=\{u\in L^2(\Omega):\partial_i u\in L^2(\Omega)\ \text{for all }i\}.</annotation></semantics></math>
+      <p><math><semantics><mrow><msubsup><mi>H</mi><mn>0</mn><mn>1</mn></msubsup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">H_0^1(\Omega)</annotation></semantics></math> 定义为 <math><semantics><mrow><msubsup><mi>C</mi><mi>c</mi><mo>∞</mo></msubsup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">C_c^\infty(\Omega)</annotation></semantics></math> 在 <math><semantics><msup><mi>H</mi><mn>1</mn></msup><annotation encoding="application/x-tex">H^1</annotation></semantics></math> 范数下的闭包；在合适边界正则性下，它表达“边界迹为零”。</p>
+    </div>
+
+    <h3>例子：尖点函数有弱导数，却没有处处经典导数</h3>
+    <p>令 <math><semantics><mrow><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mo>|</mo><mi>x</mi><mo>|</mo></mrow><annotation encoding="application/x-tex">u(x)=|x|</annotation></semantics></math>。它在原点不可微，但函数</p>
+    <math class="display"><semantics><mrow><mi>v</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mfenced open="{" close=""><mtable><mtr><mtd><mo>−</mo><mn>1</mn><mo>,</mo></mtd><mtd><mi>x</mi><mo>&lt;</mo><mn>0</mn><mo>,</mo></mtd></mtr><mtr><mtd><mn>1</mn><mo>,</mo></mtd><mtd><mi>x</mi><mo>></mo><mn>0</mn></mtd></mtr></mtable></mfenced></mrow><annotation encoding="application/x-tex">v(x)=\begin{cases}-1,&amp;x&lt;0,\\1,&amp;x&gt;0\end{cases}</annotation></semantics></math>
+    <p>是它的弱导数。因为对任意紧支撑光滑函数 <math><semantics><mi>φ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>，分别在负、正半轴分部积分，原点产生的两个边界项恰好抵消，得到</p>
+    <math class="display"><semantics><mrow><msubsup><mo>∫</mo><mrow><mo>−</mo><mo>∞</mo></mrow><mo>∞</mo></msubsup><mo>|</mo><mi>x</mi><mo>|</mo><msup><mi>φ</mi><mo>′</mo></msup><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mi>d</mi><mi>x</mi><mo>=</mo><mo>−</mo><msubsup><mo>∫</mo><mrow><mo>−</mo><mo>∞</mo></mrow><mo>∞</mo></msubsup><mi>v</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mi>φ</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mi>d</mi><mi>x</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">\int_{-\infty}^{\infty}|x|\phi'(x)\,dx=-\int_{-\infty}^{\infty}v(x)\phi(x)\,dx.</annotation></semantics></math>
+    <p>单个点上的不可微不会破坏积分恒等式。相反，阶跃函数的一阶分布导数是原点的 Dirac 质量，并不是普通 <math><semantics><msup><mi>L</mi><mn>2</mn></msup><annotation encoding="application/x-tex">L^2</annotation></semantics></math> 函数，所以它不属于 <math><semantics><msup><mi>H</mi><mn>1</mn></msup><annotation encoding="application/x-tex">H^1</annotation></semantics></math>。不同弱空间仍然保留了对奇性强度的区分，并非所有不连续对象都被无条件接纳。</p>
+
+    <h3>Poisson 方程的弱形式是怎样来的</h3>
+    <p>考虑齐次 Dirichlet 问题</p>
+    <math class="display"><semantics><mrow><mo>−</mo><mi>Δ</mi><mi>u</mi><mo>=</mo><mi>f</mi><mspace width=".5em"/><mtext>于</mtext><mspace width=".5em"/><mi>Ω</mi><mo>,</mo><mspace width="1em"/><mi>u</mi><mo>=</mo><mn>0</mn><mspace width=".5em"/><mtext>于</mtext><mspace width=".5em"/><mi>∂</mi><mi>Ω</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">-\Delta u=f\ \text{in }\Omega,\qquad u=0\ \text{on }\partial\Omega.</annotation></semantics></math>
+    <p>先假设 <math><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math> 光滑，乘任意零边界测试函数 <math><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math> 并分部积分：</p>
+    <math class="display"><semantics><mrow><msub><mo>∫</mo><mi>Ω</mi></msub><mo stretchy="false">(</mo><mo>−</mo><mi>Δ</mi><mi>u</mi><mo stretchy="false">)</mo><mi>v</mi><mi>d</mi><mi>x</mi><mo>=</mo><msub><mo>∫</mo><mi>Ω</mi></msub><mi>∇</mi><mi>u</mi><mo>·</mo><mi>∇</mi><mi>v</mi><mi>d</mi><mi>x</mi><mo>=</mo><msub><mo>∫</mo><mi>Ω</mi></msub><mi>f</mi><mi>v</mi><mi>d</mi><mi>x</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">\int_\Omega(-\Delta u)v\,dx=\int_\Omega\nabla u\cdot\nabla v\,dx=\int_\Omega fv\,dx.</annotation></semantics></math>
+    <p>中间表达式只需要 <math><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math> 有一阶平方可积弱导数，不再需要二阶经典导数。因此定义：若 <math><semantics><mrow><mi>u</mi><mo>∈</mo><msubsup><mi>H</mi><mn>0</mn><mn>1</mn></msubsup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">u\in H_0^1(\Omega)</annotation></semantics></math> 且对所有 <math><semantics><mrow><mi>v</mi><mo>∈</mo><msubsup><mi>H</mi><mn>0</mn><mn>1</mn></msubsup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">v\in H_0^1(\Omega)</annotation></semantics></math> 都有上述积分等式，就称 <math><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math> 为弱解。</p>
+
+    <div class="theorem">
+      <h3>定理 7：Lax–Milgram 定理及其对 Poisson 方程的意义</h3>
+      <p>设 <math><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math> 是实 Hilbert 空间，双线性型 <math><semantics><mrow><mi>a</mi><mo>:</mo><mi>H</mi><mo>×</mo><mi>H</mi><mo>→</mo><mi>R</mi></mrow><annotation encoding="application/x-tex">a:H\times H\to\mathbb R</annotation></semantics></math> 连续，即存在 <math><semantics><mrow><mi>M</mi><mo>></mo><mn>0</mn></mrow><annotation encoding="application/x-tex">M&gt;0</annotation></semantics></math> 使</p>
+      <math class="display"><semantics><mrow><mo>|</mo><mi>a</mi><mo stretchy="false">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="false">)</mo><mo>|</mo><mo>≤</mo><mi>M</mi><mo>‖</mo><mi>u</mi><mo>‖</mo><mo>‖</mo><mi>v</mi><mo>‖</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">|a(u,v)|\le M\|u\|\|v\|,</annotation></semantics></math>
+      <p>并强制（coercive），即存在 <math><semantics><mrow><mi>α</mi><mo>></mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\alpha&gt;0</annotation></semantics></math> 使 <math><semantics><mrow><mi>a</mi><mo stretchy="false">(</mo><mi>u</mi><mo>,</mo><mi>u</mi><mo stretchy="false">)</mo><mo>≥</mo><mi>α</mi><mo>‖</mo><mi>u</mi><msup><mo>‖</mo><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">a(u,u)\ge\alpha\|u\|^2</annotation></semantics></math>。则对每个连续线性泛函 <math><semantics><mrow><mi>F</mi><mo>∈</mo><msup><mi>H</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">F\in H^*</annotation></semantics></math>，存在唯一 <math><semantics><mrow><mi>u</mi><mo>∈</mo><mi>H</mi></mrow><annotation encoding="application/x-tex">u\in H</annotation></semantics></math> 使</p>
+      <math class="display"><semantics><mrow><mi>a</mi><mo stretchy="false">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="false">)</mo><mo>=</mo><mi>F</mi><mo stretchy="false">(</mo><mi>v</mi><mo stretchy="false">)</mo><mspace width=".5em"/><mtext>对所有</mtext><mspace width=".5em"/><mi>v</mi><mo>∈</mo><mi>H</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">a(u,v)=F(v)\quad\text{for all }v\in H.</annotation></semantics></math>
+    </div>
+
+    <p>对 Poisson 方程，取 <math><semantics><mrow><mi>H</mi><mo>=</mo><msubsup><mi>H</mi><mn>0</mn><mn>1</mn></msubsup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">H=H_0^1(\Omega)</annotation></semantics></math>，并令</p>
+    <math class="display"><semantics><mrow><mi>a</mi><mo stretchy="false">(</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mo>∫</mo><mi>Ω</mi></msub><mi>∇</mi><mi>u</mi><mo>·</mo><mi>∇</mi><mi>v</mi><mi>d</mi><mi>x</mi><mo>,</mo><mspace width="1em"/><mi>F</mi><mo stretchy="false">(</mo><mi>v</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mo>∫</mo><mi>Ω</mi></msub><mi>f</mi><mi>v</mi><mi>d</mi><mi>x</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">a(u,v)=\int_\Omega\nabla u\cdot\nabla v\,dx,\qquad F(v)=\int_\Omega fv\,dx.</annotation></semantics></math>
+    <p>Cauchy–Schwarz 不等式给连续性；Poincaré 不等式使梯度范数控制完整的 <math><semantics><msup><mi>H</mi><mn>1</mn></msup><annotation encoding="application/x-tex">H^1</annotation></semantics></math> 范数，从而给强制性；合适的 <math><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math> 使 <math><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math> 连续。于是得到唯一弱解及估计。这是泛函分析介入 PDE 的标准入口：一个微分方程被转化为 Hilbert 空间中的线性方程。</p>
+
+    <h3>同一个弱解也是能量最小化者</h3>
+    <p>在 <math><semantics><mrow><msubsup><mi>H</mi><mn>0</mn><mn>1</mn></msubsup><mo stretchy="false">(</mo><mi>Ω</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">H_0^1(\Omega)</annotation></semantics></math> 上定义能量泛函</p>
+    <math class="display"><semantics><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>v</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msub><mo>∫</mo><mi>Ω</mi></msub><mo>|</mo><mi>∇</mi><mi>v</mi><msup><mo>|</mo><mn>2</mn></msup><mi>d</mi><mi>x</mi><mo>−</mo><msub><mo>∫</mo><mi>Ω</mi></msub><mi>f</mi><mi>v</mi><mi>d</mi><mi>x</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">J(v)=\frac12\int_\Omega|\nabla v|^2\,dx-\int_\Omega fv\,dx.</annotation></semantics></math>
+    <p>若 <math><semantics><mi>u</mi><annotation encoding="application/x-tex">u</annotation></semantics></math> 是极小点，对任意方向 <math><semantics><mi>φ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math> 考察 <math><semantics><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>u</mi><mo>+</mo><mi>ε</mi><mi>φ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">J(u+\varepsilon\phi)</annotation></semantics></math>，在 <math><semantics><mrow><mi>ε</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\varepsilon=0</annotation></semantics></math> 的导数必须为零：</p>
+    <math class="display"><semantics><mrow><mn>0</mn><mo>=</mo><mfrac><mi>d</mi><mrow><mi>d</mi><mi>ε</mi></mrow></mfrac><mi>J</mi><mo stretchy="false">(</mo><mi>u</mi><mo>+</mo><mi>ε</mi><mi>φ</mi><mo stretchy="false">)</mo><msub><mo>|</mo><mrow><mi>ε</mi><mo>=</mo><mn>0</mn></mrow></msub><mo>=</mo><msub><mo>∫</mo><mi>Ω</mi></msub><mi>∇</mi><mi>u</mi><mo>·</mo><mi>∇</mi><mi>φ</mi><mi>d</mi><mi>x</mi><mo>−</mo><msub><mo>∫</mo><mi>Ω</mi></msub><mi>f</mi><mi>φ</mi><mi>d</mi><mi>x</mi><mo>.</mo></mrow><annotation encoding="application/x-tex">0=\frac d{d\varepsilon}J(u+\varepsilon\phi)\big|_{\varepsilon=0}=\int_\Omega\nabla u\cdot\nabla\phi\,dx-\int_\Omega f\phi\,dx.</annotation></semantics></math>
+    <p>这正是弱形式。反过来，若弱形式成立，则对任意 <math><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math> 可展开验证</p>
+    <math class="display"><semantics><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>u</mi><mo>+</mo><mi>w</mi><mo stretchy="false">)</mo><mo>−</mo><mi>J</mi><mo stretchy="false">(</mo><mi>u</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msub><mo>∫</mo><mi>Ω</mi></msub><mo>|</mo><mi>∇</mi><mi>w</mi><msup><mo>|</mo><mn>2</mn></msup><mi>d</mi><mi>x</mi><mo>≥</mo><mn>0</mn><mo>.</mo></mrow><annotation encoding="application/x-tex">J(u+w)-J(u)=\frac12\int_\Omega|\nabla w|^2\,dx\ge0.</annotation></semantics></math>
+    <p>所以弱解、Lax–Milgram 给出的抽象解、能量泛函的唯一极小点是同一个对象。PDE 中的“方程法”和“变分法”由此接上。</p>
+  </section>
+
+  <section class="check">
+    <h2>局部自检三</h2>
+    <ol>
+      <li>Poisson 方程弱形式为什么只要求一阶弱导数？</li>
+      <li>弱解中的“弱”主要弱在哪里，保留了什么？</li>
+      <li>Lax–Milgram 定理同时给出哪两项适定性内容？连续依赖从哪里来？</li>
+    </ol>
+    <details>
+      <summary>答案</summary>
+      <ol>
+        <li>分部积分把二阶导数从未知函数转移走，留下梯度内积。</li>
+        <li>减弱的是逐点经典可微性；保留的是对所有测试函数成立的积分恒等式、边界结构和能量估计。</li>
+        <li>直接给存在与唯一；强制性还产生解范数受数据泛函范数控制的估计，从而得到连续依赖。</li>
+      </ol>
+    </details>
+  </section>
+
+  <section>
+    <h2>八、PDE 也是动力系统，只是状态变成了函数</h2>
+
+    <p>在热方程中，固定一个时刻 <math><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>，状态不是有限维向量，而是整个温度分布 <math><semantics><mrow><mi>x</mi><mo>↦</mo><mi>u</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">x\mapsto u(x,t)</annotation></semantics></math>。形式上可写成抽象 ODE</p>
+    <math class="display"><semantics><mrow><mfrac><mi>d</mi><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mi>u</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mi>A</mi><mi>u</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>,</mo><mspace width="1em"/><mi>A</mi><mo>=</mo><mi>κ</mi><mi>Δ</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">\frac d{dt}u(t)=Au(t),\qquad A=\kappa\Delta,</annotation></semantics></math>
+    <p>但现在 <math><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math> 是函数空间上的无界算子，定义域包含边界条件与正则性要求。有限维矩阵指数 <math><semantics><msup><mi>e</mi><mrow><mi>t</mi><mi>A</mi></mrow></msup><annotation encoding="application/x-tex">e^{tA}</annotation></semantics></math> 的角色由强连续半群（strongly continuous semigroup）承担：</p>
+    <math class="display"><semantics><mrow><mi>u</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mi>S</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><msub><mi>u</mi><mn>0</mn></msub><mo>,</mo><mspace width="1em"/><mi>S</mi><mo stretchy="false">(</mo><mi>t</mi><mo>+</mo><mi>s</mi><mo stretchy="false">)</mo><mo>=</mo><mi>S</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mi>S</mi><mo stretchy="false">(</mo><mi>s</mi><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">u(t)=S(t)u_0,\qquad S(t+s)=S(t)S(s).</annotation></semantics></math>
+
+    <p>这与前一篇的流复合律完全同构，但出现了一个差别：热方程只能自然向未来演化，反向通常不适定，所以它形成半流或半群，不一定是可逆的群。波动方程若把状态写成 <math><semantics><mrow><mo stretchy="false">(</mo><mi>u</mi><mo>,</mo><msub><mi>u</mi><mi>t</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(u,u_t)</annotation></semantics></math>，则更像守恒的可逆动力系统。</p>
+
+    <p>加入非线性反应项得到反应扩散方程</p>
+    <math class="display"><semantics><mrow><msub><mi>u</mi><mi>t</mi></msub><mo>=</mo><mi>κ</mi><mi>Δ</mi><mi>u</mi><mo>+</mo><mi>F</mi><mo stretchy="false">(</mo><mi>u</mi><mo stretchy="false">)</mo><mo>.</mo></mrow><annotation encoding="application/x-tex">u_t=\kappa\Delta u+F(u).</annotation></semantics></math>
+    <p>常数稳态由 ODE 平衡点决定，空间耦合又可能产生传播前沿、图案与无限维分岔。于是动力系统与 PDE 并不是两条分开的进阶路线：PDE 提供无限维状态空间，动力系统提供研究其稳态、稳定性、吸引子和分岔的语言。</p>
+  </section>
+
+  <section>
+    <h2>九、PDE 的主要内容地图</h2>
+    <table>
+      <thead>
+        <tr><th>方向</th><th>核心对象</th><th>主要问题</th><th>典型工具</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>一阶方程与守恒律</td><td>输运、Hamilton–Jacobi、非线性守恒律</td><td>特征线、激波、弱解唯一性</td><td>特征线、熵条件、黏性解</td></tr>
+        <tr><td>椭圆方程</td><td>Laplace、Poisson、一般椭圆算子</td><td>边值问题、正则性、最大值原理</td><td>变分法、Green 函数、椭圆估计</td></tr>
+        <tr><td>抛物方程</td><td>热方程、反应扩散、非线性扩散</td><td>平滑、耗散、长时间行为</td><td>能量估计、最大值原理、半群</td></tr>
+        <tr><td>双曲方程</td><td>波动方程、双曲方程组</td><td>有限传播、奇性传播、散射</td><td>能量法、特征锥、Fourier 分析</td></tr>
+        <tr><td>流体与几何 PDE</td><td>Euler、Navier–Stokes、曲率流等</td><td>非线性、尺度、爆破与整体正则性</td><td>先验估计、紧性、调和分析、几何方法</td></tr>
+      </tbody>
+    </table>
+
+    <h3>本篇需要掌握</h3>
+    <ul>
+      <li>PDE 问题由方程、区域、初边值条件和解空间共同组成；</li>
+      <li>特征线把一阶 PDE 沿曲线化成 ODE，非线性可使特征相交并产生激波；</li>
+      <li>热方程耗散且平滑，波动方程守恒且有限速传播，Laplace 方程由边界整体约束内部；</li>
+      <li>适定性包含存在、唯一和连续依赖，先验估计是三者的共同支点；</li>
+      <li>弱形式通过分部积分转移导数，使自然函数空间中的极限仍满足方程；</li>
+      <li>时间依赖 PDE 可看作函数空间中的动力系统。</li>
+    </ul>
+
+    <h3>本篇只需识别</h3>
+    <p>熵解、黏性解、Green 函数、Galerkin 逼近、算子半群、椭圆正则性和散射理论在这里构成后续路线图，不要求现在掌握完整定义。若按依赖顺序继续学习，可先学一阶特征线与三类线性方程，再学 Sobolev 空间和弱解，之后进入线性算子理论与非线性 PDE。</p>
+  </section>
+
+  <section>
+    <h2>结语：从有限维演化到空间结构</h2>
+    <p>从 ODE 走向 PDE，保留下来的是初值问题、唯一性、连续依赖、能量与稳定性；新增的是空间变量带来的几何结构：</p>
+    <ul>
+      <li>空间导数决定信息沿特征线传播、扩散或形成波；</li>
+      <li>边界不是附属条件，而是问题定义的一部分；</li>
+      <li>状态从向量变成函数，解的正则性必须用函数空间表达；</li>
+      <li>经典解可能在有限时间失效，弱解让方程在极限中继续成立；</li>
+      <li>不同主部产生不同的适定数据、能量结构和传播性质。</li>
+    </ul>
+    <p>四个原型已经给出一张最小地图：输运方程把值沿 ODE 轨道搬运；热方程压低高频并消耗能量；波动方程守恒能量并沿有限速度传播；Laplace 方程把内部值锁定在边界平均结构中。以后遇到复杂 PDE，第一步往往不是寻找显式解，而是问：它最像哪个原型？自然能量是什么？哪些数据与它的类型匹配？在哪个函数空间里能得到封闭的先验估计？</p>
+  </section>
+</article>
+
+<section id="reader-feedback">
+  <h2>读后反馈</h2>
+  <p class="muted">暂无。阅读后可在此追加理解障碍、事实纠错、结构建议与希望展开的主题。</p>
+</section>
+</body>
+</html>
