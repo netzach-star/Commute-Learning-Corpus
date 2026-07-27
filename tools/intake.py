@@ -1,13 +1,22 @@
 #!/usr/bin/env python3
-"""收稿：校验新增/改动的语料 HTML，更新 README 目录表，提交并推送。
+"""收稿：从下载目录认领语料 HTML，校验、编号、更新目录表、提交并推送。
 
-把 GPT 生成的 HTML 放进 语料/<领域>/ 之后，跑这一条命令即可：
+日常只用这一条：
 
-    python3 tools/intake.py           # 校验 → 更新目录 → 提交 → 推送
-    python3 tools/intake.py --check   # 只校验，不改动仓库
-    python3 tools/intake.py --no-push # 校验并提交，但不推送
+    python3 tools/intake.py --from-downloads
 
-校验不通过会中止，不会提交。
+它会：认领 ~/Downloads 里带 corpus-domain 的稿子 → 按领域归档并分配编号 →
+逐篇校验 → 更新 README 目录表 → 提交 → 推送 → 把下载原件挪进 ~/Downloads/已收稿/。
+
+其他开关：
+
+    --detect          只读报告有多少待收稿，不碰任何文件（SessionStart hook 用它）
+    --check           校验后回滚，不提交
+    --no-push         提交但不推送
+    --domain <领域>   稿子缺 corpus-domain 时按此领域收（收旧稿用）
+    --delete-after    推送成功后直接删掉下载原件，不留 已收稿/
+
+校验不通过会中止并回滚，下载目录里的原件一个字都不动。
 """
 
 from __future__ import annotations
@@ -219,19 +228,46 @@ def stage_from_downloads(fallback_domain: str | None = None) -> tuple[dict[Path,
     return staged, notes
 
 
-def archive_downloads(staged: dict[Path, Path]) -> None:
-    """收稿成功后把下载目录里的原件挪进 已收稿/，避免下次重复扫描。"""
-    if not staged:
+def redundant_downloads() -> list[Path]:
+    """下载目录里与仓库内某文件逐字节相同的稿子。
+
+    内容已经在仓库里，这份下载纯属冗余，清掉不会丢任何东西。
+    """
+    out: list[Path] = []
+    if not DOWNLOADS.is_dir():
+        return out
+    for src in sorted(DOWNLOADS.glob("*.html")):
+        stem = DOMAIN_PREFIX_RE.sub("", DEDUP_RE.sub("", src.stem))
+        if already_collected(stem + ".html", src.read_bytes()):
+            out.append(src)
+    return out
+
+
+def archive_downloads(staged: dict[Path, Path], delete: bool = False) -> None:
+    """清理下载目录：把已安全入库的原件移进 已收稿/，或直接删除。
+
+    只在校验通过、提交并推送之后调用——此时内容已经在 GitHub 上，
+    本地这份原件没有独立价值了。
+    """
+    targets = list(staged) + [p for p in redundant_downloads() if p not in staged]
+    if not targets:
         return
+
+    if delete:
+        for src in targets:
+            src.unlink()
+        print(f"已删除 {len(targets)} 个下载原件（内容已在 GitHub 上）")
+        return
+
     ARCHIVE.mkdir(exist_ok=True)
-    for src in staged:
+    for src in targets:
         target = ARCHIVE / src.name
         n = 1
         while target.exists():
             target = ARCHIVE / f"{src.stem} ({n}){src.suffix}"
             n += 1
         src.rename(target)
-    print(f"已把 {len(staged)} 个原件移入 {ARCHIVE}")
+    print(f"已把 {len(targets)} 个原件移入 {ARCHIVE}")
 
 
 def previous_size(path: Path) -> int | None:
@@ -361,6 +397,10 @@ def main() -> int:
         "--domain", choices=DOMAINS,
         help="文件缺少 corpus-domain 时按此领域收（用于收旧稿）",
     )
+    ap.add_argument(
+        "--delete-after", action="store_true",
+        help="推送成功后直接删除下载原件，而不是移进 已收稿/",
+    )
     args = ap.parse_args()
 
     if args.detect:
@@ -416,12 +456,12 @@ def main() -> int:
 
     if args.no_push:
         print("--no-push，未推送。")
-        archive_downloads(staged)
+        archive_downloads(staged, args.delete_after)
         return 0
 
     git("push", "origin", "HEAD")
     print("已推送到 origin。")
-    archive_downloads(staged)
+    archive_downloads(staged, args.delete_after)
     return 0
 
 
