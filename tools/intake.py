@@ -23,6 +23,14 @@ DOMAINS = ["数学", "计算机", "AI", "马列", "其他"]
 NAME_RE = re.compile(r"^(\d{2})_.+\.html$")
 FULL_NAME_RE = re.compile(r"^\d{2}_[^_]+_.+\.html$")
 
+DOWNLOADS = Path.home() / "Downloads"
+ARCHIVE = DOWNLOADS / "已收稿"
+# 浏览器重复下载会加 " (1)" 后缀，收稿时去掉
+DEDUP_RE = re.compile(r"\s*\((\d+)\)$")
+DOMAIN_PREFIX_RE = re.compile(r"^(数学|计算机|AI|马列|其他)[-_]\s*")
+META_RE = re.compile(r"<meta\b[^>]*>", re.I)
+ATTR_RE = re.compile(r'(\w[\w-]*)\s*=\s*"([^"]*)"|(\w[\w-]*)\s*=\s*\'([^\']*)\'')
+
 # 会让平板离线打开时失效的外部资源引用
 EXTERNAL_PATTERNS = [
     (re.compile(r"<link[^>]+href\s*=\s*[\"']?https?://", re.I), "外部样式表 <link>"),
@@ -75,6 +83,98 @@ def changed_articles() -> list[tuple[str, Path]]:
         state = "新增" if "?" in code or "A" in code else "改动"
         found.append((state, path))
     return sorted(found, key=lambda t: str(t[1]))
+
+
+def detect_domain(text: str, filename: str) -> str | None:
+    """判断文章属于哪个领域：优先 <meta name="corpus-domain">，其次文件名前缀。"""
+    for tag in META_RE.findall(text[:4000]):
+        attrs = {}
+        for m in ATTR_RE.finditer(tag):
+            key = (m.group(1) or m.group(3) or "").lower()
+            attrs[key] = m.group(2) if m.group(2) is not None else m.group(4)
+        if attrs.get("name", "").lower() == "corpus-domain":
+            value = (attrs.get("content") or "").strip()
+            if value in DOMAINS:
+                return value
+
+    m = DOMAIN_PREFIX_RE.match(filename)
+    if m:
+        return m.group(1)
+    return None
+
+
+def already_collected(clean: str, data: bytes) -> bool:
+    """同名同内容的文件已在某个领域目录里 —— 这份下载是旧的，安静跳过。"""
+    for domain in DOMAINS:
+        p = ROOT / "语料" / domain / clean
+        if p.is_file() and p.read_bytes() == data:
+            return True
+    return False
+
+
+def stage_from_downloads() -> tuple[dict[Path, Path], list[str]]:
+    """把 ~/Downloads 里的语料 HTML 复制进对应领域目录。
+
+    返回 ({下载文件: 仓库内路径}, 跳过说明)。复制而非移动——校验没过时
+    原件还在 Downloads，不会丢稿。
+    """
+    staged: dict[Path, Path] = {}
+    notes: list[str] = []
+
+    if not DOWNLOADS.is_dir():
+        return staged, [f"找不到下载目录 {DOWNLOADS}"]
+
+    for src in sorted(DOWNLOADS.glob("*.html")):
+        text = src.read_text(encoding="utf-8", errors="replace")
+        stem = DEDUP_RE.sub("", src.stem)
+        clean = DOMAIN_PREFIX_RE.sub("", stem) + ".html"
+
+        if not NAME_RE.match(clean):
+            continue  # 不是语料文件，安静跳过
+
+        data = src.read_bytes()
+        if already_collected(clean, data):
+            continue  # 同名同内容已在仓库里，是旧下载
+
+        domain = detect_domain(text, stem)
+        if domain is None:
+            notes.append(f"{src.name}：判断不出领域（缺 corpus-domain 且文件名无领域前缀），已跳过")
+            continue
+
+        dest = ROOT / "语料" / domain / clean
+        rel = dest.relative_to(ROOT)
+        if dest.exists() and dest.read_bytes() == src.read_bytes():
+            notes.append(f"{src.name}：与仓库内现有文件完全相同，已跳过")
+            continue
+
+        # 目标文件有未提交改动时不覆盖：那些改动可能是手工编辑，
+        # 一旦覆盖后校验失败，回滚只能退回 HEAD，改动就没了。
+        if dest.exists() and git(
+            "-c", "core.quotePath=false", "status", "--porcelain", "--", rel.as_posix()
+        ).strip():
+            notes.append(f"{src.name}：目标 {rel} 有未提交改动，为免覆盖已跳过")
+            continue
+
+        dest.write_bytes(src.read_bytes())
+        staged[src] = dest.relative_to(ROOT)
+        notes.append(f"{src.name}  →  语料/{domain}/{clean}")
+
+    return staged, notes
+
+
+def archive_downloads(staged: dict[Path, Path]) -> None:
+    """收稿成功后把下载目录里的原件挪进 已收稿/，避免下次重复扫描。"""
+    if not staged:
+        return
+    ARCHIVE.mkdir(exist_ok=True)
+    for src in staged:
+        target = ARCHIVE / src.name
+        n = 1
+        while target.exists():
+            target = ARCHIVE / f"{src.stem} ({n}){src.suffix}"
+            n += 1
+        src.rename(target)
+    print(f"已把 {len(staged)} 个原件移入 {ARCHIVE}")
 
 
 def previous_size(path: Path) -> int | None:
@@ -155,11 +255,83 @@ def check_article(path: Path) -> tuple[list[str], list[str]]:
     return problems, warnings
 
 
+def rollback(staged: dict[Path, Path]) -> None:
+    """校验失败时撤掉刚复制进来的文件，让仓库回到干净状态。"""
+    for dest in staged.values():
+        full = ROOT / dest
+        r = subprocess.run(
+            ["git", "cat-file", "-e", f"HEAD:{dest.as_posix()}"],
+            cwd=ROOT, capture_output=True,
+        )
+        if r.returncode == 0:
+            git("checkout", "HEAD", "--", dest.as_posix())  # 原有文件：还原
+        elif full.exists():
+            full.unlink()  # 新文件：删掉
+    if staged:
+        print(f"已撤回 {len(staged)} 个文件，仓库未被改动（下载目录里的原件都还在）。")
+
+
+def detect() -> int:
+    """完全只读地报告有多少待收稿件。不复制、不改动任何文件。
+
+    给 SessionStart hook 用——自动跑的东西不该碰工作区。
+    """
+    pending: list[str] = []
+
+    if DOWNLOADS.is_dir():
+        for src in sorted(DOWNLOADS.glob("*.html")):
+            text = src.read_text(encoding="utf-8", errors="replace")
+            stem = DEDUP_RE.sub("", src.stem)
+            clean = DOMAIN_PREFIX_RE.sub("", stem) + ".html"
+            if not NAME_RE.match(clean):
+                continue
+            if already_collected(clean, src.read_bytes()):
+                continue
+
+            domain = detect_domain(text, stem)
+            if domain is None:
+                pending.append(f"{src.name}（判断不出领域，需人工指定）")
+                continue
+            dest = ROOT / "语料" / domain / clean
+            if dest.exists() and dest.read_bytes() == src.read_bytes():
+                continue
+            pending.append(f"{src.name} → 语料/{domain}/{clean}")
+
+    in_repo = [f"{s} {p}" for s, p in changed_articles()]
+
+    if not pending and not in_repo:
+        return 0
+
+    print("【待收稿件】")
+    for p in pending:
+        print(f"  下载目录：{p}")
+    for p in in_repo:
+        print(f"  仓库内未提交：{p}")
+    print("跑 `python3 tools/intake.py --from-downloads` 完成收稿（校验 → 更新目录 → 提交推送）。")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--detect", action="store_true", help="只读报告待收稿件，不改动任何文件")
     ap.add_argument("--check", action="store_true", help="只校验，不改动仓库")
     ap.add_argument("--no-push", action="store_true", help="提交但不推送")
+    ap.add_argument(
+        "--from-downloads", action="store_true",
+        help=f"先把 {DOWNLOADS} 里的语料 HTML 收进对应领域目录",
+    )
     args = ap.parse_args()
+
+    if args.detect:
+        return detect()
+
+    staged: dict[Path, Path] = {}
+    if args.from_downloads:
+        staged, notes = stage_from_downloads()
+        for n in notes:
+            print(f"  {n}")
+        if notes:
+            print()
 
     articles = changed_articles()
     if not articles:
@@ -181,10 +353,12 @@ def main() -> int:
 
     if failed:
         print("校验未通过，已中止，未提交任何内容。")
+        rollback(staged)
         print("修好上面的问题后重跑；确认是误报的话，用 git 手动提交。")
         return 1
 
     if args.check:
+        rollback(staged)
         print("校验通过（--check 模式，未改动仓库）。")
         return 0
 
@@ -201,10 +375,12 @@ def main() -> int:
 
     if args.no_push:
         print("--no-push，未推送。")
+        archive_downloads(staged)
         return 0
 
     git("push", "origin", "HEAD")
     print("已推送到 origin。")
+    archive_downloads(staged)
     return 0
 
 
