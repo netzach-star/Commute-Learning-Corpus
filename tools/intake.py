@@ -150,9 +150,10 @@ def resolve_target(domain: str, stem: str, claimed: set[Path]) -> tuple[Path, st
     return folder / f"{n:02d}_{body}.html", f"未带编号，自动分配 {n:02d}"
 
 
-def plan_from_downloads() -> list[tuple[Path, Path | None, str]]:
+def plan_from_downloads(fallback_domain: str | None = None) -> list[tuple[Path, Path | None, str]]:
     """规划 ~/Downloads 里每个语料 HTML 的去向。纯只读，不写任何文件。
 
+    fallback_domain：文件里没有 corpus-domain 时用它兜底，供收旧稿使用。
     返回 [(下载文件, 目标路径或 None, 说明)]；目标为 None 表示不收。
     """
     plan: list[tuple[Path, Path | None, str]] = []
@@ -171,10 +172,13 @@ def plan_from_downloads() -> list[tuple[Path, Path | None, str]]:
             continue
 
         domain = detect_domain(text, DEDUP_RE.sub("", src.stem))
+        looks_like_corpus = bool(re.search(r'id\s*=\s*["\']?reader-feedback', text, re.I))
+        if domain is None and fallback_domain and looks_like_corpus:
+            domain = fallback_domain
         if domain is None:
             # 有反馈区说明它长得像本项目的语料，只是漏了 corpus-domain
-            if re.search(r'id\s*=\s*["\']?reader-feedback', text, re.I):
-                plan.append((src, None, "缺 corpus-domain，无法判断领域，需人工指定"))
+            if looks_like_corpus:
+                plan.append((src, None, "缺 corpus-domain，无法判断领域；用 --domain <领域> 兜底"))
             continue  # 其余 HTML 不是本项目的，安静忽略
 
         dest, note = resolve_target(domain, stem, claimed)
@@ -198,14 +202,14 @@ def plan_from_downloads() -> list[tuple[Path, Path | None, str]]:
     return plan
 
 
-def stage_from_downloads() -> tuple[dict[Path, Path], list[str]]:
+def stage_from_downloads(fallback_domain: str | None = None) -> tuple[dict[Path, Path], list[str]]:
     """按 plan 把下载目录里的稿子复制进领域目录。
 
     复制而非移动——校验没过时原件还在 Downloads，不会丢稿。
     """
     staged: dict[Path, Path] = {}
     notes: list[str] = []
-    for src, dest, label in plan_from_downloads():
+    for src, dest, label in plan_from_downloads(fallback_domain):
         if dest is None:
             notes.append(f"{src.name}：{label}")
             continue
@@ -324,12 +328,12 @@ def rollback(staged: dict[Path, Path]) -> None:
         print(f"已撤回 {len(staged)} 个文件，仓库未被改动（下载目录里的原件都还在）。")
 
 
-def detect() -> int:
+def detect(fallback_domain: str | None = None) -> int:
     """完全只读地报告有多少待收稿件。不复制、不改动任何文件。
 
     给 SessionStart hook 用——自动跑的东西不该碰工作区。
     """
-    pending = [f"{src.name} {label}" for src, _, label in plan_from_downloads()]
+    pending = [f"{src.name} {label}" for src, _, label in plan_from_downloads(fallback_domain)]
     in_repo = [f"{s} {p}" for s, p in changed_articles()]
 
     if not pending and not in_repo:
@@ -353,14 +357,18 @@ def main() -> int:
         "--from-downloads", action="store_true",
         help=f"先把 {DOWNLOADS} 里的语料 HTML 收进对应领域目录",
     )
+    ap.add_argument(
+        "--domain", choices=DOMAINS,
+        help="文件缺少 corpus-domain 时按此领域收（用于收旧稿）",
+    )
     args = ap.parse_args()
 
     if args.detect:
-        return detect()
+        return detect(args.domain)
 
     staged: dict[Path, Path] = {}
     if args.from_downloads:
-        staged, notes = stage_from_downloads()
+        staged, notes = stage_from_downloads(args.domain)
         for n in notes:
             print(f"  {n}")
         if notes:
