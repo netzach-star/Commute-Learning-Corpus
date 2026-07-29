@@ -42,7 +42,7 @@ DOMAIN_PREFIX_RE = re.compile(r"^(数学|计算机|AI|马列|其他)[-_]\s*")
 META_RE = re.compile(r"<meta\b[^>]*>", re.I)
 ATTR_RE = re.compile(r'(\w[\w-]*)\s*=\s*"([^"]*)"|(\w[\w-]*)\s*=\s*\'([^\']*)\'')
 
-# 会让平板离线打开时失效的外部资源引用
+# 外部资源引用：离线时会降级，但正文仍可读，所以只警告不阻断
 EXTERNAL_PATTERNS = [
     (re.compile(r"<link[^>]+href\s*=\s*[\"']?https?://", re.I), "外部样式表 <link>"),
     (re.compile(r"<script[^>]+src\s*=\s*[\"']?https?://", re.I), "外部脚本 <script src>"),
@@ -61,6 +61,12 @@ LATEX_PATTERNS = [
     (re.compile(r"\\\]"), r"\]"),
     (re.compile(r"\\begin\{"), r"\begin{"),
 ]
+
+# 从 CDN 加载的公式渲染库
+MATH_CDN_RE = re.compile(
+    r"<(?:script|link)[^>]+(?:src|href)\s*=\s*[\"']?https?://[^\"'>]*(?:katex|mathjax)",
+    re.I,
+)
 
 STRIP_RE = re.compile(
     r"<annotation\b.*?</annotation>|<script\b.*?</script>|<style\b.*?</style>"
@@ -351,7 +357,15 @@ def check_article(path: Path) -> tuple[list[str], list[str]]:
 
     for pattern, label in EXTERNAL_PATTERNS:
         if pattern.search(text):
-            problems.append(f"含{label}——平板离线打开会失效")
+            warnings.append(f"含{label}——平板离线打开时这部分会失效")
+
+    # 唯一保留的阻断：公式靠外部脚本渲染且没有 MathML 兜底。
+    # 这不是"降级"而是彻底失效——地铁里没网，公式一个都看不见，
+    # 而能渲染公式正是本项目用 HTML 而不用 Markdown 的唯一理由。
+    if MATH_CDN_RE.search(text) and not re.search(r"<math\b", text, re.I):
+        problems.append(
+            "公式依赖外部 KaTeX/MathJax 且正文没有 MathML——离线阅读时公式全部显示不出来"
+        )
 
     body = STRIP_RE.sub(" ", text)
     for pattern, label in LATEX_PATTERNS:
