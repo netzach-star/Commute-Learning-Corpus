@@ -35,6 +35,7 @@ FULL_NAME_RE = re.compile(r"^\d{2}_[^_]+_.+\.html$")
 
 DOWNLOADS = Path.home() / "Downloads"
 ARCHIVE = DOWNLOADS / "已收稿"
+PENDING_RULES = ROOT / "待整合.md"
 # 浏览器重复下载会加 " (1)" 后缀，收稿时去掉
 DEDUP_RE = re.compile(r"\s*\((\d+)\)$")
 DOMAIN_PREFIX_RE = re.compile(r"^(数学|计算机|AI|马列|其他)[-_]\s*")
@@ -387,7 +388,17 @@ def detect(fallback_domain: str | None = None) -> int:
     pending = [f"{src.name} {label}" for src, _, label in plan_from_downloads(fallback_domain)]
     in_repo = [f"{s} {p}" for s, p in changed_articles()]
 
+    # 待整合.md 里"待整合"到"已整合"之间的条目数
+    rules = 0
+    if PENDING_RULES.is_file():
+        text = PENDING_RULES.read_text(encoding="utf-8")
+        if "## 待整合" in text:
+            body = text.split("## 待整合", 1)[1].split("## 已整合", 1)[0]
+            rules = len(re.findall(r"^### ", body, re.M))
+
     if not pending and not in_repo:
+        if rules:
+            print(f"【待整合规则】{rules} 条尚未写进 SKILL，见 待整合.md")
         return 0
 
     print("【待收稿件】")
@@ -396,6 +407,8 @@ def detect(fallback_domain: str | None = None) -> int:
     for p in in_repo:
         print(f"  仓库内未提交：{p}")
     print("跑 `python3 tools/intake.py --from-downloads` 完成收稿（校验 → 更新目录 → 提交推送）。")
+    if rules:
+        print(f"另有 {rules} 条规则尚未整合进 SKILL，见 待整合.md")
     return 0
 
 
