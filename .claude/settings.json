@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && python3 tools/intake.py --detect 2>/dev/null || true",
+            "command": "python3 \"$HOME/Documents/GitHub/private_git_repository/projects/收稿系统/收稿.py\" --报告 2>/dev/null || true",
             "timeout": 20,
             "statusMessage": "检查待收稿件"
           }
