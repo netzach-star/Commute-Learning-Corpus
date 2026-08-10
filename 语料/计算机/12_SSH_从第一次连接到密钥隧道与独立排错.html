@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="计算机">
+  <title>SSH：从第一次连接到密钥、隧道与独立排错</title>
+  <style>
+    :root { color-scheme:light; --ink:#1f2937; --muted:#5f6876; --line:#d8dee8; --soft:#f4f7fb; --accent:#1d4ed8; --good:#ecfdf5; --warn:#fff7ed; --bad:#fef2f2; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:#fff; font:17px/1.82 system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+    main { max-width:930px; margin:auto; padding:42px 24px 80px; }
+    h1 { font-size:2.12rem; line-height:1.25; margin:0 0 12px; }
+    h2 { font-size:1.5rem; margin:2.5em 0 .75em; padding-bottom:.25em; border-bottom:1px solid var(--line); }
+    h3 { font-size:1.16rem; margin:1.75em 0 .55em; }
+    p,li { text-align:justify; }
+    a { color:var(--accent); }
+    code { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; background:#edf1f6; padding:.08em .28em; border-radius:4px; }
+    pre { overflow:auto; margin:1em 0; padding:16px 18px; color:#f8fafc; background:#111827; border-radius:8px; line-height:1.55; }
+    pre code { padding:0; background:transparent; }
+    table { width:100%; border-collapse:collapse; margin:1.2em 0; font-size:.93em; }
+    th,td { border:1px solid var(--line); padding:10px 12px; vertical-align:top; text-align:left; }
+    th { background:var(--soft); }
+    nav { margin:1.5em 0; padding:16px 20px; border:1px solid var(--line); border-radius:8px; }
+    nav ol { columns:2; column-gap:32px; margin:.4em 0; padding-left:1.4em; }
+    .lead { font-size:1.08em; color:#334155; }
+    .meta,.muted { color:var(--muted); }
+    .box { margin:1.2em 0; padding:15px 18px; background:var(--soft); border-left:4px solid #64748b; }
+    .good { background:var(--good); border-left-color:#059669; }
+    .warning { background:var(--warn); border-left-color:#ea580c; }
+    .danger { background:var(--bad); border-left-color:#dc2626; }
+    .where { display:inline-block; margin:.3em 0; padding:2px 8px; color:#fff; background:#475569; border-radius:999px; font-size:.78em; font-weight:700; letter-spacing:.03em; }
+    details { margin:1em 0; padding:10px 14px; border:1px solid var(--line); border-radius:7px; }
+    summary { cursor:pointer; font-weight:650; }
+    .checklist li { margin:.45em 0; }
+    .refs li { margin:.65em 0; }
+    kbd { padding:1px 6px; border:1px solid #adb5bd; border-bottom-width:2px; border-radius:4px; background:#fff; font:inherit; font-size:.88em; }
+    @media (max-width:720px) { nav ol { columns:1; } body { font-size:16px; } main { padding:28px 18px 64px; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>SSH：从第一次连接到密钥、隧道与独立排错</h1>
+    <p class="lead">目标不是背下一页命令，而是能独立回答：命令在哪台机器执行、身份怎样被验证、数据经过哪里、失败卡在哪一层，以及怎样在不把自己锁在服务器外面的前提下安全修改配置。</p>
+    <p class="meta">定位：系列第二篇 · 零经验实操教程 · 主线以 Mac 客户端连接 Linux 服务器为例，同时标注 Windows 与 Linux 差异</p>
+  </header>
+
+  <nav aria-label="目录">
+    <strong>完整学习路径</strong>
+    <ol>
+      <li><a href="#prepare">先准备四项信息</a></li>
+      <li><a href="#lab">没有服务器也能做的本机实验</a></li>
+      <li><a href="#first">第一次连接与主机指纹</a></li>
+      <li><a href="#shell">远端 shell、命令与退出</a></li>
+      <li><a href="#files">SCP、SFTP 与文件传输</a></li>
+      <li><a href="#keys">公钥认证与 ssh-agent</a></li>
+      <li><a href="#config">~/.ssh/config</a></li>
+      <li><a href="#tunnel">端口转发与跳板机</a></li>
+      <li><a href="#long-task">断线与长任务</a></li>
+      <li><a href="#server">服务端启用与安全修改</a></li>
+      <li><a href="#network">跨公网与暴露边界</a></li>
+      <li><a href="#debug">分层故障排查</a></li>
+      <li><a href="#projects">两个练习项目</a></li>
+      <li><a href="#cheatsheet">独立操作速查表</a></li>
+    </ol>
+  </nav>
+
+  <section id="prepare">
+    <h2>一、连接之前：你必须拿到四项信息</h2>
+    <p>一个最普通的 SSH 目标可以写成：</p>
+    <pre><code>ssh -p 22 liyuyang@203.0.113.10</code></pre>
+    <p>其中 <code>203.0.113.10</code> 是文档示例地址，不能当成你的真实服务器。真正操作前需要从服务器管理员、云平台控制台或你自己的配置中确认：</p>
+    <ol>
+      <li><strong>主机名或 IP 地址</strong>：例如 <code>gpu01.example.edu</code>。主机名需要 DNS 解析；IP 可能随重建变化。</li>
+      <li><strong>远端用户名</strong>：例如 <code>liyuyang</code>。它不一定与 Mac 本机用户名相同，也不是邮箱地址。</li>
+      <li><strong>SSH 端口</strong>：默认 TCP 22；管理员可能指定其他端口。</li>
+      <li><strong>初始认证方式</strong>：账号密码、已分发的私钥、硬件密钥、证书，或组织统一登录。你不能凭空创建对别人的服务器的访问权。</li>
+    </ol>
+    <p>另外还要确认<strong>网络路径</strong>：是否必须先连校园 VPN，是否只能通过跳板机，云安全组是否允许你的来源地址。地址正确不等于网络一定可达。</p>
+
+    <h3>1.1 客户端与服务端不是一回事</h3>
+    <p>你从 Mac 发起连接，只需要 SSH <strong>客户端</strong>；要让别人连接你的 Mac，才需要启用 SSH <strong>服务端</strong>。大多数现代 macOS、Linux 和 Windows 都能直接提供 OpenSSH 客户端。先在终端运行：</p>
+    <p><span class="where">在本机执行</span></p>
+    <pre><code>ssh -V</code></pre>
+    <p>你会看到类似 <code>OpenSSH_9.x</code> 的实现版本。大小写很重要：查询版本是大写 <code>-V</code>。系统自带版本落后于 OpenSSH 上游最新版并不意味着必须自行替换；优先保持操作系统安全更新。</p>
+    <p>Windows 10 1809、Windows Server 2019 以后，OpenSSH 可作为系统功能提供。若 PowerShell 中 <code>ssh -V</code> 找不到命令，再到“可选功能”检查 OpenSSH Client，而不是一上来下载来历不明的 SSH 软件。</p>
+
+    <div class="box warning">
+      <strong>边界：</strong>本文教你使用已获授权的远程入口。不要扫描、尝试登录或绕过不属于你的系统；SSH 的技术能力不构成访问许可。
+    </div>
+  </section>
+
+  <section id="lab">
+    <h2>二、暂时没有服务器：在 Mac 上做一次可撤销的 localhost 实验</h2>
+    <p>你当前使用 Mac，可以让同一台机器同时扮演客户端和服务端。连接走回环地址（loopback）<code>localhost</code>，网络包不会离开本机；但启用“远程登录”通常也会让 SSH 服务监听网络接口，所以要限制允许用户并在练习后关闭。</p>
+
+    <h3>2.1 启用服务端</h3>
+    <ol>
+      <li>打开“系统设置 → 通用 → 共享”。</li>
+      <li>打开“远程登录（Remote Login）”。</li>
+      <li>在允许访问的用户中只选择你自己的练习账号，不要无理由允许所有用户。</li>
+      <li>系统会显示一条可用的 SSH 命令；先记下，但本实验使用 <code>localhost</code>。</li>
+    </ol>
+    <p>Apple 的官方说明也使用这一路径启用 SSH 服务。若这是公司或学校管理的 Mac，应先遵守设备策略，不要擅自开放服务。</p>
+
+    <h3>2.2 发起第一次本机连接</h3>
+    <p><span class="where">新开一个本机终端窗口</span></p>
+    <pre><code>ssh "$USER"@localhost</code></pre>
+    <p>第一次会出现主机真实性提示和一串 SHA256 指纹。因为客户端此前不认识“localhost 这台 SSH 主机”，这是正常的首次信任流程。确认目标确实是刚刚由你启用的本机服务后输入完整的 <code>yes</code>，再输入 Mac 账户密码。输入密码时终端不会显示星号，也不会移动光标；这是正常的防旁观设计。</p>
+    <p>登录后执行：</p>
+    <p><span class="where">在远端会话执行；实际仍是同一台 Mac</span></p>
+    <pre><code>hostname
+whoami
+pwd
+ps -p $$ -o pid,ppid,command</code></pre>
+    <p>输出看起来与本机相似，因为“远端”恰好就是同一台机器。但最后一条能看到一个由 SSH 会话启动的 shell 进程。输入 <code>exit</code> 回到原来的本机提示符，然后在系统设置里关闭“远程登录”。</p>
+    <div class="box good">
+      <strong>这个小实验已经覆盖真实机制：</strong>客户端连接 TCP 服务端、核验主机密钥、服务端验证用户、创建远端 shell、传递终端输入输出，再正常关闭会话。只有网络距离是零。
+    </div>
+  </section>
+
+  <section id="first">
+    <h2>三、第一次连接真实服务器：最重要的是主机指纹</h2>
+
+    <h3>3.1 最小命令</h3>
+    <p><span class="where">在本机执行</span></p>
+    <pre><code>ssh liyuyang@gpu01.example.edu</code></pre>
+    <p>若端口不是 22：</p>
+    <pre><code>ssh -p 2222 liyuyang@gpu01.example.edu</code></pre>
+    <p><code>ssh</code> 是客户端程序；<code>liyuyang</code> 是远端操作系统用户；<code>@</code> 后是服务器地址。<code>-p</code> 是小写。</p>
+
+    <h3>3.2 “The authenticity of host ... can't be established”不是废话</h3>
+    <p>第一次连接时，本机还没有这台服务器的主机公钥，因此无法从历史记录判断对方身份。SSH 显示指纹并询问是否继续。正确流程是通过<strong>独立渠道</strong>取得服务器指纹：管理员文档、云控制台、机房控制台，或服务器上受信任的本地终端，而不是从当前这条尚未验证的网络连接里问同一个对方。</p>
+    <p>在 Linux 服务器本地控制台上，管理员可查看 Ed25519 主机公钥指纹：</p>
+    <p><span class="where">仅在可信的服务器控制台执行</span></p>
+    <pre><code>sudo ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub</code></pre>
+    <p>逐字符比较 SHA256 指纹。匹配后再输入 <code>yes</code>。客户端会把记录写入 <code>~/.ssh/known_hosts</code>。以后连接时自动验证；若主机密钥改变，默认策略会拒绝或强烈警告。</p>
+    <div class="box danger">
+      <strong>不要形成“看见提示就 yes”的肌肉记忆。</strong>首次连接没有核验，攻击者也能成为你第一次记住的“正确主机”。SSH 提供了核验机制，但需要你或组织提供可信起点。
+    </div>
+
+    <h3>3.3 然后才是用户认证</h3>
+    <p>主机身份确认之后，服务端开始验证你的用户身份。若使用密码，输入的是<strong>远端账号密码</strong>；若使用私钥，可能提示的是<strong>本地私钥的保护口令</strong>。两者不是同一个秘密。</p>
+    <p>成功后观察提示符，并立即执行：</p>
+    <pre><code>hostname
+whoami
+pwd</code></pre>
+    <p>这三条命令回答“我在哪台机器、以谁的身份、位于哪个目录”。任何远程操作开始前先建立这一习惯，能避免在错误主机上删除文件或重启服务。</p>
+
+    <details>
+      <summary>局部自检 1：服务器重装后出现主机密钥改变警告，管理员说“正常，删掉 known_hosts 就行”。你下一步是什么？</summary>
+      <p>先从独立可信渠道取得重装后的新指纹并比较；确认地址没有被复用到别的机器且新指纹匹配后，才用 <code>ssh-keygen -R 主机名</code> 删除旧记录并重新接受。服务器重装是合理解释，但警告本身不能证明这个解释。</p>
+    </details>
+  </section>
+
+  <section id="shell">
+    <h2>四、进入之后：终端、shell 与远端进程</h2>
+
+    <h3>4.1 你得到的是远端 shell 会话</h3>
+    <p>本机的终端模拟器负责显示和收集按键；SSH 客户端把终端数据送到远端；远端 shell（如 Bash、Zsh、PowerShell）解释命令并启动进程。当前目录、环境变量和文件路径默认都属于远端。</p>
+    <p>下面是一套低风险观察命令：</p>
+    <pre><code>hostname
+whoami
+pwd
+uname -a
+date
+df -h
+ps -u "$USER"</code></pre>
+    <p>它们只读取状态。不要在不理解时照抄 <code>sudo</code>、磁盘分区、权限递归修改或删除命令。远程命令的副作用与本地执行完全一样真实。</p>
+
+    <h3>4.2 正常退出、终止程序与强制断开</h3>
+    <ul>
+      <li><code>exit</code> 或 <kbd>Ctrl</kbd>+<kbd>D</kbd>：让远端 shell 正常结束，SSH 会话随之关闭。</li>
+      <li><kbd>Ctrl</kbd>+<kbd>C</kbd>：通常向当前前台程序发送中断信号，不等于断开 SSH。</li>
+      <li>若连接卡住：先按一次 <kbd>Enter</kbd>，再依次输入 <code>~.</code>。SSH 的转义序列只在新行开头被客户端识别；它会立即断开当前连接。</li>
+    </ul>
+
+    <h3>4.3 不进入交互 shell，直接执行一条命令</h3>
+    <p><span class="where">在本机执行</span></p>
+    <pre><code>ssh gpu01 'hostname; uptime'</code></pre>
+    <p>SSH 登录、在远端执行引号内的命令、返回输出和退出状态，然后断开。这是自动化的基本形态。单引号很重要：在 macOS/Linux shell 中，它阻止本机提前展开 <code>$变量</code>。比较：</p>
+    <pre><code>ssh gpu01 'printf "%s\n" "$HOME"'   # 由远端 shell 展开远端 HOME
+ssh gpu01 "printf '%s\n' '$HOME'"   # 外层双引号可能先展开本机 HOME</code></pre>
+    <p>在 PowerShell 中引号和变量规则不同，不要机械复制 Bash 的复杂嵌套。跨平台自动化一旦超过简单命令，优先上传脚本文件并明确用哪个解释器执行。</p>
+
+    <h3>4.4 退出状态也是数据</h3>
+    <p>远端命令正常退出时，<code>ssh</code> 通常把远端命令的退出状态带回本机。在 macOS/Linux 上可紧接着查看：</p>
+    <pre><code>ssh gpu01 'test -f /etc/os-release'
+printf 'exit=%s\n' "$?"</code></pre>
+    <p>输出为 0 通常表示条件成立/命令成功，非 0 表示失败或条件不成立。可靠自动化不能只看有没有输出，还要检查退出状态、标准错误和预期副作用。</p>
+  </section>
+
+  <section id="files">
+    <h2>五、文件传输：先掌握 SCP，再理解 SFTP</h2>
+
+    <h3>5.1 SCP 的位置语法</h3>
+    <p><code>scp</code> 的核心是：不带冒号的路径通常在本机，<code>主机:路径</code> 在远端。</p>
+    <p><span class="where">本机 → 远端</span></p>
+    <pre><code>scp ./report.txt liyuyang@gpu01.example.edu:/home/liyuyang/inbox/</code></pre>
+    <p><span class="where">远端 → 本机当前目录</span></p>
+    <pre><code>scp liyuyang@gpu01.example.edu:/home/liyuyang/results/run.log .</code></pre>
+    <p>复制目录可用 <code>-r</code>；指定非默认端口使用大写 <code>-P</code>，这是容易与 <code>ssh -p</code> 混淆的历史接口：</p>
+    <pre><code>scp -P 2222 -r ./src liyuyang@gpu01.example.edu:/home/liyuyang/project/</code></pre>
+    <p>现代 OpenSSH 的 <code>scp</code> 从 9.0 起默认在 SSH 连接上使用 SFTP 协议传输，而不是旧 SCP wire protocol。命令名保留是为了用户接口兼容。路径中有空格、冒号、通配符或不同 shell 时，引用会变复杂；重要批量传输应先用测试目录验证。</p>
+
+    <h3>5.2 SFTP 是交互式文件会话</h3>
+    <pre><code>sftp liyuyang@gpu01.example.edu</code></pre>
+    <p>进入 <code>sftp&gt;</code> 提示符后：</p>
+    <pre><code>pwd          # 远端当前目录
+lpwd         # 本机当前目录
+ls           # 列出远端
+lls          # 列出本机
+cd results   # 切换远端目录
+lcd Downloads # 切换本机目录
+get run.log
+put report.txt
+exit</code></pre>
+    <p>SFTP 不是 FTP “再套一层 SSH”的同义名称，而是设计为在安全连接中执行文件操作的协议。它与传统 FTP/FTPS 的控制方式和端口模型不同。</p>
+
+    <h3>5.3 何时使用 rsync</h3>
+    <p>若两端安装了 <code>rsync</code>，同步大量目录、断点后重传或只发送变化内容时更合适：</p>
+    <pre><code>rsync -av --progress -e ssh ./dataset/ gpu01:/home/liyuyang/dataset/</code></pre>
+    <p>结尾斜杠会影响“复制目录本身”还是“复制目录内容”，删除同步选项也可能造成真实删除。新手先在小型测试目录运行，不要一开始加入 <code>--delete</code>。</p>
+
+    <details>
+      <summary>局部自检 2：<code>scp host:/tmp/a.txt .</code> 中的点和冒号分别表示什么？</summary>
+      <p><code>host:/tmp/a.txt</code> 的冒号把远端主机与远端路径分开；最后的点表示本机当前目录。因此数据方向是远端到本机。</p>
+    </details>
+  </section>
+
+  <section id="keys">
+    <h2>六、公钥认证：私钥留在本机，公钥放到服务器</h2>
+
+    <h3>6.1 先建立正确的证明模型</h3>
+    <p>用户密钥对包含私钥（private key）和公钥（public key）。服务器在 <code>authorized_keys</code> 中保存允许登录的公钥。连接时，客户端用私钥对会话相关数据签名；服务器用公钥验证。私钥不需要发送到服务器。</p>
+    <ul>
+      <li>私钥文件如 <code>id_ed25519_lab</code>：等同高价值凭据，不能发给管理员、GitHub issue、聊天机器人或服务器。</li>
+      <li>公钥文件如 <code>id_ed25519_lab.pub</code>：可以交给服务器管理员并安装到授权列表。</li>
+      <li>私钥口令（passphrase）：加密保护本机磁盘上的私钥。它不是远端账户密码；忘记后通常只能生成新密钥并更新各服务器。</li>
+    </ul>
+
+    <h3>6.2 生成一把用途明确的 Ed25519 密钥</h3>
+    <p><span class="where">在本机执行</span></p>
+    <pre><code>ssh-keygen -t ed25519 -a 64 \
+  -f ~/.ssh/id_ed25519_lab \
+  -C "mac-to-lab-2026"</code></pre>
+    <p><code>-t ed25519</code> 选择现代通用密钥类型；<code>-a 64</code> 增加私钥口令派生轮次，使被盗的加密私钥更难离线暴力猜解；<code>-f</code> 使用专用文件名，避免覆盖已有默认密钥；<code>-C</code> 是帮助管理员识别用途的注释。按提示设置一条强且可记住的私钥口令。</p>
+    <p>生成后检查：</p>
+    <pre><code>ls -l ~/.ssh/id_ed25519_lab*
+ssh-keygen -lf ~/.ssh/id_ed25519_lab.pub</code></pre>
+
+    <h3>6.3 把公钥安装到 Unix/Linux 服务器</h3>
+    <p>如果系统提供 <code>ssh-copy-id</code>：</p>
+    <pre><code>ssh-copy-id -i ~/.ssh/id_ed25519_lab.pub liyuyang@gpu01.example.edu</code></pre>
+    <p>macOS 不一定自带该命令。可使用下面的通用管道：本机读取公钥，通过 SSH 的标准输入交给远端；远端以安全权限创建目录，并把这一行追加到授权文件。</p>
+    <pre><code>ssh liyuyang@gpu01.example.edu \
+  'umask 077; mkdir -p ~/.ssh; cat >> ~/.ssh/authorized_keys' \
+  &lt; ~/.ssh/id_ed25519_lab.pub</code></pre>
+    <p>这条命令只应对你已通过密码或其他方式合法登录的账号使用。重复执行会追加重复行；安装后可在服务器查看 <code>~/.ssh/authorized_keys</code>。Windows OpenSSH 对普通用户和管理员账户的授权文件位置/ACL 有额外规则，应按微软官方文档处理，不要照搬 Unix 路径。</p>
+
+    <h3>6.4 在保留旧会话的同时测试</h3>
+    <div class="box warning">
+      <strong>防锁死规则：</strong>不要安装完公钥就立刻关闭密码认证。保持当前已登录会话不动，另开一个本机终端做完整新连接；确认新连接成功并能执行必要操作后，才考虑服务端加固。
+    </div>
+    <pre><code>ssh -o IdentitiesOnly=yes \
+  -i ~/.ssh/id_ed25519_lab \
+  liyuyang@gpu01.example.edu</code></pre>
+    <p>输入私钥口令并成功登录，说明服务器接受该公钥。<code>IdentitiesOnly=yes</code> 强制只尝试明确选择的身份，避免 agent 中密钥过多导致“Too many authentication failures”。</p>
+
+    <h3>6.5 ssh-agent 解决“每次都解锁私钥”</h3>
+    <p>认证代理（authentication agent）在当前登录会话中保存已解锁的私钥能力，SSH 客户端向它请求签名，而不是每次读取并解密文件：</p>
+    <pre><code>ssh-add ~/.ssh/id_ed25519_lab
+ssh-add -l</code></pre>
+    <p>在 macOS 中可结合系统钥匙串；常见客户端配置是 <code>AddKeysToAgent yes</code>，Apple 版本还支持 <code>UseKeychain yes</code>。是否把口令长期交给系统凭据存储，是便利与设备安全之间的选择。</p>
+    <p>不要因为使用 agent 就随手启用代理转发（agent forwarding，命令行 <code>-A</code>）。转发会让远端主机在会话期间借用你的 agent 发起认证；若远端被攻破，攻击者可能利用这一能力。需要跨跳板机连接时优先使用 <code>ProxyJump</code>，它不要求把 agent socket 暴露给跳板机上的普通进程。</p>
+  </section>
+
+  <section id="config">
+    <h2>七、把一长串参数写进 ~/.ssh/config</h2>
+    <p>日常使用不应反复输入地址、用户、端口和私钥路径。SSH 客户端的用户配置文件通常是 <code>~/.ssh/config</code>。创建或编辑：</p>
+    <pre><code>Host lab-gpu
+    HostName gpu01.example.edu
+    User liyuyang
+    Port 2222
+    IdentityFile ~/.ssh/id_ed25519_lab
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    ServerAliveInterval 30
+    ServerAliveCountMax 3</code></pre>
+    <p>在 Mac 上若希望使用钥匙串，可在这个主机块中加 <code>UseKeychain yes</code>；它是 Apple 扩展，不要把它复制到不认识该选项的其他 OpenSSH 客户端。</p>
+    <p>此后连接、复制和 SFTP 都可使用别名：</p>
+    <pre><code>ssh lab-gpu
+scp ./report.txt lab-gpu:~/inbox/
+sftp lab-gpu</code></pre>
+    <p><code>Host lab-gpu</code> 是本机别名；<code>HostName</code> 才是真实网络目标。配置按“首次获得的值优先”一类规则匹配，复杂配置中的顺序会产生影响。先用小块明确配置，不要复制网上巨大的全局模板。</p>
+
+    <h3>7.1 文件权限</h3>
+    <p>在 macOS/Linux 本机：</p>
+    <pre><code>chmod 700 ~/.ssh
+chmod 600 ~/.ssh/config ~/.ssh/id_ed25519_lab
+chmod 644 ~/.ssh/id_ed25519_lab.pub</code></pre>
+    <p>私钥和配置不可被其他用户写入。服务端通常也要求 <code>~/.ssh</code> 与 <code>authorized_keys</code> 的所有权和权限合理，否则会拒绝公钥认证。</p>
+
+    <h3>7.2 看见最终配置，而不是猜</h3>
+    <pre><code>ssh -G lab-gpu</code></pre>
+    <p><code>-G</code> 输出合并系统配置、用户配置和命令行参数之后的最终结果，但不建立连接。排查“为什么用了错误用户/端口/密钥”时，它比盯着某一个配置文件可靠。</p>
+  </section>
+
+  <section id="tunnel">
+    <h2>八、端口转发：让另一种协议搭乘 SSH 安全通道</h2>
+
+    <h3>8.1 本地转发的完整数据流</h3>
+    <p>假设服务器上的 TensorBoard 只监听远端 <code>127.0.0.1:6006</code>。你不想把它暴露到校园网，只想让本机浏览器访问。执行：</p>
+    <pre><code>ssh -N \
+  -o ExitOnForwardFailure=yes \
+  -L 127.0.0.1:8600:127.0.0.1:6006 \
+  lab-gpu</code></pre>
+    <p>然后在本机浏览器打开 <code>http://127.0.0.1:8600</code>。四段地址不要靠背诵，按数据流理解：</p>
+    <ol>
+      <li>本机 SSH 客户端监听<strong>本机</strong> <code>127.0.0.1:8600</code>。</li>
+      <li>浏览器连到这个本机端口，字节进入 SSH 加密连接。</li>
+      <li>远端 SSH 服务端从<strong>服务器自己的网络视角</strong>连接 <code>127.0.0.1:6006</code>。</li>
+      <li>响应沿同一通道返回本机浏览器。</li>
+    </ol>
+    <p><code>-N</code> 表示不启动远端命令，只做转发；<code>ExitOnForwardFailure=yes</code> 让监听失败时直接报错。把本地监听地址写成 <code>127.0.0.1</code>，意味着同一局域网其他机器不能借用你的转发。若写成 <code>0.0.0.0</code>，暴露范围会扩大，除非明确需要且有防火墙，否则不要这样做。</p>
+
+    <h3>8.2 远程转发与动态转发只需先认得</h3>
+    <ul>
+      <li><strong>远程转发（remote forwarding）</strong> <code>-R</code>：让远端一侧监听端口，把连接送回本机或本机可达的目标。它可能把本地服务暴露给远端网络，受服务端 <code>GatewayPorts</code> 等设置影响。</li>
+      <li><strong>动态转发（dynamic forwarding）</strong> <code>-D</code>：在本机创建 SOCKS 代理，应用把多个目标连接交给 SSH 动态转发。它不是匿名工具，远端服务器及后续网络仍有自己的可见性和政策边界。</li>
+    </ul>
+    <p>端口转发能绕过“服务只监听内网”的限制，也能意外绕过组织原本的网络分区。因此管理员可能禁用或限制它；使用前应遵守授权范围。</p>
+
+    <h3>8.3 跳板机 ProxyJump</h3>
+    <p>若内部服务器只能从网关访问：</p>
+    <pre><code>ssh -J liyuyang@gateway.example.edu liyuyang@10.10.0.25</code></pre>
+    <p>客户端先与网关建立 SSH 连接，再通过一条 TCP 转发抵达内部主机；最终 SSH 加密与主机认证仍面向内部主机。配置文件可以写：</p>
+    <pre><code>Host lab-gateway
+    HostName gateway.example.edu
+    User liyuyang
+    IdentityFile ~/.ssh/id_ed25519_gateway
+
+Host lab-internal
+    HostName 10.10.0.25
+    User liyuyang
+    IdentityFile ~/.ssh/id_ed25519_lab
+    ProxyJump lab-gateway</code></pre>
+    <p>这样直接运行 <code>ssh lab-internal</code>。网关和目标可以使用不同密钥；无需把私钥复制到网关。</p>
+
+    <details>
+      <summary>局部自检 3：本地转发命令中的第二个 <code>127.0.0.1</code> 是谁的 localhost？</summary>
+      <p>是远端 SSH 服务端看到的 localhost，因为目标连接由远端一侧发起。第一个 <code>127.0.0.1:8600</code> 才是本机客户端的监听地址。</p>
+    </details>
+  </section>
+
+  <section id="long-task">
+    <h2>九、SSH 断了，任务为什么有时也会停</h2>
+    <p>交互式 SSH 会话通常分配伪终端（pseudo-terminal, PTY）。你启动的前台进程与这个终端关联；连接消失、shell 退出时，进程可能收到挂断信号或因标准输入输出关闭而结束。SSH 保证连接期间的数据传输，不承诺把所有远端进程永久托管。</p>
+
+    <h3>9.1 用 tmux 保存交互会话</h3>
+    <p>若服务器已安装 <code>tmux</code>：</p>
+    <pre><code>tmux new -s train</code></pre>
+    <p>在 tmux 中启动任务。按 <kbd>Ctrl</kbd>+<kbd>b</kbd>，松开后按 <kbd>d</kbd>，可以脱离而不结束内部程序。下次 SSH 登录后：</p>
+    <pre><code>tmux attach -t train</code></pre>
+    <p><code>tmux</code> 进程在服务器上维持虚拟终端，SSH 只是你临时连接它的路径。学校集群若提供 Slurm 等作业调度系统，应优先按集群规则提交任务；调度器还能处理资源分配、排队、日志与失败状态。</p>
+
+    <h3>9.2 服务型任务应交给服务管理器</h3>
+    <p>长期网页服务、数据库或守护进程应由 systemd、容器编排或应用平台托管，而不是在一个 SSH 窗口里运行。正确的持久化方案要回答：机器重启后是否恢复、日志在哪里、失败是否重启、用哪个账号、怎样停止与升级。<code>nohup command &amp;</code> 只能处理其中一小部分，不是完整服务管理。</p>
+  </section>
+
+  <section id="server">
+    <h2>十、服务端：怎样启用，以及怎样不把自己锁死</h2>
+    <p>如果你只是连接学校或云端服务器，本节大部分由管理员完成；但理解它能帮助排错和自建实验。</p>
+
+    <h3>10.1 Ubuntu/Debian 示例</h3>
+    <p><span class="where">只在你有管理权的服务器本地/控制台执行</span></p>
+    <pre><code>sudo apt update
+sudo apt install openssh-server
+sudo systemctl enable --now ssh
+sudo systemctl status ssh</code></pre>
+    <p>发行版之间的服务名可能是 <code>ssh</code> 或 <code>sshd</code>，包管理器也不同。检查监听：</p>
+    <pre><code>sudo ss -lntp | grep ':22'</code></pre>
+    <p>防火墙规则必须结合实际管理网设计。Ubuntu 常见 <code>ufw allow OpenSSH</code> 会放行预定义 SSH 服务，但在远程改防火墙前要先确认当前连接、备用控制台和来源限制；不要因教程一句话就向整个公网开放。</p>
+
+    <h3>10.2 macOS 示例</h3>
+    <p>使用“系统设置 → 通用 → 共享 → 远程登录”，选择允许用户。系统界面会显示登录命令。Mac 作为个人电脑时，休眠、电源、网络切换和 FileVault 解锁状态都会影响远程可用性。</p>
+
+    <h3>10.3 Windows 示例</h3>
+    <p>Windows 的 OpenSSH Client 与 Server 是不同可选功能。安装 Server 后还需启动 <code>sshd</code> 服务，并确认系统创建的入站防火墙规则。微软当前官方流程可用管理员 PowerShell 检查能力，再安装和启动：</p>
+    <pre><code>Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
+Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+Start-Service sshd
+Set-Service -Name sshd -StartupType Automatic</code></pre>
+    <p>Windows 默认 shell、域用户名、公钥授权文件与 ACL 规则和 Unix 不同。尤其管理员组成员常使用 <code>C:\ProgramData\ssh\administrators_authorized_keys</code>；应按对应 Windows 版本的微软文档配置。</p>
+
+    <h3>10.4 安全修改 sshd 配置的顺序</h3>
+    <p>典型 Linux 服务端配置位于 <code>/etc/ssh/sshd_config</code>，某些系统还加载 <code>/etc/ssh/sshd_config.d/*.conf</code>。常见目标包括禁止 root 直接登录、在公钥认证验证成功后关闭密码认证：</p>
+    <pre><code>PermitRootLogin no
+PubkeyAuthentication yes
+PasswordAuthentication no</code></pre>
+    <p>但不要直接复制、保存、重启。安全变更流程是：</p>
+    <ol class="checklist">
+      <li>确认你有云控制台、物理控制台或另一条可恢复入口；没有时风险更高。</li>
+      <li>保持一个已登录且具备恢复权限的旧 SSH 会话不关闭。</li>
+      <li>为至少一个非 root 管理账号安装并测试公钥；另开终端完成全新登录。</li>
+      <li>检查配置包含关系和同名选项，避免以为改了文件但被后续规则覆盖。</li>
+      <li>运行 <code>sudo sshd -t</code> 做语法检查；无输出通常表示语法通过，但不证明访问策略一定符合预期。</li>
+      <li>优先平滑重新加载而非粗暴重启，例如 Ubuntu 上 <code>sudo systemctl reload ssh</code>。</li>
+      <li>再次从新终端测试公钥登录、必要的 <code>sudo</code> 和文件操作。</li>
+      <li>确认成功后才关闭旧会话，并监控认证日志。</li>
+    </ol>
+    <p>关闭密码认证能显著减少密码猜测面，但公钥文件仍可能被偷，账号权限仍可能过大；高价值系统还会使用硬件密钥、短期证书、多因素认证、集中撤销和会话审计。</p>
+
+    <h3>10.5 几条高价值原则</h3>
+    <ul>
+      <li>不允许 root 直接远程登录；用个人账号登录后按需提权，保留可审计身份。</li>
+      <li>每人/每设备使用可区分的公钥，不共享一把“团队私钥”。设备丢失时才能只撤销一条授权。</li>
+      <li>私钥设置口令并交给受信任的 agent；不要把私钥上传服务器或代码仓库。</li>
+      <li>及时更新系统供应商维护的 OpenSSH 包，不为追求“版本号最新”绕过包管理。</li>
+      <li>限制可达来源、允许用户和最小权限；认证成功不应自动获得管理员权限。</li>
+      <li>保留认证日志并定期删除离职、过期、未知来源的公钥。</li>
+    </ul>
+  </section>
+
+  <section id="network">
+    <h2>十一、跨公网连接：SSH 本身不会替你穿过 NAT</h2>
+    <p>同一局域网中，你可以直接连接服务器的私网地址。离开局域网后，家庭路由器的 NAT、运营商 CGNAT、校园防火墙和云安全组都可能阻断入站。常见方案按信任边界排列：</p>
+    <ol>
+      <li><strong>组织 VPN/覆盖网络：</strong>先让设备加入受控逻辑私网，再访问 SSH。适合个人多设备或组织内部管理，避免把每台主机直接暴露公网。</li>
+      <li><strong>跳板机/访问网关：</strong>公网只暴露少数受加固入口，内部主机通过 ProxyJump 访问。便于集中认证与审计，但网关是高价值目标。</li>
+      <li><strong>公网 IP + 防火墙/安全组：</strong>直接开放 SSH，至少限制来源地址、使用强认证、及时更新并监控。移动网络地址变化会增加维护成本。</li>
+      <li><strong>家用路由器端口转发：</strong>把公网端口映射到内网主机。它要求你理解公网地址、动态 DNS、防火墙和主机加固；若处在 CGNAT 后可能根本不可用。</li>
+    </ol>
+    <p>对第一次学习 SSH 的人，优先在本机、局域网或已有组织 VPN 中练习，不要把练习服务直接暴露公网。改成非 22 端口只能减少扫描噪声，不构成强安全控制。</p>
+  </section>
+
+  <section id="debug">
+    <h2>十二、独立排错：沿连接阶段从外到内</h2>
+    <p>排错命令不是越多越好。先记录完整命令、完整错误、发生时间和最近变更，再判断失败属于哪一层。</p>
+
+    <table>
+      <thead><tr><th>层</th><th>典型症状</th><th>客户端证据</th><th>有服务端权限时的证据</th></tr></thead>
+      <tbody>
+        <tr><td>配置展开</td><td>用了错误用户、端口或密钥</td><td><code>ssh -G 别名</code></td><td>不需要</td></tr>
+        <tr><td>名称解析</td><td><code>Could not resolve hostname</code></td><td><code>nslookup 主机名</code>；核对 VPN/DNS</td><td>核对正式名称与 DNS 记录</td></tr>
+        <tr><td>网络可达</td><td>超时、No route to host</td><td><code>nc -vz 主机 22</code>；Windows 用 <code>Test-NetConnection 主机 -Port 22</code></td><td>路由、防火墙/安全组日志</td></tr>
+        <tr><td>服务监听</td><td>Connection refused</td><td>端口测试显示明确拒绝</td><td><code>systemctl status ssh</code>；<code>ss -lntp</code></td></tr>
+        <tr><td>主机认证</td><td>REMOTE HOST IDENTIFICATION HAS CHANGED</td><td>查看警告中的主机与指纹</td><td>从可信控制台打印实际主机指纹</td></tr>
+        <tr><td>用户认证</td><td>Permission denied (publickey,password)</td><td><code>ssh -vvv ...</code> 看尝试了哪些方法/密钥</td><td>认证日志、账号状态、授权文件与权限</td></tr>
+        <tr><td>授权/命令</td><td>登录成功但文件/命令被拒绝</td><td><code>whoami</code>、路径和错误信息</td><td>Unix 权限、ACL、sudo 策略、受限 shell</td></tr>
+        <tr><td>会话稳定</td><td>空闲断开、网络切换后卡住</td><td><code>ServerAliveInterval</code>；<code>~.</code> 强制断开</td><td>负载、连接超时策略、网络设备日志</td></tr>
+      </tbody>
+    </table>
+
+    <h3>12.1 最有价值的客户端诊断：-vvv</h3>
+    <pre><code>ssh -vvv lab-gpu</code></pre>
+    <p>详细日志会显示读取了哪些配置、解析到什么地址、协商阶段、主机密钥、提供了哪些用户密钥以及服务端接受/拒绝结果。它可能暴露主机名、用户名、路径和公钥指纹；公开求助前要脱敏，但不要删掉关键错误上下文。SSH 不会在正常调试日志中打印私钥内容，仍不应把整个 <code>~/.ssh</code> 目录上传给别人。</p>
+
+    <h3>12.2 常见错误的正确反应</h3>
+    <ul>
+      <li><strong>Connection timed out：</strong>先查 VPN、地址、路由、防火墙和端口，不要反复生成新密钥；认证阶段根本还没到。</li>
+      <li><strong>Connection refused：</strong>目标地址可达但该端口没有服务接受，或防火墙主动拒绝。核对端口和 <code>sshd</code> 状态。</li>
+      <li><strong>Permission denied (publickey)：</strong>网络和 SSH 传输通常已经成功。用 <code>-vvv</code> 看客户端是否提供正确密钥；服务端检查用户名、<code>authorized_keys</code>、所有权和权限。</li>
+      <li><strong>Too many authentication failures：</strong>agent 提供了太多密钥，服务器在正确密钥出现前终止。使用 <code>IdentitiesOnly yes</code> 和明确 <code>IdentityFile</code>。</li>
+      <li><strong>Host key verification failed：</strong>不是用户密钥错。检查 <code>known_hosts</code>、主机地址与实际主机指纹。</li>
+      <li><strong>Broken pipe：</strong>连接中途丢失或空闲超时。保活可以更快发现失联，却不能修复不稳定网络；长任务应独立于 SSH 会话托管。</li>
+    </ul>
+
+    <h3>12.3 只有核验后才删除旧主机记录</h3>
+    <p>若确认服务器合法重装、IP 复用且新指纹正确：</p>
+    <pre><code>ssh-keygen -R gpu01.example.edu</code></pre>
+    <p>非默认端口的记录可能以 <code>[host]:port</code> 存储：</p>
+    <pre><code>ssh-keygen -R '[gpu01.example.edu]:2222'</code></pre>
+    <p>这条命令是处理已确认变更的工具，不是消除安全警告的快捷键。</p>
+
+    <details>
+      <summary>局部自检 4：出现 <code>Permission denied (publickey)</code>，为什么先检查路由器端口映射通常是错误方向？</summary>
+      <p>因为服务端已经返回了 SSH 认证错误，说明网络路径、TCP 建连和至少一部分 SSH 协商已成功。问题更可能在远端用户名、客户端提供的密钥、服务端授权文件或认证策略。</p>
+    </details>
+  </section>
+
+  <section id="projects">
+    <h2>十三、两个练习项目：做到什么算真正会了</h2>
+
+    <h3>项目 A：20 分钟 localhost 闭环</h3>
+    <ol class="checklist">
+      <li>在 Mac 只为自己开启“远程登录”，记录系统显示的 SSH 命令。</li>
+      <li>运行 <code>ssh "$USER"@localhost</code>，理解并接受本机首次指纹。</li>
+      <li>用 <code>hostname</code>、<code>whoami</code>、<code>pwd</code> 证明执行上下文。</li>
+      <li>在 SSH 会话里创建 <code>~/ssh-local-lab.txt</code>，退出后从普通本机 shell 确认文件存在。</li>
+      <li>用 <code>scp ~/ssh-local-lab.txt "$USER"@localhost:/tmp/</code> 走一次真实文件传输。</li>
+      <li>正常退出，关闭“远程登录”，确认再次连接得到拒绝。</li>
+    </ol>
+    <p><strong>验收标准：</strong>你能口头解释为何同一台机器上仍有客户端/服务端和两次用户认证语义，知道关闭服务后“Connection refused”与密码错误不在同一层。</p>
+
+    <h3>项目 B：一台已授权 Linux 主机的完整闭环</h3>
+    <ol class="checklist">
+      <li>从管理员取得主机名、用户、端口、初始认证方式和主机指纹；记录信息来源。</li>
+      <li>首次连接时独立核验指纹，运行三条定位命令，然后正常退出。</li>
+      <li>用 SCP 上传一个文本文件，再下载到不同本机目录并比较内容。</li>
+      <li>生成专用 Ed25519 密钥，设置口令，安装公钥；保留旧会话并从新终端测试。</li>
+      <li>写一个只匹配该服务器的 <code>Host</code> 块，使 <code>ssh lab-gpu</code>、<code>scp file lab-gpu:~/</code> 成功。</li>
+      <li>在远端开一个仅监听 <code>127.0.0.1:8000</code> 的临时 HTTP 服务，在本地以 8800 端口转发访问，验证后停止服务与隧道。</li>
+      <li>故意写错一次端口并阅读错误，再用 <code>ssh -G</code> 和 <code>-vvv</code> 找到问题；恢复正确配置。</li>
+    </ol>
+    <p>临时 HTTP 服务示例：</p>
+    <p><span class="where">远端终端 1</span></p>
+    <pre><code>mkdir -p ~/ssh-tunnel-lab
+printf 'SSH tunnel works\n' &gt; ~/ssh-tunnel-lab/index.html
+python3 -m http.server 8000 \
+  --bind 127.0.0.1 \
+  --directory ~/ssh-tunnel-lab</code></pre>
+    <p><span class="where">本机终端 2</span></p>
+    <pre><code>ssh -N \
+  -o ExitOnForwardFailure=yes \
+  -L 127.0.0.1:8800:127.0.0.1:8000 \
+  lab-gpu</code></pre>
+    <p>浏览器打开 <code>http://127.0.0.1:8800</code>。完成后在两个终端分别按 <kbd>Ctrl</kbd>+<kbd>C</kbd>，确认 8000 与 8800 不再监听。</p>
+    <p><strong>验收标准：</strong>你不看教程也能重新连接、传文件、说明两组密钥、写主机别名、画出本地转发的数据流；面对超时、拒绝、主机密钥警告和公钥拒绝，能先判层再行动。</p>
+  </section>
+
+  <section id="cheatsheet">
+    <h2>十四、独立操作速查表</h2>
+    <table>
+      <thead><tr><th>目的</th><th>命令</th><th>关键提醒</th></tr></thead>
+      <tbody>
+        <tr><td>查看客户端版本</td><td><code>ssh -V</code></td><td>大写 V；实现版本不是协议代际</td></tr>
+        <tr><td>默认端口连接</td><td><code>ssh user@host</code></td><td>第一次先核验主机指纹</td></tr>
+        <tr><td>指定端口</td><td><code>ssh -p 2222 user@host</code></td><td>ssh 使用小写 p</td></tr>
+        <tr><td>执行单次命令</td><td><code>ssh host 'hostname; uptime'</code></td><td>注意本地/远端引号展开</td></tr>
+        <tr><td>上传文件</td><td><code>scp file host:/remote/path/</code></td><td>非默认端口用大写 P</td></tr>
+        <tr><td>下载文件</td><td><code>scp host:/remote/file .</code></td><td>最后的点是本机当前目录</td></tr>
+        <tr><td>交互式文件传输</td><td><code>sftp host</code></td><td><code>l</code> 前缀命令作用于本机</td></tr>
+        <tr><td>生成专用密钥</td><td><code>ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_lab</code></td><td>设置口令；不要覆盖旧密钥</td></tr>
+        <tr><td>指定私钥</td><td><code>ssh -i key -o IdentitiesOnly=yes host</code></td><td>私钥永不上传</td></tr>
+        <tr><td>查看 agent 中密钥</td><td><code>ssh-add -l</code></td><td>不等于服务端已授权</td></tr>
+        <tr><td>查看最终配置</td><td><code>ssh -G alias</code></td><td>不建立连接</td></tr>
+        <tr><td>详细诊断</td><td><code>ssh -vvv alias</code></td><td>公开日志前脱敏</td></tr>
+        <tr><td>本地端口转发</td><td><code>ssh -N -L 127.0.0.1:8600:127.0.0.1:6006 host</code></td><td>第二个 localhost 属于远端视角</td></tr>
+        <tr><td>经跳板机</td><td><code>ssh -J jump target</code></td><td>无需复制私钥到跳板机</td></tr>
+        <tr><td>卡死时断开</td><td><code>Enter</code> 后输入 <code>~.</code></td><td>转义符须在新行开头</td></tr>
+        <tr><td>移除已核验的旧主机键</td><td><code>ssh-keygen -R host</code></td><td>先独立核验新指纹</td></tr>
+      </tbody>
+    </table>
+
+    <h3>最终心智模型</h3>
+    <ol>
+      <li>先确认<strong>我是否到得了这台主机</strong>：DNS、VPN、路由、防火墙、端口、服务监听。</li>
+      <li>再确认<strong>它是否真是那台主机</strong>：主机密钥与 <code>known_hosts</code>。</li>
+      <li>再证明<strong>我是谁</strong>：密码、公钥、证书或其他认证。</li>
+      <li>登录后还要问<strong>我被允许做什么</strong>：远端用户、文件权限、sudo、应用授权。</li>
+      <li>执行任务时区分<strong>SSH 连接生命周期</strong>与<strong>远端任务生命周期</strong>。</li>
+      <li>失败时按阶段收集证据，不靠重装、删配置、关校验或重复生成密钥碰运气。</li>
+    </ol>
+  </section>
+
+  <section id="references">
+    <h2>参考资料与证据范围</h2>
+    <ol class="refs">
+      <li><a href="https://www.rfc-editor.org/info/rfc4251">RFC 4251: SSH Protocol Architecture</a>、<a href="https://www.rfc-editor.org/info/rfc4252">RFC 4252: Authentication</a>、<a href="https://www.rfc-editor.org/info/rfc4253">RFC 4253: Transport</a>、<a href="https://www.rfc-editor.org/info/rfc4254">RFC 4254: Connection</a>。SSH-2 分层、主机/用户认证、会话与转发的协议依据。</li>
+      <li><a href="https://man.openbsd.org/ssh.1">OpenBSD Manual: ssh(1)</a>。OpenSSH 客户端命令、转义序列、<code>-J</code>、<code>-L</code> 等的一手手册。</li>
+      <li><a href="https://man.openbsd.org/ssh_config.5">OpenBSD Manual: ssh_config(5)</a>。<code>IdentityFile</code>、<code>IdentitiesOnly</code>、<code>StrictHostKeyChecking</code>、<code>ProxyJump</code>、转发与保活配置依据。</li>
+      <li><a href="https://man.openbsd.org/ssh-keygen.1">OpenBSD Manual: ssh-keygen(1)</a>。密钥类型、私钥口令、指纹、<code>-R</code> 和私钥保存格式的依据。</li>
+      <li><a href="https://man.openbsd.org/scp.1">OpenBSD Manual: scp(1)</a> 与 <a href="https://man.openbsd.org/sftp.1">sftp(1)</a>。文件传输语法；支撑 OpenSSH 9.0 起 SCP 命令默认使用 SFTP 协议的版本事实。</li>
+      <li><a href="https://www.openssh.com/releasenotes.html">OpenSSH Release Notes</a>。当前实现版本、算法弃用和兼容性变化；本文不要求用户手工追随上游版本，而是优先接受操作系统供应商安全维护。</li>
+      <li><a href="https://support.apple.com/guide/mac-help/allow-a-remote-computer-to-access-your-mac-mchlp1066/mac">Apple: Allow a remote computer to access your Mac</a>。macOS“通用 → 共享 → 远程登录”的官方操作路径。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse">Microsoft Learn: Get started with OpenSSH Server for Windows</a>。Windows 可选功能、<code>sshd</code> 服务和防火墙规则的官方流程。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement">Microsoft Learn: Key-Based Authentication in OpenSSH for Windows</a>。Windows 普通用户/管理员授权文件位置与 ACL 差异。</li>
+      <li><a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">GitHub Docs: Generating a new SSH key and adding it to ssh-agent</a>。跨平台 Ed25519 密钥、口令与 agent 的实践补充；GitHub 场景并不替代 SSH 协议手册。</li>
+    </ol>
+    <p class="muted">文中服务端命令以常见 Ubuntu/Debian 与 OpenSSH 为例。发行版、Windows 版本、组织策略和云平台会改变服务名、配置加载顺序、日志位置与防火墙操作；在生产主机上应以对应系统的当前官方文档和管理员变更流程为准。</p>
+  </section>
+
+  <section id="reader-feedback">
+    <h2>读后反馈</h2>
+    <p class="muted">暂无。后续反馈将只追加在此处；除非明确要求修订，否则正文保持不变。</p>
+  </section>
+</main>
+</body>
+</html>

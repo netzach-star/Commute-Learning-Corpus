@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="计算机">
+  <title>远程操控计算机：从分时终端到 SSH 与远程桌面</title>
+  <style>
+    :root { color-scheme: light; --ink:#1f2937; --muted:#5b6472; --line:#d8dee8; --soft:#f4f7fb; --accent:#1d4ed8; --warn:#fff7ed; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:#fff; color:var(--ink); font:17px/1.82 system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+    main { max-width:900px; margin:0 auto; padding:42px 24px 80px; }
+    h1 { font-size:2.15rem; line-height:1.25; margin:0 0 12px; }
+    h2 { margin:2.5em 0 .75em; padding-bottom:.25em; border-bottom:1px solid var(--line); font-size:1.52rem; }
+    h3 { margin:1.7em 0 .55em; font-size:1.16rem; }
+    p, li { text-align:justify; }
+    a { color:var(--accent); }
+    code { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; background:#eef2f7; padding:.08em .28em; border-radius:4px; }
+    pre { overflow:auto; padding:16px 18px; background:#111827; color:#f8fafc; border-radius:8px; line-height:1.55; }
+    pre code { background:transparent; padding:0; }
+    table { width:100%; border-collapse:collapse; margin:1.2em 0; font-size:.94em; }
+    th, td { border:1px solid var(--line); padding:10px 12px; vertical-align:top; text-align:left; }
+    th { background:var(--soft); }
+    .lead { font-size:1.08em; color:#334155; }
+    .meta, .muted { color:var(--muted); }
+    .box { margin:1.25em 0; padding:16px 18px; background:var(--soft); border-left:4px solid #64748b; }
+    .warning { background:var(--warn); border-left-color:#ea580c; }
+    nav { margin:1.6em 0; padding:16px 20px; border:1px solid var(--line); border-radius:8px; }
+    nav ol { columns:2; column-gap:32px; margin:.4em 0; padding-left:1.4em; }
+    details { margin:1em 0; border:1px solid var(--line); border-radius:7px; padding:10px 14px; }
+    summary { cursor:pointer; font-weight:650; }
+    .flow { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:1.2em 0; }
+    .flow div { padding:12px; text-align:center; background:var(--soft); border:1px solid var(--line); border-radius:7px; }
+    .refs li { margin:.65em 0; }
+    @media (max-width:720px) { nav ol { columns:1; } .flow { grid-template-columns:1fr 1fr; } body { font-size:16px; } main { padding:28px 18px 64px; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>远程操控计算机：从分时终端到 SSH 与远程桌面</h1>
+    <p class="lead">核心问题：当人不在计算机旁边时，我们究竟是在“远程”什么？为什么服务器世界偏爱 SSH，办公桌面偏爱 RDP/VNC，而机器彻底死机时又需要另一套带外管理技术？</p>
+    <p class="meta">定位：系列第一篇 · 系统全景、历史与技术选型 · 不要求任何 SSH 使用经验</p>
+  </header>
+
+  <nav aria-label="目录">
+    <strong>阅读主线</strong>
+    <ol>
+      <li><a href="#scene">先看一次真实远程操作</a></li>
+      <li><a href="#model">统一系统模型</a></li>
+      <li><a href="#history">历史：终端、Telnet、SSH 与图形桌面</a></li>
+      <li><a href="#families">今天的主流技术家族</a></li>
+      <li><a href="#ssh-position">SSH 到底特殊在哪里</a></li>
+      <li><a href="#versions">协议、实现与版本号</a></li>
+      <li><a href="#choose">如何按任务选技术</a></li>
+      <li><a href="#security">远程入口的安全边界</a></li>
+      <li><a href="#case">贯穿案例：维护一台实验服务器</a></li>
+      <li><a href="#summary">总结与下一篇</a></li>
+    </ol>
+  </nav>
+
+  <section id="scene">
+    <h2>一、先看一次真实远程操作：你操控的不是“那块屏幕”</h2>
+    <p>假设学校实验室里有一台 Linux 服务器，显示器甚至没有接上。你在宿舍打开终端，输入：</p>
+    <pre><code>ssh liyuyang@lab.example.edu</code></pre>
+    <p>几秒后，提示符从本机的样子变成远端服务器的样子。你再输入 <code>python train.py</code>，程序使用的是实验室服务器的 CPU、内存、显卡和磁盘；终端里回来的只是文本。此时并不存在一段“把远端屏幕录像传回来”的视频流。更准确地说，你的键盘输入被交给远端的命令解释器，远端执行命令，再把标准输出、标准错误和终端控制信息传回本机。</p>
+    <p>如果你改用远程桌面，看到完整桌面并拖动窗口，网络里传递的就可能是图形更新、压缩后的画面、鼠标键盘事件、剪贴板和设备重定向数据。如果你用服务器主板提供的远程控制台，即使操作系统已经崩溃，仍能看到开机自检并修改 BIOS——这时真正响应你的不是操作系统，而是主板上的独立管理控制器。</p>
+    <div class="box">
+      <strong>第一条关键结论：</strong>“远程操控计算机”不是单一技术。它是若干技术家族的统称，区别在于远程端暴露的是命令会话、应用界面、整个屏幕、管理 API，还是独立于操作系统的硬件控制面。
+    </div>
+  </section>
+
+  <section id="model">
+    <h2>二、把所有远程技术装进同一个系统模型</h2>
+    <p>无论 SSH、RDP 还是浏览器里的云服务器控制台，一次远程操作至少包含四个角色。理解这四个角色，后面遇到新产品时就不必重新背概念。</p>
+
+    <h3>2.1 客户端、服务端、被控资源与网络路径</h3>
+    <ul>
+      <li><strong>客户端（client）</strong>：你正在操作的这一端。它收集键盘、鼠标或命令，显示返回结果。SSH 中常见客户端程序就叫 <code>ssh</code>。</li>
+      <li><strong>服务端（server）</strong>：远端持续等待连接、验证身份、创建会话的程序。OpenSSH 的服务端通常叫 <code>sshd</code>，末尾的 d 来自守护进程（daemon）。</li>
+      <li><strong>被控资源</strong>：服务端代你访问的 shell、桌面会话、文件系统、某个应用，或硬件管理功能。服务端不是“整台机器”本身，而是机器上开放的一扇受控入口。</li>
+      <li><strong>网络路径</strong>：客户端怎样抵达服务端。可能是同一局域网、校园 VPN、公网 IP、跳板机、组网隧道，或厂商的中继服务。</li>
+    </ul>
+    <p>“客户端”和“服务端”描述的是本次交互中的角色，不是机器的贵贱。一台笔记本完全可以运行 SSH 服务端供另一台机器登录；服务器也可以作为 SSH 客户端去连接别的服务器。</p>
+
+    <h3>2.2 一次连接要连续解决六个问题</h3>
+    <div class="flow" aria-label="远程连接的六个阶段">
+      <div>1. 找到地址</div><div>2. 建立传输</div><div>3. 识别服务器</div><div>4. 验证用户</div>
+      <div>5. 创建会话</div><div>6. 传递操作</div><div>7. 记录与审计</div><div>8. 断线与恢复</div>
+    </div>
+    <p>更细地看：域名要解析成地址；路由和防火墙要允许连接；客户端要确认自己连到的确实是目标服务器而非冒充者；服务器要确认用户身份并检查权限；之后才创建 shell 或桌面会话。连接建立后还要处理窗口大小、编码、剪贴板、文件、并发通道、保活与断线。最后，管理员需要从日志知道谁在何时做了什么。</p>
+    <p>新手最常犯的判断错误，是把所有失败都叫“SSH 坏了”。实际上，“主机名不存在”“端口被防火墙挡住”“主机指纹改变”“密钥不被接受”“登录后命令没有权限”分别发生在完全不同的层。第二篇会据此建立逐层排错法。</p>
+
+    <h3>2.3 三种流：控制、数据与状态</h3>
+    <p><strong>控制流</strong>是“请求执行什么”：按键、鼠标事件、启动命令、创建端口转发。<strong>数据流</strong>是“实际搬运什么”：终端字符、文件字节、图形更新。<strong>状态流</strong>是“双方怎样保持共同理解”：登录身份、当前工作目录、终端尺寸、会话是否仍存活、哪条通道属于哪个任务。</p>
+    <p>SSH 的一个重要设计是：在一条加密连接中复用多个逻辑通道。交互式 shell、单次命令、端口转发都能成为独立通道，而不必为每项功能重新发明一套安全连接。RFC 4254 对此给出了标准化描述。</p>
+
+    <details>
+      <summary>局部自检 1：远程桌面窗口卡住，为什么不能直接断言“远端电脑卡死了”？</summary>
+      <p>因为故障可能在客户端渲染、网络路径、远程桌面服务端、用户桌面会话或整台远端主机。只有来自另一个独立通道的证据——例如 SSH 仍可登录、监控仍有心跳，或带外控制台也无响应——才能逐步缩小范围。“画面不动”只是客户端观察到的症状。</p>
+    </details>
+  </section>
+
+  <section id="history">
+    <h2>三、历史：每一代技术都在改变“远端暴露什么”</h2>
+
+    <h3>3.1 分时系统：远程思想早于个人计算机</h3>
+    <p>20 世纪 60 年代的大型计算机昂贵，许多用户通过终端共享一台主机。终端可以只有键盘、打印装置或字符显示能力，计算和文件都在主机上。分时（time-sharing）系统把 CPU 时间切片分给多个交互式用户，让人产生“机器正在响应我”的感觉。</p>
+    <p>这奠定了远程计算最持久的分工：本地设备负责输入输出，远端主机保存状态并执行计算。今天用 SSH 登录云服务器，本质上仍延续这条主线；只不过物理电传终端变成了软件终端模拟器，专线变成了分组网络。</p>
+
+    <h3>3.2 Telnet：让网络另一端表现成终端</h3>
+    <p>1969 年的 RFC 15 已提出一个名为 Telnet 的子系统：让一处的电传终端像直接连在另一台主机上一样工作。1972 年 RFC 318 用网络虚拟终端（Network Virtual Terminal, NVT）抽象不同终端之间的差异；1983 年 RFC 854 形成后来广为实现的 Telnet 协议规范。</p>
+    <p>Telnet 解决了互操作问题，却不是为敌对网络设计的安全通道。用户名、密码和会话内容通常以可被沿途观察的形式传输。早期网络参与者少、边界清楚，这种假设一度可以工作；当互联网扩大、共享网络和嗅探攻击成为现实，它就暴露出根本缺陷。</p>
+
+    <h3>3.3 Unix 的 rlogin/rsh/rcp：在“可信局域网”里追求方便</h3>
+    <p>Unix 生态发展出 <code>rlogin</code>（远程登录）、<code>rsh</code>（远程执行 shell 命令）和 <code>rcp</code>（远程复制）。它们更贴合 Unix 用户、主机和终端语义。RFC 1282 记载，rlogin 因能传递比 Telnet 更多的 Unix 终端环境语义而被 Unix 主机广泛使用。</p>
+    <p>但 r 系列经常依赖“来源主机可信”之类的网络身份假设，缺乏现代意义上的加密、完整性保护和强主机认证。源地址伪造、DNS 欺骗、共享网络监听都会动摇这类信任。它们的历史价值在于提醒我们：<strong>在小型可信网络中显得合理的便利，一旦网络边界扩大，可能直接变成安全漏洞。</strong></p>
+
+    <h3>3.4 SSH：把不可信网络当作设计前提</h3>
+    <p>1995 年，芬兰赫尔辛基理工大学网络发生密码嗅探事件。Tatu Ylönen 随后开发 Secure Shell（SSH），同年发布早期版本。他自己的回顾说明，SSH 的目标是替代当时广泛使用的 Telnet 与 FTP；默认端口 22 则被安排在 FTP 的 21 和 Telnet 的 23 之间。</p>
+    <p>SSH 不只给字符流“套一层加密”。它把服务器身份认证、用户认证、机密性、完整性、会话与多通道连接纳入一套协议架构。第一代 SSH 协议后来暴露出结构性问题，SSH-2 重新设计；IETF 在 2006 年发布 RFC 4251—4254 等核心文档，将 SSH-2 的传输层、认证与连接协议标准化。</p>
+    <p>OpenSSH 则是 SSH 的开源实现家族。OpenBSD 项目从可自由使用的早期代码出发，在 1999 年形成 OpenSSH，随后加入 SSH-2 与 SFTP 支持，并移植到大量类 Unix 系统。今天人们口语中说“装 SSH”，多数时候其实是在安装或启用 OpenSSH。</p>
+
+    <h3>3.5 图形远程并不是“SSH 加一张屏幕”</h3>
+    <p>字符会话适合命令，但图形软件需要另一种抽象。一条路线传输“绘图与界面语义”，例如微软远程桌面协议（Remote Desktop Protocol, RDP）把远端应用的显示信息送往客户端，并把输入送回远端；它还可以重定向剪贴板、音频、打印机、磁盘等资源。另一条路线把屏幕看作帧缓冲区（framebuffer），只同步变化区域并传回键鼠事件。远程帧缓冲协议（Remote Framebuffer, RFB）是 VNC 家族的基础，RFC 6143 将其描述为一种简单的远程图形用户界面访问协议。</p>
+    <p>二者的区别不只是品牌。若协议理解窗口、字体、设备等更高层语义，就可能在带宽、交互和多会话方面做更深优化；帧缓冲方案更通用，却更像“远程看屏幕”。现代实现还会使用视频编码、UDP 辅助传输、硬件加速和自适应画质，边界已不再绝对，但基本思想仍有助于判断。</p>
+
+    <h3>3.6 从“开放端口”到中继、组网与零信任入口</h3>
+    <p>早期典型部署是给目标主机一个可达地址并开放端口。今天家庭宽带 NAT、移动网络、云环境和企业安全策略使直接入站连接并不总是可行。许多远控产品让两端主动连接到中继或协调服务；VPN 与覆盖网络（overlay network）让分散设备组成逻辑私网；访问代理则在建立会话前结合身份、设备状态与策略做判断。</p>
+    <p>这些技术主要改变“怎样抵达远端服务”和“谁被允许建立连接”，并不必然取代 SSH/RDP 本身。一条常见组合是：先通过 VPN 或身份感知的访问层进入私网，再用 SSH 登录服务器。把“可达性层”和“远程会话协议”分开，是理解现代远程接入的关键。</p>
+  </section>
+
+  <section id="families">
+    <h2>四、今天的主流技术家族：不要把产品名当作协议分类</h2>
+    <table>
+      <thead><tr><th>技术家族</th><th>远端暴露的对象</th><th>典型用途</th><th>优势与边界</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SSH-2 / OpenSSH</strong></td><td>shell、单次命令、文件、TCP 通道</td><td>Linux/Unix 服务器管理、开发、自动化、Git 认证</td><td>文本高效、脚本友好、跨平台；不等于完整桌面，不负责让不可达主机自动穿透 NAT</td></tr>
+        <tr><td><strong>RDP</strong></td><td>远程桌面或应用会话、输入和可选设备</td><td>Windows 桌面、远程办公、集中式应用</td><td>桌面体验与 Windows 集成深；安全性高度依赖部署方式、认证、补丁与网关，不宜草率暴露公网</td></tr>
+        <tr><td><strong>RFB / VNC</strong></td><td>帧缓冲更新与键鼠事件</td><td>跨平台看屏、共享现有控制台、设备维护</td><td>模型简单、实现广泛；认证和加密能力取决于具体实现与扩展，不能看到“VNC”三个字就默认链路安全</td></tr>
+        <tr><td><strong>远程支持/中继型工具</strong></td><td>屏幕、输入、文件与协助会话</td><td>给非技术用户临时排障、跨 NAT 连接</td><td>上手快、无需自己配置入站；信任边界扩展到账号体系、中继服务、终端授权与供应商</td></tr>
+        <tr><td><strong>管理协议与远程执行框架</strong></td><td>结构化命令、对象、API</td><td>PowerShell Remoting、配置管理、批量运维</td><td>比“模拟人敲命令”更适合自动化；通常仍需底层传输，如 WS-Management、HTTPS 或 SSH</td></tr>
+        <tr><td><strong>带外管理（out-of-band management）</strong></td><td>电源、固件、虚拟控制台、虚拟介质</td><td>操作系统起不来、远程重装、机房服务器维护</td><td>故障面与操作系统分离；权限极高，应置于严格隔离的管理网络</td></tr>
+        <tr><td><strong>远程开发环境</strong></td><td>远端文件与进程，本地编辑界面</td><td>IDE 连接服务器/容器、远端编译与调试</td><td>用户体验像本地 IDE，底层常借助 SSH；它是上层工作流，不是新的通用安全协议</td></tr>
+      </tbody>
+    </table>
+
+    <h3>4.1 “主流型号”更准确的说法是：协议版本、实现和产品</h3>
+    <p>你提到“主流型号”，在软件网络领域最好拆成三问：现在用哪一代<strong>协议</strong>？有哪些常见<strong>实现</strong>？我当前系统自带哪个<strong>版本</strong>？SSH 的答案尤其典型：</p>
+    <ul>
+      <li>协议层：今天应当理解和使用 SSH-2。SSH-1 是历史协议，不应作为新部署选项。</li>
+      <li>实现层：OpenSSH 是事实上的主流开源实现，包含客户端 <code>ssh</code>、服务端 <code>sshd</code>、密钥工具 <code>ssh-keygen</code>、文件传输 <code>sftp</code>/<code>scp</code> 等。也存在其他兼容实现与库。</li>
+      <li>软件版本层：截至 2026 年 8 月，上游 OpenSSH 最新正式版为 10.4，发布于 2026 年 7 月 6 日。但 macOS、Windows、Ubuntu 等系统通常按自己的维护节奏打包，版本号落后于上游并不自动等于不安全；关键是是否仍获供应商安全更新。</li>
+    </ul>
+    <p>同样，RDP 是协议家族，Windows 内置的远程桌面客户端/服务端是实现，某个应用商店里的“Windows App”则是具体产品。VNC 是围绕 RFB 协议形成的一类实现和产品。把层次分开后，版本比较才有意义。</p>
+
+    <details>
+      <summary>局部自检 2：某教程说“SSH 10.4 比 SSH-2 安全”，这句话哪里不严谨？</summary>
+      <p>SSH-2 是协议代际，OpenSSH 10.4 是某个实现的发布版本，不能当作同一条版本线比较。严谨说法应是“OpenSSH 10.4 实现 SSH-2，并相对旧版 OpenSSH 调整了算法、功能和漏洞修复”。</p>
+    </details>
+  </section>
+
+  <section id="ssh-position">
+    <h2>五、SSH 到底特殊在哪里：它提供的是安全会话底座</h2>
+    <p>RFC 4251 把 SSH-2 分成三个主要组成部分。它们不是三个独立程序，而是连接建立过程中依次叠加的协议层。</p>
+
+    <h3>5.1 传输层：先建立“我连的是谁、内容没被偷看或篡改”</h3>
+    <p>SSH 传输层（transport layer）通常运行在 TCP 之上。客户端和服务端协商算法，进行密钥交换，服务端用主机密钥证明身份，随后对数据提供机密性和完整性保护。这里的“服务端认证”发生在用户登录之前；它回答的是“这台服务器是不是我过去认识的那台”。</p>
+    <p>第一次连接时客户端还没有旧记录，所以会显示主机密钥指纹（host key fingerprint）让人核验。确认后，指纹被写入 <code>known_hosts</code>。以后若同名主机突然出示另一把钥匙，SSH 会报警。它可能只是服务器重装，也可能意味着 DNS/路由被劫持；正确动作是独立核验，而不是习惯性删除警告。</p>
+
+    <h3>5.2 用户认证层：服务器再确认“你是谁”</h3>
+    <p>连接已经加密并确认服务器后，进入用户认证（user authentication）。服务器可以接受密码、公钥、交互式认证或组织自定义机制。最常见的公钥认证不是“把密码加密后传过去”：客户端持有私钥，服务器保存相应公钥；客户端用私钥完成签名证明，而私钥本身不离开本机。</p>
+    <p>因此存在两组完全不同的密钥：<strong>主机密钥</strong>让客户端识别服务器，<strong>用户密钥</strong>让服务器识别用户。新手把它们混为一谈，就很难理解为什么第一次连接先问指纹，之后又问密码或密钥口令。</p>
+
+    <h3>5.3 连接层：在安全通道上创建许多逻辑通道</h3>
+    <p>认证成功后，SSH 连接协议可以承载交互式登录、单次命令、TCP 端口转发和 X11 转发，并把多条通道复用在一条加密连接上。SFTP 也通常作为 SSH 连接中的子系统运行。</p>
+    <p>这解释了 SSH 为什么会出现在远程开发、Git、数据库访问和自动化部署中：它不是只会显示一个黑色终端，而是一套可以安全承载多种远程操作的底座。</p>
+
+    <h3>5.4 SSH 明确不解决什么</h3>
+    <ul>
+      <li>它不替你获得远端账号和权限。认证成功之后，仍受操作系统用户、文件权限、<code>sudo</code> 和应用权限约束。</li>
+      <li>它不自动保证网络可达。目标在 NAT 或防火墙之后时，仍需要 VPN、跳板机、端口映射或其他接入方式。</li>
+      <li>它不等于任务持久化。网络断开后，前台进程可能收到挂断信号；长任务要用 <code>tmux</code>、作业系统、服务管理器等保存会话或托管进程。</li>
+      <li>它不自动让危险命令变安全。远程执行 <code>rm</code> 与坐在机器前执行一样会产生真实副作用。</li>
+      <li>加密连接不等于端点可信。若本机私钥被偷、远端系统已入侵或用户被诱骗接受假指纹，协议本身无法消除这些问题。</li>
+    </ul>
+  </section>
+
+  <section id="versions">
+    <h2>六、现代 SSH 的版本与算法：新手需要知道到什么程度</h2>
+    <p>你不需要手工挑选一串密码学算法。维护中的 OpenSSH 会提供经过筛选的默认集合，系统供应商也会通过更新修补问题。新手更重要的是识别旧教程中的危险信号。</p>
+    <ul>
+      <li><strong>SSH-1：</strong>属于历史协议。新系统和新教程应围绕 SSH-2。</li>
+      <li><strong>DSA / <code>ssh-dss</code>：</strong>现代 OpenSSH 已长期禁用并推进移除，不应为了连接古老设备而全局重新开启。</li>
+      <li><strong><code>ssh-rsa</code> 的歧义：</strong>它在很多错误信息里特指使用 SHA-1 的旧 RSA 签名方案，不等于“所有 RSA 密钥都不安全”。同一把 RSA 密钥可以配合 RSA/SHA-2 签名。现代新建个人密钥通常优先 Ed25519；必须兼容旧环境时再按组织文档选择 RSA/SHA-2。</li>
+      <li><strong>后量子混合密钥交换：</strong>OpenSSH 10.0 起默认优先使用 <code>mlkem768x25519-sha256</code>。这属于连接密钥协商的演进，不要求用户把现有 Ed25519 登录密钥立刻换成名字相似的新类型。</li>
+    </ul>
+    <p>若旧设备只支持过时算法，最安全的思路通常是升级固件、在隔离网络中通过受控跳板兼容，或替换设备；不要把弱算法永久加到全局客户端配置，因为那会扩大到所有主机。</p>
+  </section>
+
+  <section id="choose">
+    <h2>七、如何按任务选技术：先问“我要传递什么”</h2>
+
+    <h3>7.1 管理 Linux 服务器、跑程序、改配置：优先 SSH</h3>
+    <p>服务器常常没有图形桌面，命令可以精确记录、复制和自动化，文本传输所需带宽小。SSH 还顺便提供文件传输和端口转发，因此是最自然的入口。需要编辑远端代码时，可以在 SSH shell 中使用编辑器，也可以让本地 IDE 以 SSH 为传输层接入。</p>
+
+    <h3>7.2 必须操作完整 Windows GUI：考虑 RDP</h3>
+    <p>若任务依赖 Windows 桌面程序、图形设置或办公软件，远程桌面更直接。企业部署通常还会加入网络级别身份验证、远程桌面网关、多因素认证和访问策略。个人场景也不应简单把 RDP 端口直接暴露到公网。</p>
+
+    <h3>7.3 要协助亲友操作现有桌面：远程支持工具更合适</h3>
+    <p>临时协助强调“对方看得见、能明确同意、无需配置路由器、会话结束即可撤销”。中继型远控工具往往比自建 VNC 更符合这一流程。但必须核对会话授权、无人值守设置、账号保护、日志、文件传输权限和供应商信任边界。不要让陌生来电者诱导安装远控软件或泄露一次性验证码。</p>
+
+    <h3>7.4 操作系统已经挂了：SSH/RDP 都不是正确层</h3>
+    <p>如果内核没启动、网卡驱动失效或系统盘损坏，运行在操作系统里的服务端当然无法响应。此时需要云厂商串行控制台，或物理服务器的 BMC、KVM over IP 等带外入口。它们的权限通常接近“人站在机房里”，必须与业务网络隔离并严控账号。</p>
+
+    <h3>7.5 要批量、重复、可验证地管理：不要长期模拟人类点击</h3>
+    <p>一台机器偶尔手工登录没有问题；几十台机器反复执行同一操作时，应转向脚本、配置管理、编排系统或管理 API。SSH 可以继续作为安全传输，但上层动作应具备幂等性、失败报告、并发控制和审计。远程控制解决“能进去”，自动化工程还要解决“重复执行是否安全、怎样知道所有目标都成功”。</p>
+
+    <table>
+      <thead><tr><th>你的真实目标</th><th>首选方向</th><th>先确认的限制</th></tr></thead>
+      <tbody>
+        <tr><td>在服务器跑代码、查日志</td><td>SSH</td><td>账号、主机地址、网络可达、权限</td></tr>
+        <tr><td>用远端 Windows 桌面软件</td><td>RDP 或组织提供的虚拟桌面</td><td>系统版本、网关/VPN、会话许可</td></tr>
+        <tr><td>临时帮别人看屏幕</td><td>交互式远程支持</td><td>明确同意、一次性授权、账号安全</td></tr>
+        <tr><td>在无显示器的小设备上维护系统</td><td>SSH；必要时串口/控制台</td><td>首次联网与故障恢复入口</td></tr>
+        <tr><td>系统无法启动仍要修复</td><td>带外控制台</td><td>硬件/云平台是否提供、管理网隔离</td></tr>
+        <tr><td>批量修改上百台主机</td><td>管理 API/配置管理，SSH 可作传输</td><td>幂等、回滚、并发、审计与凭据治理</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="security">
+    <h2>八、远程入口的安全边界：加密只是其中一层</h2>
+
+    <h3>8.1 先把威胁分成四类</h3>
+    <ol>
+      <li><strong>沿途攻击：</strong>监听、篡改、冒充服务器。SSH 的加密、完整性与主机认证主要处理这一类。</li>
+      <li><strong>凭据攻击：</strong>猜密码、偷私钥、钓鱼、复用泄露密码。要靠强认证、私钥保护、多因素认证、限速与凭据撤销。</li>
+      <li><strong>暴露面攻击：</strong>服务端漏洞、错误配置、长期无人维护的公网端口。要靠更新、减少暴露、网络策略与日志监控。</li>
+      <li><strong>合法账号误用：</strong>用户确实通过认证，却执行破坏性命令或权限过大。要靠最小权限、分权、审计、备份和变更流程。</li>
+    </ol>
+    <p>“SSH 全程加密”只能证明第一类风险得到重要缓解，不能推导出整套远程管理已经安全。</p>
+
+    <h3>8.2 端口不是安全边界</h3>
+    <p>SSH 默认使用 TCP 22。把端口改成 2222 可以减少日志里的自动扫描噪声，却不能代替身份认证、补丁、防火墙和访问控制。端口扫描并不困难。相反，端口改变还会增加客户端配置和排错成本。因此应把它看作运维选择，而不是核心加固措施。</p>
+
+    <h3>8.3 不要让“方便连接”破坏服务器身份验证</h3>
+    <p>把 <code>StrictHostKeyChecking</code> 全局设为 <code>no</code>、把 <code>known_hosts</code> 指向空设备，能让自动脚本少一个提示，却削弱了 SSH 防冒充的关键能力。更合理的自动化方式是预置可信主机密钥、使用主机证书，或在受控环境中使用 <code>accept-new</code> 并拒绝已知主机的密钥变化。</p>
+
+    <h3>8.4 远程服务的安全状态需要持续维护</h3>
+    <p>一个今天安全的入口，半年后可能因软件漏洞、离职账号、遗失设备或错误端口转发变得危险。持续工作包括：更新客户端与服务端、移除不再需要的公钥和账号、复核防火墙与网关、检查认证失败和异常来源、演练失去私钥后的撤销与恢复。</p>
+
+    <details>
+      <summary>局部自检 3：把 SSH 端口改成随机高端口后，能否放心保留弱密码？</summary>
+      <p>不能。改端口只降低最粗糙的自动扫描噪声，不改变弱密码可被猜中、钓鱼或复用泄露的事实。强认证、限制暴露面、更新和日志仍是核心控制。</p>
+    </details>
+  </section>
+
+  <section id="case">
+    <h2>九、贯穿案例：你要维护一台实验室 Linux 服务器</h2>
+    <p>现在把全篇压缩进一个完整任务。实验室有一台 GPU 服务器，你要在宿舍提交训练、取回日志，偶尔访问只监听在服务器本机的可视化网页。操作系统正常，但机房不允许随便进入。</p>
+
+    <h3>9.1 先定义需求，而不是先搜“最好用的远控软件”</h3>
+    <ul>
+      <li>主要输入输出是命令和文本日志，不需要完整桌面。</li>
+      <li>要上传代码和下载结果。</li>
+      <li>可视化服务只监听远端 <code>127.0.0.1:6006</code>，不应开放公网。</li>
+      <li>训练可能持续数小时，笔记本合盖后任务不能丢。</li>
+      <li>服务器无公网地址，只能先进入校园 VPN。</li>
+    </ul>
+    <p>因此选型自然落下：校园 VPN 负责网络可达与入口控制；SSH 负责登录、命令、文件和端口转发；<code>tmux</code> 或作业调度系统负责让任务独立于临时网络连接。RDP/VNC 在这里增加图形带宽和维护面，却没有解决额外需求。</p>
+
+    <h3>9.2 一次任务的数据和状态怎样流动</h3>
+    <ol>
+      <li>笔记本先建立校园 VPN，使实验室地址可路由。</li>
+      <li>SSH 客户端连接服务器 22 端口，核验主机身份，再用你的账号密钥认证。</li>
+      <li>服务端创建属于该 Unix 用户的 shell。你看见的当前目录、环境变量和进程属于远端会话。</li>
+      <li>你用 SFTP/SCP 通过同一安全体系上传代码；文件真正写入远端磁盘，并受远端目录权限约束。</li>
+      <li>你进入 <code>tmux</code> 会话并启动任务。断开 SSH 后，<code>tmux</code> 与训练进程仍在服务器上；下次登录可重新附着。</li>
+      <li>你建立本地端口转发，把笔记本的 <code>127.0.0.1:6006</code> 经 SSH 送到服务器看到的 <code>127.0.0.1:6006</code>。浏览器仍访问本机地址，真实服务不必对整个网络监听。</li>
+    </ol>
+
+    <h3>9.3 正常路径之外的失败与恢复</h3>
+    <table>
+      <thead><tr><th>症状</th><th>可能所在层</th><th>需要的证据</th></tr></thead>
+      <tbody>
+        <tr><td>主机名无法解析</td><td>VPN、DNS、名称输入</td><td>VPN 状态；管理员给出的正式主机名；DNS 查询结果</td></tr>
+        <tr><td>连接超时</td><td>路由、防火墙、服务未监听</td><td>端口可达测试；服务端监听状态；防火墙日志</td></tr>
+        <tr><td>主机密钥改变警告</td><td>服务器重装、地址复用或中间人风险</td><td>通过独立渠道取得的新指纹，不要直接删除记录</td></tr>
+        <tr><td>Permission denied</td><td>用户名、密钥、服务端授权文件或策略</td><td><code>ssh -vvv</code> 客户端日志与服务端认证日志</td></tr>
+        <tr><td>断线后训练消失</td><td>任务生命周期绑定终端</td><td>进程管理方式；是否使用 tmux/作业系统/服务管理器</td></tr>
+        <tr><td>端口转发建立但网页打不开</td><td>转发目标写错、远端服务未监听、应用自身故障</td><td>远端本机访问测试；SSH 转发详细日志；应用日志</td></tr>
+      </tbody>
+    </table>
+    <p>这就是系统模型的价值：技术选型、正常数据流和排错路径来自同一张结构图，而不是来自零散命令记忆。</p>
+  </section>
+
+  <section id="summary">
+    <h2>十、总结：先知道自己在远程哪一层</h2>
+    <ol>
+      <li>远程操控不是“把另一块屏幕搬过来”，而是让客户端通过受控服务访问远端命令、桌面、应用、API 或硬件控制面。</li>
+      <li>所有方案都要处理网络可达、服务器身份、用户身份、授权、会话、数据传输、审计和恢复，只是抽象层不同。</li>
+      <li>Telnet/rlogin 解决早期互操作与便利，却建立在不适合现代互联网的信任假设上；SSH 把不可信网络作为基本前提。</li>
+      <li>今天主流的是 SSH-2 协议；OpenSSH 是主流实现，10.4 是其 2026 年 7 月发布的软件版本，不能与“SSH-2”混为一条版本线。</li>
+      <li>SSH 适合命令、文件和隧道；RDP/VNC 适合图形交互；中继工具适合临时协助；系统崩溃时需要带外管理；批量管理则需要可验证的自动化。</li>
+      <li>加密只是远程安全的一层。端点、凭据、权限、暴露面、补丁、日志和恢复流程共同决定实际安全性。</li>
+    </ol>
+    <p>下一篇将把这套模型落到手上：从检查客户端、第一次连接和主机指纹开始，完成远程命令、文件传输、Ed25519 密钥、<code>~/.ssh/config</code>、本地端口转发、安全加固顺序与分层故障排查。即使暂时没有第二台电脑，也可以先在 Mac 本机用 <code>localhost</code> 做一个可撤销实验。</p>
+  </section>
+
+  <section id="references">
+    <h2>参考资料与证据范围</h2>
+    <ol class="refs">
+      <li><a href="https://www.rfc-editor.org/info/rfc15">RFC 15: Network Subsystem for Time Sharing Hosts</a>（1969）。一手历史文献，支撑早期 Telnet 被设想为让远端终端操作服务主机的叙述。</li>
+      <li><a href="https://www.rfc-editor.org/info/rfc318">RFC 318: Telnet Protocols</a>（1972）与 <a href="https://www.rfc-editor.org/info/rfc854">RFC 854: Telnet Protocol Specification</a>（1983）。支撑网络虚拟终端与 Telnet 交互模型。</li>
+      <li><a href="https://www.rfc-editor.org/info/rfc1282">RFC 1282: BSD Rlogin</a>（1991）。历史/信息性 RFC，支撑 rlogin 的 Unix 终端语义与使用背景；它不是现代安全建议。</li>
+      <li><a href="https://www.ssh.com/academy/ssh">Tatu Ylönen / SSH Academy: What is SSH?</a> 与 <a href="https://www.ssh.com/academy/ssh/port">The story of the SSH port is 22</a>。协议发明者的回顾，支撑 1995 年密码嗅探背景、早期发布与端口 22 来历。</li>
+      <li><a href="https://www.openssh.com/history.html">OpenSSH Project History</a>。OpenSSH 项目一手资料，支撑其从早期自由代码到 SSH-2、SFTP 支持的发展。</li>
+      <li><a href="https://www.rfc-editor.org/info/rfc4251">RFC 4251: The Secure Shell Protocol Architecture</a>、<a href="https://www.rfc-editor.org/info/rfc4252">RFC 4252: Authentication Protocol</a>、<a href="https://www.rfc-editor.org/info/rfc4253">RFC 4253: Transport Layer Protocol</a>、<a href="https://www.rfc-editor.org/info/rfc4254">RFC 4254: Connection Protocol</a>。SSH-2 架构、认证、传输和通道复用的规范依据。</li>
+      <li><a href="https://www.openssh.com/releasenotes.html">OpenSSH Release Notes</a>。支撑截至 2026-08 的 10.4 版本状态，以及算法弃用和后量子混合密钥交换的版本事实。</li>
+      <li><a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpbcgr/5073f4ed-1e93-45e1-b039-6e30c385867c">Microsoft Open Specifications: RDP Basic Connectivity and Graphics Remoting</a>。微软协议规范，支撑 RDP 传递图形显示与输入的描述。</li>
+      <li><a href="https://www.rfc-editor.org/info/rfc6143">RFC 6143: The Remote Framebuffer Protocol</a>。信息性 RFC，支撑 RFB/VNC 的帧缓冲远程访问模型。</li>
+      <li><a href="https://man.openbsd.org/ssh_config.5">OpenBSD Manual: ssh_config(5)</a>。OpenSSH 客户端配置的一手手册，支撑主机密钥检查、身份文件、转发与跳板机等机制。</li>
+    </ol>
+    <p class="muted">资料类型说明：RFC 与微软开放规范用于协议事实；OpenSSH 项目资料用于实现和版本事实；发明者回顾用于历史动机。本文关于“怎样按任务选技术”的部分是基于这些机制所作的工程判断，不是某一份标准的原文结论。</p>
+  </section>
+
+  <section id="reader-feedback">
+    <h2>读后反馈</h2>
+    <p class="muted">暂无。后续反馈将只追加在此处；除非明确要求修订，否则正文保持不变。</p>
+  </section>
+</main>
+</body>
+</html>
