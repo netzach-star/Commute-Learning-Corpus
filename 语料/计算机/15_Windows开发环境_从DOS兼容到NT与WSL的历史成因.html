@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+<meta name="corpus-id" content="计算机-15">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="计算机">
+  <title>Windows 开发环境：从 DOS 兼容到 NT 与 WSL 的历史成因</title>
+  <style>
+    body{max-width:900px;margin:0 auto;padding:28px 22px 60px;font:18px/1.85 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:#18202a;background:#fff}h1,h2,h3{line-height:1.35;color:#10243e}h1{font-size:2em}h2{margin-top:2.2em;border-bottom:1px solid #d9e2ec;padding-bottom:.25em}h3{margin-top:1.5em}code,kbd{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#f2f5f8;padding:.08em .3em;border-radius:4px}pre{overflow:auto;background:#f5f7fa;border-left:4px solid #5b7fa3;padding:14px 16px;line-height:1.55}pre code{background:none;padding:0}.lead,.note,.warning{padding:14px 18px;border-radius:8px}.lead{background:#edf6ff}.note{background:#f2f8f2}.warning{background:#fff4e5}table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.93em}th,td{border:1px solid #cfd8e3;padding:9px 11px;vertical-align:top}th{background:#eef3f8;text-align:left}a{color:#075aa8}details{background:#f6f8fa;border:1px solid #d8dee4;border-radius:7px;padding:10px 14px;margin:1em 0}summary{cursor:pointer;font-weight:650}blockquote{border-left:4px solid #95a7b8;margin-left:0;padding-left:1em;color:#44515f}.small{font-size:.9em;color:#556270}.tag{display:inline-block;padding:2px 8px;border-radius:12px;background:#e8eef5;font-size:.82em;margin-right:5px}li{margin:.35em 0}.timeline{border-left:4px solid #9fb3c8;padding-left:18px}.timeline h3{margin-top:1.2em}.axis{font-weight:650;color:#174c78}
+  </style>
+</head>
+<body>
+<article>
+  <header>
+    <p><span class="tag">Windows 开发环境</span><span class="tag">历史篇</span></p>
+    <h1>从 DOS 兼容到 NT 与 WSL：今天的叠层是怎样形成的</h1>
+    <p class="lead">核心问题：现代 Windows 明明建立在 NT 上，为什么仍保留 DOS 风格路径与 <code>cmd</code>？注册表为何从小型登记簿变成系统配置中心？PowerShell 为什么没有替换旧 Shell？微软又为什么在 Windows 中放入一套真正的 Linux 环境？</p>
+    <p>前两篇已经建立了今天的组件地图和开发差异。本文按时间展开，但同时追踪三条线：操作系统内核、命令行环境、配置与兼容。只有把三条线放在一起，历史才不会退化成版本号年表。</p>
+  </header>
+
+  <nav aria-label="目录">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#method">理解 Windows 历史的三条轴</a></li>
+      <li><a href="#before">分叉之前：Unix 与微型计算机面对不同约束</a></li>
+      <li><a href="#dos">DOS：先建立软件生态，再承受接口固化</a></li>
+      <li><a href="#gui">早期 Windows：GUI 建在 DOS 谱系上</a></li>
+      <li><a href="#nt">Windows NT：重写内核，却不能重写世界</a></li>
+      <li><a href="#registry-history">注册表：从登记信息到系统级配置树</a></li>
+      <li><a href="#unification">Windows 2000/XP：NT 成为统一主干</a></li>
+      <li><a href="#powershell-history">PowerShell：另造新层，不强拆旧层</a></li>
+      <li><a href="#compat">兼容性如何变成平台治理原则</a></li>
+      <li><a href="#wsl-history">从 POSIX 子系统到 WSL 2</a></li>
+      <li><a href="#judgment">怎样评价这段历史</a></li>
+    </ol>
+  </nav>
+
+  <section id="method">
+    <h2>一、理解 Windows 历史的三条轴</h2>
+    <table>
+      <thead><tr><th>轴</th><th>早期状态</th><th>现代状态</th><th>最容易产生的误解</th></tr></thead>
+      <tbody>
+        <tr><td class="axis">内核与 API</td><td>MS-DOS + 早期 Windows；另一边独立开发 NT</td><td>桌面 Windows 统一在 NT 家族上，主要应用接口为 Win32/.NET 等</td><td>“Windows 11 仍然运行在 DOS 上”</td></tr>
+        <tr><td class="axis">命令行</td><td><code>COMMAND.COM</code> 与批处理</td><td><code>cmd</code> 保兼容，PowerShell 提供现代管理，Terminal 负责宿主，WSL 提供 Linux Shell</td><td>“微软设计了两套等价 Shell，不知选谁”</td></tr>
+        <tr><td class="axis">配置与兼容</td><td>INI、批处理、文件关联等分散状态</td><td>注册表、AppData、服务/策略、包与兼容虚拟化并存</td><td>“注册表从第一天就是今天的巨型系统数据库”</td></tr>
+      </tbody>
+    </table>
+    <p>Windows 今天看起来像“多套东西叠在一起”，主要因为三条轴更新速度不同。微软可以在 1990 年代重写内核，却不能要求所有客户同时重写批处理、安装器和商业软件；可以在 2006 年发布新 Shell，却不能让所有管理模块在同一天迁移；可以在 2019 年引入新终端，却不能让旧控制台应用突然改协议。</p>
+    <p>这构成全文的核心机制：</p>
+    <blockquote>平台演化不是每隔几年重新求一次全局最优，而是在不可枚举的旧依赖仍运行时，为新需求增加路径，再逐步把新路径设为默认。</blockquote>
+  </section>
+
+  <section id="before">
+    <h2>二、分叉之前：Unix 与微型计算机面对不同约束</h2>
+    <p>Unix 在多用户、分时系统背景下形成。多个用户通过终端共享较昂贵的计算机，操作系统必须认真处理进程、用户权限、管道、设备与远程使用。Shell、文本工具和文件描述符由此成为核心工作界面。小程序通过标准输入输出组合，是在资源受限、多用户环境中形成的强大抽象。</p>
+    <p>早期个人计算机面对另一组约束：内存和存储极小、常常只有软盘、单用户、软件直接面向具体硬件，首要目标是让廉价机器可用并快速建立兼容软件生态。许多今天看来不优雅的决定，在当时意味着更少内存、更简单实现或兼容既有程序。</p>
+    <p>这不是“Unix 工程师聪明、PC 工程师愚蠢”。更接近事实的说法是：两条路线优化了不同问题，随后个人计算机从单用户工具成长为联网、多用户、企业级平台，早期接口却已经被大量软件固化。</p>
+  </section>
+
+  <section id="dos">
+    <h2>三、DOS：先建立软件生态，再承受接口固化</h2>
+    <div class="timeline">
+      <h3>1980 年代初：命令解释器就是主要用户界面</h3>
+      <p>MS-DOS 的命令解释器 <code>COMMAND.COM</code> 提供内建命令与批处理脚本。盘符、反斜杠路径、8.3 文件名、设备名和简单环境变量成为开发者与用户直接接触的接口。</p>
+    </div>
+    <p>当软件生态很小时，接口可以改；当企业积累了海量批处理、安装脚本、编译流程和软件启动逻辑后，接口就变成兼容契约。一个“修正”可能让新语法更整洁，却令工厂登录脚本、财务程序或安装光盘失效。</p>
+    <p>几个今天仍能看到的化石：</p>
+    <ul>
+      <li><code>C:</code>、<code>D:</code> 等盘符，而不是统一挂载在单根目录树；</li>
+      <li><code>\</code> 作为常见路径分隔符；</li>
+      <li><code>CON</code>、<code>NUL</code>、<code>COM1</code> 等设备名在普通目录中仍保留；</li>
+      <li><code>.bat</code> 批处理与百分号环境变量；</li>
+      <li><code>C:foo</code> 与 <code>C:\foo</code> 并非同一含义等特殊相对路径行为。</li>
+    </ul>
+    <p>注意因果方向：现代 NT 并不是只能这样设计，而是 Win32 层继续呈现这些行为，目的是让旧应用仍能运行。NT 内部还有自己的对象命名空间；用户看到的盘符本身可理解为映射到卷设备的 Win32 名称。</p>
+    <details>
+      <summary>局部自检 1：DOS 遗留是否证明现代 Windows 内核仍基于 DOS？</summary>
+      <p>不能。接口兼容与内核血统是两件事。现代桌面 Windows 属于 NT 家族；它在 Win32 和命令环境中继续暴露许多 DOS 风格约定。就像现代 CPU 可以兼容旧指令，并不表示内部实现仍是旧处理器。</p>
+    </details>
+  </section>
+
+  <section id="gui">
+    <h2>四、早期 Windows：GUI 建在 DOS 谱系上</h2>
+    <p>Windows 1.x 到 3.x，以及后来的 Windows 95/98，和 MS-DOS 谱系联系紧密。Windows 为个人电脑带来图形界面、窗口消息、动态链接库和大量应用 API，但 DOS 启动、文件和兼容基础并未瞬间消失。</p>
+    <p>这段历史塑造了两种文化：</p>
+    <ol>
+      <li><strong>面向普通用户，GUI 优先。</strong>安装、设置、文件操作和系统管理大量通过对话框完成；命令行不是唯一也不是首选界面。</li>
+      <li><strong>面向既有软件，兼容优先。</strong>Windows 的价值依赖能运行用户已经购买的应用和企业已经写好的脚本。</li>
+    </ol>
+    <p>Unix 工作站也有图形界面，但系统管理与开发工具更自然地保留在终端、文本文件和远程 Shell 中。Windows 的命令行并未消失，微软自身构建系统也离不开它；只是面向大众的产品重心长期放在 GUI 上。这解释了为什么 Windows 后来需要 PowerShell：不是系统没有任何 CLI，而是旧 Shell 与大量各自为政的管理 API 难以支撑大规模自动化。</p>
+  </section>
+
+  <section id="nt">
+    <h2>五、Windows NT：重写内核，却不能重写世界</h2>
+    <div class="timeline">
+      <h3>1988：新系统项目启动</h3>
+      <p>微软组建以 Dave Cutler 为核心的团队，目标是开发现代、可移植、32 位、具备抢占式调度与安全模型的新操作系统。</p>
+      <h3>1993：Windows NT 3.1 发布</h3>
+      <p>NT 不建立在 MS-DOS 内核上。它采用用户态/内核态分层、对象与句柄、安全令牌、多处理器支持、NTFS 等现代设计，并曾通过多个环境子系统支持 Win32、OS/2、POSIX 与 DOS/16 位兼容场景。</p>
+    </div>
+    <h3>5.1 为什么新内核仍带着 <code>cmd.exe</code></h3>
+    <p>NT 需要争取的不是一片空白市场。用户想要更稳定安全的系统，却不想失去原来的批处理和操作习惯。因此 NT 提供 Windows Console 与 <code>cmd.exe</code>，让它尽可能兼容 MS-DOS 的 <code>COMMAND.COM</code> 和批处理，同时增加面向 NT 的命令。</p>
+    <p>这里出现一个贯穿 Windows 历史的策略：<strong>在新内核上模拟或保留旧环境，而不是让新内核接受旧实现的全部限制。</strong>用户仍看到 <code>C:\</code> 和批处理；底层进程、安全和文件系统却已经是 NT 模型。</p>
+    <h3>5.2 多子系统设计为什么没有让 Windows 变成 Unix</h3>
+    <p>NT 最初支持 POSIX 子系统，后来还有 Interix 与 Services for UNIX。但“符合一部分 POSIX 接口”不等于拥有完整 GNU/Linux 用户空间、Linux 特有系统调用、包生态和应用二进制兼容。与此同时，Win32 获得压倒性应用投入，成为 Windows 的事实主环境。</p>
+    <p>这也说明平台抽象的成败不仅由内核优雅度决定。开发者需要编译器、库、调试器、安装器、文档和用户；生态一旦围绕 Win32 聚集，理论上可支持的其他子系统不自动成为主流。</p>
+  </section>
+
+  <section id="registry-history">
+    <h2>六、注册表：从登记信息到系统级配置树</h2>
+    <h3>6.1 早期 Windows 先有 INI，再有很小的 registry</h3>
+    <p>早期 Windows 广泛使用 <code>WIN.INI</code>、<code>SYSTEM.INI</code> 和应用自己的 INI 文件。16 位 Windows 的“registry”比现代注册表简单得多，主要用于对象类与文件关联等登记信息；它不是一开始就承载整个系统配置。</p>
+    <p>随着系统和应用复杂化，INI 模式暴露出问题：结构扁平、文件位置与命名不统一、多用户数据难分离、访问权限与系统管理困难。注册表的目标是提供系统范围、层次化、经 API 访问的数据仓库。</p>
+    <h3>6.2 1990 年代中期：现代意义的注册表成形</h3>
+    <p>微软存档的 MSDN Magazine 资料把“今天所认识的注册表”追溯到 Windows 95。Windows 9x 使用 <code>system.dat</code> 与 <code>user.dat</code> 等文件保存机器与用户数据；Windows NT/2000 使用多个 hive 与日志文件，但向应用提供相似的 Win32 注册表 API。</p>
+    <p>注册表在这里解决的不只是“应用主题色放哪里”，还包括：</p>
+    <ul>
+      <li>用户与机器级配置；</li>
+      <li>COM 组件和文件类型注册；</li>
+      <li>服务、驱动和系统启动状态；</li>
+      <li>硬件枚举与系统控制集；</li>
+      <li>企业策略、安全权限与远程管理。</li>
+    </ul>
+    <p>这些场景共同推动注册表从小型登记表扩张为 Windows 平台基础设施。</p>
+    <h3>6.3 为什么它的缺点也会随成功放大</h3>
+    <p>统一 API 让应用容易写入，却不保证应用有节制；集中状态便于系统发现，也让错误修改影响范围变大；用户/机器覆盖有利于策略，却降低了“复制一个目录即可复现”的透明度。更重要的是，一旦 COM、服务、驱动和安装器都依赖它，平台就不能轻易宣布“以后全部改成文本文件”。</p>
+    <p>微软在 2000 年前后的开发资料中已经承认边界：注册表应主要存配置与初始化信息，大量数据应放文件；当今文档进一步推荐普通现代桌面设置使用 AppData 中的 JSON/XML。可见注册表并非毫无反思地无限扩张，而是平台长期在重新划定“系统配置服务”和“应用数据文件”的边界。</p>
+  </section>
+
+  <section id="unification">
+    <h2>七、Windows 2000/XP：NT 成为统一主干</h2>
+    <p>1990 年代，面向消费市场的 Windows 9x 与面向专业/企业的 Windows NT 是两条并行谱系。前者兼容与硬件门槛友好，后者强调稳定、安全和多用户。Windows 2000 延续 NT 企业线；Windows XP 则把主流桌面带到 NT 架构上。</p>
+    <p>从此，“Windows 仍基于 DOS”越来越不符合事实，但 DOS/Win9x 时代形成的应用契约仍通过 Win32、WOW/WOW64、兼容 shim 和文件系统规则继续存在。</p>
+    <h3>7.1 32 位到 64 位：兼容再次制造双视图</h3>
+    <p>64 位 Windows 需要同时运行大量 32 位应用。WOW64 不只处理 CPU 指令，还要提供对应 DLL、系统目录、注册表视图与进程环境。于是出现：</p>
+    <ul>
+      <li><code>Program Files</code> 与 <code>Program Files (x86)</code>；</li>
+      <li><code>System32</code>、<code>SysWOW64</code> 这些看似反直觉的名称；</li>
+      <li>注册表 32/64 位视图与重定向；</li>
+      <li>同一软件不同位数版本的并排安装问题。</li>
+    </ul>
+    <p>从“命名洁癖”看，这很糟糕；从“数百万未知应用必须继续找到它们硬编码的位置”看，它是兼容工程。平台通过视图和重定向维持旧假设，代价是开发者必须知道自己看到哪一侧。</p>
+    <details>
+      <summary>局部自检 2：为什么 64 位 Windows 不直接把所有旧目录改成带 x86 后缀的新名字？</summary>
+      <p>因为旧程序可能硬编码路径，或假设公共组件、目标进程和自身位数匹配。一次整洁重命名会破坏无法枚举的程序。分目录与重定向让系统按进程位数呈现兼容视图，虽然增加理解成本，却把破坏限制在平台内部。</p>
+    </details>
+  </section>
+
+  <section id="powershell-history">
+    <h2>八、PowerShell：另造新层，不强拆旧层</h2>
+    <h3>8.1 到 2000 年代初，问题已不只是 Shell 语法难看</h3>
+    <p>Windows 管理对象分散在注册表、WMI、COM、.NET、各服务器产品 API 与 GUI 控制台中。即使给 <code>cmd</code> 增加更漂亮的循环，也无法让这些对象自动暴露一致接口。Unix 的文本管道极易组合，但 Windows 管理命令输出的人类文本格式和对象模型之间存在裂缝。</p>
+    <p>Jeffrey Snover 在 2002 年写下 Monad Manifesto，提出以一致命令、对象管道和可编程管理模型解决自动化规模问题。这个项目后来成为 PowerShell。PowerShell 1.0 于 2006 年发布。</p>
+    <h3>8.2 为什么对象管道是对 Windows 生态的针对性回答</h3>
+    <p>Windows 管理对象天然有丰富属性：服务有状态、启动类型和依赖；进程有 PID、句柄、CPU 时间；证书有主题、颁发者和有效期。若每条命令先把对象排成文本，下一条命令就要重新猜列和语言。PowerShell 让 cmdlet 直接传 .NET 对象，统一动词-名词命名，再由最后一层格式化显示。</p>
+    <p>这是从 Unix 管道吸收“可组合”思想，又选择不同数据载体的设计。它不证明文本管道落后；它说明微软面对的是“管理 API 丰富但不一致”的具体问题。</p>
+    <h3>8.3 为什么 PowerShell 没有替换 cmd</h3>
+    <p>两者语法和数据模型不同。让 <code>powershell.exe</code> 假装成 <code>cmd.exe</code> 会同时破坏批处理兼容和 PowerShell 设计。更安全的策略是并存：</p>
+    <ul>
+      <li>旧 <code>.bat/.cmd</code> 继续由 <code>cmd</code> 解释；</li>
+      <li>新管理自动化迁移到 PowerShell；</li>
+      <li>需要时彼此作为外部程序调用；</li>
+      <li>终端宿主允许用户选择 profile。</li>
+    </ul>
+    <p>随后 PowerShell 自身也分出 Windows PowerShell 5.1 与跨平台 PowerShell 6/7。后者从完整 .NET Framework 转向现代跨平台 .NET，改用 <code>pwsh.exe</code>，与 5.1 并排安装，因为仍有旧 Windows 模块依赖前者。历史再次重复：新层先增加路径，而不是立刻拆除旧层。</p>
+  </section>
+
+  <section id="compat">
+    <h2>九、兼容性如何变成平台治理原则</h2>
+    <p>开发者常把兼容包袱理解为“微软不敢删旧代码”。实际机制更复杂：平台不知道哪些行为已成为依赖。文档化 API 显然要兼容；未文档化行为、错误返回、窗口消息顺序、路径解析甚至旧 bug 也可能被应用观察并依赖。</p>
+    <p>Windows 常用的治理手段包括：</p>
+    <table>
+      <thead><tr><th>手段</th><th>解决的问题</th><th>新增复杂度</th></tr></thead>
+      <tbody>
+        <tr><td>并排保留</td><td><code>cmd</code> 与 PowerShell、PowerShell 5.1 与 7 共存</td><td>用户要知道调用哪一个</td></tr>
+        <tr><td>重定向/合并视图</td><td>WOW64 目录和注册表、HKCR 合并等</td><td>逻辑位置与物理位置不一致</td></tr>
+        <tr><td>应用兼容 shim</td><td>只对已知旧程序修补特定行为</td><td>诊断时存在隐藏特例</td></tr>
+        <tr><td>虚拟化</td><td>旧程序写受保护系统位置时透明转到用户位置</td><td>程序以为写了全局，实际只改了当前用户</td></tr>
+        <tr><td>显式 opt-in</td><td>长路径、UTF-8、现代安全行为逐步启用</td><td>系统支持不等于应用已启用</td></tr>
+        <tr><td>新宿主/新接口</td><td>ConPTY、Windows Terminal 在不破坏旧控制台应用的前提下现代化</td><td>组件层数增加</td></tr>
+      </tbody>
+    </table>
+    <p>以 Windows Vista 的注册表虚拟化为例：旧应用过去常以管理员身份运行，直接写 HKLM。引入用户账户控制后，标准用户写入会失败。为了让旧应用暂时存活，系统可以把某些 32 位交互进程的写操作透明重定向到当前用户虚拟存储，并在读取时呈现合并视图。微软文档明确说这是过渡兼容技术，新应用不应依赖。</p>
+    <p>从纯设计看，透明重定向降低可理解性；从升级治理看，它把“一次性破坏所有旧应用”变成“让旧应用先运行，开发者逐步修正”。两种评价都成立，关键是说明评价对象与时间尺度。</p>
+  </section>
+
+  <section id="wsl-history">
+    <h2>十、从 POSIX 子系统到 WSL 2：为什么最终放进真正的 Linux 内核</h2>
+    <h3>10.1 早期路线：在 NT 上提供兼容子系统</h3>
+    <p>NT 的多子系统架构曾提供 POSIX 环境，后来 Interix/Services for UNIX 扩展了 Unix 应用移植能力。但 POSIX 标准只是共同子集；现实 Linux 软件依赖大量 Linux 特有系统调用、<code>/proc</code>、文件系统行为、GNU 工具、发行版包和约定。实现“POSIX”不能自动运行任意 Ubuntu 二进制。</p>
+    <h3>10.2 WSL 1：翻译 Linux 系统调用</h3>
+    <p>2014 年前后，微软启动后来成为 WSL 的项目，并在 2016 年公开。WSL 1 让未修改的 Linux ELF 程序在 Windows 上运行，通过兼容层把 Linux 系统调用映射到 NT 能力。它与 Windows 文件系统集成紧密、启动轻，但要逐项实现不断增长的 Linux 行为，兼容长尾很艰难。</p>
+    <h3>10.3 WSL 2：用真正内核换取系统调用兼容</h3>
+    <p>2019 年微软宣布 WSL 2：在轻量受管理虚拟机中运行微软维护的开源 Linux 内核。这样 Docker、文件系统、网络工具和复杂开发平台不再依赖“把每个 Linux 系统调用翻译成一个相近 NT 行为”。</p>
+    <p>这是一项清晰的权衡：</p>
+    <table>
+      <thead><tr><th>方案</th><th>优势</th><th>代价</th></tr></thead>
+      <tbody>
+        <tr><td>WSL 1：系统调用翻译</td><td>与 Windows 文件和进程边界较近，某些跨文件系统场景轻量</td><td>Linux 兼容面需要持续重实现，长尾困难</td></tr>
+        <tr><td>WSL 2：真实 Linux 内核</td><td>完整系统调用兼容显著提高，容器和复杂工具更自然</td><td>引入虚拟机、双文件系统、网络与资源边界</td></tr>
+      </tbody>
+    </table>
+    <p>WSL 2 的出现可视为微软承认：现代开发生态的目标不只是“类 Unix 命令”，而是 Linux 本身。与其继续在 NT 上追逐每个 Linux 语义，不如运行真实内核，再投资 Windows/Linux 集成。</p>
+    <h3>10.4 Windows Terminal 与 ConPTY：把显示层也补齐</h3>
+    <p>Linux 工具普遍依赖 ANSI/VT 控制序列和伪终端。旧 Windows Console 的接口与此不同。2018 年出现 ConPTY，2019 年 Windows Terminal 公布，2020 年 1.0 发布。微软没有让 <code>cmd</code>、PowerShell 和 WSL 各自维护一套新窗口，而是提供现代宿主与连接接口，让多种 Shell 共用输入输出层。</p>
+    <p>至此，今天熟悉的叠层形成：</p>
+    <pre><code>Windows Terminal（现代窗口与渲染）
+├─ cmd.exe（批处理兼容）
+├─ powershell.exe（Windows PowerShell 5.1）
+├─ pwsh.exe（现代跨平台 PowerShell）
+└─ WSL 发行版
+   └─ bash / zsh + Linux 工具 + Linux 内核</code></pre>
+    <details>
+      <summary>局部自检 3：WSL 2 是否说明 NT 内核失败了？</summary>
+      <p>不能这样推导。NT 继续承担 Windows 桌面、Win32 应用、安全与硬件平台；WSL 2 解决的是在同一设备上高兼容运行 Linux 工作负载。选择真实 Linux 内核，说明重实现另一套不断演化的系统调用契约成本过高，不说明 NT 无法完成自己的目标。</p>
+    </details>
+  </section>
+
+  <section id="judgment">
+    <h2>十一、怎样评价这段历史：不是洗白，也不是把包袱当笑话</h2>
+    <h3>11.1 Windows 的核心成功与核心代价来自同一原则</h3>
+    <p>向后兼容帮助 Windows 维持巨大商业软件和企业系统生态，让用户升级硬件与系统时仍能运行旧资产。这是平台价值，不是单纯技术债。相同原则也让路径、Shell、安装、注册表视图与控制台接口难以统一，增加开发和诊断成本。</p>
+    <p>因此可以同时说：</p>
+    <ul>
+      <li>保留 <code>cmd</code> 对旧客户有真实价值；</li>
+      <li>新用户面对多套 Shell 的学习成本也真实存在；</li>
+      <li>注册表在系统配置、权限和企业管理上有合理设计；</li>
+      <li>隐藏全局状态与应用滥用使它不适合作为现代项目配置默认；</li>
+      <li>WSL 极大改善 Linux 开发；</li>
+      <li>双环境又要求开发者理解新的文件、网络和工具边界。</li>
+    </ul>
+    <h3>11.2 “为什么不重做”必须接着问“谁承担迁移成本”</h3>
+    <p>一次干净重做把平台内部复杂度转移给应用开发者、企业管理员和最终用户。如果全世界能同步更新，重做可能更优；现实中源码丢失、厂商倒闭、设备仍在生产、监管验证昂贵。Windows 常选择在平台内部增加兼容层，替外部承担一部分迁移。</p>
+    <p>但兼容也不能无限免责。平台需要提供清晰的新路径、诊断工具、弃用边界与默认迁移。PowerShell、ConPTY、Windows Terminal、现代应用数据建议与 WSL 都可视为这种补偿；32/64 位视图、透明虚拟化和长期多版本并存则说明补偿仍带成本。</p>
+    <h3>11.3 回到最初的三个问题</h3>
+    <ol>
+      <li><strong>为什么 Windows 有“两套 Shell”？</strong>因为 <code>cmd</code> 承载 DOS/批处理兼容，PowerShell 为现代系统管理重新设计；严格说今天还有 PowerShell 两代、第三方 Shell 与 WSL Shell。Terminal 不是 Shell。</li>
+      <li><strong>注册表是什么？</strong>它从早期登记信息与 INI 的替代需求成长为有权限、类型、用户/机器作用域的系统配置树，由多个 hive 文件支撑。合理场景与滥用必须分开。</li>
+      <li><strong>Windows 相较类 Unix 的开发缺陷从何而来？</strong>一部分来自 Win32 与 POSIX 的不同系统契约，一部分来自 GUI/商业软件优先的生态，一部分来自兼容层和历史默认。WSL 能让 Linux 开发走真实 Linux 路径，却不能让两套系统契约自动消失。</li>
+    </ol>
+    <p class="warning"><strong>最终结论：</strong>那个“让 Linux 也用上 Windows 注册表”的项目之所以好笑，是它用 Unix 社区最敏感的“集中、不透明、全局状态”符号反讽 Windows；但真正有用的知识不在笑点里。注册表与多 Shell 是具体历史约束下的工程产物。理解它们的职责、代价与边界，才能决定何时原生开发、何时用 WSL、何时把配置留在文件里，以及哪些“怪异”其实是兼容接口。</p>
+  </section>
+
+  <section id="references">
+    <h2>参考资料与证据边界</h2>
+    <ul>
+      <li><a href="https://devblogs.microsoft.com/commandline/windows-command-line-the-evolution-of-the-windows-command-line/">Microsoft Windows Command Line：The Evolution of the Windows Command-Line</a>——DOS、早期 Windows、NT、<code>cmd</code>、PowerShell、POSIX 子系统与 WSL 的官方团队历史叙述。</li>
+      <li><a href="https://news.microsoft.com/source/1998/10/27/microsoft-renames-windows-nt-5-0-product-line-to-windows-2000-signals-evolution-of-windows-nt-technology-into-mainstream/">Microsoft 1998 新闻稿：Windows NT 历史</a>与<a href="https://news.microsoft.com/features/the-engineers-engineer-computer-industry-luminaries-salute-dave-cutlers-five-decade-long-quest-for-quality/">Dave Cutler 专访资料</a>——NT 项目启动、目标与 1993 年发布。</li>
+      <li><a href="https://learn.microsoft.com/en-us/archive/msdn-magazine/2000/november/windows-2000-registry-latest-features-and-apis-provide-the-power-to-customize-and-extend-your-apps">MSDN Magazine 存档：Windows 2000 Registry</a>——注册表从 INI 替代目标、Windows 95 形态、Windows 9x/2000 hive 与当时已认识到的适用边界。</li>
+      <li><a href="https://devblogs.microsoft.com/oldnewthing/20120521-00/?p=7573">The Old New Thing：16 位 Windows 注册表</a>——支撑早期 registry 主要用于 COM/文件关联，远小于现代注册表。</li>
+      <li><a href="https://learn.microsoft.com/en-us/powershell/scripting/developer/monad-manifesto">Microsoft Learn：The Monad Manifesto</a>与<a href="https://devblogs.microsoft.com/powershell/its-a-wrap-windows-powershell-1-0-released/">PowerShell 1.0 发布公告</a>——PowerShell 的原始问题意识与 2006 年发布。</li>
+      <li><a href="https://learn.microsoft.com/en-us/powershell/scripting/install/powershell-support-lifecycle">Microsoft Learn：PowerShell release history</a>——Windows PowerShell 与现代 PowerShell 的版本时间线。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-virtualization">Microsoft Learn：Registry Virtualization</a>——Vista 之后为旧应用提供的兼容重定向及其过渡性质。</li>
+      <li><a href="https://devblogs.microsoft.com/commandline/announcing-wsl-2/">Microsoft：Announcing WSL 2</a>与<a href="https://learn.microsoft.com/en-us/windows/wsl/compare-versions">WSL 版本比较</a>——真实 Linux 内核、轻量受管理虚拟机与 WSL 1/2 的权衡。</li>
+      <li><a href="https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/">Microsoft：Introducing ConPTY</a>、<a href="https://devblogs.microsoft.com/commandline/windows-terminal-1-0/">Windows Terminal 1.0</a>——现代终端基础设施的时间线和兼容目标。</li>
+    </ul>
+    <p class="small">微软历史文章是重要一手叙述，但也带有平台维护者视角。本文关于“成本由谁承担”“同一原则产生成功与代价”的总结属于工程史解释；它由公开接口和兼容机制支持，但不是微软材料的逐字结论。</p>
+  </section>
+
+  <section id="reader-feedback">
+    <h2>读后反馈</h2>
+    <p>暂无。</p>
+  </section>
+</article>
+</body>
+</html>

@@ -49,7 +49,7 @@ GitHub 的 `/tree/` 和 `/commits/` 页面拒绝自动访问，只有 `raw.githu
 
 <!-- INDEX:START -->
 
-**最后更新：2026-08-11**　新增文章后请更新本表；编号取所在领域当前最大值加一。
+**最后更新：2026-08-14**　新增文章后请更新本表；编号取所在领域当前最大值加一。
 
 ### 语料/数学/　—　共 13 篇，下一篇编号 `14`
 
@@ -69,7 +69,7 @@ GitHub 的 `/tree/` 和 `/commits/` 页面拒绝自动访问，只有 `raw.githu
 | 12 | 常微分方程进阶：PDE——从三类原型到弱解 | [12_常微分方程进阶_PDE从三类原型到弱解.html](%E8%AF%AD%E6%96%99/%E6%95%B0%E5%AD%A6/12_%E5%B8%B8%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B%E8%BF%9B%E9%98%B6_PDE%E4%BB%8E%E4%B8%89%E7%B1%BB%E5%8E%9F%E5%9E%8B%E5%88%B0%E5%BC%B1%E8%A7%A3.html) |
 | 13 | 常微分方程进阶：动力系统——从求解轨道到研究长期行为 | [13_常微分方程进阶_动力系统从轨道到长期行为.html](%E8%AF%AD%E6%96%99/%E6%95%B0%E5%AD%A6/13_%E5%B8%B8%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B%E8%BF%9B%E9%98%B6_%E5%8A%A8%E5%8A%9B%E7%B3%BB%E7%BB%9F%E4%BB%8E%E8%BD%A8%E9%81%93%E5%88%B0%E9%95%BF%E6%9C%9F%E8%A1%8C%E4%B8%BA.html) |
 
-### 语料/计算机/　—　共 13 篇，下一篇编号 `14`
+### 语料/计算机/　—　共 16 篇，下一篇编号 `17`
 
 | 编号 | 标题 | 文件 |
 | --- | --- | --- |
@@ -86,8 +86,11 @@ GitHub 的 `/tree/` 和 `/commits/` 页面拒绝自动访问，只有 `raw.githu
 | 11 | Docker 入门：从“把环境装进盒子”到真正理解容器如何运行 | [11_容器技术_Docker功能原理与两个微型项目.html](%E8%AF%AD%E6%96%99/%E8%AE%A1%E7%AE%97%E6%9C%BA/11_%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_Docker%E5%8A%9F%E8%83%BD%E5%8E%9F%E7%90%86%E4%B8%8E%E4%B8%A4%E4%B8%AA%E5%BE%AE%E5%9E%8B%E9%A1%B9%E7%9B%AE.html) |
 | 12 | SSH：从第一次连接到密钥、隧道与独立排错 | [12_SSH_从第一次连接到密钥隧道与独立排错.html](%E8%AF%AD%E6%96%99/%E8%AE%A1%E7%AE%97%E6%9C%BA/12_SSH_%E4%BB%8E%E7%AC%AC%E4%B8%80%E6%AC%A1%E8%BF%9E%E6%8E%A5%E5%88%B0%E5%AF%86%E9%92%A5%E9%9A%A7%E9%81%93%E4%B8%8E%E7%8B%AC%E7%AB%8B%E6%8E%92%E9%94%99.html) |
 | 13 | 远程操控计算机：从分时终端到 SSH 与远程桌面 | [13_远程操控计算机_从分时终端到SSH与远程桌面.html](%E8%AF%AD%E6%96%99/%E8%AE%A1%E7%AE%97%E6%9C%BA/13_%E8%BF%9C%E7%A8%8B%E6%93%8D%E6%8E%A7%E8%AE%A1%E7%AE%97%E6%9C%BA_%E4%BB%8E%E5%88%86%E6%97%B6%E7%BB%88%E7%AB%AF%E5%88%B0SSH%E4%B8%8E%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2.html) |
+| 14 | Windows 开发环境：与类 Unix 开发体验的结构差异 | [14_Windows开发环境_与类Unix开发体验的结构差异.html](%E8%AF%AD%E6%96%99/%E8%AE%A1%E7%AE%97%E6%9C%BA/14_Windows%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83_%E4%B8%8E%E7%B1%BBUnix%E5%BC%80%E5%8F%91%E4%BD%93%E9%AA%8C%E7%9A%84%E7%BB%93%E6%9E%84%E5%B7%AE%E5%BC%82.html) |
+| 15 | Windows 开发环境：从 DOS 兼容到 NT 与 WSL 的历史成因 | [15_Windows开发环境_从DOS兼容到NT与WSL的历史成因.html](%E8%AF%AD%E6%96%99/%E8%AE%A1%E7%AE%97%E6%9C%BA/15_Windows%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83_%E4%BB%8EDOS%E5%85%BC%E5%AE%B9%E5%88%B0NT%E4%B8%8EWSL%E7%9A%84%E5%8E%86%E5%8F%B2%E6%88%90%E5%9B%A0.html) |
+| 16 | Windows 开发环境：命令行与注册表的设计地图 | [16_Windows开发环境_命令行与注册表的设计地图.html](%E8%AF%AD%E6%96%99/%E8%AE%A1%E7%AE%97%E6%9C%BA/16_Windows%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83_%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8E%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%9C%B0%E5%9B%BE.html) |
 
-### 语料/AI/　—　共 5 篇，下一篇编号 `06`
+### 语料/AI/　—　共 10 篇，下一篇编号 `11`
 
 | 编号 | 标题 | 文件 |
 | --- | --- | --- |
@@ -95,7 +98,12 @@ GitHub 的 `/tree/` 和 `/commits/` 页面拒绝自动访问，只有 `raw.githu
 | 02 | 从“想法水库”到“可检索表达”：纯文字与大模型高效交流 | [02_人机交流_从想法水库到可检索表达.html](%E8%AF%AD%E6%96%99/AI/02_%E4%BA%BA%E6%9C%BA%E4%BA%A4%E6%B5%81_%E4%BB%8E%E6%83%B3%E6%B3%95%E6%B0%B4%E5%BA%93%E5%88%B0%E5%8F%AF%E6%A3%80%E7%B4%A2%E8%A1%A8%E8%BE%BE.html) |
 | 03 | Skill 工程：从提示词拼接到分层 HTML 生成系统 | [03_Skill工程_从提示词拼接到分层生成系统.html](%E8%AF%AD%E6%96%99/AI/03_Skill%E5%B7%A5%E7%A8%8B_%E4%BB%8E%E6%8F%90%E7%A4%BA%E8%AF%8D%E6%8B%BC%E6%8E%A5%E5%88%B0%E5%88%86%E5%B1%82%E7%94%9F%E6%88%90%E7%B3%BB%E7%BB%9F.html) |
 | 04 | 让 AI 照着文档做出完整项目：从项目想法到可执行规格 | [04_AI协作开发_从项目想法到可执行规格.html](%E8%AF%AD%E6%96%99/AI/04_AI%E5%8D%8F%E4%BD%9C%E5%BC%80%E5%8F%91_%E4%BB%8E%E9%A1%B9%E7%9B%AE%E6%83%B3%E6%B3%95%E5%88%B0%E5%8F%AF%E6%89%A7%E8%A1%8C%E8%A7%84%E6%A0%BC.html) |
-| 05 | Codex 系统设计：模型与 Harness 如何协同 | [05_Codex系统设计_模型与Harness如何协同.html](%E8%AF%AD%E6%96%99/AI/05_Codex%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1_%E6%A8%A1%E5%9E%8B%E4%B8%8EHarness%E5%A6%82%E4%BD%95%E5%8D%8F%E5%90%8C.html) |
+| 05 | Codex 系统设计：一次任务究竟怎样跑起来 | [05_Codex系统设计_模型与Harness如何协同.html](%E8%AF%AD%E6%96%99/AI/05_Codex%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1_%E6%A8%A1%E5%9E%8B%E4%B8%8EHarness%E5%A6%82%E4%BD%95%E5%8D%8F%E5%90%8C.html) |
+| 06 | AI协作开发：从想法到经验证的产品问题 | [06_AI协作开发_02_从想法到经验证的产品问题.html](%E8%AF%AD%E6%96%99/AI/06_AI%E5%8D%8F%E4%BD%9C%E5%BC%80%E5%8F%91_02_%E4%BB%8E%E6%83%B3%E6%B3%95%E5%88%B0%E7%BB%8F%E9%AA%8C%E8%AF%81%E7%9A%84%E4%BA%A7%E5%93%81%E9%97%AE%E9%A2%98.html) |
+| 07 | AI协作开发：从需求到可执行规格与设计 | [07_AI协作开发_03_从需求到可执行规格与设计.html](%E8%AF%AD%E6%96%99/AI/07_AI%E5%8D%8F%E4%BD%9C%E5%BC%80%E5%8F%91_03_%E4%BB%8E%E9%9C%80%E6%B1%82%E5%88%B0%E5%8F%AF%E6%89%A7%E8%A1%8C%E8%A7%84%E6%A0%BC%E4%B8%8E%E8%AE%BE%E8%AE%A1.html) |
+| 08 | AI协作开发：模型路由与低成本实施 | [08_AI协作开发_04_模型路由与低成本实施.html](%E8%AF%AD%E6%96%99/AI/08_AI%E5%8D%8F%E4%BD%9C%E5%BC%80%E5%8F%91_04_%E6%A8%A1%E5%9E%8B%E8%B7%AF%E7%94%B1%E4%B8%8E%E4%BD%8E%E6%88%90%E6%9C%AC%E5%AE%9E%E6%96%BD.html) |
+| 09 | AI协作开发：验证、发布、上线与回滚 | [09_AI协作开发_05_验证发布上线与回滚.html](%E8%AF%AD%E6%96%99/AI/09_AI%E5%8D%8F%E4%BD%9C%E5%BC%80%E5%8F%91_05_%E9%AA%8C%E8%AF%81%E5%8F%91%E5%B8%83%E4%B8%8A%E7%BA%BF%E4%B8%8E%E5%9B%9E%E6%BB%9A.html) |
+| 10 | AI协作开发：项目规模化后的治理系统 | [10_AI协作开发_06_项目规模化后的治理系统.html](%E8%AF%AD%E6%96%99/AI/10_AI%E5%8D%8F%E4%BD%9C%E5%BC%80%E5%8F%91_06_%E9%A1%B9%E7%9B%AE%E8%A7%84%E6%A8%A1%E5%8C%96%E5%90%8E%E7%9A%84%E6%B2%BB%E7%90%86%E7%B3%BB%E7%BB%9F.html) |
 
 ### 语料/马列/　—　共 8 篇，下一篇编号 `09`
 

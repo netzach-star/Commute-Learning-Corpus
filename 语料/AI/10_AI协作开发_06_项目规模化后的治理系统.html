@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+<meta name="corpus-id" content="AI-10">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="AI">
+  <title>AI协作开发：项目规模化后的治理系统</title>
+  <style>
+    body{max-width:820px;margin:40px auto;padding:0 20px;font:17px/1.8 system-ui,-apple-system,"PingFang SC",sans-serif;color:#202124}h1,h2{line-height:1.35}table{border-collapse:collapse;width:100%;margin:1em 0}th,td{border:1px solid #bbb;padding:.55em;vertical-align:top}pre{white-space:pre-wrap;background:#f5f6f7;padding:1em;border-radius:8px}blockquote{border-left:4px solid #567;padding-left:1em;color:#455}a{color:#165d9c}.note{background:#f3f7fb;padding:1em;border-radius:8px}.muted{color:#666}
+  </style>
+</head>
+<body>
+<article>
+  <h1>项目规模化后的治理系统</h1>
+  <p class="muted">系列 06 · 大项目不是把小项目流程重复更多次</p>
+
+  <h2>规模扩大时，最先爆炸的是协调复杂度</h2>
+  <p>小项目里，你可以把需求、设计和代码全部放进一次对话；一旦模型遗漏内容，你本人通常还能发现。规模扩大后，问题会变成：同一概念在五份文档中各有定义；两个 Agent 同时修改共享接口；局部优化破坏另一模块的不变量；模型读了大量无关历史，却仍漏掉真正关键的约束。此时继续增加上下文或增加 Agent 数量，只会把冲突产生得更快。</p>
+  <p>DORA 2025 把 AI 描述为组织系统的放大器，恰好解释了这一点：代码生成速度提高以后，测试、审查、部署和决策若没有同步升级，就会形成“下游失序”。大型 AI 协作项目的核心不是多 Agent 编排，而是把系统分成可以独立理解、独立验证、通过稳定契约协作的责任域。</p>
+
+  <h2>从单层文档升级为三层治理</h2>
+  <table>
+    <thead><tr><th>层级</th><th>保存什么</th><th>谁可以改变</th></tr></thead>
+    <tbody>
+      <tr><td>项目层</td><td>产品目标、全局非目标、架构原则、发布与安全政策</td><td>项目负责人通过正式决策改变</td></tr>
+      <tr><td>领域层</td><td>模块职责、公共契约、数据所有权、领域不变量</td><td>领域所有者审议，跨域变更需 RFC</td></tr>
+      <tr><td>任务层</td><td>本次目标、允许修改范围、验收和临时上下文</td><td>执行 Agent 可在边界内处理</td></tr>
+    </tbody>
+  </table>
+  <p>全局规则必须短且稳定；模块细节放在离代码最近的位置。GitHub Copilot 的仓库级与路径级 instruction、AGENTS.md 等机制已经体现了这种分层：Agent 进入某个目录时只加载相关构建、测试和约束，而不是让根文件承载全世界知识。指令是上下文，不是强制安全边界；真正禁止的操作仍需权限、钩子或 CI 策略执行。Claude Code 的 hooks 也说明了同一原则：格式化、阻止命令和安全检查应由生命周期钩子确定性触发，不应寄希望于模型每次记得。</p>
+
+  <h2>用契约切开上下文，而不是只按文件夹切开</h2>
+  <p>一个合格领域应有明确输入、输出、数据所有权和失败语义。例如 InnoSpark 可以分为会话快照、内容编译、审阅与发布、L2 存储、Obsidian 导出。内容编译域只能读取冻结快照并生成候选文档；审阅域决定候选是否进入正式层；导出域只读取正式版本并复制，不可反向改动真源。只要契约稳定，实现 Agent 不必读取整个产品讨论史。</p>
+  <p>跨域改变公共接口时，先提交 RFC（request for comments）：说明动机、受影响契约、兼容期、迁移、回滚和各领域负责人。RFC 通过后才修改领域设计与任务图。这样可以阻止某个 Agent 为了完成局部任务，顺手改掉所有调用方。</p>
+
+  <h2>任务调度采用依赖图</h2>
+  <pre>T-101 契约定义
+  ├─ T-102 存储实现
+  ├─ T-103 UI 审阅流程
+  └─ T-104 导出适配器
+        ↓
+T-105 跨域集成测试
+        ↓
+T-106 候选发布</pre>
+  <p>只有没有写冲突且依赖已满足的任务才并行。每个 Agent 使用独立分支或 worktree；共享契约、锁文件、迁移和发布配置默认串行。任务完成不是把摘要发回主对话，而是提交 PR、验证结果、追踪 ID 与未解决风险。主协调者只维护任务状态和集成顺序，不吸收所有实现细节。</p>
+  <p>METR 的研究表明，Agent 在自包含、成功标准清楚的任务上可以测得不断增长的任务时域，但研究也明确提醒，这不等同于能无监督承担现实中的长期协作项目。把项目拆成可验收节点，不是因为模型只能做小事，而是为了让错误在影响扩散前可定位、可回滚。</p>
+
+  <h2>大型项目需要六个持续系统</h2>
+  <ol>
+    <li><strong>产品组合：</strong>机会、证据、路线图和停止条件，防止功能自然膨胀。</li>
+    <li><strong>规格图：</strong>E、D、R、S、T、V、REL 的链接与基线版本。</li>
+    <li><strong>架构治理：</strong>领域边界、契约、ADR、RFC、所有者与兼容策略。</li>
+    <li><strong>执行平台：</strong>隔离环境、权限、任务队列、模型路由、成本与轨迹记录。</li>
+    <li><strong>交付平台：</strong>统一构建测试、供应链证明、环境保护、部署与回滚。</li>
+    <li><strong>运行反馈：</strong>错误、性能、用户行为、事故复盘和假设更新。</li>
+  </ol>
+  <p>它们不必由六款工具实现，但对象必须分开。尤其不要让“最新聊天摘要”成为项目唯一记忆：摘要应指向原始决策和证据；过期设计要标记 superseded；关键契约要由测试而非文字保证。</p>
+
+  <h2>怎样判断流程是否真的提高效率</h2>
+  <p>不要以生成代码行数或 Agent 并发数为目标。每个任务族至少观察：</p>
+  <ul>
+    <li>从批准需求到生产运行的周期时间；</li>
+    <li>一次通过率、返工次数和升级到顶级模型的比例；</li>
+    <li>每个被接受变更的模型费用与人工审查时间；</li>
+    <li>发布失败率、回滚率和缺陷逃逸率；</li>
+    <li>需求变更后，发现并更新全部受影响工件所需时间；</li>
+    <li>无需求来源的代码、无验证的需求和过期文档数量。</li>
+  </ul>
+  <p>如果模型费用下降，但返工与事故上升，路由失败；如果文档数量增加，却无法更快回答“为什么这样设计”，治理失败。</p>
+
+  <h2>从你现在的流程迁移</h2>
+  <ol>
+    <li><strong>第一步：</strong>冻结现有需求和设计作为基线；不重写历史，只给关键需求、决策和测试补 ID。</li>
+    <li><strong>第二步：</strong>停止多模型直接改正文，启用提案卡、争议记录和单一维护者合并。</li>
+    <li><strong>第三步：</strong>给下一项功能建立一条完整追踪链，并把 CI 设为合并硬门。</li>
+    <li><strong>第四步：</strong>把任务按六维标签路由，先用规则和人工升级，连续记录真实成本。</li>
+    <li><strong>第五步：</strong>补齐自动 Release、staging、生产批准和回滚演练。</li>
+    <li><strong>第六步：</strong>只有出现真实模块冲突和团队协调成本时，再引入领域所有权、RFC 和更复杂的任务编排。</li>
+  </ol>
+  <p>这条迁移路径保留你现有流程的优势：多个 AI 仍能交叉讨论，顶级模型仍负责最重要判断，设计文档仍是实施依据。改变的是讨论结果如何进入真源，以及每个阶段用什么证据证明可以继续。</p>
+
+  <div class="note"><strong>整套方法的最终原则：</strong>AI 负责扩大搜索、提出方案、执行有限变更和定位问题；确定性系统负责保存状态、执行规则和给出可重复证据；人负责目标、价值冲突、不可逆风险和最终批准。项目规模越大，这三种责任越不能混在一次聊天里。</div>
+
+  <h2>参考资料</h2>
+  <ul>
+    <li><a href="https://dora.dev/research/2025/dora-report/">DORA 2025：AI 的放大器效应</a></li>
+    <li><a href="https://docs.github.com/en/copilot/tutorials/cloud-agent/get-the-best-results">GitHub：仓库级与路径级 Agent 指令</a></li>
+    <li><a href="https://code.claude.com/docs/en/hooks-guide">Claude Code Hooks：在生命周期中执行确定性规则</a></li>
+    <li><a href="https://metr.org/time-horizons/">METR：任务完成时域及其适用边界</a></li>
+  </ul>
+  <p><a href="AI协作开发_05_验证发布上线与回滚.html">上一篇：验证、发布与上线</a> · <a href="AI协作开发_00_阅读导航与全流程地图.html">返回阅读导航</a></p>
+</article>
+<section id="reader-feedback"><h2>读者反馈</h2><p>暂无。</p></section>
+</body>
+</html>

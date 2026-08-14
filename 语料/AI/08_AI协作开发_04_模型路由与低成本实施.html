@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+<meta name="corpus-id" content="AI-08">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="AI">
+  <title>AI协作开发：模型路由与低成本实施</title>
+  <style>
+    body{max-width:820px;margin:40px auto;padding:0 20px;font:17px/1.8 system-ui,-apple-system,"PingFang SC",sans-serif;color:#202124}h1,h2{line-height:1.35}table{border-collapse:collapse;width:100%;margin:1em 0}th,td{border:1px solid #bbb;padding:.55em;vertical-align:top}pre{white-space:pre-wrap;background:#f5f6f7;padding:1em;border-radius:8px}blockquote{border-left:4px solid #567;padding-left:1em;color:#455}a{color:#165d9c}.note{background:#f3f7fb;padding:1em;border-radius:8px}.muted{color:#666}
+  </style>
+</head>
+<body>
+<article>
+  <h1>模型路由与低成本实施</h1>
+  <p class="muted">系列 04 · 不按“写代码难不难”凭感觉分配模型</p>
+
+  <h2>成本问题的正确单位是“被接受的变更”</h2>
+  <p>一个便宜模型用掉五次上下文、生成大量错误代码，最后仍需顶级模型重做，未必便宜；一个昂贵模型一次完成高风险迁移，也未必昂贵。因此不要只比较每百万 token 的价格，而应记录<strong>每项被合并且通过验证的任务总成本</strong>，包括失败重试、人工审查和返工。</p>
+  <p>RouteLLM 等研究已经证明，可以学习在强弱模型间动态路由，以降低成本；FrugalGPT 则把“先用便宜方案，不够再升级”形式化为模型级联（model cascade）。但通用问答上的路由器不能直接等价于代码项目。2026 年的 Triage 预印本提供了更贴近软件工程的方向：利用任务元数据和代码健康度，选择最便宜的模型层级，并让所有层级通过同一验证门。对个人项目而言，最稳妥的起点仍是规则路由加实测数据，而不是先训练一个聪明路由器。</p>
+
+  <h2>先给任务打六个标签</h2>
+  <table>
+    <thead><tr><th>维度</th><th>低</th><th>高</th></tr></thead>
+    <tbody>
+      <tr><td>歧义</td><td>输入输出与验收已写清</td><td>目标本身仍需判断</td></tr>
+      <tr><td>新颖性</td><td>仓库中已有相似模式</td><td>首次采用的新架构或陌生领域</td></tr>
+      <tr><td>影响面</td><td>一个局部模块，可随时撤回</td><td>跨组件、数据格式、公共 API</td></tr>
+      <tr><td>不可逆性</td><td>纯计算或临时界面</td><td>迁移、删除、权限、生产数据</td></tr>
+      <tr><td>上下文跨度</td><td>少量文件即可完成</td><td>必须理解多模块历史约束</td></tr>
+      <tr><td>可验证性</td><td>测试或类型系统可明确裁决</td><td>主要依赖审美、产品或安全判断</td></tr>
+    </tbody>
+  </table>
+  <p>“任务看起来短”不代表简单。改一行鉴权条件可能影响面极高；生成五百行测试夹具可能完全机械。相反，可验证性强的任务即使代码量较大，也适合让便宜模型先尝试，因为失败能被快速识别。</p>
+
+  <h2>四层路由，而不是每个模型一个岗位</h2>
+  <table>
+    <thead><tr><th>层级</th><th>适合工作</th><th>升级条件</th></tr></thead>
+    <tbody>
+      <tr><td>T0 确定性工具</td><td>格式化、代码生成器、依赖清单、静态检查、全文替换</td><td>需要理解语义才能判断</td></tr>
+      <tr><td>T1 轻量模型</td><td>检索、分类、文档格式、局部样板、已有模式下的小改动</td><td>测试失败两次、发现跨模块影响或要求改变设计</td></tr>
+      <tr><td>T2 标准模型</td><td>边界清楚的功能、常规缺陷定位、测试补全、局部重构</td><td>根因不明、安全敏感、需要推翻规格</td></tr>
+      <tr><td>T3 前沿模型</td><td>架构、模糊需求、高风险迁移、复杂并发、安全审查与争议裁决</td><td>仍无法通过时返回人类决策，不无限续费重试</td></tr>
+    </tbody>
+  </table>
+  <p>模型的绝对名称会很快变化，层级应由你自己的评测结果定义。一个供应商的“中档”模型可能比另一家的旗舰更适合某种语言；同一模型在不同 Agent 外壳中也会表现不同。路由表记录的是“任务族—运行环境—模型—通过率—成本”，不是品牌印象。</p>
+
+  <h2>一个任务包必须足够小，也必须足够完整</h2>
+  <pre>T-063：实现拒绝归档后的清理
+关联：R-021 / S-018 / V-041
+允许修改：review/、storage/temp.ts、相关测试
+禁止修改：正式 L2 写入协议、公开导出格式
+前置状态：设计基线 v1.7
+验收命令：unit + integration + fault-injection
+输出：代码差异、测试结果、未解决风险
+升级触发：需要改变 S-018，或发现现有数据可能被删除</pre>
+  <p>任务包既避免 Agent 在整个仓库游荡，也防止“只给一个函数”导致缺少目的。任务大小应以一次 PR 能独立解释和回滚为准；若描述中出现“顺便”“以及所有相关地方”，通常应该继续拆分。</p>
+
+  <h2>采用验证驱动的级联</h2>
+  <ol>
+    <li>路由器根据六个标签选择最低合理层级。</li>
+    <li>模型在独立分支或 worktree 中执行，不直接写主分支。</li>
+    <li>运行同一组格式、类型、测试与策略检查。</li>
+    <li>若失败属于机械错误，允许一次带错误日志的定向修复。</li>
+    <li>若仍失败或触发风险条件，把原任务、差异、日志和已尝试路径一起升级；不要让高阶模型从零重复探索。</li>
+    <li>通过后进入 PR 审查。生成者的自述只能帮助定位，不能作为通过证据。</li>
+  </ol>
+  <p>这就是“便宜模型优先”的安全版本：不是相信它自报的置信度，而是让可执行验证决定是否升级。若任务没有可靠验证门，就一开始提高模型等级和人工审查等级。</p>
+
+  <h2>从日志中逐步学出你的路由器</h2>
+  <p>先积累约 30—50 个真实任务，记录标签、首选模型、成功与否、升级次数、人工分钟数和最终缺陷。之后按任务族计算“最低层级一次通过率”和“每个合并变更成本”。只有数据稳定后，再考虑自动分类器。评测集应保留失败样本和边界样本，并在模型或 Agent 外壳升级后重跑。</p>
+  <p>METR 的任务时域研究也提醒我们：Agent 的成功率随任务难度变化，而且其评测任务通常自包含、成功标准清楚；这并不能推出模型能独立负责一个数月项目。工程上的正确响应不是拒绝长任务，而是把长项目变成一系列有状态、有证据门的短任务。</p>
+
+  <div class="note"><strong>进入合并审查的证据门：</strong>任务只修改允许范围；关联需求和设计没有被偷偷改变；所有规定检查通过；Agent 已提交差异与未解决风险；成本与升级路径已记录；高风险变更有独立审查者。</div>
+
+  <h2>参考资料</h2>
+  <ul>
+    <li><a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/5503a7c69d48a2f86fc00b3dc09de686-Abstract-Conference.html">RouteLLM（ICLR 2025）</a></li>
+    <li><a href="https://arxiv.org/abs/2305.05176">FrugalGPT：模型级联</a></li>
+    <li><a href="https://arxiv.org/html/2604.07494v1">Triage：软件工程任务的模型分层路由（2026 预印本）</a></li>
+    <li><a href="https://metr.org/time-horizons/">METR：前沿 Agent 的任务完成时域</a></li>
+  </ul>
+  <p><a href="AI协作开发_03_从需求到可执行规格与设计.html">上一篇：规格与设计</a> · <a href="AI协作开发_05_验证发布上线与回滚.html">下一篇：验证、发布与上线</a></p>
+</article>
+<section id="reader-feedback"><h2>读者反馈</h2><p>暂无。</p></section>
+</body>
+</html>

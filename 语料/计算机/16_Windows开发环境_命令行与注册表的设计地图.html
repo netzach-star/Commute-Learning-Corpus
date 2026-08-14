@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+<meta name="corpus-id" content="计算机-16">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="计算机">
+  <title>Windows 开发环境：命令行与注册表的设计地图</title>
+  <style>
+    body{max-width:900px;margin:0 auto;padding:28px 22px 60px;font:18px/1.85 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:#18202a;background:#fff}h1,h2,h3{line-height:1.35;color:#10243e}h1{font-size:2em}h2{margin-top:2.2em;border-bottom:1px solid #d9e2ec;padding-bottom:.25em}h3{margin-top:1.5em}code,kbd{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#f2f5f8;padding:.08em .3em;border-radius:4px}pre{overflow:auto;background:#f5f7fa;border-left:4px solid #5b7fa3;padding:14px 16px;line-height:1.55}pre code{background:none;padding:0}.lead,.note,.warning{padding:14px 18px;border-radius:8px}.lead{background:#edf6ff}.note{background:#f2f8f2}.warning{background:#fff4e5}table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.94em}th,td{border:1px solid #cfd8e3;padding:9px 11px;vertical-align:top}th{background:#eef3f8;text-align:left}a{color:#075aa8}details{background:#f6f8fa;border:1px solid #d8dee4;border-radius:7px;padding:10px 14px;margin:1em 0}summary{cursor:pointer;font-weight:650}blockquote{border-left:4px solid #95a7b8;margin-left:0;padding-left:1em;color:#44515f}.small{font-size:.9em;color:#556270}.tag{display:inline-block;padding:2px 8px;border-radius:12px;background:#e8eef5;font-size:.82em;margin-right:5px}.flow{padding:12px 16px;border:1px solid #c9d5e2;border-radius:8px;background:#fbfcfe}.flow strong{color:#174c78}li{margin:.35em 0}
+  </style>
+</head>
+<body>
+<article>
+  <header>
+    <p><span class="tag">Windows 开发环境</span><span class="tag">设计篇</span></p>
+    <h1>命令行与注册表的设计地图</h1>
+    <p class="lead">核心问题：当你在 Windows 中打开一个黑色窗口、输入一条命令并修改一个设置时，终端、Shell、程序、操作系统和注册表分别做了什么？为什么同一台机器上会同时出现 <code>cmd.exe</code>、Windows PowerShell、PowerShell 7、Windows Terminal 和 WSL？</p>
+    <p>本文刻意把历史推迟到系列第三篇。我们先把今天的系统当成一台已经组装好的机器，辨认每个部件、接口和数据流。只有知道“这些东西现在是什么”，历史中的兼容、分叉和叠加才有意义。</p>
+  </header>
+
+  <nav aria-label="目录">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#case">从一次真实操作开始</a></li>
+      <li><a href="#layers">终端、Shell 与命令行程序不是一回事</a></li>
+      <li><a href="#cmd">cmd：兼容优先的文本 Shell</a></li>
+      <li><a href="#powershell">PowerShell：面向系统管理的对象 Shell</a></li>
+      <li><a href="#terminal-wsl">Windows Terminal、ConPTY 与 WSL 在哪一层</a></li>
+      <li><a href="#registry">注册表到底是什么</a></li>
+      <li><a href="#why-registry">注册表解决了什么，又制造了什么</a></li>
+      <li><a href="#decision">开发自己的程序时怎样选择</a></li>
+      <li><a href="#lab">一组只读的新手观察实验</a></li>
+      <li><a href="#conclusion">结论与下一篇接口</a></li>
+    </ol>
+  </nav>
+
+  <section id="case">
+    <h2>一、从一次真实操作开始</h2>
+    <p>假设你在 Windows 11 上打开 Windows Terminal，在默认标签页里输入：</p>
+    <pre><code>Get-Process | Where-Object CPU -gt 10 | Select-Object Name, CPU</code></pre>
+    <p>屏幕上出现一张进程名称和 CPU 时间的表。肉眼看去只有“打开黑框—输入命令—显示结果”三步，实际至少经过五层：</p>
+    <div class="flow">
+      <p><strong>输入与显示层：</strong>Windows Terminal 接收键盘事件、绘制字符、管理标签页和窗口。</p>
+      <p><strong>语言与控制层：</strong>PowerShell 读取字符，把它们解析成命令、参数和管道，然后决定先运行谁、输出交给谁。</p>
+      <p><strong>命令实现层：</strong><code>Get-Process</code> 等 cmdlet（读作 command-let）执行具体操作，产生带属性的进程对象。</p>
+      <p><strong>系统接口层：</strong>.NET 与 Windows API 向操作系统查询进程状态。</p>
+      <p><strong>内核与系统服务层：</strong>Windows NT 内核及有关服务维护进程、权限和资源统计，最终把结果返回。</p>
+    </div>
+    <p>把标签页改成“命令提示符”，再输入 <code>tasklist</code>，终端窗口仍然可以完全相同，但第二、三层换成了 <code>cmd.exe</code> 的语法和 <code>tasklist.exe</code> 的输出。改成 Ubuntu/WSL 标签页，窗口仍然不变，背后却换成 Linux 用户空间、Bash 等 Shell，甚至换成了另一套内核接口。</p>
+    <p>所以，“我打开了 Windows Terminal”只说明你选了一个负责输入输出的宿主；它没有说明你使用哪种 Shell。“我在用 PowerShell”才是在说明命令语言和执行环境。</p>
+  </section>
+
+  <section id="layers">
+    <h2>二、终端、Shell 与命令行程序不是一回事</h2>
+    <h3>2.1 终端负责沟通，Shell 负责理解</h3>
+    <p>终端（terminal）最初是连接远端或大型计算机的物理设备。现代“终端模拟器”是图形程序：它收集键盘输入，把字符或控制序列交给后端程序，再把后端输出绘制到窗口中。Windows Terminal、macOS Terminal、iTerm2 都属于这一层。</p>
+    <p>Shell 是用户与操作系统之间的命令解释环境。它通常承担四项工作：</p>
+    <ol>
+      <li>显示提示符并读取一行输入；</li>
+      <li>按自己的语法解析变量、引号、重定向、管道和条件；</li>
+      <li>执行 Shell 内建命令，或寻找并启动外部程序；</li>
+      <li>等待、组合、终止子任务，并把退出状态返回给用户或脚本。</li>
+    </ol>
+    <p><code>cd</code> 往往必须是 Shell 内建命令，因为外部程序只能改变自己的工作目录，退出后无法替父 Shell 改目录。相反，<code>git.exe</code>、<code>python.exe</code>、<code>tasklist.exe</code> 是可独立启动的命令行程序（command-line application）。它们可以被不同 Shell 调用。</p>
+    <h3>2.2 “命令提示符”这个名字混了三件事</h3>
+    <p>日常中文里“命令提示符”可能指：</p>
+    <ul>
+      <li>提示符本身，例如 <code>C:\Users\Li&gt;</code>；</li>
+      <li><code>cmd.exe</code> 这个 Shell；</li>
+      <li>承载它的旧式控制台窗口。</li>
+    </ul>
+    <p>这正是很多解释越讲越乱的根源。以后看到“黑框”，先问三个问题：窗口由谁画？命令由谁解析？真正干活的是内建命令还是哪个可执行文件？</p>
+    <table>
+      <thead><tr><th>对象</th><th>典型实例</th><th>主要职责</th><th>替换后什么保持不变</th></tr></thead>
+      <tbody>
+        <tr><td>终端宿主</td><td>Windows Terminal、Console Host</td><td>键盘、屏幕、标签页、字符渲染</td><td>Shell 的语言与程序通常不变</td></tr>
+        <tr><td>Shell</td><td><code>cmd.exe</code>、<code>powershell.exe</code>、<code>pwsh.exe</code>、Bash</td><td>解析命令、变量、管道、脚本和任务</td><td>终端窗口可以不变</td></tr>
+        <tr><td>命令行程序</td><td>Git、Python、编译器</td><td>完成具体业务</td><td>若参数契约兼容，可被多个 Shell 调用</td></tr>
+        <tr><td>操作系统接口</td><td>Win32/.NET、Linux 系统调用</td><td>进程、文件、网络、权限</td><td>上层工具可能提供相似表面体验</td></tr>
+      </tbody>
+    </table>
+    <details>
+      <summary>局部自检 1：Windows Terminal 是不是 Windows 的第三套 Shell？</summary>
+      <p>不是。它是终端宿主，可以在不同标签页中承载 <code>cmd</code>、PowerShell 或 WSL 中的 Bash。把默认标签页从 PowerShell 改为 <code>cmd</code>，只是更换后端 Shell，不是把 Windows Terminal 变成了 <code>cmd</code>。</p>
+    </details>
+  </section>
+
+  <section id="cmd">
+    <h2>三、cmd：兼容优先的文本 Shell</h2>
+    <p><code>cmd.exe</code> 是 Windows NT 的传统命令 Shell。微软官方面向管理员的概览常把 Windows 说成有“两套命令行 Shell”：Command shell 与 PowerShell。这是有用的入门简化，但不能理解成系统里只能运行两个 Shell，更不能理解成两者是同一代产品的两个皮肤。</p>
+    <p><code>cmd</code> 的核心模型很朴素：命令读入文本，输出文本；管道把前一程序的标准输出字节流接到后一程序的标准输入。环境变量写成 <code>%PATH%</code>，批处理脚本通常是 <code>.bat</code> 或 <code>.cmd</code> 文件。</p>
+    <pre><code>set NAME=commute-reader
+echo %NAME%
+dir /b | findstr ".html$"</code></pre>
+    <p>这里的 <code>set</code>、<code>echo</code> 和管道符由 <code>cmd</code> 解释；<code>findstr.exe</code> 则是外部程序。数据在管道中没有“文件名”“进程”“服务”等类型，只有字符。后一程序必须重新解析前一程序输出的排版。</p>
+    <h3>3.1 为什么今天还不能把它删掉</h3>
+    <p>答案首先是兼容性（compatibility），而不是技术先进性。企业登录脚本、安装器、构建系统和软件内部可能仍会调用 <code>cmd /c ...</code>。某个看似错误的引号、变量展开或退出码行为，一旦被旧脚本依赖，就变成了事实接口。替换它的收益由新用户获得，破坏它的成本却由无数无法枚举的旧系统承担。</p>
+    <p>因此，<code>cmd</code> 的合理定位是：</p>
+    <ul>
+      <li>运行既有批处理脚本；</li>
+      <li>执行很短、很稳定的传统命令；</li>
+      <li>在恢复环境或只提供传统命令的场景中工作。</li>
+    </ul>
+    <p>它不适合作为新大型自动化脚本的首选。条件、错误处理、结构化数据和模块化都比较脆弱。微软命令行团队也明确把它描述为古老、有限、以兼容为主的 Shell。</p>
+  </section>
+
+  <section id="powershell">
+    <h2>四、PowerShell：面向系统管理的对象 Shell</h2>
+    <p>PowerShell 不是“给 <code>cmd</code> 多加一些命令”，而是重新定义了 Shell 内部各命令交换数据的方式。Unix Shell 和 <code>cmd</code> 的经典管道传递文本流；PowerShell 的原生命令管道传递对象（object）：对象带有类型、属性和方法。</p>
+    <pre><code>Get-Process |
+  Where-Object CPU -gt 10 |
+  Sort-Object CPU -Descending |
+  Select-Object -First 5 Name, CPU</code></pre>
+    <p><code>Get-Process</code> 输出的不是一张已经排版好的表，而是一组进程对象。<code>Where-Object</code> 直接读取每个对象的 <code>CPU</code> 属性，<code>Sort-Object</code> 按数值排序，最后的格式化系统才把结果画成表格。于是显示语言、列宽或空格改变，不会让筛选逻辑突然失效。</p>
+    <h3>4.1 cmdlet、语言、运行时与模块</h3>
+    <p>PowerShell 的原生命令称为 cmdlet。命名通常遵守“动词-名词”，例如 <code>Get-Process</code>、<code>Stop-Process</code>、<code>Get-ChildItem</code>，从名称就能看出动作与对象。它同时是一门脚本语言，拥有函数、异常、模块、类和与 .NET 的互操作能力。</p>
+    <p>不过，“PowerShell”今天还会指两个并存产品：</p>
+    <table>
+      <thead><tr><th>产品</th><th>可执行文件</th><th>基础运行时</th><th>现实定位</th></tr></thead>
+      <tbody>
+        <tr><td>Windows PowerShell 5.1</td><td><code>powershell.exe</code></td><td>.NET Framework</td><td>随 Windows 提供，许多传统 Windows 管理模块依赖它；不再增加新功能</td></tr>
+        <tr><td>PowerShell 7.x</td><td><code>pwsh.exe</code></td><td>现代 .NET</td><td>跨平台、持续发展，与 5.1 并排安装；部分旧模块仍需兼容机制</td></tr>
+      </tbody>
+    </table>
+    <p>所以 Windows 表面上已经不只是“两套 Shell”：仅 PowerShell 家族内部就可能同时有 5.1 与 7；再加 <code>cmd</code>、第三方 Shell 和 WSL 中的 Bash/Zsh。官方所说“两套”主要指 Windows 自己最传统的两个管理入口。</p>
+    <h3>4.2 对象管道并非无条件优于文本管道</h3>
+    <p>对象管道适合管理操作系统、云资源和 .NET 对象，减少脆弱的文本解析。文本管道的优势则是语言无关：只要程序会读写字节流，就能用简单协议组合；结果容易落盘、远程传输和用任意语言检查。</p>
+    <p>PowerShell 调用 Git、Python 等原生程序时，边界上仍然是命令行参数与文本流，而不是神奇地把它们改造成对象 cmdlet。也就是说：</p>
+    <pre><code>Get-Process | Where-Object ...   # PowerShell 对象管道
+git status | Select-String ...   # Git 先输出文本，PowerShell 再处理字符串</code></pre>
+    <p>严肃脚本必须知道自己何时处在对象世界，何时越过了原生程序边界。很多 PowerShell “怎么和 Bash 不一样”的问题，实际都是把这两个边界混在了一起。</p>
+    <details>
+      <summary>局部自检 2：对象管道为什么不能自动解决所有解析问题？</summary>
+      <p>因为只有 PowerShell 原生命令或明确返回对象的接口能维持结构。调用传统可执行文件时，标准输出通常仍是文本；PowerShell 只能得到字符串。若脚本依赖某个工具的人类可读排版，版本升级仍可能破坏解析。更可靠的做法是要求工具输出 JSON 等机器格式，或使用正式 API。</p>
+    </details>
+  </section>
+
+  <section id="terminal-wsl">
+    <h2>五、Windows Terminal、ConPTY 与 WSL 在哪一层</h2>
+    <h3>5.1 Windows Terminal 只是更现代的“窗口”吗</h3>
+    <p>“只是窗口”方向正确，但略显低估。Windows Terminal 是现代终端宿主：提供标签页、窗格、Unicode/UTF-8、GPU 字符渲染、配置与不同 Shell 的 profile。它不替代 <code>cmd</code> 或 PowerShell，而是把它们放进更好的交互外壳。</p>
+    <p>传统 Windows 控制台的内部接口与 Unix 终端并不相同。很多跨平台终端程序预期使用虚拟终端控制序列和伪终端（pseudo terminal, PTY）。Windows 后来加入 ConPTY——Windows 的伪控制台接口——让第三方终端、远程程序和跨平台工具能通过更标准的字符流与控制序列连接控制台应用。理解到这里即可：ConPTY 是终端宿主与命令行程序之间的适配基础设施，不是用户要学习的第三套命令语言。</p>
+    <h3>5.2 WSL 不是“Windows 上换了一个 Bash”</h3>
+    <p>Windows Subsystem for Linux（WSL）提供 Linux 环境。当前常用的 WSL 2 在受管理的轻量虚拟机中运行真正的 Linux 内核，再让 Linux 发行版的用户空间工具与 Windows 集成。你在 WSL 中运行 <code>bash</code>、<code>apt</code>、ELF 二进制或 Linux Docker 工作负载时，关键系统调用遵守的是 Linux 契约。</p>
+    <p>这带来一个重要判断：</p>
+    <blockquote>PowerShell 是 Windows 原生管理 Shell；WSL 是同一台电脑中的 Linux 执行环境。前者换的是命令语言，后者换了程序所面对的操作系统接口。</blockquote>
+    <p>Windows Terminal 可以同时承载两者，让视觉边界显得很薄，但文件权限、进程、路径和内核行为不会因此合并成一套。系列第二篇会专门解释这一边界。</p>
+  </section>
+
+  <section id="registry">
+    <h2>六、注册表到底是什么</h2>
+    <p>Windows 注册表（Windows Registry）是一个由操作系统管理的层次数据库，用来保存 Windows、服务和应用所需的一部分配置与状态。它看起来像文件夹树，但节点叫键（key），键下面可以有子键和有类型的值（value）。</p>
+    <pre><code>HKEY_CURRENT_USER
+└─ Software
+   └─ ExampleCorp
+      └─ CommuteReader
+         ├─ Theme       = "dark"       (字符串)
+         ├─ FontSize    = 18           (整数)
+         └─ RecentFiles = ...          (多字符串)</code></pre>
+    <p>路径 <code>HKEY_CURRENT_USER\Software\ExampleCorp\CommuteReader</code> 指向一个键；<code>Theme</code> 是该键中的值名；<code>dark</code> 是值数据。与普通目录不同，注册表键本身可以同时拥有子键和值。</p>
+    <h3>6.1 几个常见根键不是几块独立硬盘</h3>
+    <table>
+      <thead><tr><th>缩写</th><th>逻辑含义</th><th>典型内容</th></tr></thead>
+      <tbody>
+        <tr><td>HKLM</td><td><code>HKEY_LOCAL_MACHINE</code>，整台机器</td><td>系统、驱动、服务、机器级软件配置</td></tr>
+        <tr><td>HKCU</td><td><code>HKEY_CURRENT_USER</code>，当前用户</td><td>当前账户的应用偏好、桌面与环境设置</td></tr>
+        <tr><td>HKU</td><td><code>HKEY_USERS</code>，已加载的用户配置</td><td>不同用户安全标识对应的配置树</td></tr>
+        <tr><td>HKCR</td><td><code>HKEY_CLASSES_ROOT</code>，合并视图</td><td>文件关联、COM 类注册等</td></tr>
+        <tr><td>HKCC</td><td><code>HKEY_CURRENT_CONFIG</code></td><td>当前硬件配置的视图</td></tr>
+      </tbody>
+    </table>
+    <p>这些是 API 呈现的逻辑视图，不等于磁盘上正好有五个同名文件。蜂巢（hive）是一组键、子键和值及其支撑文件；系统启动或用户登录时加载相应蜂巢。机器级蜂巢的主要支撑文件位于 <code>%SystemRoot%\System32\Config</code>，用户配置常见于用户目录下的 <code>NTUSER.DAT</code>。修改时应使用注册表 API、PowerShell provider、<code>reg.exe</code> 或注册表编辑器，而不是把 hive 当普通数据库文件直接改字节。</p>
+    <h3>6.2 它具有数据库式能力，但不是通用业务数据库</h3>
+    <p>注册表提供统一 API、值类型、每键访问控制列表（ACL）、用户/机器作用域、加载与保存蜂巢、变更通知及远程管理等能力。它很适合“服务是否自动启动”“某个 COM 类由哪个组件实现”“当前用户偏好是什么”这类少量系统配置。</p>
+    <p>它不适合存大型文档、日志、缓存或复杂关系数据。微软当前 Win32 文档明确把适用范围限定为少量配置；现代桌面应用的一般设置往往优先推荐放在 <code>%APPDATA%</code> 下的 JSON/XML，较大或结构化数据使用文件、SQLite 等。</p>
+    <h3>6.3 用 PowerShell 看注册表：provider 的例子</h3>
+    <p>PowerShell provider 把不同数据源投影成类似文件系统的导航接口。注册表因此可以表现为 <code>HKCU:</code> 和 <code>HKLM:</code> 两个“驱动器”：</p>
+    <pre><code>Get-PSDrive
+Get-ChildItem HKCU:\Software
+Get-ItemProperty HKCU:\Environment</code></pre>
+    <p>这不表示注册表真的变成了 NTFS 目录。provider 只是统一了操作界面；其底层对象、权限和语义仍是注册表。一个明显差异是：注册表的“值”更像键的属性，而不是键下面的独立文件。</p>
+  </section>
+
+  <section id="why-registry">
+    <h2>七、注册表解决了什么，又制造了什么</h2>
+    <h3>7.1 把它放回当年的问题</h3>
+    <p>如果每个应用随意把 INI 文件扔进 Windows 目录，系统会遇到名称冲突、位置不一致、多用户隔离困难、权限粗糙和结构表达有限等问题。注册表试图提供一套稳定的系统级配置服务：</p>
+    <ul>
+      <li><strong>统一发现：</strong>调用固定 API，不必猜配置文件在哪、用什么编码和语法；</li>
+      <li><strong>作用域：</strong>明确区分当前用户与整台机器；</li>
+      <li><strong>权限：</strong>可以在键级别用 Windows 安全描述符控制读写与审计；</li>
+      <li><strong>结构与类型：</strong>树形命名空间加字符串、整数、二进制等值类型；</li>
+      <li><strong>系统集成：</strong>服务、驱动、文件关联、COM 与企业策略能使用共同机制；</li>
+      <li><strong>实现封装：</strong>应用依赖 API，而不是依赖 hive 的磁盘格式。</li>
+    </ul>
+    <p>这些目标并不荒唐。假如你管理一万台办公电脑，需要机器级策略、用户级覆盖、权限和远程管理，散落的文本文件也会产生自己的灾难。</p>
+    <h3>7.2 为什么开发者仍然经常厌恶它</h3>
+    <p>问题来自这些优点的另一面：</p>
+    <table>
+      <thead><tr><th>设计收益</th><th>对应成本</th><th>开发中的症状</th></tr></thead>
+      <tbody>
+        <tr><td>集中、系统级</td><td>形成隐藏的全局可变状态</td><td>复制项目目录不能复制完整环境；“我机器上能跑”难复现</td></tr>
+        <tr><td>二进制支撑文件与统一 API</td><td>不能直接用普通文本工具阅读、diff、合并</td><td>配置变更不自然地进入 Git 审查</td></tr>
+        <tr><td>多用户与机器作用域</td><td>同名设置可能存在多个视图和覆盖层</td><td>管理员账户正常、普通用户失败，或不同用户行为不一致</td></tr>
+        <tr><td>兼容与虚拟化</td><td>32/64 位视图、UAC 重定向等增加“看到的不一定是写入位置”</td><td>旧应用以为写了 HKLM，实际被透明重定向到用户虚拟存储</td></tr>
+        <tr><td>任意应用都能留下键</td><td>卸载器未必完整知道全部副作用</td><td>卸载后残留配置；重装仍继承旧状态</td></tr>
+        <tr><td>系统关键配置也在其中</td><td>人工编辑的影响范围难判断</td><td>网上“一键优化注册表”可能破坏启动、安全或更新</td></tr>
+      </tbody>
+    </table>
+    <p>因此，“注册表是糟糕设计”过于宽泛。更准确的结论是：</p>
+    <blockquote>注册表作为受权限保护的小型系统配置服务有合理场景；把普通应用所有数据、可移植项目配置和频繁变化的业务状态都塞进去，是糟糕使用。它的长期声誉还受到兼容层、安装器副作用和不可见全局状态共同影响。</blockquote>
+    <h3>7.3 Linux 并非完全没有“注册表式”系统</h3>
+    <p>类 Unix 环境更偏好“配置即文件”，但不等于所有配置都集中在 <code>/etc</code>，也不等于所有文件都人类友好。桌面环境可能使用 dconf/GSettings 一类层次设置系统；包管理器维护自己的数据库；systemd、NetworkManager、浏览器和桌面门户各有状态存储。XDG Base Directory 规范也只是规定用户配置、数据、状态和缓存的基础目录，并没有强制每个应用使用同一种文本格式。</p>
+    <p>所以“给 Linux 加注册表”的整活之所以成立，是因为它故意触碰了 Unix 社区偏爱的可组合文本、显式文件和可复制配置文化；但技术上，Linux 生态从来不是“没有数据库式配置”。批评应当落在可观察性、可移植性、作用域与工具接口上，而不是把“数据库”二字当作原罪。</p>
+    <details>
+      <summary>局部自检 3：为什么“注册表集中，所以一定比文本配置容易管理”是错的？</summary>
+      <p>集中只解决“去哪里找”的一部分问题。可管理性还包括变更能否审查、版本化、回滚、迁移、测试和声明式部署。注册表有统一 API、权限和企业策略优势，但普通文本配置更容易进入 Git、容器镜像和自动化差异比较。场景不同，评价维度也不同。</p>
+    </details>
+  </section>
+
+  <section id="decision">
+    <h2>八、开发自己的程序时怎样选择</h2>
+    <p>假设你写一个“通勤阅读器”桌面程序，包含主题、字号、最近文件、全文索引、自动更新服务和项目级导出规则。不要先问“注册表还是文件”，先按状态的所有权、寿命和作用域拆分：</p>
+    <table>
+      <thead><tr><th>状态</th><th>合理位置</th><th>理由</th></tr></thead>
+      <tbody>
+        <tr><td>项目导出规则</td><td>项目目录内受 Git 管理的 JSON/TOML</td><td>它属于项目，应可审查、复制并与代码共同版本化</td></tr>
+        <tr><td>当前用户主题、字号</td><td><code>%APPDATA%</code> 或 <code>%LOCALAPPDATA%</code> 下的配置文件；传统 Windows 应用也可用 HKCU</td><td>用户级、小量；文件更便于迁移调试，HKCU 更符合部分 Windows 管理约定</td></tr>
+        <tr><td>最近文件与窗口布局</td><td>用户状态目录/应用数据</td><td>不应污染项目，也不需要机器全局</td></tr>
+        <tr><td>全文索引</td><td>应用数据目录中的 SQLite/专用索引</td><td>体积大、结构复杂，不适合注册表</td></tr>
+        <tr><td>系统服务安装与启动参数</td><td>Windows 服务管理机制及必要的 HKLM 配置</td><td>机器级、需管理员权限、与系统生命周期集成</td></tr>
+        <tr><td>秘密令牌</td><td>凭据管理器或系统密钥库</td><td>普通配置文件和一般注册表值都不自动等于安全存储</td></tr>
+      </tbody>
+    </table>
+    <p>选 Shell 也采用同一思路：</p>
+    <ul>
+      <li>新的 Windows 管理自动化：优先 PowerShell 7；若依赖只支持 Windows PowerShell 5.1 的模块，再显式使用 5.1。</li>
+      <li>调用已有 <code>.bat</code>/<code>.cmd</code>：使用 <code>cmd</code>，不要假装 PowerShell 能无差别解释批处理语法。</li>
+      <li>面向 Linux 服务器、容器和 Unix 工具链：优先在 WSL 2 的 Linux 文件系统中工作。</li>
+      <li>跨平台项目：尽量把核心任务放进语言自己的任务系统或跨平台构建工具，并让 CI 在 Windows 与 Linux 都运行；不要假设换 Shell 就消除了 OS 差异。</li>
+    </ul>
+  </section>
+
+  <section id="lab">
+    <h2>九、一组只读的新手观察实验</h2>
+    <p class="note">以下命令只读取状态，不修改注册表。可以在 Windows Terminal 的 PowerShell 标签页执行。若某条命令因版本不同不可用，停止即可，不要改用管理员权限硬跑。</p>
+    <h3>实验 1：确认终端和 Shell 是两层</h3>
+    <pre><code>$PSVersionTable.PSVersion
+$PID
+$Host.Name
+Get-Process -Id $PID | Select-Object Name, Path</code></pre>
+    <p>你会看到当前 PowerShell 版本、Shell 进程号、宿主名称与实际可执行文件路径。然后在同一个 Windows Terminal 新建“命令提示符”标签页，输入：</p>
+    <pre><code>echo %COMSPEC%
+tasklist /FI "PID eq 你的进程号"</code></pre>
+    <p>窗口程序仍是 Windows Terminal，但 Shell 进程和变量语法已经改变。</p>
+    <h3>实验 2：亲眼看对象管道</h3>
+    <pre><code>$p = Get-Process | Select-Object -First 1
+$p.GetType().FullName
+$p | Get-Member
+$p.Name
+$p.Id</code></pre>
+    <p>如果 <code>Get-Process</code> 只输出了一行文本，你无法在之后稳定读取 <code>Name</code> 与 <code>Id</code> 属性。这里能读取，是因为变量里保存的是对象。</p>
+    <h3>实验 3：查看注册表逻辑树</h3>
+    <pre><code>Get-PSDrive -PSProvider Registry
+Get-Item HKCU:\Environment
+Get-ItemProperty HKCU:\Environment</code></pre>
+    <p>第一条显示注册表 provider 提供的驱动器；后两条读取当前用户环境设置。不要使用 <code>Set-ItemProperty</code>，本文目标只是观察模型。</p>
+    <h3>实验 4：区分环境变量的会话状态与持久状态</h3>
+    <pre><code>$env:PATH
+[Environment]::GetEnvironmentVariable('PATH', 'Process')
+[Environment]::GetEnvironmentVariable('PATH', 'User')
+[Environment]::GetEnvironmentVariable('PATH', 'Machine')</code></pre>
+    <p>当前进程的 PATH 通常由用户级与机器级持久设置在登录/启动进程时组合而来。修改一个已运行 Shell 的环境变量不会自动倒流修改父进程，也不会让所有已运行程序同步更新。这是进程继承模型，不是注册表“实时广播变量”。</p>
+  </section>
+
+  <section id="conclusion">
+    <h2>十、结论：Windows 不是“两套 Shell 加一个神秘数据库”</h2>
+    <ol>
+      <li>Windows Terminal 是终端宿主；<code>cmd</code>、Windows PowerShell、PowerShell 7 与 Bash 是不同 Shell。它们可以共享窗口，却不共享语法和数据模型。</li>
+      <li><code>cmd</code> 以文本流和旧脚本兼容为核心；PowerShell 以对象管道和系统管理为核心。二者并存不是一个纯技术最优解，而是新能力与兼容成本的折中。</li>
+      <li>WSL 不是主题皮肤，而是 Linux 执行环境。WSL 2 使用真正的 Linux 内核，其程序面对 Linux 系统调用与文件语义。</li>
+      <li>注册表是带层次、类型、作用域和权限的配置数据库，由多个 hive 文件支撑。它有合理的系统配置与企业管理场景，也会制造隐藏全局状态、迁移困难和复杂兼容视图。</li>
+      <li>评价 Windows 设计时，要区分抽象本身、应用滥用、历史兼容层和现代替代方案。否则“反讽”只剩阵营口号，无法指导开发决策。</li>
+    </ol>
+    <p>下一篇会沿着一个跨平台项目的完整开发流程，逐项比较 Windows/Win32 与类 Unix/POSIX 在路径、进程、参数、文件删除、权限、脚本、配置和部署上的契约差异。那时“Windows 开发缺陷”会从感受变成可验证的失败模式。</p>
+  </section>
+
+  <section id="references">
+    <h2>参考资料与证据边界</h2>
+    <ul>
+      <li><a href="https://learn.microsoft.com/en-us/windows/terminal/">Microsoft Learn：Windows Terminal 概览</a>——支撑终端宿主与 Shell 的分层、可承载的命令行环境。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands">Microsoft Learn：Windows commands</a>——支撑微软官方“Command shell 与 PowerShell”这一入门分类。</li>
+      <li><a href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_objects">Microsoft Learn：PowerShell 对象</a>与<a href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_pipelines">管道</a>——支撑对象管道的数据模型。</li>
+      <li><a href="https://learn.microsoft.com/en-us/powershell/scripting/what-is-windows-powershell">Microsoft Learn：Windows PowerShell 与 PowerShell</a>——支撑 5.1 与现代 PowerShell 是并存产品。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/structure-of-the-registry">Microsoft Learn：注册表结构</a>、<a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-hives">Registry Hives</a>、<a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-functions">Registry Functions</a>——支撑键、值、hive、物理支撑文件和当前适用场景。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-virtualization">Microsoft Learn：Registry Virtualization</a>——支撑兼容性重定向与合并视图的边界。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows/wsl/compare-versions">Microsoft Learn：比较 WSL 版本</a>——支撑 WSL 2 的 Linux 内核、受管理虚拟机与系统调用兼容性。</li>
+      <li><a href="https://specifications.freedesktop.org/basedir-spec/latest/">freedesktop.org：XDG Base Directory Specification</a>——支撑类 Unix 桌面用户配置、数据、状态和缓存目录的区分。</li>
+    </ul>
+    <p class="small">文中“合理”“糟糕使用”“更适合”等是基于可迁移性、可观察性、权限和兼容成本作出的工程评价，不是微软文档的原句。不同组织的管理需求可能改变权衡。</p>
+  </section>
+
+  <section id="reader-feedback">
+    <h2>读后反馈</h2>
+    <p>暂无。</p>
+  </section>
+</article>
+</body>
+</html>

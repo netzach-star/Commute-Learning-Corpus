@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+<meta name="corpus-id" content="计算机-14">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="计算机">
+  <title>Windows 开发环境：与类 Unix 开发体验的结构差异</title>
+  <style>
+    body{max-width:900px;margin:0 auto;padding:28px 22px 60px;font:18px/1.85 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:#18202a;background:#fff}h1,h2,h3{line-height:1.35;color:#10243e}h1{font-size:2em}h2{margin-top:2.2em;border-bottom:1px solid #d9e2ec;padding-bottom:.25em}h3{margin-top:1.5em}code,kbd{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#f2f5f8;padding:.08em .3em;border-radius:4px}pre{overflow:auto;background:#f5f7fa;border-left:4px solid #5b7fa3;padding:14px 16px;line-height:1.55}pre code{background:none;padding:0}.lead,.note,.warning{padding:14px 18px;border-radius:8px}.lead{background:#edf6ff}.note{background:#f2f8f2}.warning{background:#fff4e5}table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.93em}th,td{border:1px solid #cfd8e3;padding:9px 11px;vertical-align:top}th{background:#eef3f8;text-align:left}a{color:#075aa8}details{background:#f6f8fa;border:1px solid #d8dee4;border-radius:7px;padding:10px 14px;margin:1em 0}summary{cursor:pointer;font-weight:650}blockquote{border-left:4px solid #95a7b8;margin-left:0;padding-left:1em;color:#44515f}.small{font-size:.9em;color:#556270}.tag{display:inline-block;padding:2px 8px;border-radius:12px;background:#e8eef5;font-size:.82em;margin-right:5px}li{margin:.35em 0}.matrix td:first-child{font-weight:650}.good{color:#176b3a}.bad{color:#9a2f23}
+  </style>
+</head>
+<body>
+<article>
+  <header>
+    <p><span class="tag">Windows 开发环境</span><span class="tag">对比篇</span></p>
+    <h1>与类 Unix 开发体验的结构差异</h1>
+    <p class="lead">核心问题：开发者所说“Windows 不适合开发”到底指什么？哪些摩擦来自 NT/Win32 与 POSIX 的真实契约差异，哪些只是旧默认或工具生态，哪些已被现代 Windows、PowerShell、WSL 与跨平台运行时缓解？</p>
+    <p>本文不用“Windows 差、Linux 好”的总评替代分析。我们让同一个项目从克隆、安装、运行、测试、热更新到部署走一遍，追踪路径、命令、进程、文件、权限和配置的状态变化。评价标准是能否复现、自动化、组合、调试和部署，而不是界面审美。</p>
+  </header>
+
+  <nav aria-label="目录">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#premise">先校准比较对象</a></li>
+      <li><a href="#case">贯穿案例与失败地图</a></li>
+      <li><a href="#path">路径、文件名与大小写</a></li>
+      <li><a href="#process">进程启动、参数与 Shell</a></li>
+      <li><a href="#file-life">文件生命周期、锁与热更新</a></li>
+      <li><a href="#permissions">权限、符号链接与可执行脚本</a></li>
+      <li><a href="#text">文本、编码与换行</a></li>
+      <li><a href="#state">配置、安装与全局状态</a></li>
+      <li><a href="#ecosystem">工具生态与生产环境同构</a></li>
+      <li><a href="#strengths">Windows 原生开发的真实优势</a></li>
+      <li><a href="#wsl">WSL 解决什么，又新增什么边界</a></li>
+      <li><a href="#guide">新手选择指南</a></li>
+    </ol>
+  </nav>
+
+  <section id="premise">
+    <h2>一、先校准比较对象</h2>
+    <p>“Windows 与 Linux”不是两个单一开发环境。至少要区分：</p>
+    <ul>
+      <li><strong>原生 Windows：</strong>Windows NT 内核、Win32/.NET API、NTFS、PowerShell 或 <code>cmd</code>，工具直接以 Windows 进程运行；</li>
+      <li><strong>原生类 Unix：</strong>Linux/macOS 上的 POSIX 风格进程与文件接口，Bash/Zsh 等 Shell；</li>
+      <li><strong>Windows + WSL 2：</strong>桌面和编辑器在 Windows，编译器、Shell 与项目文件主要在 Linux 环境；</li>
+      <li><strong>跨平台运行时：</strong>Java、Python、Node.js、Go、Rust、.NET 等尽量封装底层差异，但无法消灭所有差异。</li>
+    </ul>
+    <p>还要区分开发目标。制作 WinUI/WPF 桌面应用、DirectX 游戏、Windows 驱动、Office/Active Directory 管理工具时，原生 Windows 不是“不得已”，而是目标平台本身。争议主要集中在 Web 后端、云服务、容器、开源 CLI 和跨平台项目：这些项目的生产环境与工具文化大多更接近 Linux。</p>
+    <p>因此，本文所称“缺陷”有四种来源：</p>
+    <table class="matrix">
+      <thead><tr><th>来源</th><th>含义</th><th>能否靠换 Shell 解决</th></tr></thead>
+      <tbody>
+        <tr><td>操作系统契约</td><td>文件名、进程参数、删除语义、权限模型等底层差异</td><td>通常不能</td></tr>
+        <tr><td>历史默认</td><td>大小写不敏感、旧控制台、路径长度开关、CRLF 等</td><td>有时可配置，但团队仍要治理</td></tr>
+        <tr><td>工具生态</td><td>文档、脚本、包、CI 镜像首先按 Unix 编写</td><td>换到 WSL 常能显著改善</td></tr>
+        <tr><td>应用自身问题</td><td>安装器乱写目录/注册表、脚本只测一个平台</td><td>应由应用与工程流程修复</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="case">
+    <h2>二、贯穿案例：Commute API 从 Linux 仓库来到 Windows</h2>
+    <p>设想一个简单 Web 项目：</p>
+    <pre><code>commute-api/
+├─ src/
+│  ├─ server.py
+│  └─ Report.py
+├─ scripts/
+│  ├─ dev
+│  └─ rotate-log
+├─ config/default.toml
+├─ tests/test_report.py
+└─ Makefile</code></pre>
+    <p>开发者原来在 Linux 上工作。<code>scripts/dev</code> 第一行是 <code>#!/usr/bin/env bash</code>，测试导入 <code>src.report</code>，开发服务器通过“生成新文件—原子替换旧文件”更新缓存，部署目标是 Linux 容器。</p>
+    <p>把仓库克隆到原生 Windows 后，可能出现一串并不神秘的失败：</p>
+    <ol>
+      <li><code>Report.py</code> 在大小写不敏感的默认文件系统上掩盖了导入名错误；Linux CI 才失败；</li>
+      <li><code>scripts/dev</code> 没有 Windows 可直接识别的执行方式，<code>Makefile</code> 依赖的 Unix 工具也不存在；</li>
+      <li>含空格的 Python 路径经过 PowerShell、运行时和子进程多层引号后被拆错；</li>
+      <li>防病毒或编辑器仍打开缓存文件，替换操作报“文件正在使用”；</li>
+      <li>依赖包要创建符号链接，权限或开发者模式不符合预期；</li>
+      <li>脚本被 Git 转成 CRLF，Linux 容器内的解释器路径变成带隐藏 <code>\r</code> 的字符串；</li>
+      <li>开发工具生成的状态散布到注册表、AppData 和项目目录，清理环境时漏掉一部分；</li>
+      <li>最终在本机“修通”的 PowerShell 脚本与 Linux 生产镜像不是同一套执行路径。</li>
+    </ol>
+    <p>这些失败并非每次都会发生。现代工具已经处理了很多边界；但严肃开发需要知道它们为什么会发生，以及哪一层负责证明“不发生”。</p>
+  </section>
+
+  <section id="path">
+    <h2>三、路径、文件名与大小写：第一批不变量已经不同</h2>
+    <h3>3.1 多根路径与单根路径</h3>
+    <p>类 Unix 文件系统向用户呈现一棵从 <code>/</code> 开始的树，挂载的磁盘与网络文件系统进入树中的某个目录。Windows 常见路径以卷为起点：<code>C:\</code>、<code>D:\</code>，网络共享可写成 UNC 路径 <code>\\server\share</code>。这不是纯显示差异，因为相对路径还可能涉及“当前驱动器”和每盘当前目录等遗留行为。</p>
+    <p>跨平台代码如果用字符串拼接路径，会很快碰到分隔符、根路径、UNC、盘符与规范化问题。正确做法是用语言的路径库，例如 Python <code>pathlib</code>、Java <code>Path</code>、Node <code>path</code>，并在两种系统上测试。</p>
+    <h3>3.2 NTFS 能保留大小写，但 Windows 默认查找常常不区分</h3>
+    <p>Windows 官方命名规则要求应用不要假设大小写敏感；NTFS 可以支持按目录启用的大小写敏感语义，但默认 Win32 行为通常把 <code>Report.py</code> 与 <code>report.py</code> 视为同名。Linux 常用文件系统则把它们视为不同目录项。</p>
+    <p>于是 Windows 开发者可能写出：</p>
+    <pre><code>from src.report import build_report   # 实际文件名是 Report.py</code></pre>
+    <p>本机测试通过，Linux CI 失败。真正修复不是“让 Linux 宽容”，而是建立仓库不变量：导入与文件名大小写一致；CI 至少在部署目标系统运行；Git 重命名只改变大小写时要确认索引真的记录了变化。</p>
+    <h3>3.3 保留名称与路径长度仍会进入工程</h3>
+    <p>Windows 保留 <code>CON</code>、<code>NUL</code>、<code>COM1</code> 等设备名，即使加扩展名也可能仍被视为设备；文件名不能包含 <code>&lt; &gt; : " / \ | ? *</code> 等字符。旧 Win32 <code>MAX_PATH</code> 常见上限为 260 字符。现代 Windows 可解除许多 API 的限制，但需要系统设置与应用清单同时 opt-in，且并非所有工具都自动兼容。</p>
+    <p>这解释了为什么深层 <code>node_modules</code>、自动生成目录或 Git 仓库在某台 Windows 机器上仍可能撞长路径：底层文件系统能力、Win32 API 行为和具体应用是否声明支持是三件事。</p>
+    <details>
+      <summary>局部自检 1：把 Windows 项目放到短路径为什么只是缓解，不是修复？</summary>
+      <p>它降低触发旧长度限制的概率，却没有证明依赖与工具支持长路径，也没有解决大小写、保留名称和根路径差异。若仓库本身允许极深路径，其他用户或 CI 仍可能失败。修复应包括控制目录深度、启用并验证长路径支持、在目标平台测试。</p>
+    </details>
+  </section>
+
+  <section id="process">
+    <h2>四、进程启动、参数与 Shell：Windows 最隐蔽的跨平台坑</h2>
+    <h3>4.1 POSIX 传参数数组，Windows 基础接口传命令行字符串</h3>
+    <p>Linux 的 <code>execve</code> 接口接收程序路径、参数指针数组 <code>argv[]</code> 和环境数组 <code>envp[]</code>。调用者已经把参数边界交给内核：含空格的一个参数仍然是数组中的一个元素。</p>
+    <p>Win32 <code>CreateProcessW</code> 的基础接口则包含一条命令行字符串。新进程的语言运行库或程序自己再把字符串拆成 <code>argv</code>。微软 C 运行库定义了一套反斜杠与双引号规则，但不是所有程序都必须使用同一个解析器；Shell 本身还可能先做一轮变量、转义和运算符解析。</p>
+    <p>考虑要把一个参数 <code>C:\Data Files\draft\</code> 传给子进程。末尾反斜杠紧邻闭合引号时，错误的转义算法可能把闭合引号吃掉。若调用链是：</p>
+    <pre><code>PowerShell → npm 脚本 → Node 子进程 → Python 程序</code></pre>
+    <p>每一层都有机会把字符串重新解释。解决原则是：能调用“程序 + 参数数组”的 API 就不要拼接整条 Shell 命令；只有确实需要 <code>|</code>、<code>&gt;</code>、变量展开等 Shell 语法时才显式启动 Shell，并把使用的是哪种 Shell 写进契约。</p>
+    <h3>4.2 同名命令未必是同一东西</h3>
+    <p>在 PowerShell 中，<code>curl</code>、<code>where</code>、<code>sort</code> 等名称在不同版本或环境里可能解析成别名、cmdlet 或外部程序。<code>Get-Command name -All</code> 可以显示解析结果。跨平台文档只写“运行 <code>python</code>”也可能遇到 <code>python.exe</code>、<code>py.exe</code> launcher、商店别名和虚拟环境之间的差异。</p>
+    <p>Shell 脚本本身更不通用：Bash 的 <code>export NAME=value</code>、PowerShell 的 <code>$env:NAME='value'</code>、<code>cmd</code> 的 <code>set NAME=value</code> 是三种语言。把命令复制到另一个 Shell，报错不是“终端坏了”。</p>
+    <h3>4.3 信号与任务控制也不是一套模型</h3>
+    <p>Unix 工具普遍围绕进程组、文件描述符和信号（signal）组合。Windows 有进程句柄、作业对象、控制台控制事件与自己的等待/终止 API。<code>Ctrl+C</code> 表面相同，传递给进程树、由谁捕获、子进程是否一同退出却可能不同。</p>
+    <p>这会影响测试框架、开发服务器、watcher 与 CI 超时：父进程退出后子进程是否残留？先请求优雅关闭还是直接终止？临时端口和文件是否释放？成熟的跨平台库会封装一部分，但工程必须用“启动—取消—超时—清理”测试验证。</p>
+  </section>
+
+  <section id="file-life">
+    <h2>五、文件生命周期、锁与热更新</h2>
+    <p>Unix 的经典语义把“目录项名称”与“已打开文件对象”分开。<code>unlink</code> 删除名称；如果进程仍持有文件描述符，文件内容可继续存在到最后一个引用关闭。这使日志轮转和原子部署常采用：</p>
+    <ol>
+      <li>写入同目录临时文件；</li>
+      <li>刷新并关闭；</li>
+      <li>用 <code>rename</code> 原子替换目标名称；</li>
+      <li>旧读者继续使用旧文件，新读者看到新文件。</li>
+    </ol>
+    <p>Windows 的文件打开接口让调用者声明共享读取、共享写入、共享删除。若某个现存句柄没有以 <code>FILE_SHARE_DELETE</code> 打开，<code>DeleteFile</code> 或重命名可能失败；内存映射文件也会形成限制。用户看到的就是经典提示：“文件正由另一程序使用”。</p>
+    <p>这不是 NTFS 简单地“更差”，而是 Windows 把共享意图放进打开契约，允许应用获得更强的排他保证。代价是生态中任意一个程序以保守共享模式打开文件，就可能阻断构建系统的替换与清理。</p>
+    <p>在贯穿案例中，编辑器、索引器、防病毒软件、测试进程或开发服务器都可能持有句柄。可靠的开发工具需要：</p>
+    <ul>
+      <li>尽快关闭文件，避免把句柄跨越无关工作保存；</li>
+      <li>在允许时使用恰当共享标志；</li>
+      <li>把重试限定在可识别的临时共享冲突，并使用退避与上限；</li>
+      <li>失败时报告具体路径和持有者线索，而不是无限重试；</li>
+      <li>测试取消与崩溃后临时文件能否恢复。</li>
+    </ul>
+    <details>
+      <summary>局部自检 2：Windows 上“删不掉文件”一定是权限不足吗？</summary>
+      <p>不是。访问控制权限、只读属性、现有句柄的共享模式、内存映射、杀毒/索引进程和路径解析都可能导致失败。先区分错误码与持有句柄，再决定是改权限、关闭进程、重试还是修复程序的打开方式。</p>
+    </details>
+  </section>
+
+  <section id="permissions">
+    <h2>六、权限、符号链接与可执行脚本</h2>
+    <h3>6.1 Unix 模式位与 Windows ACL 的抽象不同</h3>
+    <p>Unix 教学常从所有者、组、其他用户的读写执行位讲起，现代系统还能叠加 ACL 与 capability。Windows 主要使用安全标识（SID）、访问控制项和继承规则。二者都能表达复杂权限，但默认接口和工具文化不同。</p>
+    <p>一个关键差异是 Unix 文件的“可执行位”。脚本文件需要执行权限，内核可根据 <code>#!</code> 选择解释器。Windows 通常根据扩展名、文件关联和显式可执行程序决定如何启动；Git 在 Windows 工作树上也无法像 Unix 文件系统那样自然表达全部模式变化。</p>
+    <h3>6.2 符号链接曾是高频摩擦点，今天需要更细致地说</h3>
+    <p>Windows 支持符号链接、硬链接与 junction，但创建符号链接曾通常需要特权。现代 Windows 在开发者模式与相应 API 标志下允许非提升进程创建符号链接；MSIX 等场景还有自己的规则。因此，“Windows 不支持软链接”已经错误，但“所有工具和机器默认都能像 Linux 一样创建链接”也仍不可靠。</p>
+    <p>包管理器、Git 和测试夹具应在启动时验证能力，失败时说明需要开发者模式、管理员权限还是替代复制策略。不要静默把符号链接降级为普通文件复制，因为这可能改变单一事实来源、循环检测和文件监听语义。</p>
+  </section>
+
+  <section id="text">
+    <h2>七、文本、编码与换行：看似小，最适合制造幽灵故障</h2>
+    <p>Windows 传统文本行结束使用 CRLF，Unix 使用 LF。Git 可以在检出和提交时转换；编辑器也能自动识别。问题不在“两个字节浪费空间”，而在变换发生在哪一层、仓库保存何种规范、生成文件是否参与转换。</p>
+    <p>若 Bash 脚本第一行在 Linux 容器中实际是：</p>
+    <pre><code>#!/usr/bin/env bash\r</code></pre>
+    <p>内核可能尝试寻找名字末尾带回车的解释器，报出令人困惑的“文件不存在”。稳妥做法是用 <code>.gitattributes</code> 声明仓库策略，例如对 Shell 脚本固定 LF，对确需 CRLF 的批处理固定 CRLF，并让 CI 检查。</p>
+    <p>编码问题也有历史层。Windows API 早已广泛使用 UTF-16；传统控制台程序、代码页、所谓 ANSI 接口与 UTF-8 工具曾长期共存。现代 Windows Terminal 和新工具的 UTF-8 支持显著改善，但原生程序之间的管道仍可能有编码假设。跨平台程序应：</p>
+    <ul>
+      <li>文件格式明确写 UTF-8 等编码，不依赖“系统默认”；</li>
+      <li>机器接口优先 JSON/协议，而不是解析本地化的人类输出；</li>
+      <li>测试中文路径、空格、emoji、组合字符和不同区域设置；</li>
+      <li>错误日志记录实际字节解码失败位置，不要用替换字符悄悄吞掉证据。</li>
+    </ul>
+  </section>
+
+  <section id="state">
+    <h2>八、配置、安装与全局状态</h2>
+    <p>类 Unix 并不天然“复制目录就能运行”：动态库、包数据库、服务单元、用户配置和缓存同样会形成外部状态。但它的开发文化更常把配置暴露为文件，放进 <code>/etc</code>、项目目录或 XDG 约定目录，便于文本工具、版本控制和声明式部署处理。</p>
+    <p>传统 Windows 桌面应用可能把状态分散在：</p>
+    <ul>
+      <li>安装目录与 <code>Program Files</code>；</li>
+      <li><code>ProgramData</code>；</li>
+      <li>用户的 <code>AppData\Local</code>、<code>AppData\Roaming</code>；</li>
+      <li>HKCU 与 HKLM 注册表；</li>
+      <li>Windows 服务、计划任务、环境变量、文件关联与凭据库。</li>
+    </ul>
+    <p>这种分散本身未必比 Unix 多，但注册表和安装器副作用更不容易被 Git 或普通目录 diff 捕获。环境复现如果只备份源码目录，会遗漏“程序能运行的隐含前提”。</p>
+    <p>现代工程的改进方式不是粗暴禁止注册表，而是让安装、配置和运行状态可声明、可检测、可卸载：</p>
+    <ol>
+      <li>项目配置进入仓库，用户偏好与机器策略明确分离；</li>
+      <li>安装器维护自己创建的组件清单和回滚信息；</li>
+      <li>构建脚本在开始时检查依赖版本与能力，而不是依赖“我电脑上装过”；</li>
+      <li>CI 从干净镜像安装，验证没有手工遗留状态；</li>
+      <li>开发秘密放系统凭据库或注入机制，不混入普通配置。</li>
+    </ol>
+  </section>
+
+  <section id="ecosystem">
+    <h2>九、工具生态与生产环境同构：最现实的差距</h2>
+    <p>很多开发者厌恶的并不是 Windows 内核，而是“教程第一行就是 <code>sudo apt</code>，构建脚本默认 Bash，最终容器也是 Linux”。这是一种生态同构优势：</p>
+    <blockquote>本地 Shell、CI runner、容器基础镜像和生产服务器越相似，路径、包、权限和进程差异越少，故障越容易在上线前出现。</blockquote>
+    <p>如果生产运行 Linux，原生 Windows 本地开发多了一次语义翻译。跨平台运行时能减少翻译，却不能保证原生依赖、文件监听、DNS、大小写、时钟、信号与容器挂载完全一致。WSL 2 的价值就在这里：它让 Windows 桌面用户在本机获得接近生产的 Linux 内核与工具链。</p>
+    <p>但“同构”也不能夸大。macOS 同样不是 Linux；开发容器与生产集群仍有内核配置、网络、资源限制、身份和存储差异。真正的证据是 CI、集成测试和部署前验证，而不是看到 Bash 提示符就宣布环境一致。</p>
+    <h3>9.1 性能问题为什么常与文件边界有关</h3>
+    <p>大量小文件工作负载——Git 状态、依赖安装、编译器扫描、文件 watcher——对元数据调用非常敏感。WSL 2 的 Linux 根文件系统与 Windows 挂载盘之间需要跨边界转换。微软因此建议：用 Linux 工具工作的项目放在 WSL 的 Linux 文件系统中，而不是把项目放 <code>C:</code> 后从 <code>/mnt/c</code> 高频访问。</p>
+    <p>反过来，Windows 原生工具频繁访问 WSL 文件也可能付出边界成本。选择“文件归谁管理”比纠结终端主题重要：项目主要由哪套工具链处理，就放在哪套文件系统；通过编辑器的远程/WSL 扩展进入，而不是让两边的构建器同时抢同一棵树。</p>
+  </section>
+
+  <section id="strengths">
+    <h2>十、Windows 原生开发的真实优势</h2>
+    <p>如果只列缺点，会造成另一个失真模型。Windows 的强项与它的设计目标一致：</p>
+    <ul>
+      <li><strong>目标平台直接性：</strong>开发 Windows 桌面、驱动、DirectX、Office 集成与企业管理工具时，原生 API 和真实用户环境不可替代；</li>
+      <li><strong>工具整合：</strong>Visual Studio、Windows 调试器、ETW、Sysinternals、性能分析与 .NET 工具链能提供深度系统观察；</li>
+      <li><strong>对象化管理：</strong>PowerShell 对 Windows、Azure、Exchange、SQL Server 等管理对象的统一操作，比勉强把一切压成文本更自然；</li>
+      <li><strong>向后兼容：</strong>旧商业软件与企业自动化的存活时间极长，这对使用者是资产，只是对平台演化构成成本；</li>
+      <li><strong>桌面与硬件生态：</strong>大量商业软件、外设、GPU 与专业工具首先支持 Windows，开发环境可与日常桌面共存。</li>
+    </ul>
+    <p>因此更公平的评价是：Windows 并非缺少强大工程能力，而是它的原生抽象与当代服务器/开源工具的 Unix 假设不一致；为了同时保住旧生态和吸收新生态，它形成了较高的边界复杂度。</p>
+  </section>
+
+  <section id="wsl">
+    <h2>十一、WSL 解决什么，又新增什么边界</h2>
+    <p>WSL 2 用真正 Linux 内核解决了最关键的一类问题：Linux 系统调用、包管理、Bash 工具、ELF 二进制、容器和生产环境语义能在 Windows 机器上直接运行。它特别适合 Web、AI、数据、云原生与多数开源后端开发。</p>
+    <p>但 WSL 不是把 Windows 转化成 Linux；它创建了双环境：</p>
+    <table>
+      <thead><tr><th>边界</th><th>常见错误</th><th>治理方法</th></tr></thead>
+      <tbody>
+        <tr><td>文件系统</td><td>项目放 <code>/mnt/c</code>，Linux 小文件操作变慢；两边权限/大小写预期冲突</td><td>Linux 项目放 WSL 文件系统，由 WSL 工具管理</td></tr>
+        <tr><td>PATH 与可执行文件</td><td>误调用 Windows 版 Git/Python 或 Linux 版工具，产生两份依赖环境</td><td>用 <code>which</code>、<code>Get-Command</code> 明确解析结果</td></tr>
+        <tr><td>网络</td><td>把 localhost、虚拟网卡和端口暴露规则想成完全相同</td><td>按当前 WSL 网络模式验证监听地址与访问方向</td></tr>
+        <tr><td>凭据</td><td>Windows 与 Linux 各存一套 SSH/Git 凭据，权限处理混乱</td><td>明确凭据所有者与代理桥接方案，避免复制私钥</td></tr>
+        <tr><td>编辑器/Agent</td><td>界面在 Windows，扩展或命令却在错误一侧执行</td><td>使用 WSL/远程工作区，检查终端与扩展宿主位置</td></tr>
+      </tbody>
+    </table>
+    <p>WSL 的正确心智模型是“一台高度集成的 Linux 开发机”，不是“PowerShell 里多了几个 Linux 命令”。</p>
+    <details>
+      <summary>局部自检 3：使用 WSL 后还需要 Windows CI 吗？</summary>
+      <p>取决于产品承诺。如果只部署 Linux，WSL 与 Linux CI 覆盖主路径即可；但只要声称源码、CLI 或桌面工具支持 Windows，就必须有原生 Windows runner 验证路径、参数、权限和安装行为。WSL 成功不能证明 Win32 成功。</p>
+    </details>
+  </section>
+
+  <section id="guide">
+    <h2>十二、给第一次严肃使用 Windows 开发的选择指南</h2>
+    <table>
+      <thead><tr><th>目标</th><th>首选环境</th><th>原因</th></tr></thead>
+      <tbody>
+        <tr><td>Linux 服务器、Docker/Kubernetes、AI/数据、常规 Web 后端</td><td>Windows Terminal + WSL 2 + 项目放 Linux 文件系统</td><td>工具与部署目标更同构</td></tr>
+        <tr><td>跨平台 CLI/库</td><td>主力可用 WSL 或原生系统，但 CI 同时跑 Windows 与 Linux</td><td>不能靠一侧推断另一侧语义</td></tr>
+        <tr><td>.NET 跨平台后端</td><td>WSL 或原生 Windows 均可；按生产目标选择并做双平台测试</td><td>.NET 封装很多差异，但原生依赖仍存在</td></tr>
+        <tr><td>WinUI/WPF/Office/Windows 服务与企业管理</td><td>原生 Windows + PowerShell + Visual Studio</td><td>目标平台 API、调试和管理生态最直接</td></tr>
+        <tr><td>维护旧批处理/安装器</td><td>原生 Windows，明确 <code>cmd</code> 版本与权限边界</td><td>必须在真实兼容环境中验证</td></tr>
+      </tbody>
+    </table>
+    <h3>最低限度的工程纪律</h3>
+    <ol>
+      <li>永远知道当前终端后面是哪种 Shell、命令解析成哪个可执行文件。</li>
+      <li>不用字符串拼路径；不用字符串拼子进程命令，除非确实需要 Shell。</li>
+      <li>仓库声明换行、编码与大小写约束，并在 CI 检查。</li>
+      <li>把项目配置、用户偏好、机器策略、缓存和秘密分开。</li>
+      <li>测试失败路径：含空格/中文路径、文件被占用、取消、超时、权限不足、重启恢复。</li>
+      <li>生产是 Linux 就让主开发/CI 尽量走 Linux 语义；产品支持 Windows 就增加原生 Windows 证据。</li>
+    </ol>
+    <p class="warning"><strong>最终判断：</strong>Windows 的主要开发劣势不是“不能写代码”，而是边界多：旧与新 Shell、Win32 与 POSIX、Windows 与 WSL、注册表与文件、用户与机器、32 位与 64 位。边界本身可以管理；不知道边界存在，才会把偶然成功当成系统保证。</p>
+  </section>
+
+  <section id="references">
+    <h2>参考资料与证据边界</h2>
+    <ul>
+      <li><a href="https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file">Microsoft Learn：Naming Files, Paths, and Namespaces</a>——Windows 路径、保留字符/设备名、大小写与命名空间。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation">Microsoft Learn：Maximum Path Length Limitation</a>——260 字符历史限制、长路径 opt-in 与 Git 示例。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw">Microsoft Learn：CreateProcessW</a>与<a href="https://learn.microsoft.com/en-us/cpp/c-language/parsing-c-command-line-arguments">C 命令行参数解析规则</a>——Windows 命令行字符串和运行库解析。</li>
+      <li><a href="https://man7.org/linux/man-pages/man2/execve.2.html">Linux man-pages：execve(2)</a>——Linux 的 <code>argv</code>/<code>envp</code> 数组与解释器脚本接口。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-deletefile">Microsoft Learn：DeleteFile</a>与<a href="https://man7.org/linux/man-pages/man2/unlink.2.html">Linux man-pages：unlink(2)</a>——打开句柄、共享删除与 Unix 名称删除语义的对比。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createsymboliclinka">Microsoft Learn：CreateSymbolicLink</a>——非提升创建符号链接与开发者模式条件。</li>
+      <li><a href="https://specifications.freedesktop.org/basedir-spec/latest/">XDG Base Directory Specification</a>——用户配置、数据、状态、缓存和运行时目录。</li>
+      <li><a href="https://learn.microsoft.com/en-us/windows/wsl/compare-versions">Microsoft Learn：Comparing WSL Versions</a>与<a href="https://learn.microsoft.com/en-us/windows/wsl/filesystems">WSL 文件系统工作建议</a>——WSL 2 架构和跨文件系统性能边界。</li>
+      <li><a href="https://git-scm.com/docs/gitattributes">Git 官方文档：gitattributes</a>——仓库换行与文本属性治理。</li>
+    </ul>
+    <p class="small">“生态更接近 Linux”“更适合”等属于基于生产同构、可复现性与工具可用性的工程判断，不是操作系统规范中的价值结论。具体语言、组织和目标平台可能改变最佳选择。</p>
+  </section>
+
+  <section id="reader-feedback">
+    <h2>读后反馈</h2>
+    <p>暂无。</p>
+  </section>
+</article>
+</body>
+</html>

@@ -5,604 +5,673 @@
 <meta name="corpus-id" content="AI-05">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="corpus-domain" content="AI">
-  <title>Codex 系统设计：模型与 Harness 如何协同</title>
+  <title>Codex 系统设计：一次任务究竟怎样跑起来</title>
   <style>
-    :root {
-      color-scheme: light;
-      --ink: #20252b;
-      --muted: #5d6873;
-      --line: #d9e0e7;
-      --soft: #f5f8fa;
-      --blue: #195b9a;
-      --blue-soft: #edf5fc;
-      --amber: #8a5a00;
-      --amber-soft: #fff7df;
-      --green: #276749;
-      --green-soft: #edf8f2;
-      --red: #9b2c2c;
-    }
+    :root { color-scheme: light; --ink:#18202a; --muted:#5c6773; --line:#d8dee6; --soft:#f5f7fa; --blue:#235ea7; --warn:#fff6dc; --good:#edf8f0; }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: #fff;
-      color: var(--ink);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
-      font-size: 17px;
-      line-height: 1.82;
-    }
-    main { max-width: 920px; margin: 0 auto; padding: 42px 26px 80px; }
-    h1, h2, h3, h4 { line-height: 1.35; color: #17202a; }
-    h1 { font-size: 2.15rem; margin: 0 0 12px; }
-    h2 { font-size: 1.55rem; margin: 2.6em 0 0.8em; padding-bottom: 0.28em; border-bottom: 1px solid var(--line); }
-    h3 { font-size: 1.2rem; margin: 2em 0 0.55em; }
-    h4 { font-size: 1.03rem; margin: 1.5em 0 0.35em; }
-    p { margin: 0.85em 0; }
-    a { color: var(--blue); overflow-wrap: anywhere; }
-    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-    code { background: #f1f4f6; padding: 0.08em 0.3em; border-radius: 4px; font-size: 0.92em; }
-    pre { background: #18212b; color: #edf2f7; padding: 18px; overflow-x: auto; border-radius: 8px; line-height: 1.55; font-size: 0.88rem; }
-    table { width: 100%; border-collapse: collapse; margin: 1.25em 0; font-size: 0.94rem; }
-    th, td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; }
-    th { background: var(--soft); }
-    ul, ol { padding-left: 1.55em; }
-    li { margin: 0.38em 0; }
-    .subtitle { color: var(--muted); font-size: 1.05rem; margin-bottom: 1.8em; }
-    .meta { color: var(--muted); font-size: 0.9rem; }
-    .lead, .note, .warning, .practice {
-      border-left: 4px solid var(--blue);
-      background: var(--blue-soft);
-      padding: 14px 18px;
-      margin: 1.3em 0;
-      border-radius: 0 7px 7px 0;
-    }
-    .warning { border-left-color: var(--amber); background: var(--amber-soft); }
-    .practice { border-left-color: var(--green); background: var(--green-soft); }
-    .note strong, .warning strong, .practice strong { display: inline-block; margin-right: 0.2em; }
-    .toc { background: var(--soft); border: 1px solid var(--line); border-radius: 9px; padding: 16px 20px; }
-    .toc ol { columns: 2; column-gap: 34px; margin: 0.5em 0; }
-    .layer-stack { display: grid; gap: 8px; margin: 1.4em 0; }
-    .layer { border: 1px solid var(--line); border-left: 6px solid var(--blue); padding: 10px 14px; border-radius: 6px; background: #fff; }
-    .layer small { color: var(--muted); }
-    .formula { overflow-x: auto; text-align: center; padding: 15px; margin: 1em 0; background: var(--soft); border-radius: 8px; }
-    .tag { display: inline-block; font-size: 0.78rem; padding: 1px 7px; border-radius: 99px; background: #e8edf2; color: #394550; margin-right: 5px; }
-    .source-class { font-size: 0.9rem; color: var(--muted); }
-    .checklist li::marker { color: var(--green); }
-    .small { font-size: 0.9rem; color: var(--muted); }
-    .feedback-entry { border-top: 1px solid var(--line); margin-top: 1em; padding-top: 1em; }
-    @media (max-width: 700px) {
-      body { font-size: 16px; }
-      main { padding: 26px 18px 60px; }
-      h1 { font-size: 1.75rem; }
-      .toc ol { columns: 1; }
-      table { font-size: 0.86rem; }
-      th, td { padding: 8px; }
-    }
+    body { margin:0; background:#fff; color:var(--ink); font:17px/1.78 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    main { max-width:920px; margin:0 auto; padding:32px 22px 72px; }
+    h1 { font-size:2rem; line-height:1.25; margin:.2em 0 .35em; }
+    h2 { margin:2.1em 0 .7em; padding-bottom:.25em; border-bottom:1px solid var(--line); font-size:1.45rem; }
+    h3 { margin:1.55em 0 .45em; font-size:1.12rem; }
+    p { margin:.7em 0; }
+    a { color:var(--blue); }
+    code { background:var(--soft); padding:.08em .3em; border-radius:4px; font-size:.92em; }
+    pre { overflow:auto; padding:15px 17px; border:1px solid var(--line); border-radius:8px; background:#f7f9fb; font:14px/1.62 ui-monospace,SFMono-Regular,Consolas,monospace; }
+    pre code { padding:0; background:transparent; }
+    table { width:100%; border-collapse:collapse; margin:1em 0 1.35em; font-size:.94em; }
+    th,td { border:1px solid var(--line); padding:.65em .75em; vertical-align:top; }
+    th { background:var(--soft); text-align:left; }
+    blockquote { margin:1em 0; padding:.6em 1em; border-left:4px solid var(--blue); background:var(--soft); }
+    .lead { color:#303b47; font-size:1.06em; }
+    .note,.warning,.result { padding:.8em 1em; margin:1em 0; border-radius:8px; }
+    .note { background:var(--soft); border:1px solid var(--line); }
+    .warning { background:var(--warn); border:1px solid #ead58d; }
+    .result { background:var(--good); border:1px solid #b9ddc1; }
+    .flow { margin:1.2em auto; max-width:760px; }
+    .flow .box { border:1px solid #aeb8c4; border-radius:8px; padding:.72em .9em; background:#fff; text-align:center; }
+    .flow .arrow { text-align:center; color:var(--muted); font-size:1.25em; line-height:1.2; padding:.18em; }
+    .tag { display:inline-block; border:1px solid var(--line); border-radius:999px; padding:.05em .55em; margin:.1em .15em .1em 0; font-size:.83em; color:#3d4955; background:var(--soft); }
+    .small { color:var(--muted); font-size:.9em; }
+    .feedback-entry { border-top:1px solid var(--line); margin-top:1em; padding-top:1em; }
+    nav ol { columns:2; column-gap:2.2em; }
+    nav li { break-inside:avoid; margin:.25em 0; }
+    @media (max-width:650px) { body{font-size:16px} main{padding:22px 16px 56px} nav ol{columns:1} table{font-size:.88em} }
   </style>
 </head>
 <body>
 <main>
   <article>
     <header>
-      <h1>Codex 系统设计：模型与 Harness 如何协同</h1>
-      <p class="subtitle">把 GPT-5.6 Sol 的模型能力，与 Codex 的上下文、工具、执行环境、权限、验证和恢复机制分开理解</p>
-      <p class="meta">领域：AI · 核心问题：Codex 为什么不只是“会写代码的模型”，以及怎样把它的系统设计借到自己的 Agent 项目中</p>
+      <p class="small">AI · Agent Harness · 技术拆解</p>
+      <h1>Codex 系统设计：一次任务究竟怎样跑起来</h1>
+      <p class="lead">这篇不再讨论“好的 Agent 应有什么理念”，而是回答一个具体问题：你在 Codex 里输入“修好这个 bug”后，文字怎样变成工具调用，工具结果怎样回到模型，文件为什么真的被改了，测试失败后为什么还能继续，以及 DeepSeek V4 Pro 要兼容或优化 Codex 时到底要适配什么。</p>
     </header>
 
-    <section class="lead">
-      <strong>先给结论：</strong>Codex 的优势不应被概括成“GPT-5.6 Sol 很强”或“给模型接了终端”。更准确的对象是一个闭环工作系统：模型负责在不完全信息下理解、判断、生成和选择行动；运行支架（harness）负责组织指令与上下文、暴露受约束的工具、执行动作、保存外部状态、返回真实反馈、控制权限，并用测试与差异证明任务是否完成。二者还有显著的适配效应，所以不能用简单减法把贡献完全剥离。
+    <section id="scope">
+      <h2>一、先把结论说清：Codex 不是一个模型</h2>
+
+      <p>最小而准确的说法是：</p>
+
+      <blockquote><strong>Codex 是一套围绕模型运行的编程 Agent Harness；模型只负责根据当前输入决定下一步，Harness 负责组装输入、执行工具、保存状态、实施权限、把结果送回模型，并重复这个过程。</strong></blockquote>
+
+      <p>Harness 可以译作“运行支架”或“代理运行系统”。它不是一条系统提示词，也不是几个函数的集合。至少有六类部件：</p>
+
+      <table>
+        <thead><tr><th>部件</th><th>负责什么</th><th>不负责什么</th></tr></thead>
+        <tbody>
+          <tr><td>客户端</td><td>终端、IDE 或桌面界面；接收用户输入，显示过程、diff 和审批框</td><td>通常不替模型决定代码怎么改</td></tr>
+          <tr><td>会话与编排核心</td><td>维护 thread、turn、item；拼装模型请求；驱动工具循环</td><td>不亲自理解业务语义</td></tr>
+          <tr><td>模型 API</td><td>传送指令、历史、工具定义和结构化输出</td><td>不执行本地命令</td></tr>
+          <tr><td>模型</td><td>读上下文，推断下一步，输出消息或工具调用</td><td>不能直接碰你的磁盘、终端和 GitHub</td></tr>
+          <tr><td>工具执行层</td><td>运行 shell、应用补丁、读图、调用 MCP；返回 stdout、diff、错误</td><td>不判断改动是否符合产品目标</td></tr>
+          <tr><td>权限与沙箱</td><td>强制限制文件、网络和危险动作；必要时发起审批</td><td>不依赖模型“自觉守规矩”</td></tr>
+        </tbody>
+      </table>
+
+      <p>因此，最终效果不是简单的“模型分数 + 工具数量”。更接近下面三个因素的乘积：</p>
+
+      <ul>
+        <li><strong>模型能力：</strong>能否理解代码、诊断失败、选择正确动作；</li>
+        <li><strong>Harness 能力：</strong>能否把正确资料和可靠工具交给模型，并安全执行；</li>
+        <li><strong>模型—Harness 适配：</strong>模型是否熟悉这套消息格式、工具语法、错误输出和长任务节奏。</li>
+      </ul>
+
+      <div class="warning">
+        <strong>关于 DeepSeek V4 Pro 的当前事实：</strong>截至 2026 年 8 月 10 日，DeepSeek 官方 Codex 接入页仍写明：只有 <code>deepseek-v4-flash</code> 支持 Codex，V4 Pro 的 Responses API/Codex 支持“预计在 2026 年 8 月上旬”加入，但价格页仍标为不支持。官方明确说 V4-Flash-0731 经重新后训练、原生支持 Responses API，并“专门适配 Codex”；尚未公开证明 V4 Pro 正式版已经完成同样的 Codex 专项后训练。本文会把“接口接入”“配置适配”和“模型后训练”分开。
+      </div>
     </section>
 
-    <nav class="toc" aria-label="目录">
-      <strong>本文路线</strong>
+    <nav aria-label="目录">
+      <h2>目录</h2>
       <ol>
-        <li><a href="#boundary">先划清模型、harness 与产品界面</a></li>
-        <li><a href="#model">GPT-5.6 Sol 本身贡献什么</a></li>
-        <li><a href="#architecture">Codex 的公开可验证架构</a></li>
-        <li><a href="#case">贯穿案例：InnoSpark 导出到 Obsidian</a></li>
-        <li><a href="#comparison">与“传统 Agent”比较</a></li>
-        <li><a href="#advantages">优势从哪里产生，又有什么代价</a></li>
-        <li><a href="#borrow">三种借鉴路线与最小实现</a></li>
-        <li><a href="#ablation">怎样用消融实验分离贡献</a></li>
-        <li><a href="#pitfalls">常见误区</a></li>
+        <li><a href="#whole-flow">整条运行链</a></li>
+        <li><a href="#primitives">Thread、Turn、Item</a></li>
+        <li><a href="#context">上下文怎样组装</a></li>
+        <li><a href="#loop">模型—工具循环</a></li>
+        <li><a href="#tools">Shell 与 apply_patch</a></li>
+        <li><a href="#state">状态、恢复与压缩</a></li>
+        <li><a href="#security">沙箱和审批</a></li>
+        <li><a href="#events">事件流与客户端</a></li>
+        <li><a href="#optimization">“为 Codex 优化”是什么意思</a></li>
+        <li><a href="#comparison">与普通 Agent 的技术差异</a></li>
+        <li><a href="#collaboration">怎样与 DeepSeek/Codex 协作</a></li>
+        <li><a href="#borrow">怎样借鉴到自己的 Agent</a></li>
       </ol>
     </nav>
 
-    <section id="boundary">
-      <h2>一、先划清三个对象：模型、Harness、产品界面</h2>
+    <section id="whole-flow">
+      <h2>二、整条运行链：从一句话到一次真实改动</h2>
 
-      <p>你提出的拆分非常重要，因为人看到的是 Codex 的最终体验，却很容易把整套系统的行为都归因于模型。至少要区分三层：</p>
+      <p>先看最重要的一张图。以下是一次本地 Codex 任务的逻辑路径；不同客户端的界面不同，但核心循环相近。</p>
+
+      <div class="flow" role="img" aria-label="Codex 从用户输入到工具执行再回到模型的循环">
+        <div class="box"><strong>1. 用户</strong><br>“修复退款金额为 0 时接口返回 500 的问题，并运行相关测试”</div>
+        <div class="arrow">↓</div>
+        <div class="box"><strong>2. Codex Harness</strong><br>加载配置与 AGENTS.md，取出会话历史，列出工具，构造 Responses API 请求</div>
+        <div class="arrow">↓</div>
+        <div class="box"><strong>3. 模型</strong><br>输出普通消息，或输出结构化工具调用：搜索、读文件、运行测试、应用补丁</div>
+        <div class="arrow">↓</div>
+        <div class="box"><strong>4. 权限网关与执行器</strong><br>检查沙箱/审批 → 真正执行命令或补丁 → 得到 stdout、exit code、diff 或错误</div>
+        <div class="arrow">↓</div>
+        <div class="box"><strong>5. Harness 再次请求模型</strong><br>把工具调用及其结果追加到历史；模型根据新证据决定下一步</div>
+        <div class="arrow">↺ 重复，直到模型给出 final_answer 或任务失败/中断</div>
+      </div>
+
+      <p>这里最容易误解的一点是：<strong>模型不在一口气里完成整个任务。</strong>一次“修 bug”通常对应多次模型推理：</p>
 
       <ol>
-        <li><strong>模型（model）：</strong>例如 GPT-5.6 Sol。它接收当前请求中可见的消息、工具说明和工具结果，产生文本或结构化工具调用。它的能力包括语义理解、代码推理、计划、工具选择、根据错误修正方案等。</li>
-        <li><strong>运行支架（harness）：</strong>围绕模型的一整套运行契约。OpenAI 的公开材料把 harness 概括为指令、工具、路由、输出要求和验证检查的整体。本文还把会话运行时、上下文组装、权限、执行环境、持久状态和恢复机制纳入其中。</li>
-        <li><strong>产品界面（surface）：</strong>CLI、IDE、桌面端、云端、SDK 或你自己做的客户端。界面负责把任务、进度、命令、差异、审批和结果呈现给人，但界面不等于底层 Agent 逻辑。</li>
+        <li>第一次推理：决定先搜索什么；</li>
+        <li>Harness 执行搜索，把结果回传；</li>
+        <li>第二次推理：决定读哪些文件；</li>
+        <li>Harness 返回文件内容；</li>
+        <li>第三次推理：提出补丁；</li>
+        <li>Harness 应用补丁并返回 diff；</li>
+        <li>第四次推理：决定运行哪组测试；</li>
+        <li>Harness 返回失败信息；</li>
+        <li>第五次推理：诊断新失败并修正；</li>
+        <li>测试通过后，模型才输出最终说明。</li>
       </ol>
 
-      <p>一次任务的可观察效果，更适合写成下面的分解：</p>
-
-      <div class="formula" aria-label="可观察效果分解公式">
-        <math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
-          <semantics>
-            <mrow>
-              <msub><mi>Q</mi><mtext>观察</mtext></msub>
-              <mo>=</mo>
-              <msub><mi>Q</mi><mtext>模型</mtext></msub>
-              <mo>+</mo>
-              <msub><mi>Q</mi><mtext>支架</mtext></msub>
-              <mo>+</mo>
-              <msub><mi>Q</mi><mtext>交互</mtext></msub>
-              <mo>+</mo>
-              <mi>ε</mi>
-            </mrow>
-            <annotation encoding="application/x-tex">Q_{\text{观察}}=Q_{\text{模型}}+Q_{\text{支架}}+Q_{\text{交互}}+\varepsilon</annotation>
-          </semantics>
-        </math>
-      </div>
-
-      <p>其中“交互项”不是可有可无的修饰。模型是否接受过面向工具调用、代码修改、长任务恢复的训练，会影响它能否充分利用 harness；反过来，工具描述、观察格式和完成条件是否契合模型，也会影响同一个模型的表现。因此，即使你拿到同名 API 模型，随手接一个 Shell，也不必然复现 Codex 的体验。</p>
-
-      <div class="warning">
-        <strong>证据边界：</strong>OpenAI 已公开 Codex 的大量行为、协议和扩展接口，但没有公开生产系统的全部私有调度逻辑、隐藏指令和每一种上下文压缩策略。下文凡涉及官方明确说明的行为，会称为“已核验事实”；把这些事实组织成七层架构，是本文为了分析而做的系统建模，不声称等同于 OpenAI 内部唯一真实的模块图。
-      </div>
+      <p>所以所谓“Agent 能连续工作”，不是模型在后台持续拥有意识，而是 Harness 不断进行“请求模型—执行动作—回传结果”的循环。</p>
     </section>
 
-    <section id="model">
-      <h2>二、GPT-5.6 Sol 本身贡献什么，又不直接负责什么</h2>
+    <section id="primitives">
+      <h2>三、Codex 用什么数据结构管理一次任务</h2>
 
-      <p>截至本文核验时，官方把 GPT-5.6 Sol 定位为 GPT-5.6 系列中处理复杂专业工作的前沿模型，模型标识为 <code>gpt-5.6-sol</code>，<code>gpt-5.6</code> 别名路由到它。官方模型页列出的上下文窗口为 1,050,000 token，最大输出为 128,000 token，并支持函数调用（function calling）、结构化输出（structured outputs）以及多类工具接口。这说明它具备成为强 Agent“决策核”的条件，但不说明它独自拥有文件系统、终端或项目状态。</p>
-
-      <h3>2.1 模型擅长的是条件判断，不是替代运行环境</h3>
-
-      <p>在 Codex 回路里，模型主要完成四类不可轻易写成确定性程序的工作：</p>
-
-      <ul>
-        <li><strong>解释目标：</strong>把自然语言中的意图、约束、非目标和隐含风险转成当前行动。</li>
-        <li><strong>选择信息：</strong>判断下一步该读哪份文件、查哪个符号、运行哪条测试，而不是把整个仓库无差别塞进上下文。</li>
-        <li><strong>生成候选改变：</strong>提出设计、写代码、改文档、构造测试，并在多种方案中权衡。</li>
-        <li><strong>诊断与修复：</strong>看到编译错误、测试失败、日志或差异后，形成新的因果解释并决定如何纠正。</li>
-      </ul>
-
-      <p>这几项都依赖跨文件语义和情境判断，是模型的核心价值。若换成能力明显更弱的模型，即便工具和沙箱完全相同，也可能出现读错入口、修复表象、不理解不变量或无法在失败后重规划的问题。</p>
-
-      <h3>2.2 模型不直接保证五件事</h3>
-
-      <ul>
-        <li>它不会凭自身参数实时知道你磁盘上文件的真实内容；必须由 harness 读取并返回。</li>
-        <li>它输出“运行测试”不等于测试真的运行；必须有执行器启动进程并捕获退出码。</li>
-        <li>它认为“已经完成”不等于验收标准成立；必须由外部检查给出证据。</li>
-        <li>它承诺“不碰工作区外文件”不是安全边界；必须由操作系统级沙箱或权限系统强制。</li>
-        <li>它记得上一步不等于状态可靠持久化；长任务仍需要文件、Git、日志或会话存储承载状态。</li>
-      </ul>
-
-      <p>这正是模型与 harness 的根本分工：<strong>模型给出带不确定性的决策，系统把决策变成受约束、可观察、可恢复的现实动作。</strong></p>
-    </section>
-
-    <section id="architecture">
-      <h2>三、把 Codex 重建成一张七层系统图</h2>
-
-      <p>官方长任务材料把核心循环概括为：规划、编辑、运行测试或构建工具、观察结果、修复失败、更新文档或状态，然后重复。为了回答“为什么这比普通 Agent 更稳”，还需要把循环背后的支撑层展开。</p>
-
-      <div class="layer-stack" role="list" aria-label="Codex 七层架构">
-        <div class="layer" role="listitem"><strong>第 7 层：人机交互与并行调度</strong><br><small>进度流、转向、暂停、恢复、审阅、子 Agent、工作树</small></div>
-        <div class="layer" role="listitem"><strong>第 6 层：验证与完成契约</strong><br><small>测试、构建、lint、类型检查、差异审阅、完成定义</small></div>
-        <div class="layer" role="listitem"><strong>第 5 层：外部状态与恢复</strong><br><small>仓库文件、Git diff、工件、线程日志、检查点、压缩摘要</small></div>
-        <div class="layer" role="listitem"><strong>第 4 层：执行与权限边界</strong><br><small>工作目录、进程、沙箱、网络策略、审批、规则</small></div>
-        <div class="layer" role="listitem"><strong>第 3 层：工具与扩展</strong><br><small>Shell、补丁、检索、MCP、插件、Skill 脚本、结构化结果</small></div>
-        <div class="layer" role="listitem"><strong>第 2 层：指令与上下文组装</strong><br><small>目标、AGENTS.md、Skill 渐进加载、相关文件、近期观察</small></div>
-        <div class="layer" role="listitem"><strong>第 1 层：模型决策核</strong><br><small>理解、规划、代码生成、工具选择、错误诊断与重规划</small></div>
-      </div>
-
-      <h3>3.1 会话运行时：Thread、Turn、Item 不只是界面名词</h3>
-
-      <p>Codex App Server 的公开协议把运行状态拆成线程（thread）、轮次（turn）和项目（item）：线程容纳一段可继续、可恢复或可分叉的对话；一轮对应一次用户请求及其后续 Agent 工作；item 则是用户消息、模型消息、命令执行、文件改变或工具调用等事件单位。</p>
-
-      <p>这种设计比“不断往一个 messages 数组末尾追加字符串”多了几个关键能力：</p>
-
-      <ul>
-        <li>命令、工具、文本和文件变化都有明确类型，客户端不必从自然语言里猜发生了什么。</li>
-        <li>长任务可以流式报告 <code>started</code>、增量输出、<code>completed</code> 或 <code>interrupted</code>，人可以在运行中转向（steer）或中断。</li>
-        <li>线程可恢复、分叉、归档和压缩；“继续工作”不必依赖模型凭空复述旧状态。</li>
-        <li>审批请求能够绑定到具体线程、工具调用和动作，而不是成为一条脱离上下文的弹窗。</li>
-      </ul>
-
-      <p>这已经揭示一个重要架构原则：<strong>Agent 是事件驱动的状态机，不是一段无限递归的提示词。</strong></p>
-
-      <h3>3.2 指令与上下文组装：真正稀缺的是注意力，而不是窗口上限</h3>
-
-      <p>1.05M token 的窗口很大，但“能放下”不等于“应该全放进去”。Codex 的公开设计至少包含两种上下文分层机制：</p>
-
-      <ol>
-        <li><strong>持久项目指令：</strong><code>AGENTS.md</code> 按全局、仓库根目录到当前工作目录逐层发现，较近目录的规则更具体。这样，同一条通用开发原则和某个子模块的特殊测试命令可以同时存在。</li>
-        <li><strong>Skill 渐进披露（progressive disclosure）：</strong>启动时先只暴露 Skill 的名称和描述；匹配到任务后再加载完整 <code>SKILL.md</code>，随后按需读取引用资料或运行脚本。大量工作流不必常驻上下文。</li>
-      </ol>
-
-      <p>此外，模型通过文件搜索、符号搜索和命令逐步取得仓库信息。一个好的 harness 不是“把一切交给模型”，而是像编译器一样，把目标、规则、相关证据和最新观察组装成当前决策所需的上下文包。本文把这层称为上下文编译器（context compiler）；这是分析用名称，不是官方模块名。</p>
-
-      <div class="note">
-        <strong>设计含义：</strong>上下文管理的目标不是最大化 token 使用量，而是最大化“当前一步所需证据 / 总上下文”的比例。子 Agent、摘要、Skill 渐进加载和外部文件状态，本质上都在对抗主线程被日志与中间草稿污染。
-      </div>
-
-      <h3>3.3 工具层：工具不是 API 列表，而是行动契约</h3>
-
-      <p>模型想修改现实世界，必须通过工具调用（tool calling）。Codex 的基本工具包括读取与修改文件、执行命令、查看差异等；MCP（Model Context Protocol）和插件又可连接浏览器、设计工具、GitHub 或其他系统。Skill 则主要说明怎样组合这些工具完成可复用工作流。</p>
-
-      <p>官方工具设计文档要求每个工具明确名称、意图、输入与输出模式、授权、外部副作用和失败行为，并建议把读取与写入拆开。它解决的不是形式美观，而是四个实际问题：</p>
-
-      <ul>
-        <li><strong>可选择：</strong>模型能根据描述判断何时调用，避免多个工具语义重叠。</li>
-        <li><strong>可校验：</strong>结构化参数可以在执行前检查类型、枚举、必填字段和目标身份。</li>
-        <li><strong>可恢复：</strong>结构化错误能告诉模型是参数错误、权限不足、资源不存在还是暂时失败。</li>
-        <li><strong>可治理：</strong>系统能区分只读、写入、破坏性和开放世界动作，应用不同审批策略。</li>
-      </ul>
-
-      <p>所以，“给 Agent 一段 Python，可以调用所有内部 API”通常不是灵活，而是放弃了路由、安全、可观察性和评测边界。工具粒度应围绕用户可理解的完整动作设计，同时把权限或风险不同的动作拆开。</p>
-
-      <h3>3.4 执行层：Sandbox 与 Approval 是正交的两道门</h3>
-
-      <p>沙箱（sandbox）回答“技术上能做什么”，审批策略（approval policy）回答“何时必须停下来问谁”。官方文档明确把两者分开：本地默认通常禁止网络，写权限限制在活动工作区；模型生成的子进程也继承相同边界。当动作需要跨出边界时，审批流程才介入。</p>
-
-      <p>这比在系统提示词里写“危险命令先询问”强得多，因为安全属性不再依赖模型始终正确理解和服从。Codex 还允许用规则（rules）对命令前缀设置允许、询问或禁止，并对可安全解析的复合 Shell 命令逐项检查。Hooks 则能在工具调用前后、压缩前后、停止时等生命周期节点运行确定性脚本，完成密钥扫描、自定义验证或审计。</p>
-
-      <p>由此得到一个可借鉴的原则：<strong>自主性不是取消限制，而是扩大一块边界清楚、失败可见、日常动作无需反复审批的安全工作区。</strong></p>
-
-      <h3>3.5 外部状态：把任务记在世界里，而不是只记在对话里</h3>
-
-      <p>官方长任务文章把 Codex 的连贯性归因于真实反馈、外部化状态和持续可转向性。代码仓库天然就是一种外部记忆：文件保存当前实现，Git diff 保存本轮变化，测试报告保存失败证据，设计文档保存约束，任务状态文件保存未完成项。</p>
-
-      <p>这与“让模型记住 25 小时里所有思考”完全不同。后者会随着上下文增长变得昂贵而混乱；前者让模型在需要时重新观察权威状态。一个可靠 harness 应明确区分：</p>
+      <p>Codex App Server 的公开协议把运行状态分成三个核心对象：线程（Thread）、轮次（Turn）和条目（Item）。这是理解整套系统最直接的入口。</p>
 
       <table>
-        <thead><tr><th>状态类型</th><th>适合载体</th><th>不应主要依赖</th></tr></thead>
+        <thead><tr><th>对象</th><th>含义</th><th>例子</th></tr></thead>
         <tbody>
-          <tr><td>当前代码真相</td><td>工作区文件、构建产物、数据库迁移状态</td><td>模型对旧文件的记忆</td></tr>
-          <tr><td>本轮改变</td><td>Git diff、补丁、变更清单</td><td>自然语言“我改了什么”</td></tr>
-          <tr><td>任务契约</td><td>目标、验收条件、设计文档、AGENTS.md</td><td>散落在多轮聊天里的暗示</td></tr>
-          <tr><td>即时观察</td><td>退出码、测试失败、日志、截图</td><td>模型预期会发生什么</td></tr>
-          <tr><td>长程摘要</td><td>检查点、状态文件、压缩摘要</td><td>完整原始日志永久常驻上下文</td></tr>
+          <tr><td><strong>Thread</strong></td><td>一段可以继续、恢复或分叉的完整对话</td><td>“退款 bug 修复”这一整个会话</td></tr>
+          <tr><td><strong>Turn</strong></td><td>一次用户请求及模型为此完成的全部工作</td><td>“先诊断并修复”；下一轮可能是“再补回归测试”</td></tr>
+          <tr><td><strong>Item</strong></td><td>轮次里可单独记录和流式展示的工作单元</td><td>用户消息、模型消息、推理摘要、命令执行、文件改动、MCP 调用、计划更新</td></tr>
         </tbody>
       </table>
 
-      <h3>3.6 验证层：“完成”必须是外部可判定的谓词</h3>
+      <p>客户端启动一段会话时，大致会调用：</p>
 
-      <p>普通聊天常在模型给出答案时结束；工程 Agent 必须在结果满足完成定义（definition of done）时结束。对代码任务，完成证据可能包括测试、构建、lint、类型检查、静态分析、可视化检查和最终 diff。可以把一个简化的完成条件写成：</p>
+      <pre><code>{
+  "method": "thread/start",
+  "id": 10,
+  "params": {
+    "model": "gpt-5.6-terra",
+    "cwd": "/project/refund-service",
+    "approvalPolicy": "onRequest",
+    "sandbox": "workspaceWrite"
+  }
+}</code></pre>
 
-      <div class="formula" aria-label="完成条件公式">
-        <math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
-          <semantics>
-            <mrow>
-              <mi>Done</mi><mo>≔</mo>
-              <mi>ArtifactExists</mi><mo>∧</mo>
-              <mi>AcceptancePasses</mi><mo>∧</mo>
-              <mi>NoPendingApproval</mi><mo>∧</mo>
-              <mi>EvidenceRecorded</mi>
-            </mrow>
-            <annotation encoding="application/x-tex">\mathrm{Done}:=\mathrm{ArtifactExists}\land\mathrm{AcceptancePasses}\land\mathrm{NoPendingApproval}\land\mathrm{EvidenceRecorded}</annotation>
-          </semantics>
-        </math>
-      </div>
+      <p>用户发出任务时，再调用 <code>turn/start</code>：</p>
 
-      <p>模型仍可判断“哪些测试最相关”“这个失败是否由本次修改引起”，但最终布尔证据由确定性程序产生。若某项无法运行，也应把“未验证及原因”作为状态，而不是默认为通过。</p>
+      <pre><code>{
+  "method": "turn/start",
+  "id": 11,
+  "params": {
+    "threadId": "thr_123",
+    "input": [{
+      "type": "text",
+      "text": "修复退款金额为 0 时返回 500 的问题，并运行相关测试"
+    }]
+  }
+}</code></pre>
 
-      <h3>3.7 人机交互与并行层：可转向性也是架构能力</h3>
+      <p>随后，命令、补丁、计划、模型消息都变成 item。每个 item 通常经历 <code>item/started</code> 与 <code>item/completed</code>；后者是最终权威状态。例如命令 item 会携带命令、工作目录、状态、聚合输出、退出码和耗时，文件改动 item 会携带路径、改动类型与 diff。</p>
 
-      <p>Codex 的 thread/turn 协议支持运行中追加约束、暂停、中断和恢复；界面又让人看到命令、工具活动和差异。这使用户可以在长任务尚未结束时纠偏，而不必等 Agent 走完错误路线。</p>
+      <p>这比“把所有过程写成一串聊天文本”多出两个关键能力：</p>
 
-      <p>并行工作则依赖隔离。官方文档建议用独立线程和 Git 工作树（worktree）让多个任务拥有分离的检出目录，避免两个 Agent 同时写同一批文件。子 Agent 适合把代码探索、测试或日志分析等高噪声工作移出主线程，只返回蒸馏后的结果；写密集任务若没有文件所有权或工作树隔离，反而会增加冲突。</p>
+      <ul>
+        <li>客户端能明确知道哪段是命令、哪段是 diff、哪段才是最终答复，不必从自然语言里猜；</li>
+        <li>失败、审批、恢复和审计可以绑定到具体 item，而不是绑定到模糊的一整段回答。</li>
+      </ul>
     </section>
 
-    <section id="case">
-      <h2>四、贯穿案例：为 InnoSpark 增加“一键导出到 Obsidian”</h2>
+    <section id="context">
+      <h2>四、模型每次到底看到了什么：上下文编译</h2>
 
-      <p>假设任务是：在 InnoSpark 中增加一键导出，将选定知识库复制到用户的 Obsidian 库；不得移动或修改原项目数据；保留 Markdown、附件和内部链接；目标已存在时先预览冲突；失败后可重试，不得留下半成品。</p>
+      <p>大模型本身不会“打开仓库”。模型能看到的只有本次 API 请求里传入的内容。Codex 的一项核心工作，就是在每次推理前编译出合适的上下文（context）。可以把它理解成给模型生成一份临时输入包。</p>
 
-      <h3>4.1 只有强模型时会发生什么</h3>
+      <h3>4.1 输入包的主要来源</h3>
 
-      <p>把需求和若干文件直接贴给 GPT-5.6 Sol，它大概率能提出合理架构，甚至写出质量不错的导出函数。但它无法自行确认仓库真实目录、现有数据模型、所有链接编码方式、操作系统文件权限和测试结果。你得到的是一个高质量候选答案，不是已验证的仓库改变。</p>
+      <table>
+        <thead><tr><th>来源</th><th>怎样进入模型</th><th>注意</th></tr></thead>
+        <tbody>
+          <tr><td>Codex 基础指令</td><td>作为高优先级指令，规定角色、工具习惯、安全与完成方式</td><td>不同模型目录可以带不同基础指令</td></tr>
+          <tr><td>全局与项目 AGENTS.md</td><td>启动时从全局、仓库根目录到当前目录逐层发现并注入</td><td>离当前目录越近的规则越具体；默认合计上限为 32 KiB</td></tr>
+          <tr><td>用户本轮输入</td><td>作为 turn 的输入 item</td><td>这是任务目标，不等于全部项目背景</td></tr>
+          <tr><td>会话历史</td><td>先前的用户消息、模型输出、工具调用及工具结果</td><td>太长时需要压缩</td></tr>
+          <tr><td>工具定义</td><td>名称、用途、参数 schema、调用格式</td><td>模型只会请求调用；Harness 才真正执行</td></tr>
+          <tr><td>Skill</td><td>触发后把完整 SKILL.md 及需要的资料加入当前任务</td><td>不应把所有 Skill 正文永久塞进基础提示</td></tr>
+          <tr><td>文件与外部资料</td><td>模型先调用 shell、文件工具、搜索或 MCP；结果作为新 item 回传</td><td>仓库文件不会自动全部装进上下文</td></tr>
+        </tbody>
+      </table>
 
-      <h3>4.2 加一套 Codex 式 Harness 后，任务怎样流动</h3>
+      <h3>4.2 AGENTS.md 的注入不是“模型自己想起来读”</h3>
+
+      <p>Codex CLI 会自动枚举这些文件。官方提示指南给出的具体形式是：每个发现到的文件被包装为一条靠近对话顶部的用户角色消息，大致如下：</p>
+
+      <pre><code># AGENTS.md instructions for services/refund
+&lt;INSTRUCTIONS&gt;
+修改退款逻辑后必须运行 make test-refund。
+金额单位统一使用整数分，不得使用浮点数。
+&lt;/INSTRUCTIONS&gt;</code></pre>
+
+      <p>注入顺序是从全局到仓库根目录，再到更深的子目录。这样，根目录可以规定通用测试，退款服务目录可以覆盖为自己的测试命令。这里没有神秘的“长期记忆”：本质是 Harness 在调用模型前把文件内容变成了输入消息。</p>
+
+      <h3>4.3 为什么不把整个仓库一次塞进去</h3>
+
+      <p>即使模型有一百万 token 的窗口，把整个仓库塞进去通常仍不合理：传输和推理更慢，成本更高，相关代码会被大量噪声稀释，而且仓库状态随工具执行不断变化。Codex 更常见的做法是：</p>
 
       <ol>
-        <li><strong>建立任务契约：</strong>系统把结果、约束和验收条件单独保存。关键不变量是“源库字节不变”“目标要么完整提交，要么回滚”“冲突必须先展示”。</li>
-        <li><strong>发现项目规则：</strong>加载仓库根部 <code>AGENTS.md</code>，进入导出模块时再加载更具体的规则；若已有 Obsidian 导出 Skill，只在任务命中时载入完整流程。</li>
-        <li><strong>构造相关上下文：</strong>模型先搜索知识库数据结构、附件解析、已有复制工具和测试入口，不把整个仓库一次性注入。</li>
-        <li><strong>形成可执行计划：</strong>把工作拆成扫描、规划、冲突预览、临时目录复制、原子提交、回滚和测试。此处计划是可修改状态，不是一次性散文。</li>
-        <li><strong>通过工具修改：</strong>使用补丁工具编辑明确文件；必要时执行生成器或格式化器。每个工具调用都有目标、参数、输出与退出状态。</li>
-        <li><strong>在边界内运行：</strong>默认只写仓库和测试临时目录。若集成测试需要访问用户真实 Obsidian 库，系统必须请求单独授权，不能因为模型说“只是测试”就越界。</li>
-        <li><strong>接收真实反馈：</strong>运行单元测试、类型检查和一个含中文文件名、重复附件、断链与权限失败的端到端用例。模型看到实际错误后再修复。</li>
-        <li><strong>检查不变量：</strong>对源目录运行前后哈希比较；模拟中途失败，确认临时目录清理；验证内部链接在复制后仍指向正确目标。</li>
-        <li><strong>审阅差异：</strong>最终结果包括改动文件、设计取舍、测试命令及结果、仍未覆盖风险。用户可在 diff 上批注，再让同一线程继续处理。</li>
+        <li>先给模型目录位置、规则、工具和任务；</li>
+        <li>模型用 <code>rg</code>、<code>git</code>、测试命令等寻找证据；</li>
+        <li>只把命令返回的相关片段加入后续上下文；</li>
+        <li>需要时继续读取，输出过大时截断或分页。</li>
       </ol>
 
-      <p>注意：上述九步里，真正需要高级模型创造性推理的部分主要是理解需求、定位架构、设计事务语义、诊断失败和权衡实现；文件读取、哈希比较、权限限制、执行测试和记录证据都应由 harness 完成。二者的界面越清楚，系统越可靠。</p>
+      <p>因此，Codex 并不是“拥有仓库上下文”，而是拥有<strong>获取仓库上下文的能力</strong>。这一区别非常重要。</p>
+    </section>
+
+    <section id="loop">
+      <h2>五、最核心的技术：模型—工具循环</h2>
+
+      <p>下面是一段删去网络和异常细节后的伪代码。它不是 Codex 源码，但准确表达了公开协议呈现的逻辑：</p>
+
+      <pre><code>history = load_thread(thread_id)
+instructions = load_base_prompt() + discover_agents_md(cwd)
+tools = build_tool_catalog(config, cwd)
+
+while True:
+    request = {
+        "instructions": instructions,
+        "input": history,
+        "tools": tools,
+        "parallel_tool_calls": True
+    }
+
+    response = responses_api(request)
+    persist(response.output)
+
+    if response contains final_answer and no pending tool call:
+        finish_turn()
+        break
+
+    for call in response.tool_calls:
+        decision = policy_engine.check(call, sandbox, approval_policy)
+
+        if decision requires approval:
+            decision = ask_client_and_wait(call)
+
+        if decision is denied:
+            result = tool_error("declined")
+        else:
+            result = executor.run(call)
+
+        persist(result)
+        history += call
+        history += result
+
+    if context_is_near_limit(history):
+        history = compact(history)</code></pre>
+
+      <h3>5.1 工具调用不是一句“请运行测试”</h3>
+
+      <p>模型返回的是机器可识别的结构。例如它可能输出：</p>
+
+      <pre><code>{
+  "type": "function_call",
+  "call_id": "call_17",
+  "name": "shell_command",
+  "arguments": {
+    "command": "rg -n \"refund|amount\" src tests",
+    "workdir": "/project/refund-service"
+  }
+}</code></pre>
+
+      <p>Harness 找到名为 <code>shell_command</code> 的执行器，检查权限，运行命令，然后把结果与同一个 <code>call_id</code> 绑定：</p>
+
+      <pre><code>{
+  "type": "function_call_output",
+  "call_id": "call_17",
+  "output": "src/refund.ts:42: if (!amount) throw ...\nexit_code: 0"
+}</code></pre>
+
+      <p>下一次模型推理会同时看到“我刚才请求了什么”和“真实世界返回了什么”。它由此发现 <code>!amount</code> 把合法的 0 当成假值，于是继续读测试或生成补丁。</p>
+
+      <h3>5.2 Harness 不替模型规划，但替模型保持因果链</h3>
+
+      <p>模型负责“看到结果后该怎么办”；Harness 负责保证调用与结果一一对应、顺序不乱、状态可保存。如果 Harness 丢了 <code>call_id</code>，把输出配给错误的调用，或者只保留 stdout 而丢掉失败状态，模型再聪明也会在错误证据上推理。</p>
+
+      <p>这就是模型适配为什么不只是“API 地址能通”。Agent 任务依赖一条很长的因果链：模型的第十步判断可能建立在前九次工具结果的结构和顺序上。</p>
+    </section>
+
+    <section id="tools">
+      <h2>六、为什么 Codex 特别强调 Shell、apply_patch 和计划工具</h2>
+
+      <h3>6.1 Shell 是通用感知器和执行器</h3>
+
+      <p>与给模型制作几十个“读文件”“列目录”“运行 Git”小工具相比，一个接近真实终端的 shell 工具覆盖面更广：<code>rg</code> 搜索、<code>sed</code> 读取、<code>git diff</code> 检查、测试框架验证、编译器报错都能通过同一接口返回。Codex 的模型训练又大量接触了终端轨迹，因此命令名称、参数和输出越接近真实终端分布，模型通常越容易正确使用。</p>
+
+      <p>长时间命令还需要进程状态。Codex 的执行工具可以启动带 PTY 的长驻会话，返回 session id；之后用 <code>write_stdin</code> 继续输入、轮询或终止。这使 REPL、开发服务器和长测试不必一次阻塞到结束。</p>
+
+      <h3>6.2 apply_patch 把“编辑文件”变成受约束动作</h3>
+
+      <p>模型若用 shell 拼接整份文件，容易因引号、编码、并发改动而覆盖用户内容。<code>apply_patch</code> 要求它给出局部 diff：</p>
+
+      <pre><code>*** Begin Patch
+*** Update File: src/refund.ts
+@@
+-  if (!amount) {
++  if (amount == null) {
+     throw new InvalidAmountError();
+   }
+*** End Patch</code></pre>
+
+      <p>Harness 解析这份补丁，检查上下文是否仍匹配当前文件，然后应用。失败时返回“找不到上下文”之类的明确错误，模型可以重新读取文件再生成补丁。OpenAI 官方提示指南明确建议使用其 <code>apply_patch</code> 实现，并说明 Codex 模型针对这种 diff 格式做过训练。</p>
+
+      <h3>6.3 update_plan 不是推理器，而是外部任务状态</h3>
+
+      <p><code>update_plan</code> 只维护带状态的步骤列表，例如 <code>pending</code>、<code>in_progress</code>、<code>completed</code>。它不会自动规划，也不会保证任务完成；它的价值是把“当前正在做什么”变成结构化状态，供界面展示、用户纠偏和长任务恢复。</p>
+
+      <h3>6.4 工具输出也需要设计</h3>
+
+      <p>输出不是越多越好。官方 Codex 提示指南建议，工具返回接近 10k token 时截断，并保留头尾、截去中间；并建议并行调用按“多个 function_call，随后对应的多个 function_call_output”排列。原因不是审美，而是模型训练时见过这种分布。输出格式突然变化，可能让模型把语义搜索结果误认为 <code>rg</code> 输出，或误判某条命令的失败范围。</p>
+
+      <div class="note"><strong>关键结论：</strong>工具的名称、参数、错误、输出截断、并行顺序，都是模型—Harness 接口的一部分；不只是函数能不能被调用。</div>
+    </section>
+
+    <section id="state">
+      <h2>七、状态、恢复和压缩：长任务为什么不会完全失忆</h2>
+
+      <h3>7.1 有两种状态，不能混为一谈</h3>
+
+      <table>
+        <thead><tr><th>状态</th><th>保存在哪里</th><th>举例</th></tr></thead>
+        <tbody>
+          <tr><td>对话/轨迹状态</td><td>Thread 的持久化记录与模型历史</td><td>用户目标、模型消息、工具调用、测试输出、计划</td></tr>
+          <tr><td>世界状态</td><td>文件系统、Git、进程、数据库、外部服务</td><td>当前代码内容、未提交 diff、测试服务器是否仍运行</td></tr>
+        </tbody>
+      </table>
+
+      <p>恢复 thread 只能恢复“过去发生过什么”，不能保证世界仍和当时一样。用户可能在会话外改了文件，后台进程可能退出，远程分支可能更新。因此可靠 Agent 恢复后要重新读取 <code>git status</code>、关键文件和测试结果，而不能盲信旧聊天。</p>
+
+      <h3>7.2 Resume、Fork、Steer、Interrupt</h3>
+
+      <ul>
+        <li><code>thread/resume</code>：重新加载已保存的 thread，继续追加 turn；</li>
+        <li><code>thread/fork</code>：复制某个历史点，创建新 thread，用于尝试另一条路线；</li>
+        <li><code>turn/steer</code>：在当前 turn 尚未结束时追加用户要求，例如“先处理失败测试”；</li>
+        <li><code>turn/interrupt</code>：请求取消当前 turn。</li>
+      </ul>
+
+      <p>这说明用户干预不是“等 Agent 说完再发下一条聊天”这一种形式，而是运行协议的一部分。客户端知道哪个 turn 正在进行，能把新输入送入同一条运行轨迹。</p>
+
+      <h3>7.3 Compaction 不是普通摘要</h3>
+
+      <p>当历史接近上下文上限时，Codex 可以触发压缩（compaction）。Responses API 返回一个更短的压缩 item；它携带继续任务所需的关键先前状态，后续请求保留这个 item，而不必反复传送全部旧消息。这个对象是给模型继续运行用的，不是给用户阅读的完整会议纪要。</p>
+
+      <p>压缩必然有信息选择，因此重要的不变量不能只存在于漫长聊天里。测试命令、接口约束放进 AGENTS.md；任务当前状态放进计划或进度文件；真实改动保存在 Git diff；验收标准落实为测试。这样即使聊天被压缩，Agent 仍能从外部状态重建事实。</p>
+
+      <h3>7.4 phase 等元数据为什么不能丢</h3>
+
+      <p>Codex 的 assistant item 可以带 <code>phase: commentary</code> 或 <code>phase: final_answer</code>。前者表示工作中的进度消息，后者才是收尾。OpenAI 明确说明，对某些 Codex 模型，如果 Harness 在重建历史时丢掉 phase，性能会显著下降：模型可能把中间汇报误当作任务已经结束。</p>
+
+      <p>DeepSeek 的思考模式也有类似的协议要求：若一次 assistant 输出包含工具调用，后续请求必须完整回传相应 <code>reasoning_content</code>；丢失会直接得到 400 错误。这再次说明，Agent 历史不是“只保存可见文字”就够了。</p>
+    </section>
+
+    <section id="security">
+      <h2>八、模型为什么不能想做什么就做什么：沙箱与审批</h2>
+
+      <p>Codex 把安全分成两个互相独立的层：</p>
+
+      <table>
+        <thead><tr><th>层</th><th>回答的问题</th><th>例子</th></tr></thead>
+        <tbody>
+          <tr><td>沙箱（sandbox）</td><td>这个动作在技术上能访问什么？</td><td>只能写工作区；网络默认关闭；不能读取受保护路径</td></tr>
+          <tr><td>审批策略（approval policy）</td><td>什么时候必须暂停并取得许可？</td><td>出工作区写文件、联网、运行不受信命令时询问</td></tr>
+        </tbody>
+      </table>
+
+      <p>模型先提出工具调用。策略引擎判断它是否在当前沙箱内；需要越界时，App Server 给客户端发起一个服务器请求，包含 thread、turn、item、命令、工作目录、理由和可选决策。用户或独立 reviewer 返回接受、会话内接受、拒绝或取消。之后执行器才继续，最终 item 标记为 completed、failed 或 declined。</p>
+
+      <p>所以“系统提示里写着不要访问网络”只是软约束；“进程处于无网络沙箱”才是硬约束。模型即使被提示注入诱导，也只能发起请求，不能凭一段文本自行突破操作系统边界。</p>
+
+      <p>这也是 Codex 相比许多简单 Agent 的实质优势之一：安全边界不由同一个可能犯错的模型同时提出、解释和执行。模型负责申请，确定性程序负责裁决和强制。</p>
+    </section>
+
+    <section id="events">
+      <h2>九、App Server 和事件流：为什么 CLI、IDE、桌面端可以共用核心</h2>
+
+      <p>Codex App Server 对客户端提供双向 JSON-RPC 2.0 风格协议，可通过标准输入输出的 JSONL、WebSocket 或 Unix socket 传输。客户端先 <code>initialize</code>，再启动或恢复 thread、启动 turn，并持续读取通知。</p>
+
+      <p>常见事件包括：</p>
+
+      <ul>
+        <li><code>turn/started</code>、<code>turn/completed</code>：一轮任务开始与结束；</li>
+        <li><code>item/started</code>、<code>item/completed</code>：命令、补丁、消息等工作单元的生命周期；</li>
+        <li><code>item/commandExecution/outputDelta</code>：终端输出增量；</li>
+        <li><code>item/agentMessage/delta</code>：模型消息增量；</li>
+        <li><code>turn/diff/updated</code>：本轮累积 diff；</li>
+        <li><code>turn/plan/updated</code>：计划状态更新；</li>
+        <li>审批请求与 <code>serverRequest/resolved</code>：客户端接管需要用户决定的动作。</li>
+      </ul>
+
+      <p>因此界面不需要理解模型的全部逻辑。它只订阅结构化事件：终端面板渲染 command item，diff 面板渲染 fileChange，进度区渲染 plan，聊天区渲染 commentary 和 final_answer。Codex CLI、SDK 与富客户端可以共享 thread/turn/item 语义，同时拥有不同 UI。</p>
+
+      <p>非交互模式 <code>codex exec --json</code> 也会输出 JSONL，例如 <code>thread.started</code>、<code>turn.started</code>、<code>item.*</code>、<code>turn.completed</code>。CI 可以不解析人类聊天文字，直接消费事件和最终结构化结果。</p>
+    </section>
+
+    <section id="optimization">
+      <h2>十、“模型为 Codex 特殊优化”究竟可能优化什么</h2>
+
+      <p>这句话至少有四个完全不同的技术层级。以后看到厂商宣传，先问它指哪一级。</p>
+
+      <table>
+        <thead><tr><th>级别</th><th>具体工作</th><th>只做到这一级会怎样</th></tr></thead>
+        <tbody>
+          <tr><td>1. 传输协议兼容</td><td>实现 Responses API 的请求、流式事件、工具调用与结果回传</td><td>Codex 能连上，但模型未必会高质量使用 Harness</td></tr>
+          <tr><td>2. 模型目录适配</td><td>声明上下文窗口、推理档位、apply_patch 类型、shell 类型、并行工具、截断策略</td><td>Harness 知道怎样和该模型通信</td></tr>
+          <tr><td>3. 提示与轨迹适配</td><td>提供合适基础指令，保存 phase/reasoning 等元数据，匹配工具输出分布</td><td>长任务不易因格式错误、提前结束或历史损坏而崩溃</td></tr>
+          <tr><td>4. 模型后训练</td><td>用真实或合成 Agent 轨迹训练：搜索、补丁、测试、失败恢复、审批、收尾</td><td>模型本身学会在这套 Harness 里选择更好的动作</td></tr>
+        </tbody>
+      </table>
+
+      <h3>10.1 DeepSeek 已公开了什么</h3>
+
+      <p>DeepSeek 的 Codex 配置页很有价值，因为它直接公开了一份模型目录。V4 Flash 和计划中的 V4 Pro 条目包含：</p>
+
+      <p>
+        <span class="tag">wire_api = responses</span>
+        <span class="tag">apply_patch = freeform</span>
+        <span class="tag">shell = shell_command</span>
+        <span class="tag">parallel_tool_calls = true</span>
+        <span class="tag">context = 1,048,576</span>
+        <span class="tag">tool output limit = 10,000 tokens</span>
+        <span class="tag">multi_agent v2</span>
+      </p>
+
+      <p>这说明 Codex 不是把任意模型名称写进 <code>config.toml</code> 就完事；Harness 还要知道这个模型支持怎样的补丁、shell、推理等级、并行和上下文策略。DeepSeek 页面甚至把 Codex 基础 instructions 放进 <code>models.json</code>，表明模型提示也被视为 provider 适配的一部分。</p>
+
+      <p>2026 年 7 月 31 日的官方更新进一步说，V4-Flash-0731 架构和尺寸不变，只重新进行了后训练；新版增强 Agent 能力，原生支持 Responses API，并专门适配 Codex。这里可以确认“V4 Flash 不只是加了一个 API 转换层”。但官方没有公开训练数据构成、是否直接使用 Codex 轨迹、各项优化贡献，也没有对尚未正式支持 Codex 的 V4 Pro 给出同等陈述。</p>
+
+      <h3>10.2 为什么基础模型很强，接入后仍可能很差</h3>
+
+      <ul>
+        <li>能写正确代码，却经常输出无法解析的补丁；</li>
+        <li>会调用工具，但不根据 exit code 和 stderr 修复；</li>
+        <li>把 commentary 当 final，汇报完计划就提前停止；</li>
+        <li>并行调用顺序混乱，把 A 工具的输出配给 B；</li>
+        <li>工具调用后丢失必要 reasoning 元数据，下一请求报错；</li>
+        <li>面对 10k token 截断输出，不会继续缩小范围读取；</li>
+        <li>写完代码后不运行测试，或测试失败仍宣称完成。</li>
+      </ul>
+
+      <p>这些不完全是“智力”问题，而是轨迹分布问题。模型若在后训练中反复经历“搜索—读取—补丁—测试—失败—修复—复验—总结”，就更可能在 Codex 里形成稳定动作习惯。</p>
+
+      <div class="result"><strong>判断 DeepSeek V4 Pro 是否真的为 Codex 优化：</strong>等正式支持后，至少检查四件事：官方是否明确写“专门适配/后训练”；Responses API 是否完整保留工具与 reasoning/phase 相关状态；官方模型目录是否与实际能力一致；在同一 Codex 版本、同一任务、同一权限下，端到端修复率是否提高。只看“能够在模型选择器里出现”远远不够。</div>
     </section>
 
     <section id="comparison">
-      <h2>五、相较“传统 Agent”的优势：先定义比较对象</h2>
+      <h2>十一、Codex 相比“普通 Agent”多了什么</h2>
 
-      <p>“传统 Agent”不是严格统一的类别。为了避免把旧系统稻草人化，本文把比较基线限定为一种常见的简化实现：<strong>一个系统提示词、一个模型、若干函数工具和一段“思考—行动—观察”循环，完整历史持续追加到同一上下文，模型自行宣布完成。</strong>很多成熟 Agent 框架也已经加入状态机、沙箱和评测；一旦加入，它们与 Codex 的差距自然缩小。</p>
+      <p>“普通 Agent”没有统一定义。这里以最常见的简单 ReAct 实现作比较：一份系统提示、一个 messages 数组、若干 function tools、一个 while 循环。</p>
 
       <table>
-        <thead>
-          <tr><th>维度</th><th>简化传统 Agent</th><th>Codex 式生产 Harness</th><th>实际收益</th></tr>
-        </thead>
+        <thead><tr><th>技术点</th><th>简单 Agent 常见做法</th><th>Codex 做法</th></tr></thead>
         <tbody>
-          <tr><td>任务表示</td><td>一段提示词</td><td>目标、约束、完成条件、线程与事件</td><td>长任务不易丢失“为什么做”</td></tr>
-          <tr><td>上下文</td><td>全历史不断累加</td><td>层级指令、按需检索、Skill 渐进加载、压缩</td><td>减少噪声和无关 token</td></tr>
-          <tr><td>工具</td><td>函数名加参数</td><td>意图、模式、结构化输出、权限、风险、错误契约</td><td>选择更准，失败可恢复</td></tr>
-          <tr><td>执行</td><td>宿主进程通常权限过大</td><td>工作区、沙箱、网络策略、审批、规则</td><td>允许更高自主性而不扩大总体风险</td></tr>
-          <tr><td>状态</td><td>主要在对话里</td><td>文件、Git、工件、线程日志和检查点</td><td>可恢复、可审阅、可复现</td></tr>
-          <tr><td>反馈</td><td>工具返回一段文本</td><td>退出码、diff、测试、结构化事件和增量进度</td><td>模型能基于现实而非想象修复</td></tr>
-          <tr><td>完成判断</td><td>模型说“完成了”</td><td>外部验收门与证据清单</td><td>降低虚假完成</td></tr>
-          <tr><td>并行</td><td>多 Agent 共享目录或只靠消息协商</td><td>独立线程、上下文隔离、工作树、结果汇总</td><td>减少污染与写冲突</td></tr>
-          <tr><td>复用</td><td>复制长提示词</td><td>AGENTS.md、Skill、MCP、插件、Hook</td><td>把经验放到合适层级</td></tr>
-          <tr><td>可观察性</td><td>最终回答或少量日志</td><td>typed item、工具轨迹、审批、差异、测试证据</td><td>便于调试、评测和审计</td></tr>
+          <tr><td>任务状态</td><td>内存中的聊天 messages</td><td>持久化 Thread → Turn → Item，可恢复、分叉、归档</td></tr>
+          <tr><td>项目规则</td><td>每次手贴一大段 prompt</td><td>AGENTS.md 从全局到当前目录自动发现并分层注入</td></tr>
+          <tr><td>行动接口</td><td>随手定义几个函数</td><td>围绕 shell、apply_patch、计划等训练分布较稳定的工具</td></tr>
+          <tr><td>工具轨迹</td><td>只保存可见文本或简化结果</td><td>保留 call、output、item 状态、phase、错误和增量事件</td></tr>
+          <tr><td>长任务</td><td>超长后整体摘要</td><td>一等 compaction item，加外部文件/diff/计划保存真实状态</td></tr>
+          <tr><td>安全</td><td>提示模型“不要做危险操作”</td><td>操作系统沙箱 + 审批协议 + 精确作用域</td></tr>
+          <tr><td>用户干预</td><td>等待一轮结束</td><td>运行中 steer、interrupt、审批；持续流式事件</td></tr>
+          <tr><td>客户端集成</td><td>解析自然语言日志</td><td>App Server JSON-RPC 与 typed item 事件</td></tr>
+          <tr><td>模型替换</td><td>改模型名后祈祷兼容</td><td>provider + model catalog 声明工具、上下文和协议能力</td></tr>
+          <tr><td>验收</td><td>模型说“完成”</td><td>模型被要求运行测试，Harness 留下命令、退出码和 diff 证据</td></tr>
         </tbody>
       </table>
+
+      <p>这些并不是 Codex 独有的理论发明。一个认真设计的自研 Agent 完全可以实现相同机制。Codex 的优势在于：这些机制被做成完整产品，并与模型后训练、工具格式、客户端协议和权限执行共同磨合，而不是停留在一张架构图上。</p>
     </section>
 
-    <section id="advantages">
-      <h2>六、这些设计为何有效：六种机制与三种代价</h2>
+    <section id="collaboration">
+      <h2>十二、知道原理后，怎样更好地与 Codex 和未来的 V4 Pro 协作</h2>
 
-      <h3>6.1 长程连贯来自“反复重新锚定现实”</h3>
+      <h3>12.1 给 Harness 可验证的终点，不要只给抽象愿望</h3>
 
-      <p>长任务不是一次超长推理。每一轮工具观察都会把模型重新锚定到文件、退出码和测试结果；外部状态又允许它在压缩上下文后重新读取真相。因此连贯性来自许多局部闭环，而不是一条永不断裂的内部思维链。</p>
+      <p>好的任务描述至少包含四类信息：</p>
 
-      <h3>6.2 可靠性来自异质校验</h3>
+      <pre><code>目标：修复 amount=0 时退款接口返回 500。
+定位：相关代码在 services/refund，接口为 POST /refund。
+边界：金额仍使用整数分；不要改公开响应 schema。
+完成条件：新增回归测试；运行 make test-refund；最后检查 git diff。</code></pre>
 
-      <p>让另一个相似模型评价代码，能发现一部分问题，但两者可能共享盲点。编译器、类型系统、测试、哈希和权限检查与语言模型的错误模式不同。把模型判断与确定性检查组合，可靠性通常高于反复让模型“再仔细想想”。</p>
+      <p>这不是为了“讨好模型”，而是为 Agent loop 提供停止条件。模型知道该搜索哪里，测试命令能提供确定反馈，最终是否完成可以被人检查。</p>
 
-      <h3>6.3 安全边界反而释放自主性</h3>
-
-      <p>如果 Agent 拥有宿主机全部权限，系统就只能频繁向用户确认；若工作区和网络有强边界，大量低风险操作可以自动执行。沙箱不是自主性的对立面，而是自主性的基础设施。</p>
-
-      <h3>6.4 渐进披露把上下文当缓存管理</h3>
-
-      <p>AGENTS.md 保留每次都需要的稳定规则，Skill 描述只承担路由，详细流程和参考资料按需加载，原始日志写回外部存储。这与缓存层次类似：高频且关键的信息靠近模型，低频且庞大的信息保留在可检索外部层。</p>
-
-      <h3>6.5 可转向性降低错误路线的沉没成本</h3>
-
-      <p>任务中途出现新信息时，人可以追加限制、暂停或中断，不必等 Agent 完成整轮才重开会话。更重要的是，转向发生在保留线程、文件和差异状态的环境里，不必从零解释。</p>
-
-      <h3>6.6 复用单位从“提示词”升级为“工作流资产”</h3>
-
-      <p>成熟经验可以按性质分别落到项目规则、Skill、脚本、工具契约、Hook 或测试，而不是继续把系统提示词写长。模型负责需要语境的部分，脚本负责可确定的部分，测试负责验收。这也是把个人技巧变成团队能力的过程。</p>
-
-      <h3>6.7 代价与边界</h3>
+      <h3>12.2 把稳定规则放在正确位置</h3>
 
       <ul>
-        <li><strong>系统复杂度：</strong>线程、权限、工具、恢复、日志和评测都会引入工程成本。小任务可能不值得启动完整流程。</li>
-        <li><strong>延迟与费用：</strong>反复读文件、跑测试、调用子 Agent 会增加时间和 token。强模型加完整 harness 不是每一步都经济。</li>
-        <li><strong>错误仍会穿透：</strong>测试可能不完整，工具描述可能误导，沙箱配置可能过宽，模型也可能修改了错误但恰好通过测试。Harness 把风险变得可管理，并不把概率降为零。</li>
+        <li>一次任务特有的目标：放当前 prompt；</li>
+        <li>整个仓库都适用的构建、测试与禁令：放根 AGENTS.md；</li>
+        <li>某个子系统特有的命令和不变量：放靠近该目录的 AGENTS.md；</li>
+        <li>可复用的完整工作流：做成 Skill；</li>
+        <li>必须强制执行的权限与危险动作：交给沙箱、规则和审批，不要只写提示。</li>
       </ul>
+
+      <h3>12.3 发生问题时先判断坏在哪一层</h3>
+
+      <table>
+        <thead><tr><th>现象</th><th>优先怀疑</th><th>怎样验证</th></tr></thead>
+        <tbody>
+          <tr><td>工具调用 JSON/补丁无法解析</td><td>模型—工具格式适配</td><td>查看 tool call 原始 item 与模型目录里的工具类型</td></tr>
+          <tr><td>模型提出命令但未运行</td><td>审批、沙箱或执行器</td><td>查看 item 是否 declined、SandboxError 或等待 approval</td></tr>
+          <tr><td>工具调用后 API 返回 400</td><td>provider 历史重放</td><td>DeepSeek 思考模式检查 reasoning_content 是否完整保留</td></tr>
+          <tr><td>补丁正确但没跑测试</td><td>任务完成定义或模型轨迹</td><td>检查 AGENTS.md/Prompt 是否给出验证要求及是否存在测试 item</td></tr>
+          <tr><td>长任务忘记早期约束</td><td>上下文压缩与外部状态</td><td>检查约束是否只在旧聊天，是否有计划/规格/测试承载</td></tr>
+          <tr><td>反复读错目录</td><td>cwd、项目指令或检索策略</td><td>查看 thread 的 cwd、instructionSources 与搜索命令</td></tr>
+          <tr><td>中途汇报后直接结束</td><td>phase 保存、基础提示或模型适配</td><td>查看 commentary/final_answer item 是否被正确区分</td></tr>
+        </tbody>
+      </table>
+
+      <h3>12.4 V4 Pro 支持后怎样做公平实测</h3>
+
+      <p>固定同一 Codex 版本、同一仓库快照、同一 AGENTS.md、同一权限、同一推理档位和同一任务集，只替换模型。每个任务从干净 Git worktree 开始，记录：</p>
+
+      <ul>
+        <li>最终测试通过率和隐藏验收通过率；</li>
+        <li>错误工具调用、补丁应用失败和 API 失败次数；</li>
+        <li>测试失败后的恢复率；</li>
+        <li>虚假完成率，即声称完成但验证未通过；</li>
+        <li>模型请求次数、输入/输出 token、工具次数、总耗时和费用；</li>
+        <li>需要用户澄清或审批的次数。</li>
+      </ul>
+
+      <p>如果只比较聊天回答，你测到的是代码讲解能力；只有让模型在同一 Harness 里真正读、改、测，才是在测 Codex Agent 能力。</p>
     </section>
 
     <section id="borrow">
-      <h2>七、你该怎样借鉴：先选路线，再造系统</h2>
+      <h2>十三、怎样把这套设计借到你自己的 Agent</h2>
 
-      <p>“借鉴 Codex”有三种完全不同的含义。选择错误，会让你在不必要的地方重复造轮子。</p>
+      <p>不要一上来复刻整个 Codex。按下面顺序做一个最小可用 Harness，每一步都能独立验收。</p>
 
-      <table>
-        <thead><tr><th>路线</th><th>适用情况</th><th>优先使用</th><th>你主要开发什么</th></tr></thead>
-        <tbody>
-          <tr><td>A. 定制现成 Codex</td><td>任务本质是代码仓库工作</td><td>AGENTS.md、Skill、MCP、Hook、规则、工作树</td><td>项目规范、领域流程、专用工具与验收</td></tr>
-          <tr><td>B. 把 Codex 嵌入产品</td><td>需要从自己的 UI、CI 或后台驱动 coding agent</td><td>Codex SDK；深度客户端集成时用 App Server</td><td>业务界面、任务队列、权限映射、结果审阅</td></tr>
-          <tr><td>C. 自建通用 Harness</td><td>任务跨越非代码领域，或必须完全控制调度与模型</td><td>Responses/Agents SDK 加自建执行与策略层</td><td>线程状态机、上下文编译、工具协议、沙箱、验证、评测</td></tr>
-        </tbody>
-      </table>
-
-      <div class="practice">
-        <strong>对你当前阶段的建议：</strong>InnoSpark 与 L2 Editor 仍以软件开发为主，不建议先复刻一套 Codex。先走 A：把项目规则、专项流程和确定性验收接到 Codex；若要让 InnoSpark 内部调度编程任务，再走 B。只有当你的产品要调度“市场调研—需求—设计—开发—发布”整条跨域流水线，而且现有 Codex 只是其中一个专家时，才值得走 C；这时可以让上层编排器通过 MCP 调用 Codex，而不是把 Codex 本身重写一遍。
-      </div>
-
-      <h3>7.1 自建时的最小数据模型</h3>
-
-      <p>不要从“写一份厉害的 system prompt”开始。先定义可持久化对象：</p>
+      <h3>13.1 第一步：先把运行记录从聊天文本升级为事件</h3>
 
       <pre><code>Thread {
-  id, goal, constraints, status, workspace, created_at
+  id, provider, model, cwd, created_at, status
 }
 
 Turn {
-  id, thread_id, user_input, started_at, completed_at, status
+  id, thread_id, user_input, status, started_at, ended_at
 }
 
-Item = UserMessage | AgentMessage | ToolCall | ToolResult
-     | FileChange | ApprovalRequest | Checkpoint | Verification
-
-ToolCall {
-  id, tool_name, validated_input, risk_class, state
-}
-
-Verification {
-  criterion_id, command_or_check, outcome, evidence_ref
+Item {
+  id, turn_id,
+  type,          // user_message | agent_message | tool_call | tool_result | file_change
+  status,        // started | completed | failed | declined
+  payload_json,
+  created_at
 }</code></pre>
 
-      <p>这里最重要的不是字段名，而是把消息、动作、现实结果和验收证据分开。只有这样，你才能重放一轮、查询未完成工具、审计副作用，或在上下文压缩后恢复。</p>
+      <p>先做到：服务重启后能恢复 thread；每个 tool_result 能找到对应 tool_call；失败 item 不会被当成成功。没有这一步，后续压缩、审计和 UI 都会依赖脆弱的字符串解析。</p>
 
-      <h3>7.2 把 Agent 循环写成显式状态机</h3>
+      <h3>13.2 第二步：实现最小 Agent loop</h3>
 
-      <pre><code>RECEIVED
-  → CONTEXT_BUILT
-  → MODEL_DECISION
-  → TOOL_PROPOSED
-  → POLICY_CHECKED
-  → TOOL_RUNNING
-  → OBSERVATION_RECORDED
-  → VERIFYING
-  → DONE | RETRY | BLOCKED | INTERRUPTED</code></pre>
+      <p>只接三个工具：只读搜索、局部补丁、验证命令。每个工具都有明确 JSON schema、超时、错误类型和最大输出。循环只处理三种模型输出：消息、工具调用、最终回答。不要让模型把“要运行的命令”藏在普通 Markdown 里由正则提取。</p>
 
-      <p>每个箭头都应有可检查的进入条件。工具超时不能直接回到“让模型继续”；应先记录超时类型、进程状态和可否安全重试。需要用户选择时进入 <code>BLOCKED</code>，而不是让模型猜。发生中断时保存检查点，恢复后先重新观察外部状态。</p>
+      <h3>13.3 第三步：在执行器前加策略网关</h3>
 
-      <h3>7.3 做一个有优先级的上下文编译器</h3>
+      <pre><code>model tool call
+      ↓
+validate schema
+      ↓
+classify side effect
+      ↓
+check allowed roots / network / command policy
+      ↓
+allow | ask approval | deny
+      ↓
+execute and return structured result</code></pre>
 
-      <p>可采用下面的稳定优先级，而不是简单截取最近消息：</p>
+      <p>策略网关要用确定性代码。模型可以给出理由，但不能自己批准自己的越权请求。</p>
 
-      <ol class="checklist">
-        <li><strong>P0：</strong>安全边界、当前目标、用户最新修改。</li>
-        <li><strong>P1：</strong>验收条件、未解决决策、当前步骤。</li>
-        <li><strong>P2：</strong>任务命中的项目规则和 Skill 指令。</li>
-        <li><strong>P3：</strong>相关文件片段、接口、不变量和近期 diff。</li>
-        <li><strong>P4：</strong>最新工具观察，尤其错误、退出码和失败测试。</li>
-        <li><strong>P5：</strong>旧轮次摘要、低优先级参考和可再次检索的材料。</li>
-      </ol>
+      <h3>13.4 第四步：做上下文编译器</h3>
 
-      <p>压缩时优先丢掉可重新获得的原始日志，不丢目标、不变量、用户决定和仍未解决的失败。每条摘要最好附原始工件引用，以便模型怀疑摘要时回读。</p>
+      <p>将输入分层：基础指令、项目规则、本轮任务、最近轨迹、工具目录、按需资料、压缩状态。为每一层设置来源、优先级和 token 预算。工具输出太大时不要静默丢弃；返回“已截断、原始大小、保留范围”，让模型知道需要再次缩小查询。</p>
 
-      <h3>7.4 只做少量、高质量的工具</h3>
+      <h3>13.5 第五步：把“完成”交给验证器提供证据</h3>
 
-      <p>第一版可以只有：搜索文件、读取文件、应用补丁、执行命令、查看 diff、请求用户输入六类。每个工具都写清：</p>
+      <p>模型可以决定运行哪些验证，但通过与否由测试、类型检查、schema 校验或业务规则程序返回。Turn 只有同时满足以下条件才标记 completed：</p>
 
       <ul>
-        <li>何时使用与何时不用；</li>
-        <li>输入模式、最大范围、路径解析规则；</li>
-        <li>输出的稳定字段，而不只是 stdout 大字符串；</li>
-        <li>只读、写入、破坏性、外部网络等风险标注；</li>
-        <li>超时、部分成功、权限不足和资源冲突的错误码；</li>
-        <li>是否幂等（idempotent），以及重试会不会重复副作用。</li>
+        <li>没有待处理工具调用或审批；</li>
+        <li>模型产生 final，而不是 commentary；</li>
+        <li>任务要求的验证 item 已成功；</li>
+        <li>所有文件改动有可回读 diff；</li>
+        <li>若验证缺失，最终状态明确标为“未验证”，不能伪装成完成。</li>
       </ul>
 
-      <p>工具数量不是能力指标。若两个工具描述高度重叠、返回巨量无结构文本，新增工具反而会降低选择准确率并污染上下文。</p>
+      <h3>13.6 第六步：最后再加压缩、多 Agent 和 MCP</h3>
 
-      <h3>7.5 权限系统必须在模型外部</h3>
-
-      <p>最小可用方案可以把动作分成四级：</p>
-
-      <table>
-        <thead><tr><th>级别</th><th>例子</th><th>默认策略</th></tr></thead>
-        <tbody>
-          <tr><td>R0 只读</td><td>读仓库、搜索符号、查看状态</td><td>工作区内自动允许</td></tr>
-          <tr><td>R1 可恢复写入</td><td>补丁修改、生成临时文件</td><td>隔离工作区内允许并记录 diff</td></tr>
-          <tr><td>R2 外部或难恢复</td><td>网络发布、推送、改远程数据</td><td>需要明确授权或细粒度策略</td></tr>
-          <tr><td>R3 破坏性</td><td>删除生产数据、覆盖不可恢复资源</td><td>阻止或强制人工复核</td></tr>
-        </tbody>
-      </table>
-
-      <p>模型只能提出动作及理由，策略引擎根据真实工具、参数、作用域和当前授权做决定。审批通过也应尽量只授予一次、一个目标或一类前缀，不升级整个会话为无限权限。</p>
-
-      <h3>7.6 把验证器设计成一等组件</h3>
-
-      <p>为每类任务建立“证据生成器”，而不是在提示词末尾写一句“请测试”。例如：</p>
+      <p>单 Agent 的事件、工具、权限、验证和恢复稳定后，再做：</p>
 
       <ul>
-        <li>代码修改：目标测试、全量测试、类型检查、lint、diff 范围。</li>
-        <li>数据迁移：行数守恒、校验和、约束、回滚演练。</li>
-        <li>网页界面：构建、浏览器交互脚本、截图或可访问性检查。</li>
-        <li>文档：链接、结构、禁用模式、渲染或格式校验。</li>
+        <li>压缩：保留任务目标、已确认事实、未决问题、文件与验证状态；</li>
+        <li>子 Agent：为每个子任务创建隔离 thread，结果作为结构化 item 汇总；</li>
+        <li>并行：只并行互不依赖的读取或隔离工作区写入；</li>
+        <li>MCP：把外部系统工具也放进同一个权限与事件模型；</li>
+        <li>评测：保存完整 trace，按失败层归因，而不只给最终答案打分。</li>
       </ul>
 
-      <p>验证结果进入结构化 <code>Verification</code> item。模型可以解释失败并修改代码，但不能把失败改写成成功。达到重试上限后，应以“部分完成 + 证据 + 阻塞原因”结束。</p>
-
-      <h3>7.7 最后才加多 Agent</h3>
-
-      <p>多 Agent 首先解决吞吐和上下文隔离，不自动提升单步正确率。只有任务能按文件、读写权或成果边界独立切分时才并行。建议先用于只读探索、测试分析和审查，再尝试并行写入；每个写 Agent 使用独立工作树，主 Agent 只接收摘要和可审阅补丁。</p>
-
-      <h3>7.8 适合你的四阶段落地顺序</h3>
-
-      <ol>
-        <li><strong>第一阶段：把“完成”写实。</strong>为现有项目建立机器可运行的构建、测试、安装和最小闭环验收；在根 <code>AGENTS.md</code> 只写稳定命令、关键不变量和必须提供的证据。</li>
-        <li><strong>第二阶段：把重复工作流做成 Skill。</strong>例如“从零拉取并验证 InnoSpark + 插件”“导出到 Obsidian 的兼容性检查”“发布前检查”。需要完全确定的步骤放脚本，不让模型每次重写。</li>
-        <li><strong>第三阶段：补专用工具与 Hook。</strong>将内部状态查询、测试夹具、数据一致性检查做成窄工具；在停止或工具调用后运行验证 Hook。此时再收集 trace，查看失败集中在哪一层。</li>
-        <li><strong>第四阶段：程序化编排。</strong>若要从自己的产品发起 coding thread，先用 Codex SDK；若 Codex 只是更大流水线中的开发专家，上层用 Agents SDK 编排，通过 Codex MCP 交付清楚规格与工作目录。</li>
-      </ol>
+      <p>对 InnoSpark 这类系统，最值得直接借鉴的不是“让 Agent 更自主”，而是三件技术部件：<strong>上下文编译器、事件化任务状态、确定性验证闭环</strong>。它们能解决多 AI 讨论中最难维护的矛盾：每条结论从哪里来、由什么动作产生、后来被什么证据推翻，以及当前哪一版才有效。</p>
     </section>
 
-    <section id="ablation">
-      <h2>八、怎样真正分离模型与 Harness：做二维消融，不凭感觉</h2>
+    <section id="boundary">
+      <h2>十四、公开资料能确认到哪里</h2>
 
-      <p>因为存在交互项，你不能只比较“ChatGPT 回答”和“Codex 成果”，然后把差异全部算给工具。更可靠的做法是固定一批真实任务，沿模型与 harness 两条轴做消融实验（ablation study）。</p>
+      <p>Codex CLI、Codex SDK 和 App Server 的关键部分是开源的；官方文档公开了 App Server 协议、thread/turn/item、审批、事件、AGENTS.md 注入、工具建议和 compaction。IDE 扩展与 Codex Cloud 并非全部开源，因此本文没有把云端调度、内部系统提示生成、训练数据或隐藏评测细节写成已知事实。</p>
 
-      <table>
-        <thead><tr><th>实验组</th><th>模型</th><th>Harness</th><th>回答什么问题</th></tr></thead>
-        <tbody>
-          <tr><td>A</td><td>GPT-5.6 Sol</td><td>只给静态任务材料，不允许工具</td><td>模型能否理解并提出正确候选方案</td></tr>
-          <tr><td>B</td><td>GPT-5.6 Sol</td><td>裸 Shell / 文件工具，简单循环</td><td>仅增加行动能力带来多少收益</td></tr>
-          <tr><td>C</td><td>GPT-5.6 Sol</td><td>完整上下文、权限、状态、验证与恢复</td><td>生产级 harness 的增量贡献</td></tr>
-          <tr><td>D</td><td>较低成本模型</td><td>与 C 完全相同</td><td>模型能力下降后 harness 能补偿多少</td></tr>
-          <tr><td>E</td><td>GPT-5.6 Sol</td><td>C 去掉某一层，如无外部验证</td><td>具体组件的边际价值</td></tr>
-        </tbody>
-      </table>
-
-      <h3>8.1 任务集不能只用算法题</h3>
-
-      <p>应覆盖不同失败模式：陌生仓库定位、跨文件功能、模糊 bug、依赖安装、需要权限的外部动作、测试不完整、长任务中途改需求、故意注入工具失败。每题准备隐藏验收测试，避免模型仅迎合表面描述。</p>
-
-      <h3>8.2 建议记录的指标</h3>
-
-      <ul>
-        <li><strong>端到端成功率：</strong>隐藏验收是否全过，而不是最终回答是否自信。</li>
-        <li><strong>首次有效修复率：</strong>第一次补丁通过多少目标检查。</li>
-        <li><strong>恢复率：</strong>工具失败或测试失败后，能否诊断并回到正确路线。</li>
-        <li><strong>虚假完成率：</strong>声称完成但存在失败检查、未运行验证或未满足约束的比例。</li>
-        <li><strong>越权与副作用：</strong>是否尝试访问不必要路径、网络或远程写操作。</li>
-        <li><strong>人类干预次数：</strong>哪些询问真正需要决策，哪些只是 harness 缺乏信息。</li>
-        <li><strong>成本与延迟：</strong>输入、输出、工具次数、测试时间、子 Agent 开销。</li>
-        <li><strong>上下文效率：</strong>送入模型的 token 中，有多少与当前决策实际相关。</li>
-      </ul>
-
-      <h3>8.3 怎样解释结果</h3>
-
-      <p>若 A 已能给出正确设计但无法落地，B/C 提升主要来自行动与验证；若 B 经常找错文件而 C 稳定，说明上下文组装和项目规则重要；若 Sol 在 B/C 都显著优于较弱模型，说明判断核仍是瓶颈；若弱模型在 C 上接近 Sol，说明任务已被 harness 约束得足够清楚，可以降本。</p>
-
-      <p>最值得关注的不是“哪组总分最高”，而是失败归属：模型误解、上下文缺失、工具契约模糊、执行不稳定、权限阻塞、验证不足还是恢复策略错误。只有归因到层，你才能决定下一笔工程投入放在哪里。</p>
-    </section>
-
-    <section id="pitfalls">
-      <h2>九、借鉴 Codex 时最容易犯的八个错误</h2>
-
-      <ol>
-        <li><strong>把 Harness 等同于系统提示词。</strong>提示词能表达规范，不能提供操作系统边界、进程状态、持久化和验收证据。</li>
-        <li><strong>让模型直接调用内部万能 API。</strong>这让权限、失败语义、结构化输出和评测都失去边界。应围绕用户动作设计窄工具。</li>
-        <li><strong>把所有资料一次性塞入长上下文。</strong>大窗口提高容量，不消除注意力竞争。先检索、按需加载、保留可回读引用。</li>
-        <li><strong>用模型自评代替测试。</strong>模型审查适合发现语义风险，确定性验收负责证明可运行事实，两者不能互换。</li>
-        <li><strong>只记录聊天，不记录世界状态。</strong>恢复时应重新读取文件、diff、进程和测试结果，而不是相信旧摘要仍对应现实。</li>
-        <li><strong>先上多 Agent，再解决单 Agent 的完成闭环。</strong>多个不可靠循环只会更快地产生冲突和噪声。</li>
-        <li><strong>把审批当礼貌用语。</strong>“我可以删除吗”若不绑定实际工具调用、精确目标和强制策略，就不是安全机制。</li>
-        <li><strong>只评最终答案，不评轨迹。</strong>同样成功的结果可能一个来自安全可复现路径，一个来自偶然越权。应同时记录动作、失败、审批和验证。</li>
-      </ol>
+      <p>文中的“会话与编排核心”是依据公开接口划分的逻辑层，而不是声称 OpenAI 内部恰好以同名服务部署。伪代码表达的是可观察的运行机制，不是逐行复刻源码。</p>
     </section>
 
     <section id="conclusion">
-      <h2>十、压缩成一个可长期使用的心智模型</h2>
+      <h2>十五、把整篇压缩成一句可用的话</h2>
 
-      <p>以后看到 Codex 完成一项复杂任务，可以按下面的问题逐层分析：</p>
+      <blockquote>Codex 的本质，是把模型放进一个持久、可执行、可验证、可审批的事件循环：模型提出下一步，Harness 决定怎样执行并把真实结果送回来，直到出现有证据支持的完成状态。</blockquote>
 
-      <ol>
-        <li><strong>模型判断：</strong>哪一步需要理解、创造、取舍或诊断？</li>
-        <li><strong>上下文供给：</strong>模型凭什么知道当前目标、代码和失败证据？</li>
-        <li><strong>行动契约：</strong>它通过什么工具改变世界，参数和失败是否结构化？</li>
-        <li><strong>权限边界：</strong>什么是技术上禁止的，什么必须人工批准？</li>
-        <li><strong>外部状态：</strong>中断、压缩或换模型后，任务真相保存在哪里？</li>
-        <li><strong>完成证据：</strong>谁证明结果有效，模型能否单方面宣布通过？</li>
-        <li><strong>人机协作：</strong>用户怎样看到、纠偏、审阅和接管？</li>
-      </ol>
-
-      <p>Codex 最值得借鉴的不是某条提示词，也不是“让 Agent 自己跑终端”，而是把开放式智能放入一个有边界的工程闭环：<strong>让模型负责无法预先穷举的判断，让程序负责可以确定执行和验证的部分，让外部状态承载时间，让权限系统承载信任。</strong></p>
-
-      <p>这也回答了最初的拆分问题：GPT-5.6 Sol 决定系统推理上限，Harness 决定这些推理能否接触真实世界、持续纠错并留下证据；二者的适配决定最终体验。研究或开发 Agent 时，应同时评估两条轴，并保留交互项，而不是把 Codex 的整体表现直接当成模型基准。</p>
+      <p>以后评价 DeepSeek V4 Pro 的“Codex 优化”，不要只问它代码能力多强。要分别问：Responses API 是否兼容；历史元数据是否无损；工具格式是否匹配；模型是否经过 Agent 轨迹后训练；同一 Harness 下是否更会搜索、修改、验证和恢复。理解这五件事，你才能判断问题出在模型还是 Codex，也才能把 Codex 的有效部分真正借到自己的系统里。</p>
     </section>
 
     <section id="references">
-      <h2>参考资料与核验范围</h2>
-      <p class="source-class">以下均为 OpenAI 官方资料。本文只据公开行为和接口建立系统模型；未把未公开的内部实现写成事实。</p>
+      <h2>参考资料</h2>
+      <p class="small">OpenAI 产品行为以官方 OpenAI 文档为准；DeepSeek 状态以 DeepSeek 官方 API 文档为准。链接仅供核验，正文不依赖联网资源。</p>
       <ol>
-        <li><a href="https://developers.openai.com/api/docs/models/gpt-5.6-sol">GPT-5.6 Sol Model</a>：模型定位、上下文、结构化输出和工具支持。</li>
-        <li><a href="https://developers.openai.com/blog/run-long-horizon-tasks-with-codex">Run long horizon tasks with Codex</a>：长任务循环、真实反馈、外部状态与可转向性。</li>
-        <li><a href="https://learn.chatgpt.com/docs/app-server">Codex App Server</a>：thread、turn、item、流式事件、恢复、分叉与审批接口。</li>
-        <li><a href="https://learn.chatgpt.com/docs/agent-approvals-security">Agent approvals &amp; security</a> 与 <a href="https://learn.chatgpt.com/docs/sandboxing">Sandbox</a>：沙箱、审批、网络和执行边界。</li>
-        <li><a href="https://learn.chatgpt.com/docs/agent-configuration/agents-md">Custom instructions with AGENTS.md</a>：分层项目指令的发现与覆盖顺序。</li>
-        <li><a href="https://learn.chatgpt.com/docs/build-skills">Build skills</a>：Skill 渐进披露、脚本与引用资料。</li>
-        <li><a href="https://learn.chatgpt.com/docs/extend/mcp">Model Context Protocol</a> 与 <a href="https://developers.openai.com/plugins/plan/tools">Define tools</a>：工具连接、契约、权限与错误边界。</li>
-        <li><a href="https://learn.chatgpt.com/docs/hooks">Hooks</a>：在 Agent 生命周期中插入确定性检查。</li>
-        <li><a href="https://learn.chatgpt.com/docs/environments/git-worktrees">Git worktrees</a> 与 <a href="https://learn.chatgpt.com/docs/agent-configuration/subagents">Subagents</a>：并行任务的代码与上下文隔离。</li>
-        <li><a href="https://learn.chatgpt.com/docs/codex-sdk">Codex SDK</a> 与 <a href="https://learn.chatgpt.com/docs/mcp-server">Use Codex with the Agents SDK</a>：嵌入 Codex 或把它作为上层工作流中的编程专家。</li>
-        <li><a href="https://developers.openai.com/cookbook/examples/agents_sdk/agent_improvement_loop">Agent improvement loop</a>：把 harness 视为模型周围完整契约，并通过 trace、反馈和 eval 改进。</li>
+        <li id="ref-1"><a href="https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide">OpenAI：Codex Prompting Guide</a>——基础指令、AGENTS.md 注入、compaction、apply_patch、shell、并行调用、截断与 phase。</li>
+        <li id="ref-2"><a href="https://learn.chatgpt.com/docs/app-server">OpenAI：Codex App Server</a>——JSON-RPC、Thread/Turn/Item、事件、审批、恢复、分叉、压缩和 Skills。</li>
+        <li id="ref-3"><a href="https://learn.chatgpt.com/docs/agent-configuration/agents-md">OpenAI：Custom instructions with AGENTS.md</a>——发现范围、合并顺序、覆盖与默认大小限制。</li>
+        <li id="ref-4"><a href="https://learn.chatgpt.com/docs/agent-approvals-security">OpenAI：Agent approvals &amp; security</a>——操作系统沙箱、审批策略、网络与云端两阶段环境。</li>
+        <li id="ref-5"><a href="https://developers.openai.com/api/docs/guides/compaction">OpenAI：Compaction</a>——服务端与独立压缩、压缩 item 和历史续接。</li>
+        <li id="ref-6"><a href="https://learn.chatgpt.com/docs/non-interactive-mode">OpenAI：Non-interactive mode</a>——JSONL 事件和结构化输出。</li>
+        <li id="ref-7"><a href="https://learn.chatgpt.com/docs/codex-sdk">OpenAI：Codex SDK</a>——本地 thread 的启动、继续和恢复。</li>
+        <li id="ref-8"><a href="https://api-docs.deepseek.com/quick_start/agent_integrations/codex/">DeepSeek：Integrate with Codex</a>——当前支持状态、Responses provider 与 models.json 字段。</li>
+        <li id="ref-9"><a href="https://api-docs.deepseek.com/updates/">DeepSeek：Change Log</a>——V4-Flash-0731 的重新后训练、Agent 增强与 Codex 专项适配说明。</li>
+        <li id="ref-10"><a href="https://api-docs.deepseek.com/quick_start/pricing/">DeepSeek：Models &amp; Pricing</a>——V4 Flash/Pro 的 Responses API 当前支持状态。</li>
+        <li id="ref-11"><a href="https://api-docs.deepseek.com/guides/thinking_mode/">DeepSeek：Thinking Mode</a>——工具调用时 reasoning_content 的历史回传要求。</li>
       </ol>
     </section>
   </article>
 
   <section id="reader-feedback">
     <h2>读后反馈</h2>
-    <p class="small">暂无。后续反馈将按轮次追加于此，不覆盖既有记录。</p>
+    <article class="feedback-entry" data-date="2026-08-10" data-round="1">
+      <h3>2026-08-10 · 第 1 轮</h3>
+      <p><strong>原始反馈：</strong>“然后是codex的那篇要重写：我没有看到我希望看到的东西，我希望你能以简单明了的语言解释codex是怎么设计的，而不是绕来绕去的理念，我要看的是技术不是设计哲学；后面deepseekv4pro会对codex做特殊优化，所以我需要知道原理才能和AI更好的协作。”</p>
+      <p><strong>问题分类：</strong>正文整体失败；技术机制不足，设计理念挤占了运行原理。</p>
+      <p><strong>处理：</strong>全文重写。改用一次真实任务贯穿，逐层解释 Thread/Turn/Item、上下文注入、Responses 工具循环、shell 与 apply_patch、事件流、状态压缩、沙箱审批、模型目录和 DeepSeek 适配；补充可复现的协作与评测方法。</p>
+      <p><strong>Skill 更新：</strong>领域。AI 系统文章若用户询问“怎么设计/怎么运行”，应先给出数据结构、消息顺序、接口、状态与失败路径，再讨论设计取舍；不得用设计哲学替代技术机制。</p>
+      <p><strong>状态：</strong>已处理。</p>
+    </article>
   </section>
 </main>
 </body>

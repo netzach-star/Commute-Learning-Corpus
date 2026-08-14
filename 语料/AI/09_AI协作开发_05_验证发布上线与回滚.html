@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+<meta name="corpus-id" content="AI-09">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="AI">
+  <title>AI协作开发：验证、发布、上线与回滚</title>
+  <style>
+    body{max-width:820px;margin:40px auto;padding:0 20px;font:17px/1.8 system-ui,-apple-system,"PingFang SC",sans-serif;color:#202124}h1,h2{line-height:1.35}table{border-collapse:collapse;width:100%;margin:1em 0}th,td{border:1px solid #bbb;padding:.55em;vertical-align:top}pre{white-space:pre-wrap;background:#f5f6f7;padding:1em;border-radius:8px}blockquote{border-left:4px solid #567;padding-left:1em;color:#455}a{color:#165d9c}.note{background:#f3f7fb;padding:1em;border-radius:8px}.muted{color:#666}
+  </style>
+</head>
+<body>
+<article>
+  <h1>验证、发布、上线与回滚</h1>
+  <p class="muted">系列 05 · “代码写完”只到交付流程的一半</p>
+
+  <h2>一次发布包含三种不同事实</h2>
+  <p>第一，某个提交在测试环境通过；第二，某个可分发产物确实由该提交构建；第三，这个产物在生产环境运行正常。三者不能互相代替。AI 很容易在完成代码后说“已经可以上线”，但它通常只证明了局部测试，尚未证明构建可重复、依赖安全、迁移可回滚，也没有观察真实用户路径。</p>
+  <p>所以完整交付链应为：</p>
+  <pre>分支 → Pull Request → CI 验证 → 合并
+  → 固定提交与版本标签 → 一次性构建产物
+  → GitHub Release / 包仓库 → 预发布环境
+  → 生产部署 → 健康验证 → 观察或回滚</pre>
+
+  <h2>合并前：验证行为，而不是验证 Agent 的解释</h2>
+  <table>
+    <thead><tr><th>检查层</th><th>回答的问题</th><th>典型证据</th></tr></thead>
+    <tbody>
+      <tr><td>静态</td><td>代码是否符合语言与项目约束？</td><td>格式、lint、类型、依赖锁文件</td></tr>
+      <tr><td>单元</td><td>局部逻辑在边界输入下是否正确？</td><td>确定性测试、性质测试</td></tr>
+      <tr><td>契约与集成</td><td>组件、数据库和外部服务是否按约定协作？</td><td>契约测试、临时数据库、模拟故障</td></tr>
+      <tr><td>端到端</td><td>用户关键路径是否真的可完成？</td><td>从输入到持久化与再次读取的自动脚本</td></tr>
+      <tr><td>非功能</td><td>性能、安全、权限、恢复是否达标？</td><td>基准、扫描、故障注入、恢复演练</td></tr>
+      <tr><td>追踪</td><td>改动是否满足了批准需求？</td><td>R→S→T→V 对照与演示记录</td></tr>
+    </tbody>
+  </table>
+  <p>在 GitHub 上，应保护主分支，要求 PR、必要审查和状态检查。官方规则允许只有规定检查通过后才合并，也可要求讨论全部解决。AI 代码审查适合发现遗漏，但不应成为唯一审批者；尤其是测试和审查若由同一模型根据同一错误规格生成，会出现相关性错误。</p>
+
+  <h2>版本与产物：Release 不是源码压缩包的别名</h2>
+  <p>若项目承诺稳定公共 API，可以使用语义化版本（Semantic Versioning）：不兼容变更增加主版本，向后兼容功能增加次版本，向后兼容修复增加补丁版本。若仍处早期实验，也可以保留 0.x，并明确兼容承诺。版本号的作用是表达用户需要承担的升级风险，不是记录工作量。</p>
+  <p>发布时应从固定标签在 CI 中构建一次，得到真正供用户安装的产物，例如平台安装包、扩展包、容器镜像或 npm/Python 包。不要在本地手工打包一个文件、服务器又从源码重新构建另一个文件；否则 GitHub 上验证过的并非线上运行物。</p>
+  <p>GitHub Release 基于标签，可附带二进制资产、发布说明并标记预发布。一个最低合格的 Release 包含：</p>
+  <ul>
+    <li>版本标签与对应提交；</li>
+    <li>面向用户的新增、修复、破坏性变更和迁移说明；</li>
+    <li>机器可安装的构建产物与校验摘要；</li>
+    <li>支持的平台和最低依赖版本；</li>
+    <li>已知问题、升级与回退方法；</li>
+    <li>CI 运行、测试报告和需求范围 REL-xxx 的链接。</li>
+  </ul>
+  <p>对公开项目，还可以生成构建来源证明（provenance）。GitHub Actions 的 artifact attestation 能为二进制或容器建立构建来源，SLSA 1.2 则提供逐级增强的软件供应链安全规范。小项目不必一开始追求最高级别，但至少要做到“用户拿到的文件能追溯到受审查的源码与构建流程”。</p>
+
+  <h2>上线：把环境、数据库和代码分开控制</h2>
+  <p>建立 development、staging、production 三类环境。staging 使用与生产相同的构建产物和尽量接近的配置，只替换密钥与数据。数据库变更采用向前兼容的 expand/migrate/contract 思路：先增加新结构，使新旧代码都能运行；迁移并验证数据；最后再删除旧结构。不要把不可逆删除和新代码首次上线塞进同一步。</p>
+  <p>GitHub Actions 的环境保护规则可以让生产部署等待指定审查者、限制可部署分支，并在批准前不向任务开放生产密钥。对个人项目，即使审查者仍是你自己，也应保留明确的“上线确认”步骤，迫使自己看到版本、迁移与回滚摘要。</p>
+
+  <h2>回滚不是重新让 AI 修一次</h2>
+  <p>发布前就要确定失败时的动作：</p>
+  <ul>
+    <li>应用代码能否立即切回上一已知健康产物？</li>
+    <li>数据库迁移是否向后兼容；若不能逆转，如何前滚修复？</li>
+    <li>功能开关能否关闭新路径而不重新部署？</li>
+    <li>哪些健康指标触发自动或人工回滚？</li>
+    <li>用户已产生的新数据在回滚后怎样处理？</li>
+  </ul>
+  <p>部署后先运行合成冒烟测试，再观察错误率、延迟、关键业务事件和数据一致性。InnoSpark 的关键指标不只是页面能打开，而是一次“生成提案—用户批准—写入—再次检索—导出副本”的完整路径；同时检查拒绝提案后正式数据确实无变化。</p>
+
+  <div class="note"><strong>发布完成定义：</strong>不是“main 已合并”，而是受保护分支检查通过；固定标签构建出唯一产物；Release 说明与校验齐全；staging 关键路径通过；生产部署得到明确批准；健康指标正常；回滚路径已验证；REL 条目能追踪到本次需求与测试。</div>
+
+  <h2>参考资料</h2>
+  <ul>
+    <li><a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches">GitHub：受保护分支与必需状态检查</a></li>
+    <li><a href="https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository">GitHub：管理 Release</a></li>
+    <li><a href="https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments">GitHub Actions：部署环境与保护规则</a></li>
+    <li><a href="https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations">GitHub：构建产物证明</a></li>
+    <li><a href="https://slsa.dev/spec/v1.2/">SLSA 1.2</a>；<a href="https://semver.org/">Semantic Versioning 2.0.0</a></li>
+  </ul>
+  <p><a href="AI协作开发_04_模型路由与低成本实施.html">上一篇：模型路由与实施</a> · <a href="AI协作开发_06_项目规模化后的治理系统.html">下一篇：规模化治理</a></p>
+</article>
+<section id="reader-feedback"><h2>读者反馈</h2><p>暂无。</p></section>
+</body>
+</html>

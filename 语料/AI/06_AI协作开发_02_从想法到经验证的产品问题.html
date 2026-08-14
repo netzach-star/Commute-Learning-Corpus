@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+<meta name="corpus-id" content="AI-06">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="AI">
+  <title>AI协作开发：从想法到经验证的产品问题</title>
+  <style>
+    body{max-width:820px;margin:40px auto;padding:0 20px;font:17px/1.8 system-ui,-apple-system,"PingFang SC",sans-serif;color:#202124}h1,h2{line-height:1.35}table{border-collapse:collapse;width:100%;margin:1em 0}th,td{border:1px solid #bbb;padding:.55em;vertical-align:top}pre{white-space:pre-wrap;background:#f5f6f7;padding:1em;border-radius:8px}blockquote{border-left:4px solid #567;padding-left:1em;color:#455}a{color:#165d9c}.note{background:#f3f7fb;padding:1em;border-radius:8px}.muted{color:#666}
+  </style>
+</head>
+<body>
+<article>
+  <h1>从想法到经验证的产品问题</h1>
+  <p class="muted">系列 02 · 市场调研不是让多个 AI 对一个点子投票</p>
+
+  <h2>首先区分三个问题</h2>
+  <p>“我能不能做出来”“用户会不会需要”“做出来后能不能持续运行”是三件事。端到端生成平台已经显著降低第一件事的成本：官方资料中，Replit Agent 可以从自然语言进入规划、构建、测试与发布，Lovable 也能生成全栈应用并同步到 GitHub。但一个原型可以运行，不意味着问题真实，更不意味着用户愿意改变习惯。</p>
+  <p>产品发现（product discovery）的任务，是在大规模实现前降低四种不确定性：目标用户是谁、问题是否频繁且足够痛、现有替代方案为何不够、怎样的结果才算成功。AI 最适合扩大检索面、整理材料和设计实验；AI 最不适合仅凭语言流畅度宣布“市场验证通过”。</p>
+
+  <h2>把最初想法写成可证伪假设</h2>
+  <p>以 InnoSpark 为例，原始想法可能是“让 AI 回答一键变成 wiki”。不要立刻列功能，而应拆成假设：</p>
+  <ul>
+    <li>H-001：频繁用 AI 学习的人确实会丢失重要回答，且每周发生多次。</li>
+    <li>H-002：他们放弃整理的主要原因是整理打断对话，而非根本不想保留。</li>
+    <li>H-003：自动生成后允许审阅，比完全自动写入更能建立信任。</li>
+    <li>H-004：用户需要导出到 Obsidian，但接受“复制而不移动原数据”。</li>
+  </ul>
+  <p>每条假设都要附反证条件。例如，若十名目标用户中多数只是偶尔找不到回答，却从未为此采取任何行动，H-001 就很弱；若用户更愿意依赖聊天搜索而非建立 wiki，产品方向也应改变。没有反证条件的“假设”只是愿望。</p>
+
+  <h2>建立证据阶梯</h2>
+  <table>
+    <thead><tr><th>证据强度</th><th>例子</th><th>AI 可以做什么</th></tr></thead>
+    <tbody>
+      <tr><td>弱</td><td>模型推断、社交媒体零散观点、竞品宣传</td><td>发现关键词和候选问题，不能据此定案</td></tr>
+      <tr><td>中</td><td>竞品定价与功能、公开评价、访谈中的具体过去行为</td><td>检索、去重、提取原句并保留链接</td></tr>
+      <tr><td>强</td><td>用户主动提供数据、重复使用原型、愿意迁移或付出成本</td><td>汇总事件与漏斗，寻找异常样本</td></tr>
+      <tr><td>最强</td><td>真实留存、付费或组织采购</td><td>分析分群和因果候选，最终判断仍由负责人作出</td></tr>
+    </tbody>
+  </table>
+  <p>这里的核心是“过去行为优先于未来表态”。访谈中问“你上一次找不到重要回答是什么时候？后来怎么处理？”比问“你会不会用 AI wiki？”有效。后一个问题很容易得到礼貌的肯定，却不能预测使用。</p>
+
+  <h2>一轮可执行的市场化调研</h2>
+  <ol>
+    <li><strong>问题地图：</strong>让多个模型分别列出用户、场景、替代方案和失败原因，但每个事实必须带原始链接；无来源内容进入 H 表，不进入 E 表。</li>
+    <li><strong>竞品拆解：</strong>比较的不是功能数量，而是用户从触发问题到获得结果的完整路径，包括价格、迁移成本、数据所有权和退出方式。</li>
+    <li><strong>访谈：</strong>先找 5—8 名高度匹配者，记录具体事件、频率、现用方法和已付成本。AI 可生成提纲、转写与编码，但不得虚构“代表性”。</li>
+    <li><strong>最小实验：</strong>先人工提供核心价值。例如用户选中一段会话，你手工或半自动整理成 wiki，请其审阅并在一周后观察是否再次使用。</li>
+    <li><strong>决定：</strong>继续、调整或停止。决定记录应明确哪些假设被支持，哪些仍未知，而不是用一个综合分数掩盖分歧。</li>
+  </ol>
+
+  <h2>AI 交叉调研应如何组织</h2>
+  <p>不要给三个模型同一句“分析市场”，再把三份长文混合。让它们承担互相独立的认知任务：</p>
+  <ul>
+    <li>模型 A 做广泛检索，只交付来源目录和可核验事实；</li>
+    <li>模型 B 扮演反方，寻找替代方案、失败案例和不成立条件；</li>
+    <li>模型 C 将 E 与 H 分离，指出证据空洞，不新增事实；</li>
+    <li>人决定哪些空洞值得通过访谈或实验补齐。</li>
+  </ul>
+  <p>这里的分工依据不是“人格”，而是输入、输出和权限。检索者不能顺便裁决产品方向，批评者也不能为了论证方便改写证据。每个产物都进入上一章的提案流程。</p>
+
+  <h2>产品发现阶段应留下什么</h2>
+  <p>进入需求阶段前，不需要一份几十页的市场报告，但应留下四个可复用工件。第一是问题简报：目标用户、触发场景、当前行为、已付成本与非目标；第二是证据台账：每条事实的来源、日期、适用人群和可信度；第三是假设—实验表：H 编号、反证条件、下一项最便宜实验与结果；第四是机会决策：继续、转向或停止，以及为什么。竞品截图、AI 长报告和访谈全文是原始材料，不应直接充当结论。</p>
+  <p>还应区分市场规模与首批可达用户。个人开发者通常无法可靠计算一个新类别的总体市场，但可以回答“未来四周能否找到十名高度匹配者，其中几人愿意连续两次完成核心流程”。先验证可触达的小切口，再讨论扩张，能避免模型用宏大的行业数字掩盖获客与留存问题。</p>
+
+  <h2>什么时候可以进入需求阶段</h2>
+  <div class="note"><strong>产品证据门：</strong>目标用户与高频场景已写清；至少一项强度高于“口头觉得不错”的行为证据；现有替代方案及其不足已核验；核心假设存在反证条件；成功指标和停止条件明确；第一版非目标已冻结。</div>
+  <p>以 InnoSpark 为例，合理的第一版目标可能是“让测试用户在不离开对话的情况下，完成一次可审阅的回答归档，并能再次找到它”；而“做成完整 Obsidian 替代品”应是非目标。只有这样，后续需求文档才是在定义一个已经值得解决的问题，而不是为想法寻找借口。</p>
+
+  <h2>参考资料</h2>
+  <ul>
+    <li><a href="https://docs.replit.com/features/agent/overview">Replit Agent：计划、构建、测试与发布能力</a></li>
+    <li><a href="https://docs.lovable.dev/introduction/welcome">Lovable：自然语言生成全栈应用</a></li>
+    <li><a href="https://dora.dev/research/2025/dora-report/">DORA 2025：AI 放大既有组织系统</a></li>
+  </ul>
+  <p><a href="AI协作开发_01_从共享文档到可追溯协作底座.html">上一篇：协作底座</a> · <a href="AI协作开发_03_从需求到可执行规格与设计.html">下一篇：规格与设计</a></p>
+</article>
+<section id="reader-feedback"><h2>读者反馈</h2><p>暂无。</p></section>
+</body>
+</html>

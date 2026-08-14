@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+<meta name="corpus-id" content="AI-07">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="corpus-domain" content="AI">
+  <title>AI协作开发：从需求到可执行规格与设计</title>
+  <style>
+    body{max-width:820px;margin:40px auto;padding:0 20px;font:17px/1.8 system-ui,-apple-system,"PingFang SC",sans-serif;color:#202124}h1,h2{line-height:1.35}table{border-collapse:collapse;width:100%;margin:1em 0}th,td{border:1px solid #bbb;padding:.55em;vertical-align:top}pre{white-space:pre-wrap;background:#f5f6f7;padding:1em;border-radius:8px}blockquote{border-left:4px solid #567;padding-left:1em;color:#455}a{color:#165d9c}.note{background:#f3f7fb;padding:1em;border-radius:8px}.muted{color:#666}
+  </style>
+</head>
+<body>
+<article>
+  <h1>从需求到可执行规格与设计</h1>
+  <p class="muted">系列 03 · 文档不是越详细越好，而是每一层回答不同问题</p>
+
+  <h2>规格驱动开发带来了什么，又缺了什么</h2>
+  <p>规格驱动开发（spec-driven development，SDD）是 2025—2026 年 AI 编程中的显著方向。GitHub Spec Kit 把规格置于实现之前；Kiro 会持续保存 requirements、design 与 tasks，并用 EARS（Easy Approach to Requirements Syntax）写可测试需求。它们比“聊天里先规划一下”可靠，因为会留下跨会话工件。</p>
+  <p>但自动生成三份文档并不等于规格正确。如果需求来源不明，模型可以把猜测写得非常完整；如果需求、设计和任务由同一个错误假设连续生成，三者甚至会高度一致，却一起偏离用户。所以 SDD 必须接在证据链之后，并加入明确的审议门。</p>
+
+  <h2>六层文档，各自只回答一种问题</h2>
+  <table>
+    <thead><tr><th>层</th><th>核心问题</th><th>禁止混入</th></tr></thead>
+    <tbody>
+      <tr><td>项目章程</td><td>为谁解决什么，成功与非目标是什么？</td><td>组件和框架选择</td></tr>
+      <tr><td>产品需求</td><td>用户在什么场景需要什么结果？</td><td>数据库表和接口细节</td></tr>
+      <tr><td>系统需求</td><td>在何种条件下，系统必须表现出何种可观察行为？</td><td>尚未决定的实现方式</td></tr>
+      <tr><td>设计与 ADR</td><td>组件、接口、数据、状态和不变量怎样满足需求？</td><td>把一种方案伪装成唯一事实</td></tr>
+      <tr><td>任务图</td><td>以什么顺序做哪些有边界、可验收的改动？</td><td>新的产品决策</td></tr>
+      <tr><td>验证计划</td><td>用什么证据证明每项需求在目标环境成立？</td><td>“人工看起来没问题”式空话</td></tr>
+    </tbody>
+  </table>
+  <p>你的现有设计文档主要覆盖组件、接口和数据流，这对小项目已很有用；扩大后最容易缺少的是状态、不变量、失败路径、权限、迁移与可观测性。接口描述“可以调用什么”，不变量则描述“无论怎样调用都不能破坏什么”。后者往往决定系统能否长期演化。</p>
+
+  <h2>把需求写到可以直接生成测试</h2>
+  <p>EARS 的基本形式是“当某条件或事件发生，系统应产生某个行为”。例如：</p>
+  <pre>R-021
+WHEN 用户拒绝一条 AI 归档提案
+THE SYSTEM SHALL 不修改正式 L2 内容，
+并删除或标记本次临时产物，使其不能被正常检索。</pre>
+  <p>这比“支持用户拒绝归档”更好，因为它包含触发条件、可观察结果和负向约束。随后补充优先级、来源 E-014、关联决策 D-009 与验收 V-041。对异常流程同样写需求：模型超时、写盘中断、文档版本冲突、导出路径不可写、旧格式迁移失败。AI 特别容易生成快乐路径，因此异常要求应当成为固定检查表。</p>
+
+  <h2>设计必须回答七组问题</h2>
+  <ol>
+    <li><strong>边界：</strong>系统负责什么，不负责什么；外部服务失败时责任停在哪里？</li>
+    <li><strong>所有权：</strong>哪份数据是真源，哪些只是渲染物或缓存？例如可规定 document.json 是内容真源，manifest 是运行与关联真源。</li>
+    <li><strong>状态：</strong>对象会经历哪些状态，哪些转移合法？草案、待审、批准、发布、废弃不能只靠文字暗示。</li>
+    <li><strong>不变量：</strong>未经批准不得写入正式层；复制导出不得移动原数据；发布要么完整成功，要么保持旧版本。</li>
+    <li><strong>接口：</strong>输入、输出、错误、幂等性、权限和版本兼容如何定义？</li>
+    <li><strong>故障与恢复：</strong>中断后怎样识别半成品，能否重试、回滚或人工接管？</li>
+    <li><strong>观察：</strong>日志、指标和审计记录怎样证明系统实际遵守了上述规则？</li>
+  </ol>
+
+  <h2>怎样让多个 AI 审查而不互相污染</h2>
+  <p>冻结一份带版本号的需求基线，让不同模型分别执行有限审查：</p>
+  <ul>
+    <li>一致性审查：寻找互相冲突的 R 条目；</li>
+    <li>可测试性审查：指出无法观察或无法判定通过的要求；</li>
+    <li>设计覆盖审查：检查每个 R 是否被 S 覆盖；</li>
+    <li>失败模式审查：只寻找异常、权限、并发和恢复缺口；</li>
+    <li>范围审查：找出没有需求来源的组件与“顺手增加”的功能。</li>
+  </ul>
+  <p>所有模型只提交带目标 ID 的问题单。维护者逐项裁决后，统一生成下一版基线。这样既利用了交叉讨论，也避免模型 A 根据旧版本评论、模型 B 已经改写新版本所造成的并发混乱。</p>
+
+  <h2>建立最小追踪矩阵</h2>
+  <table>
+    <thead><tr><th>需求</th><th>来源</th><th>设计</th><th>任务</th><th>验证</th><th>版本</th></tr></thead>
+    <tbody><tr><td>R-021</td><td>E-014 / D-009</td><td>S-018</td><td>T-063</td><td>V-041</td><td>计划 1.2.0</td></tr></tbody>
+  </table>
+  <p>矩阵能自动发现四类错误：孤儿需求、无需求设计、已实现未验证、已发布却无来源。大型项目可以用数据库或图结构，小项目用 CSV 即可。</p>
+
+  <h2>需求变化时，不要静默重写设计</h2>
+  <p>需求基线批准后仍然可以变化，但变化应形成变更请求：指出新增或修改的 R、触发它的新证据、受影响的 S/T/V、兼容与迁移代价，以及本版本是否接受。模型可根据追踪矩阵生成影响清单，领域负责人确认后再更新基线。若某项实现中途暴露了新事实，应暂停相关任务并返回决策层，不能让编码 Agent 自行把产品语义“修好”。</p>
+  <p>同样，设计文档要有状态：proposed、accepted、superseded、deprecated。新设计取代旧设计时保留指针和生效版本，避免旧对话或旧 Agent 把废弃方案重新引入代码。文档历史由 Git 保存，当前状态则必须一眼可见。</p>
+
+  <div class="note"><strong>进入实施阶段的证据门：</strong>所有 P0 需求可测试且有来源；关键状态、不变量、权限和失败路径已定义；每项设计都能追溯到需求；高风险未知项已通过技术实验（spike）验证；任务不会在执行中偷偷要求新的产品决策。</div>
+
+  <h2>参考资料</h2>
+  <ul>
+    <li><a href="https://github.com/github/spec-kit">GitHub Spec Kit</a></li>
+    <li><a href="https://kiro.dev/docs/specs/feature-specs/">Kiro Feature Specs：EARS、需求分析与设计文档</a></li>
+    <li><a href="https://kiro.dev/docs/specs/quick-spec/">Kiro Quick Spec：何时可以省略阶段审批</a></li>
+  </ul>
+  <p><a href="AI协作开发_02_从想法到经验证的产品问题.html">上一篇：产品发现</a> · <a href="AI协作开发_04_模型路由与低成本实施.html">下一篇：模型路由与实施</a></p>
+</article>
+<section id="reader-feedback"><h2>读者反馈</h2><p>暂无。</p></section>
+</body>
+</html>
