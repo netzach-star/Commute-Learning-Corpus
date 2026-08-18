@@ -49,7 +49,7 @@ GitHub 的 `/tree/` 和 `/commits/` 页面拒绝自动访问，只有 `raw.githu
 
 <!-- INDEX:START -->
 
-**最后更新：2026-08-14**　新增文章后请更新本表；编号取所在领域当前最大值加一。
+**最后更新：2026-08-16**　新增文章后请更新本表；编号取所在领域当前最大值加一。
 
 ### 语料/数学/　—　共 13 篇，下一篇编号 `14`
 
@@ -69,7 +69,7 @@ GitHub 的 `/tree/` 和 `/commits/` 页面拒绝自动访问，只有 `raw.githu
 | 12 | 常微分方程进阶：PDE——从三类原型到弱解 | [12_常微分方程进阶_PDE从三类原型到弱解.html](%E8%AF%AD%E6%96%99/%E6%95%B0%E5%AD%A6/12_%E5%B8%B8%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B%E8%BF%9B%E9%98%B6_PDE%E4%BB%8E%E4%B8%89%E7%B1%BB%E5%8E%9F%E5%9E%8B%E5%88%B0%E5%BC%B1%E8%A7%A3.html) |
 | 13 | 常微分方程进阶：动力系统——从求解轨道到研究长期行为 | [13_常微分方程进阶_动力系统从轨道到长期行为.html](%E8%AF%AD%E6%96%99/%E6%95%B0%E5%AD%A6/13_%E5%B8%B8%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B%E8%BF%9B%E9%98%B6_%E5%8A%A8%E5%8A%9B%E7%B3%BB%E7%BB%9F%E4%BB%8E%E8%BD%A8%E9%81%93%E5%88%B0%E9%95%BF%E6%9C%9F%E8%A1%8C%E4%B8%BA.html) |
 
-### 语料/计算机/　—　共 16 篇，下一篇编号 `17`
+### 语料/计算机/　—　共 17 篇，下一篇编号 `18`
 
 | 编号 | 标题 | 文件 |
 | --- | --- | --- |
@@ -89,6 +89,7 @@ GitHub 的 `/tree/` 和 `/commits/` 页面拒绝自动访问，只有 `raw.githu
 | 14 | Windows 开发环境：与类 Unix 开发体验的结构差异 | [14_Windows开发环境_与类Unix开发体验的结构差异.html](%E8%AF%AD%E6%96%99/%E8%AE%A1%E7%AE%97%E6%9C%BA/14_Windows%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83_%E4%B8%8E%E7%B1%BBUnix%E5%BC%80%E5%8F%91%E4%BD%93%E9%AA%8C%E7%9A%84%E7%BB%93%E6%9E%84%E5%B7%AE%E5%BC%82.html) |
 | 15 | Windows 开发环境：从 DOS 兼容到 NT 与 WSL 的历史成因 | [15_Windows开发环境_从DOS兼容到NT与WSL的历史成因.html](%E8%AF%AD%E6%96%99/%E8%AE%A1%E7%AE%97%E6%9C%BA/15_Windows%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83_%E4%BB%8EDOS%E5%85%BC%E5%AE%B9%E5%88%B0NT%E4%B8%8EWSL%E7%9A%84%E5%8E%86%E5%8F%B2%E6%88%90%E5%9B%A0.html) |
 | 16 | Windows 开发环境：命令行与注册表的设计地图 | [16_Windows开发环境_命令行与注册表的设计地图.html](%E8%AF%AD%E6%96%99/%E8%AE%A1%E7%AE%97%E6%9C%BA/16_Windows%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83_%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8E%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%9C%B0%E5%9B%BE.html) |
+| 17 | 远程运维：跨机唤醒、串流，与一次静默失败的诊断 | [17_远程运维_跨机唤醒串流与静默失败诊断.html](%E8%AF%AD%E6%96%99/%E8%AE%A1%E7%AE%97%E6%9C%BA/17_%E8%BF%9C%E7%A8%8B%E8%BF%90%E7%BB%B4_%E8%B7%A8%E6%9C%BA%E5%94%A4%E9%86%92%E4%B8%B2%E6%B5%81%E4%B8%8E%E9%9D%99%E9%BB%98%E5%A4%B1%E8%B4%A5%E8%AF%8A%E6%96%AD.html) |
 
 ### 语料/AI/　—　共 10 篇，下一篇编号 `11`
 
