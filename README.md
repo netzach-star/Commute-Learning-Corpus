@@ -1,3 +1,13 @@
+> 🧊 **2026-09-23 起冻结，只读。** 不再收稿、不再改规则。
+>
+> - 48 篇文章已转成 Markdown（逐篇核对过正文汉字一个不少），进了私有仓库 `knowledge-base` 的 `00-收件箱/`，
+>   身份是 `ref: article:<领域>/<编号>`，编号与这里一致；原 HTML 在那边的 `_原件/corpus-html/` 留底。
+> - GPT 写作规则（SKILL）改为交 Markdown，搬到 `personal-project` 的 `personal-system/知识库/GPT写作规则/`。
+> - 平板通勤读的离线 HTML 改由 `personal-system/知识库/kb/render.py` 从 md 生成。
+> - 完整 git 历史另有 bundle 存在 Wyse `/srv/data/知识库/git-bundles/Commute-Learning-Corpus/`。
+>
+> 确认数据都转完后，本仓库可以删除。
+
 # 通勤学习语料库
 
 一个人的通勤阅读材料库。每篇是一个自包含的 HTML 文件，下载到平板用浏览器打开即可阅读——**用 HTML 而不是 Markdown，唯一的原因是让数学公式（MathML）直接渲染出来**，对版式和外观没有别的要求。
